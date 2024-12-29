@@ -22,8 +22,8 @@ This comprehensive resource aims to provide both new and existing users with up-
 ## 🛠️ Contribution Process
 ### Step
 1. **Content Development & Pull Request(PR)**: Create at least **one** existing or new content file (`.ipynb`). Optionally, add examples related to open LLMs. Then, Submit a PR with the developed content.
-2. **Team Peer Reviews**: Assign at least **two team members** as reviewers. Reviewers will evaluate the code and content quality and check tutorials are compatible with **Mac, Windows, and Linux environments**. Approve the Pull Request if there are no issues.
-4. **Merge Pull Request**: Once the Pull Request has been approved by the reviewers, a project maintainer will merge the PR into the main branch to include the new content in the repository.
+2. **Team Peer Reviews**: Assign at least **two team members** as reviewers. Reviewers will evaluate the code and content quality and check tutorials are compatible with **Mac, Windows, and Linux environments**. **Approve** the Pull Request if there are no issues.
+4. **Merge Pull Request**: Once the Pull Request has been approved by more than two reviewers, the original author can merge the PR into the 'main' branch.
 5. **Proofreading**: During the following week, the proofreading team will review the submitted content for typos, template compliance, and proper citations. If the proofreading team requests any modifications, the original author must make the necessary corrections and resubmit the PR.
 
 ### Note: Self-Check Before PR Submission
@@ -32,11 +32,11 @@ This comprehensive resource aims to provide both new and existing users with up-
 - **Execution Platform**: Individual files should be executable on **Google Colab**.
 - **Specifications Submission (if Required)**: If using open models or additional packages, specify the required environment to Infra Team.
 
-### 🔗 Related Links
+### Related Links
 - [Dashboard](https://docs.google.com/spreadsheets/d/1Kt7BiKyuAoQeIks1v1V2ii6ri5WJqWZ1fS_oe0z4nsM/edit?gid=1162559766#gid=1162559766)
 - [GitHub Collaboration Guide](https://docs.google.com/document/d/18VrmTq1o22rzjxZ4PEFaemo0lfXRK9vWsyQPEin7OfY/edit?tab=t.0#heading=h.il7lst7f5t57)
 - [Github PR Example](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/pull/5)
-- [meeting_1_kickoff](https://drive.google.com/file/d/1TqVonuyda6gnJkdSc-XpsqE6JkTmjquZ/view?usp=drive_link))
+- [meeting_1_kickoff](https://drive.google.com/file/d/1TqVonuyda6gnJkdSc-XpsqE6JkTmjquZ/view?usp=drive_link)
 - [meeting_2_241228](https://docs.google.com/presentation/d/1xVJXCKV9OC4kQk3VKWL79KHitxcX-Mjj/edit#slide=id.p6)
 
 ## 🌟 Contributors
