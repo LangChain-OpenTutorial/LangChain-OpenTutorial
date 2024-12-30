@@ -1,0 +1,35 @@
+name: pr-age
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+  contents: read
+
+jobs:
+  check-pr-age:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if 24 hours have passed since PR creation
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
+
+            const createdAt = new Date(pr.data.created_at);
+            const now = new Date();
+            const diffHours = (now - createdAt) / (1000 * 60 * 60);
+
+            if (diffHours >= 24) {
+              console.log('PR is older than 24 hours. Merge allowed.');
+              return;
+            } else {
+              const hoursLeft = (24 - diffHours).toFixed(2);
+              throw new Error(`Cannot merge PR yet. Left ${hoursLeft} hours.`);
+            }
