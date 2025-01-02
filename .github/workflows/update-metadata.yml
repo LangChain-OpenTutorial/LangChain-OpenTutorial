@@ -1,0 +1,153 @@
+name: Update Colab, GitHub Links, and Peer Reviewers
+
+on:
+  pull_request:
+    types:
+      - closed
+
+permissions:
+  contents: write
+
+jobs:
+  update-notebooks:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install Dependencies
+      run: pip install nbformat requests
+
+    - name: Configure Git Author
+      run: |
+        git config --global user.name "${{ github.event.pull_request.user.login }}"
+        git config --global user.email "${{ github.event.pull_request.user.login }}@users.noreply.github.com"
+
+    - name: Update Colab, GitHub Links, and Peer Reviewers
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+      run: |
+        python3 << 'EOF'
+        import os
+        import nbformat
+        import requests
+
+        def get_pr_reviewers():
+            """
+            GitHub API를 사용하여 PR에 할당된 리뷰어 목록 가져오기
+            """
+            pr_number = os.getenv('GITHUB_PR_NUMBER')
+            repo = os.getenv('GITHUB_REPOSITORY')
+            headers = {'Authorization': f'token {os.getenv("GITHUB_TOKEN")}'}
+            url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/reviews"
+
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            reviews = response.json()
+
+            # 리뷰 상태가 APPROVED인 리뷰어만 가져오기
+            reviewers = {review['user']['login'] for review in reviews if review['state'] == 'APPROVED'}
+            return ", ".join([f"[{reviewer}](https://github.com/{reviewer})" for reviewer in reviewers]) if reviewers else "[]()"
+
+        def get_changed_files():
+            """
+            GitHub API를 사용하여 PR에서 변경된 파일 목록 가져오기
+            """
+            pr_number = os.getenv('GITHUB_PR_NUMBER')
+            repo = os.getenv('GITHUB_REPOSITORY')
+            headers = {'Authorization': f'token {os.getenv("GITHUB_TOKEN")}'}
+            url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/files"
+
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            files = response.json()
+
+            # .ipynb 파일만 추출
+            return [file['filename'] for file in files if file['filename'].endswith('.ipynb')]
+
+        def update_and_execute_markdown_cell(file_path, repo_url, branch):
+            """
+            Notebook 파일에서 Colab 및 GitHub 링크를 업데이트하고 첫 번째 Markdown 셀을 실행한 것처럼 처리
+            """
+            with open(file_path, "r", encoding="utf-8") as file:
+                notebook = nbformat.read(file, as_version=nbformat.NO_CONVERT)
+
+            # 첫 번째 Markdown 셀만 처리
+            first_cell = notebook.cells[0] if notebook.cells else None
+            if first_cell and first_cell.cell_type == "markdown":
+                lines = first_cell.source.splitlines()
+
+                # Colab 및 GitHub 링크 생성
+                colab_url = f"https://colab.research.google.com/github/{repo_url}/blob/{branch}/{file_path.replace(os.sep, '/')}"
+                github_badge = f"[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/{repo_url}/blob/{branch}/{file_path.replace(os.sep, '/')})"
+
+                # 로그 출력
+                print(f"Generated Colab URL for {file_path}: {colab_url}")
+                print(f"Generated GitHub Badge for {file_path}: {github_badge}")
+
+                updated = False
+                for i, line in enumerate(lines):
+                    # Open in Colab이 있는 라인에 Colab과 GitHub 뱃지를 추가
+                    if "![Open in Colab]" in line:
+                        lines[i] = f"[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)]({colab_url}) {github_badge}"
+                        updated = True
+                        print(f"Updated Colab and GitHub links in {file_path} at line {i + 1}")
+
+                    # Peer Review 업데이트
+                    if line.startswith("- Peer Review:"):
+                        reviewers = get_pr_reviewers()
+                        lines[i] = f"- Peer Review: {reviewers}"
+                        updated = True
+                        print(f"Updated Peer Reviewr in {file_path} at line {i + 1}")
+                        print(f"{reviewers}")
+                # Markdown 셀 실행 결과 추가
+                if updated:
+                    first_cell.source = "\n".join(lines)
+                    first_cell.execution_count = 1
+                    first_cell.outputs = [
+                        {
+                            "output_type": "display_data",
+                            "data": {"text/markdown": first_cell.source},
+                            "metadata": {}
+                        }
+                    ]
+                    print(f"Executed first Markdown cell in {file_path}")
+
+            # 파일 저장
+            with open(file_path, "w", encoding="utf-8") as file:
+                nbformat.write(notebook, file)
+
+        def process_changed_notebooks(repo_url, branch):
+            """
+            변경된 .ipynb 파일만 업데이트
+            """
+            changed_files = get_changed_files()
+            print(f"Changed .ipynb files: {changed_files}")
+
+            for file_path in changed_files:
+                print(f"Processing {file_path}...")
+                update_and_execute_markdown_cell(file_path, repo_url, branch)
+
+        if __name__ == "__main__":
+            REPO_URL = "LangChain-OpenTutorial/LangChain-OpenTutorial"  # 실제 GitHub 저장소 정보
+            BRANCH = "main"  # 브랜치 이름
+            process_changed_notebooks(REPO_URL, BRANCH)
+        EOF
+
+    - name: Commit and Push Changes
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/LangChain-OpenTutorial/LangChain-OpenTutorial.git
+        git add -A
+        git commit -m "Update Colab, GitHub links, and Peer Reviewers in notebooks" || echo "Nothing to commit"
+        git push origin main

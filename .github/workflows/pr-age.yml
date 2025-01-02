@@ -2,12 +2,11 @@ name: pr-age
 
 on:
   schedule:
-    - cron: '0 0,3,9,15,21 * * *'   # (KST) 0:00, 6:00, 9:00, 12:00, 18:00
-    - cron: '38 8 * * *'           # (KST) 17:35
+    - cron: '30 0,3,9,15 * * *'  
   pull_request:
     types: [opened, synchronize, reopened]
-  pull_request_review:
-    types: [submitted]
+  # pull_request_review:
+  #   types: [submitted]
 
 permissions:
   pull-requests: write
@@ -18,7 +17,7 @@ jobs:
   check-pr-age:
     runs-on: ubuntu-latest
     steps:
-      - name: Check PR age
+      - name: Check if 24 hours have passed since PR creation
         uses: actions/github-script@v6
         with:
           script: |
@@ -34,12 +33,12 @@ jobs:
                 await github.rest.checks.create({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  name: 'Check PR Age',
+                  name: 'check-pr-age',
                   head_sha: pr.head.sha,
                   status: 'completed',
                   conclusion: 'success',
                   output: {
-                    title: 'Check PR Age',
+                    title: 'check-pr-age',
                     summary: `PR #${pr.number} is older than 24 hours.`,
                   },
                 });
@@ -50,12 +49,12 @@ jobs:
                 await github.rest.checks.create({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  name: 'Check PR Age',
+                  name: 'check-pr-age',
                   head_sha: pr.head.sha,
                   status: 'completed',
                   conclusion: 'failure',
                   output: {
-                    title: 'Check PR Age',
+                    title: 'check-pr-age',
                     summary: `PR #${pr.number} is not yet older than 24 hours. Please wait another ${hoursLeft} hours.`,
                   },
                 });
