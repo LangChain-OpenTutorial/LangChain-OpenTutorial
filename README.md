@@ -10,20 +10,7 @@ We, the LangChain community based in Seoul, has a passionnante interest in devel
 - **Diving deep into cutting-edge features** including the recent updates available at the latest version of LangChain and LangGraph release, and
 - **Demonstrating additional goodies** that showcase real-world uses and further applications.
 
-At this base repository, it serves as a home for both beginners and seasoned LangChain users. The tutorial whould provide a roadmap for learning LangChain, while also offering a valuable refresher for those already familiar with its functionalities.
-
-## 📚 References
-- [langchain-ai](https://github.com/langchain-ai/langchain) 📖
-- [LangGraph GitHub](https://github.com/langchain-ai/langgraph)
-- [LangChain Documentation](https://python.langchain.com/docs/introduction/)
-- [OpenAI API Reference](https://platform.openai.com/docs/introduction) 🤖
-
-## 🔗 Community Links
-- **LangChain Korean Tutorial(wikidocs)**: [WikiDocs](https://wikidocs.net/book/14314)
-- **LangChain Korean Tutorial(github)**: [GitHub Repository](https://github.com/teddylee777/langchain-kr)
-- **YouTube Channel**: [Teddy Note](https://www.youtube.com/channel/UCt2wAAXgm87ACiQnDHQEW6Q) 🎥
-- **Blog**: [Teddy Note](https://teddylee777.github.io) 📝
-- **Playground**: [LangChain LLM Playground](http://llm.teddynote.com) 🎮
+At this base repository, it serves as a home for both beginners and seasoned LangChain users. The tutorial whould provide a roadmap for learning LangChain, while also offering a valuable refresher for those already familiar with its functionalities.🎮
 
 ## 🛠️ Contribution Process
 ### Step
@@ -37,7 +24,18 @@ At this base repository, it serves as a home for both beginners and seasoned Lan
 4. **Merge Pull Request**: Once the Pull Request has been approved by more than two reviewers, the original author can merge the PR into the 'main' branch.
 5. **Proofreading**: During the following week, the proofreading team will review the submitted content for typos, template compliance, and proper citations. If the proofreading team requests any modifications, the original author must make the necessary corrections and resubmit the PR.
 
+## 📚 References
+- [langchain-ai](https://github.com/langchain-ai/langchain) 📖
+- [LangGraph GitHub](https://github.com/langchain-ai/langgraph)
+- [LangChain Documentation](https://python.langchain.com/docs/introduction/)
+- [OpenAI API Reference](https://platform.openai.com/docs/introduction) 🤖
 
+## 🔗 Community Links
+- **LangChain Korean Tutorial(wikidocs)**: [WikiDocs](https://wikidocs.net/book/14314)
+- **LangChain Korean Tutorial(github)**: [GitHub Repository](https://github.com/teddylee777/langchain-kr)
+- **YouTube Channel**: [Teddy Note](https://www.youtube.com/channel/UCt2wAAXgm87ACiQnDHQEW6Q) 🎥
+- **Blog**: [Teddy Note](https://teddylee777.github.io) 📝
+- **Playground**: [LangChain LLM Playground](http://llm.teddynote.com) 
 
 ### Related Links
 - [Dashboard](https://docs.google.com/spreadsheets/d/1Kt7BiKyuAoQeIks1v1V2ii6ri5WJqWZ1fS_oe0z4nsM/edit?gid=1162559766#gid=1162559766)
