@@ -1,0 +1,13 @@
+_type: "prompt"
+template: |
+  Please provide information about the capital city of {country}.
+  Summarize the characteristics of the capital in the following format, within 300 words.
+  ----
+  [Format]
+  1. Area
+  2. Population
+  3. Historical Sites
+  4. Regional Products
+  
+  #Answer:
+input_variables: ["country"]

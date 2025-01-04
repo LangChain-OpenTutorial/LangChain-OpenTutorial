@@ -45,7 +45,7 @@ This comprehensive resource aims to provide both new and existing users with up-
 - [meeting_2_241228](https://docs.google.com/presentation/d/1xVJXCKV9OC4kQk3VKWL79KHitxcX-Mjj/edit#slide=id.p6)
 
 ## 🌟 Contributors
-[![Contributors](https://contrib.rocks/image?repo=LangChain-OpenTutorial/LangChain-OpenTutorial&max=2000)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=LangChain-OpenTutorial/LangChain-OpenTutorial&max=5000)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/graphs/contributors)
 
 <br/>
 <p><a href="https://www.buymeacoffee.com/teddylee777"> <img align="left" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" width="210" alt="teddylee777" /></a></p>

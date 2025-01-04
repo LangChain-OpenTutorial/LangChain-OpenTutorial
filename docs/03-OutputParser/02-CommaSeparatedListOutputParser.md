@@ -1,3 +1,21 @@
+<style>
+    .custom {
+        background-color: #008d8d;
+        color: white;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+        white-space: pre-wrap;       /* css-3 */
+        white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+        white-space: -pre-wrap;      /* Opera 4-6 */
+        white-space: -o-pre-wrap;    /* Opera 7 */
+        word-wrap: break-word;    
+    }
+    
+    pre {
+        background-color: #027c7c;
+        padding-left: 0.5em;
+    }
+</style>
+
 # Comma Separated List Output Parser
 
 - Author: [Junseong Kim](https://www.linkedin.com/in/%EC%A4%80%EC%84%B1-%EA%B9%80-591b351b2/)

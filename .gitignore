@@ -8,7 +8,9 @@
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 
+# Unnecessary files
 */.cache/*
+*/.idea/*
 
 # IPython
 profile_default/
@@ -25,7 +27,6 @@ __pycache__/
 
 # C extensions
 *.so
-
 .env
 
 # Distribution / packaging
@@ -47,6 +48,9 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+# VSCode
+.vscode
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -100,6 +104,7 @@ target/
 # Jupyter Notebook
 
 # IPython
+.DS_Store
 
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is

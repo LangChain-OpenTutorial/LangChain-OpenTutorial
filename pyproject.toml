@@ -32,8 +32,10 @@ ragas = "^0.2.9"
 # Jupyter
 jupyter = "^1.1.1"
 notebook = "^7.3.2"
+jq = "^1.8.0"
 
 
+unstructured = "^0.16.11"
 
 
 [build-system]
