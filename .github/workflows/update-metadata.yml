@@ -1,0 +1,101 @@
+name: Update Colab, GitHub Links, and Peer Reviewers
+
+on:
+  pull_request:
+    types:
+      - closed
+
+permissions:
+  contents: write
+
+jobs:
+  update-notebooks:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install Dependencies
+      run: pip install nbformat requests
+
+    - name: Update Notebooks
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        python3 << 'EOF'
+        import os
+        import nbformat
+        import requests
+
+        def get_pr_reviewers(repo, pr_number, token):
+            url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/reviews"
+            headers = {'Authorization': f'token {token}'}
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            reviews = response.json()
+            reviewers = {review['user']['login'] for review in reviews if review['state'] == 'APPROVED'}
+            return ", ".join([f"[{reviewer}](https://github.com/{reviewer})" for reviewer in reviewers]) if reviewers else "[]()"
+
+        def get_changed_files(repo, pr_number, token):
+            url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/files"
+            headers = {'Authorization': f'token {token}'}
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            files = response.json()
+            return [file['filename'] for file in files if file['filename'].endswith('.ipynb') and file['status'] != 'removed']
+
+        def update_markdown_cell(file_path, repo_url, branch, reviewers):
+            with open(file_path, "r", encoding="utf-8") as file:
+                notebook = nbformat.read(file, as_version=nbformat.NO_CONVERT)
+
+            first_cell = notebook.cells[0] if notebook.cells else None
+            if first_cell and first_cell.cell_type == "markdown":
+                lines = first_cell.source.splitlines()
+                colab_url = f"https://colab.research.google.com/github/{repo_url}/blob/{branch}/{file_path.replace(os.sep, '/')}"
+                github_badge = f"[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/{repo_url}/blob/{branch}/{file_path.replace(os.sep, '/')})"
+                
+                updated = False
+                for i, line in enumerate(lines):
+                    if "![Open in Colab]" in line:
+                        lines[i] = f"[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)]({colab_url}) {github_badge}"
+                        updated = True
+                    if line.startswith("- Peer Review:"):
+                        lines[i] = f"- Peer Review: {reviewers}"
+                        updated = True
+
+                if updated:
+                    first_cell.source = "\n".join(lines)
+
+            with open(file_path, "w", encoding="utf-8") as file:
+                nbformat.write(notebook, file)
+
+        def main():
+            repo = os.getenv("GITHUB_REPOSITORY")
+            pr_number = os.getenv("GITHUB_PR_NUMBER")
+            branch = "main"
+            token = os.getenv("GITHUB_TOKEN")
+            
+            reviewers = get_pr_reviewers(repo, pr_number, token)
+            changed_files = get_changed_files(repo, pr_number, token)
+
+            for file_path in changed_files:
+                update_markdown_cell(file_path, repo, branch, reviewers)
+
+        if __name__ == "__main__":
+            main()
+        EOF
+
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add -A
+        git commit -m "Update Colab, GitHub links, and Peer Reviewers in notebooks" || echo "Nothing to commit"
+        git push origin ${{ github.head_ref || 'main' }}
