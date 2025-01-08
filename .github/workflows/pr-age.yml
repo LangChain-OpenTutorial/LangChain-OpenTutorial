@@ -7,6 +7,7 @@ on:
     types: [opened, synchronize, reopened]
   # pull_request_review:
   #   types: [submitted]
+  workflow_dispatch:
 
 permissions:
   pull-requests: write
@@ -20,6 +21,7 @@ jobs:
       - name: Check if 24 hours have passed since PR creation
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             // check 24-hours
             async function checkPrAge(pr) {
