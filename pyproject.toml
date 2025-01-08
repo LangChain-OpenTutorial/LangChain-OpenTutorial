@@ -1,13 +1,18 @@
-[tool.poetry]
+[project]
 name = "langchain-opentutorial"
 version = "0.0.1"
 description = "LangChain OpenTutorial for Everyone."
-authors = ["LangChain OpenTutorial <langchain.opentutorial@gmail.com>"]
-license = "MIT License"
+authors = [
+    {name = "LangChain OpenTutorial", email = "langchain.opentutorial@gmail.com"}
+]
+license = {text = "MIT License"}
 readme = "README.md"
 
+[tool.poetry]
+
+
 [tool.poetry.dependencies]
-python = "3.11.x"
+python = "3.11.9"
 python-dotenv = "^1.0.1"
 
 # LangChain
