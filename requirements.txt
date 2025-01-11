@@ -30,7 +30,8 @@ langchain-neo4j
 langchain-mongodb
 fastembed
 certifi
-python-magic-bin
 pymongo
 langchain_qdrant
+chromadb==0.6.2
 
+python-magic-bin; platform_system != 'Darwin'

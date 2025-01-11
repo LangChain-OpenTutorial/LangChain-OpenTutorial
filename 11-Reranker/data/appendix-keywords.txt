@@ -1,0 +1,153 @@
+Semantic Search
+Definition: Semantic search is a search technique that understands the meaning of a user's query beyond simple keyword matching, returning results that are contextually relevant.
+Example: If a user searches for "planets in the solar system," the system provides information about planets like Jupiter and Mars.
+Related Keywords: Natural Language Processing (NLP), Search Algorithms, Data Mining
+
+Embedding
+Definition: Embedding is the process of converting textual data, such as words or sentences, into low-dimensional continuous vectors that computers can process and understand.
+Example: The word "apple" can be represented as a vector like [0.65, -0.23, 0.17].
+Related Keywords: Natural Language Processing (NLP), Vectorization, Deep Learning
+
+Token
+Definition: A token refers to a smaller unit of text obtained by splitting a larger piece of text. It can be a word, phrase, or sentence.
+Example: The sentence "I go to school" can be tokenized into "I," "go," "to," and "school."
+Related Keywords: Tokenization, Natural Language Processing (NLP), Syntax Analysis
+
+Tokenizer
+Definition: A tokenizer is a tool that splits text data into tokens, often used for preprocessing in natural language processing tasks.
+Example: The sentence "I love programming." is tokenized into ["I", "love", "programming", "."].
+Related Keywords: Tokenization, Natural Language Processing (NLP), Syntax Analysis.
+
+VectorStore
+Definition: A VectorStore is a system designed to store data in vector format, enabling efficient retrieval, classification, and analysis tasks.
+Example: Storing word embedding vectors in a database for quick access during semantic search.
+Related Keywords: Embedding, Database, Vectorization
+
+SQL
+Definition: SQL (Structured Query Language) is a programming language for managing data in databases. 
+It allows you to perform various operations such as querying, updating, inserting, and deleting data.
+Example: SELECT * FROM users WHERE age > 18; retrieves information about users aged above 18.
+Related Keywords: Database, Query, Data Management
+
+CSV
+Definition: CSV (Comma-Separated Values) is a file format used for storing tabular data, where each value is separated by a comma.
+Example: A CSV file with headers "Name, Age, Occupation" may contain data like "John, 30, Developer."
+Related Keywords: Data Format, File Processing, Data Exchange
+
+JSON
+Definition: JSON (JavaScript Object Notation) is a lightweight data-interchange format that represents data objects using readable text for both humans and machines.
+Example: {"Name": John", " Age": 30, " Occupation ": "Developer"} is a JSON object.
+Related Keywords: Data Exchange, Web Development, API
+
+Transformer
+Definition: A Transformer is a type of deep learning model widely used in natural language processing tasks like translation, summarization, and text generation. It is based on the Attention mechanism.
+Example: Google Translate utilizes a Transformer model for multilingual translation.
+Related Keywords: Deep Learning, Natural Language Processing (NLP), Attention mechanism
+
+HuggingFace
+Definition: HuggingFace is a library offering pre-trained models and tools for natural language processing, making NLP tasks accessible to researchers and developers.
+Example: HuggingFace's Transformers library can be used for sentiment analysis and text generation.
+Related Keywords: Natural Language Processing (NLP), Deep Learning, Library.
+
+Digital Transformation
+Definition: Digital transformation refers to the integration of technology to innovate services, culture, and operations within a company, enhancing competitiveness and business models.
+Example: A company adopting cloud computing to revolutionize data storage and processing demonstrates digital transformation.
+Related Keywords: Innovation, Technology, Business Model
+
+Crawling
+Definition: Crawling is the automated process of visiting web pages to gather data, commonly used for search engine optimization and data analysis.
+Example: Google Search Engine crawls websites to collect and index content.
+Related Keywords: Data Collection, Web Scraping, Search Engine
+
+Word2Vec
+Definition: Word2Vec is a technique in NLP that maps words to a vector space, representing their semantic relationships based on context.
+Example: In a Word2Vec model, "king" and "queen" are represented by vectors located close to each other.
+Related Keywords: Natural Language Processing (NLP), Embedding, Semantic Similarity
+
+LLM (Large Language Model)
+Definition: LLMs are massive language models trained on large-scale text data, used for various natural language understanding and generation tasks.
+Example: OpenAI's GPT series is a prominent example of LLMs.
+Related Keywords: Natural Language Processing (NLP), Deep Learning, Text Generation
+
+FAISS (Facebook AI Similarity Search)
+Definition: FAISS is a high-speed similarity search library developed by Facebook, optimized for searching large sets of vectors efficiently.
+Example: FAISS can quickly find similar images among millions of image vectors.
+Related Keywords: Vector Search, Machine Learning, Database Optimization
+
+Open Source
+Definition: Open source software allows its source code to be freely used, modified, and distributed, fostering collaboration and innovation.
+Example: The Linux operating system is a well-known open source project.
+Related Keywords: Software Development, Community, Technical Collaboration
+Structured Data
+Definition: Structured data is organized according to a specific format or schema, making it easy to search and analyze.
+Example: A customer information table in a relational database is an example of structured data.
+Related Keywords: Database, Data Analysis, Data Modeling
+
+Parser
+Definition: A parser analyzes input data (text, files, etc.) and converts it into a structured format, often used in programming language syntax analysis or file processing.
+Example: Parsing an HTML document to generate its DOM structure is an instance of parsing.
+Related Keywords: Syntax Analysis, Compiler, Data Processing
+
+TF-IDF (Term Frequency-Inverse Document Frequency)
+Definition: TF-IDF is a statistical measure used to evaluate the importance of a word within a document by considering its frequency and rarity across a corpus.
+Example: Words with high TF-IDF values are often unique and critical for understanding the document.
+Related Keywords: Natural Language Processing (NLP), Information Retrieval, Data Mining
+
+Deep Learning
+Definition: Deep learning is a subset of machine learning that uses neural networks to solve complex problems, focusing on learning high-level representations from data.
+Example: Deep learning models are used for tasks like image recognition, speech recognition, and NLP.
+Related Keywords: Artificial Neural Networks, Machine Learning, Data Analysis
+
+Schema
+Definition: A schema defines the structure of a database or file, detailing how data is organized and stored.
+Example: A relational database schema specifies column names, data types, and key constraints.
+Related Keywords: Database, Data Modeling, Data Management
+
+DataFrame
+Definition: A DataFrame is a tabular data structure with rows and columns, commonly used for data manipulation and analysis.
+Example: In Python's Pandas library, a DataFrame can contain diverse data types and support various data operations.
+Related Keywords: Data Analysis, Pandas, Data Processing
+
+Attention Mechanism
+Definition: 
+The Attention mechanism is a technique in deep learning that allows models to focus more on important information. It is primarily used in processing sequential data such as text and time series.
+Example: 
+In translation models, the Attention mechanism helps the model focus on relevant parts of the input sentence to generate accurate translations.
+Related Keywords: Deep Learning, Natural Language Processing, Sequence Modeling
+
+Pandas
+Definition: Pandas is a Python library offering tools for efficient data manipulation and analysis. It simplifies complex data operations.
+Example: Pandas can be used to load, clean, and analyze CSV files.
+Related Keywords: Data Analysis, Python, Data Processing
+
+GPT (Generative Pretrained Transformer)
+Definition: GPT is a generative language model pre-trained on vast datasets, capable of performing various text-based tasks. It generates natural and coherent text based on input.
+Example: A chatbot generating detailed answers to user queries is powered by GPT models.
+Related Keywords: Natural Language Processing (NLP), Text Generation, Deep Learning
+
+InstructGPT
+Definition: 
+InstructGPT is an optimized GPT model designed to perform specific tasks based on user instructions. It is built to generate more accurate and relevant results in response to given commands.
+Example: When a user provides a specific instruction like "Draft an email," InstructGPT generates an email based on the provided content.
+Related Keywords: Artificial Intelligence, Natural Language Understanding, Command-Based Processing
+
+Keyword Search
+Definition: Keyword search involves finding information based on user-inputted keywords, commonly used in search engines and database systems.
+Example: Searching 
+When a user searches for "coffee shops in Seoul," the system returns a list of relevant coffee shops.
+Related Keywords: Search Engine, Data Search, Information Retrieval
+
+Page Rank
+Definition: Page Rank is an algorithm for evaluating the importance of web pages, primarily used to rank search engine results. It analyzes the link structure of websites.
+Example: Google uses Page Rank to determine the order of search results.
+Related Keywords: Search Engine Optimization, Web Analytics, Link Analysis
+
+Data Mining
+Definition: Data mining is the process of extracting useful information from large datasets using techniques like statistics, machine learning, and pattern recognition.
+Example: Retailers analyzing customer purchase data to devise sales strategies is an application of data mining.
+Related Keywords: Big Data, Pattern Recognition, Predictive Analytics
+
+Multimodal
+Definition: Multimodal refers to combining and processing multiple types of data (e.g., text, images, and sound) to extract richer insights and predictions.
+Example: A system analyzing both images and captions to perform accurate image classification demonstrates multimodal technology.
+Related Keywords: Data Fusion, Artificial Intelligence, Deep Learning
