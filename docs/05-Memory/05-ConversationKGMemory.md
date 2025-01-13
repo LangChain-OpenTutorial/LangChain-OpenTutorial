@@ -28,7 +28,7 @@ pre {
 
 ## Overview
 
-Unlike Entity Memory, which manages information about entities in a key-value format for individual entities, `Conversation Knowledge Graph Memory` is a module that manages relationships between entities in a graph format.
+Unlike `ConversationEntityMemory`, which manages information about entities in a key-value format for individual entities, `ConversationKGMemory`(Conversation Knowledge Graph Memory) is a module that manages relationships between entities in a graph format.
 
 It extracts and structures **knowledge triplets** (subject-relationship-object) to identify and store complex relationships between entities, and allows exploration of entity connectivity through **graph structure**.
 
@@ -37,7 +37,7 @@ This helps the model understand relationships between different entities and bet
 ### Table of Contents
 
 - [Overview](#overview)
-- [Environement Setup](#environment-setup)
+- [Environment Setup](#environment-setup)
 - [Conversation Knowlege Graph Memory](#conversation-knowlege-graph-memory)
 - [Applying KG Memory to Chain](#applying-kg-memory-to-chain)
 - [Applying KG Memory with LCEL](#applying-kg-memory-with-lcel)
@@ -49,7 +49,6 @@ This helps the model understand relationships between different entities and bet
 ----
 
 ## Environment Setup
-[return](#overview)
 
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
@@ -59,7 +58,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -116,9 +115,8 @@ load_dotenv(override=True)
 
 
 ## Conversation Knowlege Graph Memory
-[return](#overview)
 
-`Conversation Knowledge Graph Memory` is a memory module that stores and manages information extracted from conversations in a graph structure. This example demonstrates the following key features:
+`ConversationKGMemory` is a memory module that stores and manages information extracted from conversations in a graph structure. This example demonstrates the following key features:
 
 - Storing conversation context (`save_context`)
 - (Reference) Getting a list of entity names in the graph sorted by causal dependence. (`get_topological_sort`)
@@ -151,7 +149,7 @@ memory.save_context(
 
 ### (Reference) get_knowledge_triplets(input_string: str) → List[KnowledgeTriple]
 
-You can use `get_topological_sort()` to view all entities stored in the knowledge graph in topological order:
+You can use the `get_topological_sort` method to view all entities stored in the knowledge graph in topological order:
 
 This method:
 - Uses NetworkX library to analyze the knowledge graph structure
@@ -176,12 +174,12 @@ memory.kg.get_topological_sort()
 Here's how the `get_current_entities` method works:
 
 **1. Entity Extraction Chain Creation**
-- Creates an LLMChain using the `entity_extraction_prompt` template.
-- This prompt is designed to extract proper nouns from the last line of conversation.
+- Creates an `LLMChain` using the `entity_extraction_prompt` template.
+- This prompt is designed to extract proper nouns from the last line of the conversation.
 
 **2. Context Processing**
 - Retrieves the last **k*2** messages from the buffer. (default : k=2)
-- Generates conversation history string using human_prefix and ai_prefix.
+- Generates conversation history string using `human_prefix` and `ai_prefix`.
 
 **3. Entity Extraction**
 - Extracts proper nouns from the input string "Who is Shelly Kim?"
@@ -206,7 +204,7 @@ memory.get_current_entities({"input": "Who is Shelly Kim?"})
 The `get_knowledge_triplets` method operates as follows:
 
 **1. Knowledge Triple Extraction Chain**
-- Creates an LLMChain using the `knowledge_triplet_extraction_prompt` template.
+- Creates an `LLMChain` using the `knowledge_triplet_extraction_prompt` template.
 - Designed to extract triples in (**subject-relation-object**) format from given text.
 
 **2. Memory Search**
@@ -261,7 +259,7 @@ The `load_memory_variables` method operates through the following steps:
 
 **3. Information Formatting**
 - Converts found triplets into system messages.
-- Returns a list of message objects due to `return_messages=True` setting.
+- Returns a list of message objects due to the `return_messages=True` setting.
 
 This method retrieves relevant information from the stored knowledge graph and returns it in a structured format, which can then be used as context for subsequent conversations with the language model.
 
@@ -277,11 +275,10 @@ memory.load_memory_variables({"input": "Who is Shelly Kim?"})
 
 
 ## Applying KG Memory to Chain
-[return](#overview)
 
 This section demonstrates how to use `ConversationKGMemory` with `ConversationChain`
 
-(The class `ConversationChain` was deprecated in LangChain 0.2.7 and will be removed in 1.0. if you want, skip to [Apply to LCEL](applying-kg-memory-with-lcel))
+(The class `ConversationChain` was deprecated in LangChain 0.2.7 and will be removed in 1.0. If you want, you can skip to [Applying KG Memory with LCEL](#applying-kg-memory-with-lcel))
 
 ```python
 from langchain_community.memory.kg import ConversationKGMemory
@@ -328,7 +325,7 @@ conversation_with_kg.predict(
 
 
 
-Let's query memory for information about Shelly
+Let's query the memory for information about Shelly
 
 ```python
 conversation_with_kg.memory.load_memory_variables({"input": "who is Shelly?"})
@@ -356,10 +353,8 @@ conversation_with_kg.memory.load_memory_variables({"input": "who is Shelly?"})
 
 
 ## Applying KG Memory with LCEL
-[return](#overview)
 
-Let's examine the memory after having a conversation using custom `ConversationChain` with `ConversationKGMemory` by LCEL
-
+Let's examine the memory after having a conversation using a custom `ConversationChain` with `ConversationKGMemory` by LCEL
 
 ```python
 from operator import itemgetter
@@ -430,7 +425,7 @@ response.content
 
 
 
-Let's query memory for information about Shelly.
+Let's query the memory for information about Shelly.
 
 ```python
 conversation_with_kg.memory.load_memory_variables({"input": "who is Shelly?"})

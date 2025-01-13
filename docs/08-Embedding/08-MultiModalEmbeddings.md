@@ -28,9 +28,9 @@ pre {
 
 ## Overview
 
-This tutorial covers how to perform `Text Embedding` or `Image Embedding` using `Multimodal Embedding Model` and `Langchain`.
+This tutorial covers how to perform `Text Embedding` and `Image Embedding` using `Multimodal Embedding Model` with `Langchain`.
 
-The `Multimodal Embedding Model` is a model that can vectorize `Text` as well as `Image`.
+The `Multimodal Embedding Model` is a model that can vectorize **text** as well as **image**.
 
 In this tutorial, we will create a simple **Image Similarity Searching** example using `Multimodal Embedding Model` and `Langchain`.
 
@@ -418,7 +418,7 @@ clip_embedding
 
 ```python
 # Embedding Images
-# It takes a very long time at Colab. I recommend replacing it with a small model.
+# It takes a very long time on Colab. I recommend using a smaller model instead.
 image_vector_db = clip_embedding.embed_image(image_path_db)
 ```
 
@@ -463,9 +463,9 @@ def combine_images_vertically(images: list) -> Image.Image:
 
 `Image Similarity Search with Text` finds the image in the image dataset that most relates to a given `text query`.
 
-We will use `Cosine Similarity` for calculation of similarity.
+We will use **cosine similarity** for calculation of similarity.
 
-Because `Cosine Similarity` is commonly used in image similarity search.
+Because **cosine similarity** is commonly used in image similarity search.
 
 ### Steps
 
@@ -621,7 +621,7 @@ for i, idx in enumerate(sorted_idx):
 </pre>
 
 ```python
-# Get similarity images Top5 Rank
+# Display the top 5 similar images
 top5 = sorted_idx[:5]
 
 comb_imgs = combine_images_vertically([Image.open(image_path_db[idx]) for idx in top5])
@@ -639,11 +639,11 @@ comb_imgs
 
 ## Image Similarity Search with Image
 
-`Image Similarity Search with Image` finds the image in the image dataset that most relates to a given `Image query`.
+`Image Similarity Search with Image` finds the image in the image dataset that most relates to a given `image query`.
 
-We will use `Cosine Similarity` for calculation of similarity.
+We will use **cosine similarity** for calculation of similarity.
 
-Because `Cosine Similarity` is commonly used in image similarity search.
+Because **cosine Similarity** is commonly used in image similarity search.
 
 ### Steps
 
@@ -860,7 +860,7 @@ for i, idx in enumerate(sorted_idx):
 </pre>
 
 ```python
-# Get similarity images Top5 Rank
+# Display the top 5 similar images
 top5 = sorted_idx[:5]
 
 comb_imgs = combine_images_vertically([Image.open(image_path_db[idx]) for idx in top5])

@@ -21,10 +21,10 @@ pre {
 
 - Author: [hong-seongmin](https://github.com/hong-seongmin)
 - Design: 
-- Peer Review :
+- Peer Review: [Hye-yoon](https://github.com/Hye-yoonJeong),[Wooseok-Jeong](https://github.com/jeong-wooseok)
 - This is a part of [LangChain OpenTutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/02-Prompt/02-FewShotPromptTemplate.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/02-Prompt/02-FewShotPromptTemplate.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/langchain-ai/langchain-academy/blob/main/module-4/sub-graph.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
 
 
 ## Overview
@@ -49,8 +49,6 @@ LangChain's Few-Shot Prompting provides a robust framework for guiding language 
 - [How to better prompt when doing SQL question-answering](https://python.langchain.com/docs/how_to/sql_prompting/#few-shot-examples)
 
 ---
-- Peer Review :
-
 
 ## Environment Setup
 
@@ -62,8 +60,25 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
+
+<pre class="custom">WARNING: Ignoring invalid distribution -angchain-community (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
+    WARNING: Ignoring invalid distribution -orch (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
+    WARNING: Ignoring invalid distribution -rotobuf (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
+    WARNING: Ignoring invalid distribution -treamlit (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
+    WARNING: Error parsing dependencies of torchsde: .* suffix can only be used with `==` or `!=` operators
+        numpy (>=1.19.*) ; python_version >= "3.7"
+               ~~~~~~~^
+    WARNING: Ignoring invalid distribution -angchain-community (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
+    WARNING: Ignoring invalid distribution -orch (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
+    WARNING: Ignoring invalid distribution -rotobuf (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
+    WARNING: Ignoring invalid distribution -treamlit (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
+    WARNING: Ignoring invalid distribution -angchain-community (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
+    WARNING: Ignoring invalid distribution -orch (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
+    WARNING: Ignoring invalid distribution -rotobuf (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
+    WARNING: Ignoring invalid distribution -treamlit (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
+</pre>
 
 ```python
 # Install required packages
@@ -130,7 +145,7 @@ Few-shot prompting is a powerful technique that guides language models to produc
 
 ### FewShotPromptTemplate Example
 
-The FewShotPromptTemplate allows you to provide a language model with a small set of examples that demonstrate the desired structure and format of its output. By leveraging these examples, the model can better understand the context and generate more accurate responses for new queries. This technique is especially useful for tasks like question answering, summarization, or generating structured outputs.
+The `FewShotPromptTemplate` allows you to provide a language model with a small set of examples that demonstrate the desired structure and format of its output. By leveraging these examples, the model can better understand the context and generate more accurate responses for new queries. This technique is especially useful for tasks like question answering, summarization, or generating structured outputs.
 
 Below, we define a few examples to help the model answer questions more effectively by breaking them down into intermediate steps. We then use the `FewShotPromptTemplate` to format the prompt dynamically based on the query.
 
@@ -155,12 +170,8 @@ response = llm.predict(question)
 print(response)
 ```
 
-<pre class="custom">C:\Users\masta\AppData\Local\Temp\ipykernel_10644\4027560520.py:13: LangChainDeprecationWarning: The method `BaseChatModel.predict` was deprecated in langchain-core 0.1.7 and will be removed in 1.0. Use :meth:`~invoke` instead.
-      response = llm.predict(question)
+<pre class="custom">The capital of the United States of America is Washington, D.C.
 </pre>
-
-    The capital of the United States of America is Washington, D.C.
-    
 
 ```python
 from langchain_core.prompts import PromptTemplate, FewShotPromptTemplate
@@ -329,12 +340,12 @@ print(response)
 ## Dynamic Example Selection with Chroma
 
 Sometimes we need to go through multiple steps of thinking to evaluate a single question. Breaking down the question into steps and guiding towards the desired answer can lead to better quality responses.
-Chroma provides an efficient way to store and retrieve examples based on semantic similarity, enabling dynamic example selection in workflows.
+`Chroma` provides an efficient way to store and retrieve examples based on semantic similarity, enabling dynamic example selection in workflows.
 
 1. **Embedding and Vector Store Initialization**
 
-   - Use OpenAIEmbeddings to embed examples.
-   - Store the embeddings in a Chroma vector store for efficient retrieval.
+   - Use `OpenAIEmbeddings` to embed examples.
+   - Store the embeddings in a `Chroma` vector store for efficient retrieval.
 
 2. **Example Storage**
 
@@ -710,41 +721,44 @@ print(response)
     2. Discussion of marketing strategies for the first half of 2024  
     3. Ideas for new social media campaigns  
     
-    **Minutes:**
+    **Minutes:**  
     
     1. **Call to Order:**  
        The meeting was called to order by John Smith at 3:00 PM.
     
     2. **Overview of Recent Market Trends:**  
-       - John Smith provided a brief overview of the current market trends affecting the industry. He highlighted key insights that will influence the marketing strategies moving forward.
+       - John Smith provided a brief overview of the current market trends affecting the industry. He highlighted key insights that will inform the marketing strategies for the upcoming year.
     
     3. **Presentations on Strategic Ideas:**  
        - **Sarah Johnson (Digital Marketing Manager):**  
-         - Presented her ideas for enhancing digital marketing efforts, focusing on SEO improvements and targeted online advertising campaigns.
+         - Presented her strategic ideas focusing on enhancing digital presence through targeted online advertising and SEO optimization.  
+         - Suggested exploring partnerships with influencers to broaden reach.
+    
        - **Mike Wilson (Social Media Manager):**  
-         - Discussed potential new social media campaigns, emphasizing the importance of engaging content and audience interaction.
+         - Discussed potential new social media campaigns aimed at increasing engagement and brand awareness.  
+         - Proposed a series of interactive posts and contests to drive user participation.
     
     4. **Discussion:**  
-       - The team engaged in a collaborative discussion regarding the proposed strategies and campaigns. Feedback was exchanged, and additional ideas were generated to refine the marketing approach for the upcoming year.
+       - The team engaged in a collaborative discussion regarding the proposed strategies and campaigns. Feedback was exchanged, and additional ideas were generated to refine the marketing approach.
     
-    5. **Action Items:**  
-       - Each team member will further develop their proposed strategies and prepare a detailed plan for the next meeting.
-       - John Smith will compile the insights from the meeting and distribute them to the team for review.
+    5. **Next Steps:**  
+       - Each team member will further develop their proposals and present a detailed plan in the next meeting scheduled for January 15, 2024.  
+       - John Smith will compile the insights from this meeting and prepare a summary report for upper management.
     
-    6. **Next Meeting:**  
-       - The next meeting is scheduled for January 15, 2024, at 3:00 PM.
+    6. **Adjournment:**  
+       - The meeting was adjourned at 4:30 PM.
     
-    7. **Adjournment:**  
-       - The meeting was adjourned by John Smith at 4:30 PM.
+    **Action Items:**  
+    - Sarah Johnson to refine digital marketing strategies.  
+    - Mike Wilson to develop a detailed plan for social media campaigns.  
+    - John Smith to prepare a summary report for management.
     
-    **Minutes Prepared by:**  
-    [Your Name]  
-    [Your Position]  
-    XYZ Company  
-    [Date]  
+    **Next Meeting:**  
+    - Date: January 15, 2024  
+    - Time: TBD  
     
-    ---  
-    *Please review and provide any corrections or additions by [insert deadline].*
+    **Minutes Prepared by:** [Your Name]  
+    **Date of Preparation:** December 25, 2023
 </pre>
 
 ### Resolving Similarity Search Issues in Example Selector
@@ -849,9 +863,9 @@ chroma.add_texts(texts=texts, metadatas=metadatas)
 
 
 
-<pre class="custom">['e5de7a7b-d7bc-4c47-a046-013e7521f36b',
-     '4a8f80cc-4fc0-418a-b582-8c5108e19a07',
-     'dec2d464-1ddd-4fae-a4c9-6c6badca8918']</pre>
+<pre class="custom">['d6022d36-36bd-4f7d-b60f-fdf3954141d8',
+     '4596fe6f-b3c8-4184-9e47-cca4e6e749b6',
+     '326ce3b0-8a76-4ad4-b83c-78e9af0728f1']</pre>
 
 
 
@@ -1107,26 +1121,27 @@ for query in queries:
     
     2. Project Milestones Review  
        - The team reviewed current project milestones and assessed progress against the project timeline.  
-       - Discussion on any challenges faced in meeting the milestones.
+       - Discussed any challenges encountered and potential impacts on the schedule.
     
     3. Workstream Updates  
-       - Emily Chen (Lead Developer) provided an update on the development progress, highlighting completed features and upcoming tasks.  
-       - Michael Brown (UI/UX Designer) shared insights on the design phase, including user feedback and adjustments made to the interface.
+       - **Emily Chen (Lead Developer)**: Provided an update on the development progress, highlighting completed features and ongoing tasks.  
+       - **Michael Brown (UI/UX Designer)**: Presented updates on the design aspects, including user feedback and adjustments made to the interface.
     
     4. Next Steps and Deliverables  
-       - The team collaboratively established deliverables for the upcoming week, ensuring alignment on priorities.  
+       - The team established deliverables for the upcoming week, ensuring alignment on priorities and deadlines.  
        - Each member committed to specific tasks to be completed by the next meeting.
     
     5. Closing  
        - John Davis summarized the key points discussed and confirmed the next meeting date and time.  
-       - Action items were assigned, and the meeting was adjourned at 11 AM.  
+       - Action items were assigned, and the meeting adjourned at 11 AM.  
     
     6. Action Items  
-       - Emily Chen to continue development on the identified features.  
-       - Michael Brown to finalize design adjustments based on user feedback.  
-       - John Davis to follow up on project timeline and resource allocation.  
+       - Emily Chen to continue development on assigned features.  
+       - Michael Brown to finalize UI adjustments based on user feedback.  
+       - John Davis to monitor overall project progress and address any emerging issues.  
     
-    Next Meeting: January 2, 2024, at 10 AM.
+    **Next Meeting:** January 2, 2024, at 10 AM.  
+    **Minutes Prepared by:** [Your Name] (if applicable)
     
     ---
     
@@ -1179,13 +1194,13 @@ for query in queries:
     Model Response:
      Document Summary: Global Economic Outlook 2023
     
-    - Overview: The report provides a detailed analysis of sustainable urban development trends and their implications for the global economy in 2023.
-    - Urbanization Challenges: It identifies and discusses current challenges in urbanization, including rapid population growth, infrastructure strain, and environmental degradation.
-    - Strategic Approaches: The document outlines strategic approaches for sustainable city planning, focusing on integrated policies, innovative technologies, and community involvement.
-    - Case Studies: It features case studies of successful urban development initiatives from different countries, highlighting effective practices and outcomes.
-    - Key Takeaways: The report concludes with key takeaways from the case studies, emphasizing the importance of collaboration, adaptability, and long-term vision in urban planning.
+    - Overview: The report provides an in-depth analysis of sustainable urban development trends and challenges in the context of the global economy for 2023.
+    - Urbanization Challenges: It identifies and discusses current challenges faced by urban areas, including rapid population growth, infrastructure strain, and environmental degradation.
+    - Strategic Approaches: The document outlines strategic approaches for sustainable city planning, focusing on integrated policies, innovative technologies, and community involvement to foster resilience and sustainability.
+    - Case Studies: It features case studies of successful urban development initiatives from various countries, highlighting effective practices and innovative solutions.
+    - Key Takeaways: The report concludes with key takeaways from the case studies, emphasizing the importance of collaboration among stakeholders, adaptive planning, and the integration of sustainability into economic frameworks.
     
-    This comprehensive report serves as a valuable resource for understanding the dynamics of sustainable urban development and its role in shaping future economic landscapes.
+    This report serves as a valuable resource for understanding the dynamics of urban development and the strategies necessary for fostering sustainable cities in the face of ongoing global challenges.
     
     ---
     

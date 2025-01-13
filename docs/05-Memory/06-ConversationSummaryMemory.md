@@ -20,8 +20,8 @@ pre {
 # ConversationSummaryMemory
 
 - Author: [Jinu Cho](https://github.com/jinucho)
-- Design: []()
 - Peer Review : [Secludor](https://github.com/Secludor), [Shinar12](https://github.com/Shinar12)
+- Proofread:
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/06-ConversationSummaryMemory.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/06-ConversationSummaryMemory.ipynb)
@@ -81,10 +81,6 @@ package.install(
     [1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m To update, run: [0m[32;49mpip install --upgrade pip[0m
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
-
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
-
 ```python
 # Set environment variables
 from langchain_opentutorial import set_env
@@ -102,6 +98,10 @@ set_env(
 
 <pre class="custom">Environment variables have been set successfully.
 </pre>
+
+You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+
+[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
 
 ```python
 # Load environment variables
@@ -121,31 +121,32 @@ load_dotenv(override=True)
 
 ## Conversation Summary Memory
 
-Now, let's explore how to use a more complex memory type: `ConversationSummaryMemory`.
+Let's now explore how to use a more complex type of memory: `ConversationSummaryMemory`.
 
-This type of memory generates **summaries of conversations over time**, which can be useful for compressing conversational information as it progresses.
+This type of memory generates **a summary of the conversation over time** , which can be useful for compressing conversational information as the conversation progresses.
 
-The conversation summary memory summarizes the conversation as it continues and **saves the current summary in memory** .
+`ConversationSummaryMemory` summarizes the conversation as it continues and **stores the current summary in memory** .
 
 This memory can then be used to insert the summarized conversation history into prompts or chains.
 
-It is most useful for long conversations where retaining the entire message history in the prompt would consume too many tokens.
+It is particularly useful for longer conversations, where retaining the entire conversation history in the prompt would take up too many tokens.
 
-Let's `create a ConversationSummaryMemory`.
+Let's create a `ConversationSummaryMemory`.
 
 ```python
 from langchain.memory import ConversationSummaryMemory
 from langchain_openai import ChatOpenAI
 
 memory = ConversationSummaryMemory(
-    llm=ChatOpenAI(model_name="gpt-4o", temperature=0), return_messages=True)
+    llm=ChatOpenAI(model_name="gpt-4o", temperature=0), return_messages=True
+)
 ```
 
-<pre class="custom">/var/folders/c4/0f7nfvt16ln8630csjtkk_1w0000gn/T/ipykernel_1536/3606106198.py:4: LangChainDeprecationWarning: Please see the migration guide at: https://python.langchain.com/docs/versions/migrating_memory/
+<pre class="custom">/var/folders/c4/0f7nfvt16ln8630csjtkk_1w0000gn/T/ipykernel_3687/889678148.py:4: LangChainDeprecationWarning: Please see the migration guide at: https://python.langchain.com/docs/versions/migrating_memory/
       memory = ConversationSummaryMemory(
 </pre>
 
-It allows saving multiple conversations.
+You can store multiple conversations.
 
 ```python
 memory.save_context(
@@ -187,32 +188,34 @@ memory.save_context(
     },
 )
 memory.save_context(
-    inputs={"human": "How much is the deposit for booking the package? What is the cancellation policy?"},
+    inputs={
+        "human": "How much is the deposit for booking the package? What is the cancellation policy?"
+    },
     outputs={
         "ai": "A deposit of €500 is required when booking the package. The cancellation policy allows a full refund if canceled at least 30 days before the booking date. After that, the deposit becomes non-refundable. If canceled within 14 days of the travel start date, 50% of the total cost will be charged, and after that, the full cost will be non-refundable."
     },
 )
 ```
 
-You can check the history of the saved memory.  
+You can check the history of the stored memory.  
 
 It provides a concise summary of all previous conversations.
 
 ```python
-# Check saved memory.
+# Check stored memory.
 print(memory.load_memory_variables({})["history"])
 ```
 
-<pre class="custom">[SystemMessage(content='The human asks about the price of the Europe travel package. The AI responds that the base price for the 14-night, 15-day Europe package is €3,500, which includes airfare, hotel accommodations, and admission fees to designated tourist attractions. Additional costs may vary depending on optional tours or personal expenses. The trip includes visits to famous European landmarks such as the Eiffel Tower in Paris, the Colosseum in Rome, the Brandenburg Gate in Berlin, and Rhine Falls in Zurich, offering a comprehensive experience of iconic sites in each city. Basic travel insurance is included, covering medical expenses and emergency support, with enhanced coverage available upon request. The human inquires about upgrading the flight seat to business class, and the AI informs that it is possible at an additional cost of approximately €1,200 round-trip, offering benefits like wider seats, premium in-flight meals, and extra baggage allowance. The human then asks about the hotel rating included in the package, and the AI states that the package includes accommodation in 4-star hotels, which offer comfort, convenience, and central locations with excellent services and amenities. The human asks for more details about the meal options, and the AI explains that the package includes daily breakfast at the hotel, while lunch and dinner are not included, allowing travelers to explore local cuisines. A list of recommended restaurants in each city is provided to enhance the culinary experience. The human inquires about the deposit and cancellation policy, and the AI explains that a deposit of €500 is required when booking the package. The cancellation policy allows a full refund if canceled at least 30 days before the booking date. After that, the deposit becomes non-refundable, and if canceled within 14 days of the travel start date, 50% of the total cost will be charged, with the full cost being non-refundable after that.', additional_kwargs={}, response_metadata={})]
+<pre class="custom">[SystemMessage(content='The human inquires about the price of the Europe travel package. The AI responds that the base price for the 14-night, 15-day Europe package is €3,500, which includes airfare, hotel accommodations, and admission fees to designated tourist attractions. Additional costs may vary based on optional tours or personal expenses. The trip includes visits to famous European landmarks such as the Eiffel Tower in Paris, the Colosseum in Rome, the Brandenburg Gate in Berlin, and Rhine Falls in Zurich, offering a comprehensive experience of iconic sites in each city. Basic travel insurance is included, covering medical expenses and emergency support, with enhanced coverage available upon request. The human asks about upgrading their flight seat to business class, and the AI informs them that it is possible for an additional cost of approximately €1,200 round-trip, which includes benefits like wider seats, premium in-flight meals, and additional baggage allowance. The human then asks about the hotel rating included in the package, and the AI states that the package includes accommodation in 4-star hotels, which offer comfort and convenience with central locations and excellent services and amenities. The human asks for more details about meal options, and the AI explains that the package includes daily breakfast at the hotel, while lunch and dinner are not included, allowing travelers to explore local cuisines. A list of recommended restaurants in each city is provided to enhance the culinary experience. The human asks about the deposit and cancellation policy, and the AI explains that a deposit of €500 is required when booking the package. The cancellation policy allows a full refund if canceled at least 30 days before the booking date. After that, the deposit becomes non-refundable. If canceled within 14 days of the travel start date, 50% of the total cost will be charged, and after that, the full cost will be non-refundable.', additional_kwargs={}, response_metadata={})]
 </pre>
 
 ## Conversation Summary Buffer Memory
 
 `ConversationSummaryBufferMemory` combines two key ideas:
 
-It retains a buffer of recent conversation history in memory while compiling older interactions into a summary without fully flushing them.
+It retains a buffer of the recent conversation history in memory while compiling older interactions into a summary without completely flushing them.
 
-Instead of using the number of interactions, it determines when to flush the conversation based on the **token length**.
+It determines when to flush the conversation based on the **token length**, instead of the number of interactions.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -227,11 +230,11 @@ memory = ConversationSummaryBufferMemory(
 )
 ```
 
-<pre class="custom">/var/folders/c4/0f7nfvt16ln8630csjtkk_1w0000gn/T/ipykernel_1536/2100373999.py:6: LangChainDeprecationWarning: Please see the migration guide at: https://python.langchain.com/docs/versions/migrating_memory/
+<pre class="custom">/var/folders/c4/0f7nfvt16ln8630csjtkk_1w0000gn/T/ipykernel_3687/2100373999.py:6: LangChainDeprecationWarning: Please see the migration guide at: https://python.langchain.com/docs/versions/migrating_memory/
       memory = ConversationSummaryBufferMemory(
 </pre>
 
-First, let's save a single conversation and then check the memory.
+First, let's save a single conversation, and then check the memory.
 
 ```python
 memory.save_context(
@@ -242,12 +245,12 @@ memory.save_context(
 )
 ```
 
-Check the conversation saved in memory.
+Check the conversation stored in memory.
 
 At this point, the conversation is not yet summarized because it hasn't reached the **200-token** threshold.
 
 ```python
-# Check the saved conversation history in memory
+# Check the stored conversation history in memory
 memory.load_memory_variables({})["history"]
 ```
 
@@ -295,14 +298,14 @@ Check the stored conversation history.
 The most recent conversation remains unsummarized, while the previous conversations are stored as a summary.
 
 ```python
-# Check the saved conversation history in memory
+# Check the stored conversation history in memory
 memory.load_memory_variables({})["history"]
 ```
 
 
 
 
-<pre class="custom">[SystemMessage(content="The human asks for the price of the Europe travel package. The AI responds that the base price for the 14-night, 15-day Europe package is €3,500, which includes airfare, hotel accommodations, and admission fees to tourist attractions. Optional tours or personal expenses may incur additional costs. The trip includes visits to famous European landmarks such as the Eiffel Tower in Paris, the Colosseum in Rome, the Brandenburg Gate in Berlin, and Rhine Falls in Zurich. You'll comprehensively experience iconic sites in each city.", additional_kwargs={}, response_metadata={}),
+<pre class="custom">[SystemMessage(content='The human inquires about the price of the Europe travel package. The AI responds that the base price for the 14-night, 15-day package is €3,500, inclusive of airfare, hotel accommodations, and admission fees. Additional costs may vary depending on optional tours or personal expenses. The trip includes visits to famous European landmarks such as the Eiffel Tower in Paris, the Colosseum in Rome, the Brandenburg Gate in Berlin, and Rhine Falls in Zurich, providing a comprehensive experience of iconic sites in each city.', additional_kwargs={}, response_metadata={}),
      HumanMessage(content='Is travel insurance included?', additional_kwargs={}, response_metadata={}),
      AIMessage(content='Yes, basic travel insurance is provided for all travelers. This insurance includes medical expense coverage and support in emergency situations. Enhanced coverage is available upon request.', additional_kwargs={}, response_metadata={}),
      HumanMessage(content='Can I upgrade my flight seat to business class? How much does it cost?', additional_kwargs={}, response_metadata={}),

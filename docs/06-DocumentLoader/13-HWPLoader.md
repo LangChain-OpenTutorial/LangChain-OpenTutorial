@@ -24,20 +24,20 @@ pre {
 - Peer Review : [Suhyun Lee](https://github.com/suhyun0115), [Kane](https://github.com/HarryKane11)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/03-HWP-loader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/03-HWP-loader.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/13-HWP-loader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/13-HWP-loader.ipynb)
 
 ## Overview
 
-HWP is Hangeul Word Processor developed by **Hancom**, and it is Korea's representative office software.
+HWP is Hangeul Word Processor developed by **Hancom** , and it is Korea's representative office software.
 
-It uses the `.hwp` file extension and is widely used in Businesses, Schools, and Government Institutions, and more.
+It uses the **.hwp** file extension and is widely used in Businesses, Schools, and Government Institutions, and more.
 
-Therefore, if you're a developer in South Korea, you've likely had (or will have) experience dealing with `.hwp` documents.
+Therefore, if you're a developer in South Korea, you've likely had (or will have) experience dealing with **.hwp** documents.
 
-Unfortunately, it's not yet integrated with LangChain, so we'll need to use a custom-implemented `HWPLoader` with `langchain-teddynote` and `langchain-opentutorial`.
+Unfortunately, it's not yet integrated with LangChain, so we'll need to use a custom-implemented `HWPLoader` with `langchain-teddynote` and `langchain-opentutorial` .
 
 
-In this tutorial, we'll implement a `HWPLoader` that can load `.hwp` files and extract text from them.
+In this tutorial, we'll implement a `HWPLoader` that can load **.hwp** files and extract text from them.
 
 
 ### Table of Contents
@@ -51,6 +51,8 @@ In this tutorial, we'll implement a `HWPLoader` that can load `.hwp` files and e
 
 - [Hancom Developer Forum](https://developer.hancom.com/)
 
+---
+
 ## Environment Setup
 
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
@@ -61,7 +63,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial langchain-teddynote
+%pip install langchain-opentutorial langchain-teddynote
 ```
 
 ```python
