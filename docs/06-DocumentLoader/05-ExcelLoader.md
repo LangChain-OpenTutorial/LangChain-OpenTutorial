@@ -28,7 +28,7 @@ pre {
 
 ## Overview
 
-This tutorial covers the process of loading and handling Excel files in `LangChain`.
+This tutorial covers the process of loading and handling `Microsoft Excel` files in `LangChain` .
 
 It focuses on two primary methods: `UnstructuredExcelLoader` for raw text extraction and `DataFrameLoader` for structured data processing.
 
@@ -37,8 +37,8 @@ The guide aims to help developers effectively integrate Excel data into their `L
 ### Table of Contents
 
 - [Overview](#overview)
-- [Environement Setup](#environment-setup)
-- [UnstructedExcelLoader](#UnstructedExcelLoader)
+- [Environment Setup](#environment-setup)
+- [UnstructuredExcelLoader](#UnstructuredExcelLoader)
 - [DataFrameLoader](#DataFrameLoader)
 ----
 
@@ -70,17 +70,17 @@ package.install(
 )
 ```
 
-## UnstructedExcelLoader
+## UnstructuredExcelLoader
 
-`UnstructedExcelLoader` is used to load `Microsoft Excel` files.
+`UnstructuredExcelLoader` is used to load `Microsoft Excel` files.
 
-This loader works with both `xlsx` and `xls` files.
+This loader works with both `.xlsx` and `.xls` files.
 
 When the loader is used in `"elements"` mode, an HTML representation of the Excel file is provided under the `text_as_html` key in the document metadata.
 
 ```python
 # install
-# !pip install -qU langchain-community unstructured openpyxl
+# %pip install -qU langchain-community unstructured openpyxl
 ```
 
 ```python

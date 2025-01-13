@@ -20,8 +20,7 @@ pre {
 # Getting Started on Windows
 
 - Author: [Wooseok-Jeong](https://github.com/jeong-wooseok)
-- Design: [Teddy](https://github.com/teddylee777)
-- Peer Review: [Yun Eun](https://github.com/yuneun92), [r14minji](https://github.com/r14minji)
+- Peer Review: [Yun Eun](https://github.com/yuneun92), [MinJi Kang](https://www.linkedin.com/in/minji-kang-995b32230/)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/01-Getting-Started-Windows.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/01-Getting-Started-Windows.ipynb)
@@ -55,9 +54,11 @@ Download 64-bit Git for Windows Setup
 
 
 Confirm options during installation and proceed
+
 ![](./assets/01-follow-the-installation-video-windows-02.png)
 
 Click the Next button for all the rest to proceed with the installation.
+
 ![](./assets/01-follow-the-installation-video-windows-03.png)
 
 Window key - PowerShell must be run as administrator
@@ -66,12 +67,13 @@ Enter the command "`git`" and verify that the output looks like the image below
 ```Powershell
 git
 ```
+
 ![](./assets/01-follow-the-installation-video-windows-04.png)
 
 
 - Apply PowerShell Policy 
 
-First, **run **Windows PowerShell** as an "administrator."</p> <p><br>
+First, run **Windows PowerShell** as an "administrator."</p> <p><br>
 
 Enter the following command to apply the policy
 ```Powershell
@@ -106,7 +108,8 @@ Enter the following command to verify that it works.
 ```powershell
 pyenv
 ```
-![](./assets/01-follow-the-installation-video-windows-05.png)
+ 
+![](./assets/01-follow-the-installation-video-windows-05.png )
 
 
 - Install python
@@ -172,13 +175,16 @@ Download Visual Studio Code
 Install the downloaded Visual Studio Code (copy it to the Applications folder)
 
 Click 'install' of Jupyter on left Menu of extensions 
+
 ![](./assets/01-follow-the-installation-video-windows-06.png)
 
 ## Install Jupyter Extension
 Search for "python" and install
+
 ![](./assets/01-follow-the-installation-video-windows-07.png)
 
 Search for "jupyter" and install
+
 ![](./assets/01-follow-the-installation-video-windows-08.png)
 
 Turn off and restart Visual Studio Code
@@ -186,5 +192,3 @@ Turn off and restart Visual Studio Code
 The installation is complete, and you can click the "select kernel" button in the top right corner.
 
 Click python environment - if you don't see the virtual environment you installed, turn off Visual Studio Code and restart it
-
-
