@@ -5,8 +5,6 @@ on:
     - cron: '30 0,3,9,15 * * *'  
   pull_request:
     types: [opened, synchronize, reopened]
-  # pull_request_review:
-  #   types: [submitted]
   workflow_dispatch:
 
 permissions:
@@ -17,20 +15,20 @@ permissions:
 jobs:
   check-pr-age:
     runs-on: ubuntu-latest
+    if: github.repository == 'LangChain-OpenTutorial/LangChain-OpenTutorial' # 원본 레포에서만 실행
     steps:
       - name: Check if 24 hours have passed since PR creation
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            // check 24-hours
+            // Function to check PR age
             async function checkPrAge(pr) {
               const createdAt = new Date(pr.created_at);
               const now = new Date();
               const diffHours = (now - createdAt) / (1000 * 60 * 60);
-              
+
               if (diffHours >= 24) {
-                // success
                 console.log(`PR #${pr.number} is older than 24 hours. Merge allowed.`);
                 await github.rest.checks.create({
                   owner: context.repo.owner,
@@ -45,7 +43,6 @@ jobs:
                   },
                 });
               } else {
-                // fail
                 const hoursLeft = (24 - diffHours).toFixed(2);
                 console.log(`PR #${pr.number} is not yet older than 24 hours. Left ${hoursLeft} hours.`);
                 await github.rest.checks.create({
@@ -63,7 +60,7 @@ jobs:
               }
             }
 
-            // know whether sceduled event
+            // Check if it's a scheduled event
             const isScheduled = !context.payload.pull_request;
 
             if (isScheduled) {
@@ -72,17 +69,15 @@ jobs:
                 repo: context.repo.repo,
                 state: 'open',
                 per_page: 100,
-              });              
+              });
               for (const pr of pullRequests) {
                 await checkPrAge(pr);
               }
-
             } else {
               const pr = await github.rest.pulls.get({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: context.payload.pull_request.number,
               });
-              
               await checkPrAge(pr.data);
             }
