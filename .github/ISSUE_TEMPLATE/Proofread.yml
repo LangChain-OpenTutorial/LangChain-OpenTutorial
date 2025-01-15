@@ -34,7 +34,7 @@ body:
         required: false
       - label: 🖋️ **Formatting** - Issues with Markdown formatting.
         required: false
-      - label: No issues found
+      - label: Other Issues
         required: false
         
 - type: checkboxes
