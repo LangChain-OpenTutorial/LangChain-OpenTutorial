@@ -30,7 +30,15 @@ langchain-neo4j
 langchain-mongodb
 fastembed
 certifi
-python-magic-bin
 pymongo
 langchain_qdrant
+chromadb==0.6.2
 
+
+python-magic-bin
+
+pyalex==0.15.1
+pypdfium2==0.11.5
+pdfplumber==4.30.1
+
+python-magic-bin; platform_system != 'Darwin'
