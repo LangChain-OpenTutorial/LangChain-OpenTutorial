@@ -1,0 +1,64 @@
+name: Proofread
+description: Report an issue related to typos, translation, grammar, or formatting.   
+title: "Proofread: < #-Chapter / #-File Name (without .ipynb extension) >"
+labels: [proofread]
+
+body:
+- type: markdown
+  attributes:
+    value: >
+      Thank you for taking the time to report an issue with the documentation.  
+      
+      This template is intended **ONLY** for content-related issues such as **Typos or grammatical errors, Translation or interpretation improvements, Markdown formatting issues**.         
+
+- type: textarea
+  id: url
+  attributes:
+    label: URL
+    description: Provide the URL of the documentation page where the issue occurs.
+    placeholder: "https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/01-Document-Loader.ipynb"
+  validations:
+    required: true
+
+- type: checkboxes
+  id: content_checks
+  attributes:
+    label: Content & Formatting Issues  
+    description: Please review the tutorial and select all issues found in the tutorial.
+    options:
+      - label: 📝 **Typos** - Errors in spelling within the documentation.
+        required: false
+      - label: 🌍 **Translation** - Improvements needed in the translated versions.
+        required: false
+      - label: 📖 **Grammar** - Corrections required for grammatical errors.
+        required: false
+      - label: 🖋️ **Formatting** - Issues with Markdown formatting.
+        required: false
+      - label: Other Issues
+        required: false
+        
+- type: checkboxes
+  id: checks
+  attributes:
+    label: Checklist
+    description: Please confirm and check all applicable options before submitting.
+    options:
+      - label: I have provided a clear and descriptive title for this issue.
+        required: true
+      - label: I have included a link to the affected documentation page.
+        required: true
+      - label: This issue relates to content (typos, translation, or formatting), not code functionality.
+        required: true
+
+- type: textarea
+  attributes:
+    label: "Description of the issue & Suggested Fix or Improvement"
+    description: >
+      Clearly describe the problem with the documentation. Include specific examples,  
+      such as incorrect sentences, unclear explanations, or formatting problems.
+      If possible, provide a suggested correction or improvement to the content.  
+      You can also include revised text or formatting fixes.
+
+- type: textarea
+  attributes:
+    label: "Further Questions"
