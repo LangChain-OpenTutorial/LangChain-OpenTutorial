@@ -12,9 +12,9 @@
 🖥️ OS: Win/Mac/Linux   
 ✅ Checklist      
  - [ ] **Template**: Tutorials follows the required template. 
- - [ ] **Table of Contents(TOC) Links**: All Table of Contents links work. ((Yes/No)
+ - [ ] **Table of Contents(TOC) Links**: All Table of Contents links work. (Yes/No)
  - [ ] **Image**: Image filenames follow guidelines.
- - [ ] **Imports*: All import statements use the latest versions. Ensure "langchain-teddynote" is not used. 
+ - [ ] **Imports**: All import statements use the latest versions. Ensure "langchain-teddynote" is not used. 
  - [ ] **Code Execution**: Code runs without errors.
  - Comments: {Write freely, 한국어 기술 가능}     
 ```

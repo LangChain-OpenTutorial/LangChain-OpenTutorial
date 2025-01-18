@@ -8,7 +8,7 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = ">=3.10,<4.0"
+python = ">=3.10,<3.13"
 python-dotenv = "1.0.1"
 langchain = "0.3.13"
 langgraph = "0.2.60"
@@ -43,6 +43,18 @@ langchain-qdrant = "^0.2.0"
 chromadb = "^0.6.2"
 pyalex = "^0.15.1"
 pdfplumber = "^0.11.5"
+unstructured = {extras = ["all-docs"], version = "^0.16.13"}
+openai = "^1.59.7"
+langchain-experimental = "^0.3.4"
+tiktoken = "^0.8.0"
+pytesseract = "^0.3.13"
+lxml = "^5.3.0"
+pillow = "^11.1.0"
+pydantic = "^2.10.5"
+matplotlib = "^3.10.0"
+feedparser = "^6.0.11"
+tavily-python = "^0.5.0"
+pandas = "^2.2.3"
 
 [build-system]
 requires = ["poetry-core"]
