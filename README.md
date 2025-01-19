@@ -9,7 +9,7 @@ The LangChain community in Seoul is excited to announce the LangChain OpenTutori
 
 Within this new repository, we offer the following enhancements to benefit users of all skill levels:
 
-- **Addressing global use cases** for internatial users,
+- **Addressing global use cases** for international users,
 - **Diving deep into cutting-edge features** including the recent updates available at the latest version of LangChain and LangGraph release, and
 - **Demonstrating additional goodies** that showcase real-world uses and further applications.
 
