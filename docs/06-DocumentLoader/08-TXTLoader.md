@@ -24,11 +24,11 @@ pre {
 - Peer Review : [Kane](https://github.com/HarryKane11), [Suhyun Lee](https://github.com/suhyun0115)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/08-TXT-Loader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/08-TXT-Loader.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/08-TXTLoader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/08-TXTLoader.ipynb)
 
 ## Overview
 
-This tutorial focuses on using LangChain’s TextLoader to efficiently load and process individual text files. 
+This tutorial focuses on using LangChain’s `TextLoader` to efficiently load and process individual text files. 
 
 You’ll learn how to extract metadata and content, making it easier to prepare text data.
 
@@ -52,7 +52,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -72,7 +72,7 @@ package.install(
 
 ## TXT Loader
 
-Let’s explore how to load files with the `.txt` extension using a loader.
+Let’s explore how to load files with the **.txt** extension using a loader.
 
 ```python
 from langchain_community.document_loaders import TextLoader
@@ -114,8 +114,8 @@ In this example, we explore several strategies for using the TextLoader class to
 
 To illustrate the problem, we’ll first attempt to load multiple text files with arbitrary encodings.
 
-- `silent_errors`: By passing the silent_errors parameter to the DirectoryLoader, you can skip files that cannot be loaded and continue the loading process without interruptions.
-- `autodetect_encoding`: Additionally, you can enable automatic encoding detection by passing the autodetect_encoding parameter to the loader class, allowing it to detect file encodings before failing.
+- `silent_errors`: By passing the `silent_errors` parameter to the `DirectoryLoader`, you can skip files that cannot be loaded and continue the loading process without interruptions.
+- `autodetect_encoding`: Additionally, you can enable automatic encoding detection by passing the `autodetect_encoding` parameter to the loader class, allowing it to detect file encodings before failing.
 
 
 ```python
@@ -135,7 +135,7 @@ loader = DirectoryLoader(
 docs = loader.load()
 ```
 
-The `data/appendix-keywords.txt` file and its derivative files with similar names all have different encoding formats.
+The **data/appendix-keywords.txt** file and its derivative files with similar names all have different encoding formats.
 
 
 ```python

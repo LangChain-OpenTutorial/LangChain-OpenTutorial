@@ -13,22 +13,22 @@ class PDFRAG:
         self.llm = llm
 
     def load_documents(self):
-        # 문서 로드(Load Documents)
+        # Load Documents
         loader = PyMuPDFLoader(self.file_path)
         docs = loader.load()
         return docs
 
     def split_documents(self, docs):
-        # 문서 분할(Split Documents)
+        # Split Documents
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=300, chunk_overlap=50)
         split_documents = text_splitter.split_documents(docs)
         return split_documents
 
     def create_vectorstore(self, split_documents):
-        # 임베딩(Embedding) 생성
+        # Create Embedding
         embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
-        # DB 생성(Create DB) 및 저장
+        # Create DB and Save
         vectorstore = FAISS.from_documents(
             documents=split_documents, embedding=embeddings
         )
@@ -38,12 +38,12 @@ class PDFRAG:
         vectorstore = self.create_vectorstore(
             self.split_documents(self.load_documents())
         )
-        # 검색기(Retriever) 생성
+        # Create Retriever
         retriever = vectorstore.as_retriever()
         return retriever
 
     def create_chain(self, retriever):
-        # 프롬프트 생성(Create Prompt)
+        # Create Prompt
         prompt = PromptTemplate.from_template(
             """You are an assistant for question-answering tasks. 
         Use the following pieces of retrieved context to answer the question. 
@@ -58,7 +58,7 @@ class PDFRAG:
         #Answer:"""
         )
 
-        # 체인(Chain) 생성
+        # Create Chain
         chain = (
             {
                 "context": retriever,
