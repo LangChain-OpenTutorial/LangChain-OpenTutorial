@@ -20,7 +20,6 @@ pre {
 # DatetimeOutputParser
 
 - Author: [Donghak Lee](https://github.com/stsr1284)
-- Design: []()
 - Peer Review : [JaeHo Kim](https://github.com/Jae-hoya), [ranian963](https://github.com/ranian963)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
@@ -33,14 +32,15 @@ The `DatetimeOutputParser` is an output parser that generates structured outputs
 By converting the outputs of LLMs into `datetime` objects, it enables more systematic and consistent processing of date and time data, making it useful for data processing and analysis.
 
 This tutorial demonstrates how to use the `DatetimeOutputParser` to:
-1. Set up and initialize the parser for datetime generation
-2. Convert a datetime object to a string
+1. Set up and initialize the parser for `datetime` generation
+2. Convert a `datetime` object to a string
 
 ### Table of Contents
 
 - [Overview](#overview)
-- [Environement Setup](#environment-setup)
-- [Implementing the Datetime Output Parser](#implementing-the-datetime-output-parser)
+- [Environment Setup](#environment-setup)
+- [Using the Datetime Output Parser](#using-the-datetime-output-parser)
+- [Using DatetimeOutputParser in astream](#using-datetimeoutputparser-in-astream)
 
 
 ### References
@@ -59,7 +59,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -68,7 +68,6 @@ from langchain_opentutorial import package
 
 package.install(
     [
-        "langsmith",
         "langchain",
         "langchain_core",
         "langchain_openai",
@@ -109,12 +108,12 @@ load_dotenv(override=True)
 
 
 
-<pre class="custom">True</pre>
+<pre class="custom">False</pre>
 
 
 
-## Implementing the Datetime Output Parser
-If you need to generate output in the form of a date or time, LangChain's `DatetimeOutputParser` simplifies the process.
+## Using the Datetime Output Parser
+If you need to generate output in the form of a date or time, the `DatetimeOutputParser` from LangChain simplifies the process.
 
 The `format` of the `DatetimeOutputParser` can be specified by referring to the table below.
 | Format Code | Description           | Example              |
@@ -172,19 +171,21 @@ print(prompt)
 
 <pre class="custom">Write a datetime string that matches the following pattern: '%Y-%m-%d'.
     
-    Examples: 0727-11-27, 0177-08-19, 0383-11-24
+    Examples: 0594-05-12, 0088-08-25, 0371-10-02
     
     Return ONLY this string, no other words!
     -----------------------------------------------
     
-    input_variables=['question'] input_types={} partial_variables={'format_instructions': "Write a datetime string that matches the following pattern: '%Y-%m-%d'.\n\nExamples: 0727-11-27, 0177-08-19, 0383-11-24\n\nReturn ONLY this string, no other words!"} template='Answer the users question:\n\n#Format Instructions: \n{format_instructions}\n\n#Question: \n{question}\n\n#Answer:'
+    input_variables=['question'] input_types={} partial_variables={'format_instructions': "Write a datetime string that matches the following pattern: '%Y-%m-%d'.\n\nExamples: 0594-05-12, 0088-08-25, 0371-10-02\n\nReturn ONLY this string, no other words!"} template='Answer the users question:\n\n#Format Instructions: \n{format_instructions}\n\n#Question: \n{question}\n\n#Answer:'
 </pre>
 
 ```python
 from langchain_openai import ChatOpenAI
 
+model = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
+
 # Combine the prompt, chat model, and output parser into a chain
-chain = prompt | ChatOpenAI() | output_parser
+chain = prompt | model | output_parser
 
 # Call the chain to get an answer to the question
 output = chain.invoke({"question": "The year Google was founded"})
@@ -208,3 +209,87 @@ output.strftime(date_format)
 <pre class="custom">'1998-09-04'</pre>
 
 
+
+## Using DatetimeOutputParser in astream
+Refer to the [user-defined generator](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/09-Generator.ipynb) to create a generator function.
+
+Let's create a simple example that converts `astream` output to `datetime` objects using a generator function.
+
+
+
+```python
+from langchain_core.output_parsers.string import StrOutputParser
+from langchain.output_parsers.datetime import DatetimeOutputParser
+from langchain_core.prompts.prompt import PromptTemplate
+from langchain_openai.chat_models.base import ChatOpenAI
+import datetime
+from typing import AsyncIterator, List
+
+# Initialize the output parser
+output_parser = DatetimeOutputParser()
+
+# Specify date format
+date_format = "%Y-%m-%d"
+output_parser.format = date_format
+
+# Get format instructions
+format_instructions = output_parser.get_format_instructions()
+
+# Create answer template for user questions
+template = (
+    "Answer the users question:\n\n"
+    "#Format Instructions: \n{format_instructions}\n"
+    "Write a comma-separated list of 5 founding years of companies similar to: {company}"
+)
+
+# Create a prompt from the template
+prompt = PromptTemplate.from_template(
+    template,
+    partial_variables={"format_instructions": format_instructions},
+)
+
+# Initialize the ChatOpenAI model with temperature set to 0.0
+model = ChatOpenAI(temperature=0.0, model_name="gpt-4o-mini")
+
+# Create a chain combining the prompt, model, and string output parser
+str_chain = prompt | model | StrOutputParser()
+
+
+# Define an asynchronous function to convert strings to datetime objects
+async def convert_strings_to_datetime(
+    input: AsyncIterator[str],
+) -> AsyncIterator[List[datetime.datetime]]:
+    buffer = ""
+    async for chunk in input:
+        buffer += chunk
+        while "," in buffer:
+            comma_index = buffer.index(",")
+            date_str = buffer[:comma_index].strip()
+            date_obj = output_parser.parse(date_str)  # Convert to datetime object
+            yield [date_obj]
+            buffer = buffer[comma_index + 1 :]
+    date_str = buffer.strip()
+    if date_str:
+        date_obj = output_parser.parse(
+            date_str
+        )  # Convert remaining buffer to datetime object
+        yield [date_obj]
+
+
+# Connect the str_chain and convert_strings_to_datetime in a pipeline
+alist_chain = str_chain | convert_strings_to_datetime
+```
+
+```python
+# Use async for loop to stream data.
+async for chunk in alist_chain.astream({"company": "Google"}):
+    # Print each chunk and flush the buffer.
+    print(chunk, flush=True)
+```
+
+<pre class="custom">[datetime.datetime(1998, 9, 4, 0, 0)]
+    [datetime.datetime(2004, 2, 4, 0, 0)]
+    [datetime.datetime(2003, 2, 4, 0, 0)]
+    [datetime.datetime(2001, 3, 1, 0, 0)]
+    [datetime.datetime(1994, 3, 1, 0, 0)]
+</pre>

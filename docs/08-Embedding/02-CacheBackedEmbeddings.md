@@ -21,16 +21,16 @@ pre {
 
 - Author: [byoon](https://github.com/acho98)
 - Design: []()
-- Peer Review : [ro__o_jun](https://github.com/ro-jun)
+- Peer Review: [ro__o_jun](https://github.com/ro-jun)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/02-CacheBackedEmbeddings.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/02-CacheBackedEmbeddings.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-EMBEDDING/02-CacheBackedEmbeddings.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
 
 ## Overview
 
 Embeddings can be stored or temporarily cached to avoid recalculation.
 
-Caching embeddings can be done using CacheBackedEmbeddings. A cache-backed embedder is a wrapper around an embedder that caches embeddings in a key-value store. The text is hashed, and the hash is used as a key in the cache.
+Caching embeddings can be done using `CacheBackedEmbeddings`. A cache-backed embedder is a wrapper around an embedder that caches embeddings in a key-value store. The text is hashed, and the hash is used as a key in the cache.
 
 ### Table of Contents
 
@@ -42,8 +42,8 @@ Caching embeddings can be done using CacheBackedEmbeddings. A cache-backed embed
 
 ### References
 
-- [LangChain Python API Reference > langchain: 0.3.13 > embeddings > CacheBackedEmbeddings](https://python.langchain.com/api_reference/langchain/embeddings/langchain.embeddings.cache.CacheBackedEmbeddings.html)
-- [LangChain Python API Reference > langchain-core: 0.3.28 > stores > InMemoryByteStore](https://python.langchain.com/api_reference/core/stores/langchain_core.stores.InMemoryByteStore.html)
+- [CacheBackedEmbeddings](https://python.langchain.com/api_reference/langchain/embeddings/langchain.embeddings.cache.CacheBackedEmbeddings.html)
+- [InMemoryByteStore](https://python.langchain.com/api_reference/core/stores/langchain_core.stores.InMemoryByteStore.html)
 ----
 
 ## Environment-setup
@@ -128,9 +128,9 @@ The primary supported method for initializing `CacheBackedEmbeddings` is `from_b
 
 It accepts the following parameters:
 
-- `underlying_embeddings`: The embedder used for generating embeddings.
+- `underlying_embeddings`: The embedder is used for generating embeddings.
 - `document_embedding_cache`: One of the `ByteStore` implementations for caching document embeddings.
-- `namespace`: (Optional, default is `""`) A namespace used for the document cache. This is utilized to avoid conflicts with other caches. For example, set it to the name of the embedding model being used.
+- `namespace`: (Optional, default is `""`) A namespace is used for the document cache. This is utilized to avoid conflicts with other caches. For example, set it to the name of the embedding model being used.
 
 **Note**: It is important to set the `namespace` parameter to avoid conflicts when the same text is embedded using different embedding models.
 
@@ -203,7 +203,7 @@ If we try to create the vector store again, it'll be much faster since it does n
     Wall time: 23.8 ms
 </pre>
 
-here are some of the embeddings that got created
+Here are some of the embeddings that got created.
 
 ```python
 list(store.yield_keys())[:5]
@@ -261,7 +261,3 @@ list(store.yield_keys())[:5]
      'text-embedding-3-small81426526-23fe-58be-9e84-6c7c72c8ca9a']
 
 
-
-```python
-
-```

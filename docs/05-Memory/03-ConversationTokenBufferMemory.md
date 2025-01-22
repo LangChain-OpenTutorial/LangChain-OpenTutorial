@@ -40,8 +40,8 @@ Key parameters:
 ### Table of Contents
 
 - [Overview](#overview)
-- [Environement Setup](#environment-setup)
-- [Limit Maximum Token Length to 50](#limit-maximum-token-length-to-50)
+- [Environment Setup](#environment-setup)
+- [Limiting Maximum Token Length to 50](#limiting-maximum-token-length-to-50)
 - [Setting Maximum Token Length to 150](#setting-maximum-token-length-to-150)
 
 ### References
@@ -59,7 +59,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -116,7 +116,7 @@ load_dotenv(override=True)
 
 
 
-## Limit Maximum Token Length to 50
+## Limiting Maximum Token Length to 50
 
 This section demonstrates how to limit the conversation memory to 50 tokens
 
@@ -136,52 +136,9 @@ memory = ConversationTokenBufferMemory(
 )
 ```
 
-
-    ---------------------------------------------------------------------------
-
-    OpenAIError                               Traceback (most recent call last)
-
-    Cell In[1], line 6
-          2 from langchain_openai import ChatOpenAI
-          5 # Create LLM model
-    ----> 6 llm = ChatOpenAI(model_name="gpt-4o-mini")
-          8 # Configure memory
-          9 memory = ConversationTokenBufferMemory(
-         10     llm=llm,
-         11     max_token_limit=50,
-         12     return_messages=True,  # Limit maximum token length to 50
-         13 )
-    
-
-    File ~/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-0Vwtx6mm-py3.11/lib/python3.11/site-packages/langchain_core/load/serializable.py:125, in Serializable.__init__(self, *args, **kwargs)
-        123 def __init__(self, *args: Any, **kwargs: Any) -> None:
-        124     """"""
-    --> 125     super().__init__(*args, **kwargs)
-    
-
-        [... skipping hidden 1 frame]
-    
-
-    File ~/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-0Vwtx6mm-py3.11/lib/python3.11/site-packages/langchain_openai/chat_models/base.py:578, in BaseChatOpenAI.validate_environment(self)
-        576         self.http_client = httpx.Client(proxy=self.openai_proxy)
-        577     sync_specific = {"http_client": self.http_client}
-    --> 578     self.root_client = openai.OpenAI(**client_params, **sync_specific)  # type: ignore[arg-type]
-        579     self.client = self.root_client.chat.completions
-        580 if not self.async_client:
-    
-
-    File ~/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-0Vwtx6mm-py3.11/lib/python3.11/site-packages/openai/_client.py:110, in OpenAI.__init__(self, api_key, organization, project, base_url, websocket_base_url, timeout, max_retries, default_headers, default_query, http_client, _strict_response_validation)
-        108     api_key = os.environ.get("OPENAI_API_KEY")
-        109 if api_key is None:
-    --> 110     raise OpenAIError(
-        111         "The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable"
-        112     )
-        113 self.api_key = api_key
-        115 if organization is None:
-    
-
-    OpenAIError: The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable
-
+<pre class="custom">/var/folders/1h/lrydr5_50zx8thkmv_czrbzc0000gn/T/ipykernel_59195/361976439.py:9: LangChainDeprecationWarning: Please see the migration guide at: https://python.langchain.com/docs/versions/migrating_memory/
+      memory = ConversationTokenBufferMemory(
+</pre>
 
 ```python
 # Add arbitrary conversations
@@ -307,3 +264,7 @@ memory.load_memory_variables({})["history"]
      AIMessage(content="We're always ready to help. If you have any additional questions or need support, please feel free to ask. Have a great day!", additional_kwargs={}, response_metadata={})]</pre>
 
 
+
+```python
+
+```
