@@ -28,11 +28,11 @@ pre {
 
 ## Overview
 
-`ConversationBufferWindowMemory` maintains a list of conversation interactions over time.
+This tutorial introduces `ConversationBufferWindowMemory`, which maintains a sliding window of recent conversation interactions over time.
 
-In this case, `ConversationBufferWindowMemory` uses only the **most recent K** interactions instead of utilizing all conversation content.
+Instead of utilizing all conversation content, `ConversationBufferWindowMemory` retains only the **most recent K** interactions.
 
-This can be useful for maintaining a sliding window of the most recent interactions to prevent the buffer from becoming too large.
+This prevents the memory buffer from growing too large.
 
 
 ### Table of Contents
@@ -57,7 +57,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -116,7 +116,7 @@ load_dotenv(override=True)
 
 ## Online Bank Account Opening Conversation Example
 
-This example demonstrates how to use `ConversationBufferWindowMemory` to simulate a virtual banking assistant conversation. The conversation flow shows a typical online bank account opening process, from initial greeting to account creation confirmation, while maintaining only the most recent interactions in memory.
+This example demonstrates using `ConversationBufferWindowMemory` to simulate a virtual banking assistant conversation. The flow covers a typical online bank account opening process, from initial greeting to account creation confirmation, retaining only the most recent interactions in memory.
 
 ```python
 from langchain.memory import ConversationBufferWindowMemory
@@ -169,7 +169,7 @@ memory.save_context(
 
 ## Retrieving Conversation History
 
-Let's examine the conversation history stored in memory using the `load_memory_variables()` method to verify our window-based memory retention.
+Let's examine the stored conversation history using the `load_memory_variables()` method to verify our window-based memory retention.
 
 ```python
 # Check the conversation history

@@ -20,15 +20,15 @@ pre {
 # VectorStoreRetrieverMemory
 
 - Author: [Harheem Kim](https://github.com/harheem)
-- Peer Review :
+- Peer Review:
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/07-VectorStoreRetrieverMemory.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/07-VectorStoreRetrieverMemory.ipynb)
 
 ## Overview
 
-`VectorStoreRetrieverMemory` stores memory in a vector store and queries the top K most 'relevant' documents whenever called.
-This differs from most other memory classes in that it does not explicitly track the order of conversation.
+`VectorStoreRetrieverMemory` stores memory in a vector store and queries the top-K most 'relevant' documents whenever called.
+This differs from most of the other memory classes in that it does not explicitly track the order of conversation.
 
 In this tutorial, we'll explore the practical application of `VectorStoreRetrieverMemory` through a simulated interview scenario. Through this example, we'll see how `VectorStoreRetrieverMemory` searches for information based on semantic relevance rather than chronological order of conversations.
 
@@ -36,8 +36,8 @@ In this tutorial, we'll explore the practical application of `VectorStoreRetriev
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Initialize Vector Store](#initialize-vector-store)
-- [Save Interview Conversations](#save-interview-conversations)
+- [Initializing the Vector Store](#initializing-the-vector-store)
+- [Saving Interview Conversations](#saving-interview-conversations)
 - [Retrieving Relevant Conversations](#retrieving-relevant-conversations)
 
 ### References
@@ -56,7 +56,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -95,7 +95,8 @@ You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
 ```python
 from dotenv import load_dotenv
 
-load_dotenv()
+# Load API key information
+load_dotenv(override=True)
 ```
 
 
@@ -105,9 +106,9 @@ load_dotenv()
 
 
 
-## Initialize Vector Store
+## Initializing the Vector Store
 
-Next, we'll set up FAISS as our vector store. FAISS is an efficient similarity search library that will help us store and retrieve conversation embeddings:
+Next, we'll set up our vector store using FAISS. FAISS is an efficient similarity search library that will help us store and retrieve conversation embeddings:
 
 ```python
 import faiss
@@ -126,14 +127,16 @@ vectorstore = FAISS(embeddings_model, index, InMemoryDocstore({}), {})
 
 This setup creates an in-memory vector store that will maintain our conversation embeddings for quick similarity searches.
 
-## Save Interview Conversations
+## Saving Interview Conversations
 
-Now we'll create our memory system and populate it with example interview conversations:
+Now, we'll create our memory system and populate it with example interview conversations.
+
+Note that by setting `k=1`, we ensure that only the single most relevant conversation is returned. (In real applications, you might want to increase this value to provide more context.):
 
 ```python
 from langchain.memory import VectorStoreRetrieverMemory
 
-# This is to show that vector lookups still return semantically relevant information
+# We set k=1 to show that vector lookups still can return semantically relevant information
 retriever = vectorstore.as_retriever(search_kwargs={"k": 1})
 memory = VectorStoreRetrieverMemory(retriever=retriever)
 
@@ -172,14 +175,12 @@ memory.save_context(
       memory = VectorStoreRetrieverMemory(retriever=retriever)
 </pre>
 
-We're using k=1 to retrieve just the most relevant conversation, but in real applications, you might want to increase this value to get more context.
-
 ## Retrieving Relevant Conversations
 
 Let's see how the system retrieves relevant information based on queries:
 
 ```python
-# Query about education background
+# Query about educational background
 print("Query: What was the interviewee's major?")
 print(
     memory.load_memory_variables({"prompt": "What was the interviewee's major?"})[

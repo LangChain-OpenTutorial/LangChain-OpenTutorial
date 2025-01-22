@@ -20,7 +20,7 @@ At this base repository, it serves as a home for both beginners and seasoned Lan
 1. **Open a Pull request (PR)**: Develop at least **one** existing or new content file (`.ipynb`). Optionally, add examples related to open LLMs. Then, Submit a PR with the developed content.  
    *- Note: Self-Check Before PR Submission (Recommended)*
    - **License Compliance & Copyright Issues**: Verify that all dataset and content comply with licensing requirements. Confirm that there are no copyright infringements.
-   - **Template Compliance**: Follow the provided [templates](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/tree/main/99-TEMPLATE)
+   - **Template Compliance**: Follow the provided templates in [Korean](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/tree/main/99-TEMPLATE/Korean) or in [English](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/tree/main/99-TEMPLATE/English)
    - **Execution Platform**: Individual files should be executable on **Google Colab**.
    - **Specifications Submission (if Required)**: If using open models or additional packages, specify the required environment to Infra Team.
 2. **Team Peer Reviews**: Assign at least **two team members** as reviewers. Reviewers will evaluate the code and content quality and check tutorials are compatible with **Mac**, **Windows**, and **Linux** environments. **Approve** the Pull Request if there are no issues.

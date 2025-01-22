@@ -28,14 +28,14 @@ pre {
 
 ## Overview
 
-WebBaseLoader is a specialized document loader in LangChain designed for processing web-based content. 
+`WebBaseLoader` is a specialized document loader in LangChain designed for processing web-based content. 
 
-It leverages the **BeautifulSoup4** library to parse web pages effectively, offering customizable parsing options through `SoupStrainer` and additional `bs4` parameters.
+It leverages the `BeautifulSoup4` library to parse web pages effectively, offering customizable parsing options through `SoupStrainer` and additional `bs4` parameters.
 
-This tutorial demonstrates how to use WebBaseLoader to:
+This tutorial demonstrates how to use `WebBaseLoader` to:
 1. Load and parse web documents effectively
-2. Customize parsing behavior using BeautifulSoup options
-3. Handle different web content structures flexibly
+2. Customize parsing behavior using `BeautifulSoup` options
+3. Handle different web content structures flexibly.
 
 ### Table of Contents 
 
@@ -51,6 +51,7 @@ This tutorial demonstrates how to use WebBaseLoader to:
 
 - [WebBaseLoader API Documentation](https://python.langchain.com/api_reference/community/document_loaders/langchain_community.document_loaders.web_base.WebBaseLoader.html)
 - [BeautifulSoup4 Documentation](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
+----
 
 ## Environment Setup
 
@@ -62,7 +63,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial markitdown
+%pip install langchain-opentutorial markitdown
 ```
 
 ```python
@@ -80,7 +81,7 @@ package.install(
 
 ## Load Web-based documents
 
-WebBaseLoader is a loader designed for loading web-based documents.
+`WebBaseLoader` is a loader designed for loading web-based documents.
 
 It uses the `bs4` library to parse web pages.
 
@@ -213,7 +214,7 @@ print(docs[1].page_content[:500])
 You can speed up the process of scraping and parsing multiple URLs by using asynchronous loading. This allows you to fetch documents concurrently, improving efficiency while adhering to rate limits.
 
 ### Key Points:
-- **Rate Limit**: The `requests_per_second` parameter controls how many requests are made per second. In this example, it's set to `1` to avoid overloading the server.
+- **Rate Limit**: The `requests_per_second` parameter controls how many requests are made per second. In this example, it's set to 1 to avoid overloading the server.
 - **Asynchronous Loading**: The `alazy_load()` function is used to load documents asynchronously, enabling faster processing of multiple URLs.
 - **Jupyter Notebook Compatibility**: If running in Jupyter Notebook, `nest_asyncio` is required to handle asynchronous tasks properly.
 
@@ -228,11 +229,11 @@ nest_asyncio.apply()
 ```
 
 ```python
-# Set requests per second rate limit
+# Set the requests per second rate limit
 loader.requests_per_second = 1
 
 # Load documents asynchronously
-# aload() is deprecated and alazy_load() is used since langchain 3.14 update)
+# The aload() is deprecated and alazy_load() is used since the langchain 3.14 update)
 docs=[]
 async for doc in loader.alazy_load():
     docs.append(doc)
@@ -252,7 +253,7 @@ docs
 
 ## Load XML Documents
 
-WebBaseLoader can process XML files by specifying a different BeautifulSoup parser. This is particularly useful when working with structured XML content like sitemaps or government data.
+`WebBaseLoader` can process XML files by specifying a different `BeautifulSoup` parser. This is particularly useful when working with structured XML content like sitemaps or government data.
 
 ### Basic XML Loading
 
@@ -275,7 +276,7 @@ docs = loader.load()
 
 ### Memory-Efficient Loading
 
-For handling large documents, WebBaseLoader provides two memory-efficient loading methods:
+For handling large documents, `WebBaseLoader` provides two memory-efficient loading methods:
 
 1. Lazy Loading - loads one page at a time
 2. Async Loading - asynchronous page loading for better performance
@@ -334,7 +335,7 @@ To use a proxy, you can pass a proxy dictionary to the loader (and its underlyin
 
 ### ⚠️ Warning:
 - Replace `{username}`, `{password}`, and `proxy.service.com` with your actual proxy credentials and server information.
-- Without a valid proxy configuration, the code may raise errors like `ProxyError` or `AuthenticationError`.
+- Without a valid proxy configuration, errors such as **ProxyError** or **AuthenticationError** may occur.
 
 ```python
 loader = WebBaseLoader(
@@ -343,7 +344,7 @@ loader = WebBaseLoader(
        "http": "http://{username}:{password}:@proxy.service.com:6666/",
        "https": "https://{username}:{password}:@proxy.service.com:6666/",
    },
-   # Initialize web loader with proxy settings
+   # Initialize the web loader with proxy settings
    # Configure proxy for both HTTP and HTTPS requests
 )
 
@@ -351,11 +352,11 @@ loader = WebBaseLoader(
 docs = loader.load()
 ```
 
-## Simple Web Content Loading with MarkItDown
+## Simple Web Content Loading with `MarkItDown`
 
-Unlike WebBaseLoader which uses BeautifulSoup4 for sophisticated HTML parsing, `MarkItDown` provides a naive but simpler approach to web content loading. It directly fetches web content using HTTP requests and transfrom it into markdown format without detailed parsing capabilities.
+Unlike `WebBaseLoader` which uses `BeautifulSoup4` for sophisticated HTML parsing, `MarkItDown` provides a naive but simpler approach to web content loading. It directly fetches web content using HTTP requests and transfrom it into markdown format without detailed parsing capabilities.
 
-Below is a basic example of loading web content using MarkItDown:
+Below is a basic example of loading web content using `MarkItDown`:
 
 ```python
 from markitdown import MarkItDown
@@ -363,7 +364,6 @@ from markitdown import MarkItDown
 md = MarkItDown()
 result = md.convert("https://techcrunch.com/2024/12/28/revisiting-the-biggest-moments-in-the-space-industry-in-2024/")
 result_text = result.text_content
-
 ```
 
 ```python
@@ -413,7 +413,3 @@ print(result_text[:1000])
     
     [
 </pre>
-
-```python
-
-```
