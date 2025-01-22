@@ -37,10 +37,10 @@ neo4j = "^5.27.0"
 langchain-neo4j = "^0.2.0"
 langchain-mongodb = "^0.3.0"
 certifi = "^2024.12.14"
-python-magic-bin = { version = "^0.4.14", markers = "sys_platform != 'darwin'" }
+python-magic-bin = "^0.4.14"
 pymongo = "^4.10.1"
 langchain-qdrant = "^0.2.0"
-chromadb = "^0.5.0"
+chromadb = "^0.6.2"
 pyalex = "^0.15.1"
 pdfplumber = "^0.11.5"
 unstructured = {extras = ["all-docs"], version = "^0.16.13"}
@@ -55,10 +55,6 @@ matplotlib = "^3.10.0"
 feedparser = "^6.0.11"
 tavily-python = "^0.5.0"
 pandas = "^2.2.3"
-pinecone = {version = "5.0.1", extras = ["grpc"]}
-langchain-elasticsearch = "^0.3.1"
-anytree = "2.12.1"
-langchain-chroma = "^0.2.0"
 
 [build-system]
 requires = ["poetry-core"]
