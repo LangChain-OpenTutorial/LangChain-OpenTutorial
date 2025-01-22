@@ -29,23 +29,21 @@ pre {
 
 ## Overview
 
-`RunnableLambda` provides the ability to **execute custom functions** in your LangChain pipeline.
+`RunnableLambda` provides a way to **integrate custom functions** into your LangChain pipeline.
 
-This allows developers to **define their own custom functions** and execute them using `RunnableLambda` as part of their workflow.
+This allows you to **define your own custom functions** and execute them using `RunnableLambda` as part of their workflow.
 
-For example, you can define and execute functions that perform various tasks such as:
-- Data preprocessing
-- Calculations
-- Interactions with external APIs
-- Any other custom logic you need in your chain
-
-This makes RunnableLambda a powerful tool for integrating custom functionality into your LangChain applications.
+For example, you can build your own logic and execute the functions, performing different tasks such as:
+- Data preprocessing,
+- Calculations,
+- Interactions with external APIs, and
+- Any other custom logic you need in your chain.
 
 
 ### Table of Contents
 
 - [Overview](#overview)
-- [Environement Setup](#environment-setup)
+- [Environment Setup](#environment-setup)
 - [How to Execute Custom Functions](#how-to-execute-custom-functions)
 - [Using RunnableConfig as Parameters](#using-runnableconfig-as-parameters)
 
@@ -58,11 +56,11 @@ This makes RunnableLambda a powerful tool for integrating custom functionality i
 
 ## Environment Setup
 
-Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
+Setting up your environment is the first step. See the [Environment Setup](https://wikidocs.net/257836) guide for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- The `langchain-opentutorial` is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
+- Check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -85,6 +83,10 @@ package.install(
 )
 ```
 
+Alternatively, you can set and load `OPENAI_API_KEY` from a `.env` file.
+
+**[Note]** This is only necessary if you haven't already set `OPENAI_API_KEY` in previous steps.
+
 ```python
 # Set environment variables
 from langchain_opentutorial import set_env
@@ -103,10 +105,6 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
-
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
-
 ```python
 from dotenv import load_dotenv
 
@@ -124,27 +122,28 @@ load_dotenv(override=True)
 
 **Important Note**
 
-While you can wrap custom functions with `RunnableLambda` to use them in your pipeline, there's a crucial limitation to be aware of: **custom functions can only accept a single argument**.
+A limitation of `RunnableLambda` is that **custom functions can only accept a single argument**. You can wrap custom functions with `RunnableLambda` to use them in your pipeline.
 
-If you need to implement a function that requires multiple parameters, you'll need to create a wrapper function that:
-1. Accepts a single input (typically a dictionary)
-2. Unpacks this input into multiple arguments inside the wrapper
-3. Passes these arguments to your actual function
+If you have a function that requires multiple parameters, create a wrapper function:
+1. Accepts a single input (typically a dictionary).
+2. Unpacks this input into multiple arguments inside the wrapper.
+3. Passes these arguments to your original function.
 
 For example:
 
 ```python
 # Won't work with RunnableLambda
 def original_function(arg1, arg2, arg3):
-pass
+    pass
 
 # Will work with RunnableLambda
 def wrapper_function(input_dict):
-return original_function(
-input_dict['arg1'],
-input_dict['arg2'],
-input_dict['arg3']
+    return original_function(
+            input_dict['arg1'],
+            input_dict['arg2'],
+            input_dict['arg3']
 )
+```
 
 ```python
 from operator import itemgetter
@@ -193,8 +192,7 @@ chain = (
 )
 ```
 
-Execute the chain and check the result.
-
+Execute the chain and verify the result.
 
 ```python
 # Execute the chain with the given arguments.
@@ -212,19 +210,19 @@ chain.invoke({"input_1": "bar", "input_2": "gah"})
 
 `RunnableLambda` can optionally accept a [RunnableConfig](https://api.python.langchain.com/en/latest/runnables/langchain_core.runnables.config.RunnableConfig.html#langchain_core.runnables.config.RunnableConfig) object.
 
-This allows you to pass various configuration options to nested executions, such as:
-- Callbacks: For tracking and monitoring function execution
-- Tags: For labeling and organizing different runs
-- Other configuration information: Additional settings that control how your functions behave
+This allows you to pass various configuration options to nested executions, including:
+- Callbacks: For tracking and monitoring function execution.
+- Tags: For labeling and organizing different runs.
+- Other configuration: Additional settings to control function behavior.
 
-For example, you can:
-- Track the performance of your functions
-- Add logging capabilities
-- Group related operations together using tags
-- Configure error handling and retry logic
-- Set timeouts and other execution parameters
+For example, you can use `RunnableConfig` to:
+- Track function performance.
+- Add logging capabilities.
+- Group related operations using tags.
+- Configure error handling and retry logic.
+- Set timeouts and other execution parameters.
 
-This makes RunnableLambda highly configurable and suitable for complex workflows where you need fine-grained control over execution.
+This makes `RunnableLambda` highly configurable for complex workflows with fine-grained control over execution.
 
 ```python
 from langchain_core.output_parsers import StrOutputParser

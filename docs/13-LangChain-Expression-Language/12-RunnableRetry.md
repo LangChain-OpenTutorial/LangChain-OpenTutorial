@@ -44,8 +44,8 @@ We'll demonstrate how to configure and use `RunnableRetry` with examples that sh
 
 - [LangChain API Reference: RunnableRetry](https://python.langchain.com/api_reference/core/runnables/langchain_core.runnables.retry.RunnableRetry.html)
 - [LangChain OpenTutorial: PydanticOutputParser](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/01-PydanticOuputParser.ipynb)
+- [LangChain Document: How to structured output](https://python.langchain.com/docs/how_to/structured_output/)
 ----
-
 
 ## Environment Setup
 
@@ -59,11 +59,6 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 %%capture --no-stderr
 %pip install langchain-opentutorial
 ```
-
-<pre class="custom">
-    [notice] A new release of pip is available: 23.2.1 -> 24.3.1
-    [notice] To update, run: python.exe -m pip install --upgrade pip
-</pre>
 
 ```python
 # Install required packages
@@ -121,7 +116,7 @@ load_dotenv(override=True)
 Instead of wrapping your entire workflow in retry logic, you can apply retry policies at the level of specific tasks.   
 This helps you handle transient issues, such as network errors or intermittent failures, without restarting the entire workflow.
 
-## Why Use RunnableRetry
+## Why use RunnableRetry
 
 By using `RunnableRetry`, you can:
 
@@ -139,6 +134,7 @@ import random
 from langchain_core.runnables import RunnableLambda
 from langchain_core.runnables.retry import RunnableRetry
 
+
 # Define a simple function with a chance of failure.
 def random_number(input):
     number = random.randint(1, 3)
@@ -147,6 +143,7 @@ def random_number(input):
     else:
         print(f"Failed! The number is {number}.")
         raise ValueError
+
 
 # Bind the function to RunnableLambda
 runnable = RunnableLambda(random_number)
@@ -161,11 +158,12 @@ runnable_with_retries = RunnableRetry(
 
 # In this example, there is no need for input, but LangChain's Runnable requires an input argument.
 # TypeError: RunnableRetry.invoke() missing 1 required positional argument: 'input'
-input=None
+input = None
 runnable_with_retries.invoke(input)
 ```
 
 <pre class="custom">Failed! The number is 3.
+    Failed! The number is 2.
     Success! The number is 1.
 </pre>
 
@@ -182,13 +180,11 @@ runnable_with_retries = runnable.with_retry(
     wait_exponential_jitter=True,
 )
 
-input=None
+input = None
 runnable_with_retries.invoke(None)
 ```
 
-<pre class="custom">Failed! The number is 3.
-    Failed! The number is 2.
-    Success! The number is 1.
+<pre class="custom">Success! The number is 1.
 </pre>
 
 ## RunnableRetry Bind with Chains
@@ -231,20 +227,114 @@ chain.invoke("programming")
 
 
 
-<pre class="custom">AIMessage(content='Why do programmers prefer dark mode?\n\nBecause light attracts bugs!', additional_kwargs={'refusal': None}, response_metadata={'token_usage': {'completion_tokens': 13, 'prompt_tokens': 14, 'total_tokens': 27, 'completion_tokens_details': {'accepted_prediction_tokens': 0, 'audio_tokens': 0, 'reasoning_tokens': 0, 'rejected_prediction_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0}}, 'model_name': 'gpt-4o-mini-2024-07-18', 'system_fingerprint': 'fp_d02d531b47', 'finish_reason': 'stop', 'logprobs': None}, id='run-56bd0842-7465-496b-a4a9-b4e1545dd1da-0', usage_metadata={'input_tokens': 14, 'output_tokens': 13, 'total_tokens': 27, 'input_token_details': {'audio': 0, 'cache_read': 0}, 'output_token_details': {'audio': 0, 'reasoning': 0}})</pre>
+<pre class="custom">AIMessage(content='Why do programmers prefer dark mode?\n\nBecause light attracts bugs!', additional_kwargs={'refusal': None}, response_metadata={'token_usage': {'completion_tokens': 13, 'prompt_tokens': 14, 'total_tokens': 27, 'completion_tokens_details': {'accepted_prediction_tokens': 0, 'audio_tokens': 0, 'reasoning_tokens': 0, 'rejected_prediction_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0}}, 'model_name': 'gpt-4o-mini-2024-07-18', 'system_fingerprint': 'fp_72ed7ab54c', 'finish_reason': 'stop', 'logprobs': None}, id='run-238065f6-4562-43ff-82df-81684f2f9ffb-0', usage_metadata={'input_tokens': 14, 'output_tokens': 13, 'total_tokens': 27, 'input_token_details': {'audio': 0, 'cache_read': 0}, 'output_token_details': {'audio': 0, 'reasoning': 0}})</pre>
 
 
 
 or you can use `.with_retry()` with Runnables.
 
 ```python
-chain = prompt | model.with_retry(retry_if_exception_type=(InternalServerError,), stop_after_attempt=3, wait_exponential_jitter=True)
+chain = prompt | model.with_retry(
+    retry_if_exception_type=(InternalServerError,),
+    stop_after_attempt=3,
+    wait_exponential_jitter=True,
+)
 chain.invoke("bear")
 ```
 
 
 
 
-<pre class="custom">AIMessage(content='Why do bears have hairy coats?\n\nBecause they look silly in sweaters!', additional_kwargs={'refusal': None}, response_metadata={'token_usage': {'completion_tokens': 15, 'prompt_tokens': 14, 'total_tokens': 29, 'completion_tokens_details': {'accepted_prediction_tokens': 0, 'audio_tokens': 0, 'reasoning_tokens': 0, 'rejected_prediction_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0}}, 'model_name': 'gpt-4o-mini-2024-07-18', 'system_fingerprint': 'fp_0aa8d3e20b', 'finish_reason': 'stop', 'logprobs': None}, id='run-a73176c2-8550-40bf-8284-acb56a302c07-0', usage_metadata={'input_tokens': 14, 'output_tokens': 15, 'total_tokens': 29, 'input_token_details': {'audio': 0, 'cache_read': 0}, 'output_token_details': {'audio': 0, 'reasoning': 0}})</pre>
+<pre class="custom">AIMessage(content='Why did the bear sit on the log?\n\nBecause it wanted to be a “bear-y” comfortable seat!', additional_kwargs={'refusal': None}, response_metadata={'token_usage': {'completion_tokens': 23, 'prompt_tokens': 14, 'total_tokens': 37, 'completion_tokens_details': {'accepted_prediction_tokens': 0, 'audio_tokens': 0, 'reasoning_tokens': 0, 'rejected_prediction_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0}}, 'model_name': 'gpt-4o-mini-2024-07-18', 'system_fingerprint': 'fp_72ed7ab54c', 'finish_reason': 'stop', 'logprobs': None}, id='run-d5f7f349-a301-447b-b908-4bd8cfd075d7-0', usage_metadata={'input_tokens': 14, 'output_tokens': 23, 'total_tokens': 37, 'input_token_details': {'audio': 0, 'cache_read': 0}, 'output_token_details': {'audio': 0, 'reasoning': 0}})</pre>
 
 
+
+### Combining `RunnableRetry` with `.with_structured_output()`
+
+Methods like `.bind()` or `.with_retry()` create a **new `Runnable` object**, making the original instance's chainable methods (e.g., `.with_structured_output()`) unavailable.
+
+To retain structured output functionality:
+1. **Apply `.with_structured_output()` first** to include parsing logic in the LLM instance.
+2. Then wrap it with `RunnableRetry` or `.with_retry()` to add retry or chaining logic.
+
+### Why this order is important
+- **Loss of Methods**: The new `Runnable` created by `RunnableRetry` or `.with_retry()` doesn't have the original methods.
+- **Ensure Structured Output**: Adding `.with_structured_output()` before retry logic ensures structured parsing stays intact while allowing retries.
+
+```python
+from pydantic import BaseModel, Field
+
+
+# Let's assume that you want result to be parsed in this format.
+class Joke(BaseModel):
+    setup: str = Field(description="question to set up a joke")
+    punchline: str = Field(description="answer to resolve the joke")
+
+
+prompt = PromptTemplate.from_template("tell me a joke about {topic}.")
+
+model = ChatOpenAI(model="gpt-4o-mini")
+
+# bind structured output
+model_with_structured_output = model.with_structured_output(Joke)
+
+model_bind_with_retry = RunnableRetry(
+    # apply .with_structured_output() first, then use RunnableRetry to add retry logic without losing this capability.
+    bound=model_with_structured_output,
+    retry_exception_types=(InternalServerError,),
+    max_attempt_number=3,
+    wait_exponential_jitter=True,
+)
+
+chain = prompt | model_bind_with_retry
+```
+
+```python
+chain.invoke({"topic": "penguin"})
+```
+
+
+
+
+<pre class="custom">Joke(setup='Why don’t penguins like talking to strangers at parties?', punchline='They find it hard to break the ice!')</pre>
+
+
+
+or you can using `with_structured_output()` method  with `with_retry()` method like this.
+
+```python
+class Joke(BaseModel):
+    setup: str = Field(description="question to set up a joke")
+    punchline: str = Field(description="answer to resolve the joke")
+
+
+prompt = PromptTemplate.from_template("tell me a joke about {topic}.")
+
+model = ChatOpenAI(model="gpt-4o-mini")
+
+# bind structured output
+model_with_structured_output = model.with_structured_output(Joke)
+
+# apply .with_structured_output() first, then use .with_retry() to add retry logic without losing this capability.
+model_bind_with_retry = model_with_structured_output.with_retry(
+    retry_if_exception_type=(InternalServerError,),
+    stop_after_attempt=3,
+    wait_exponential_jitter=True,
+)
+
+chain = prompt | model_bind_with_retry
+```
+
+```python
+chain.invoke({"topic": "clip"})
+```
+
+
+
+
+<pre class="custom">Joke(setup='Why did the paper clip apply for a job?', punchline='Because it wanted to hold things together!')</pre>
+
+
+
+**Note:** If the model doesn’t support `.with_structured_output()` or you want to use a custom parsing method,   
+refer to the [LangChain documentation on advanced structured output](https://python.langchain.com/docs/how_to/structured_output/) for more details.

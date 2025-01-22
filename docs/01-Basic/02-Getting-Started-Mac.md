@@ -19,7 +19,7 @@ pre {
 
 # Getting Started on Mac
 
-- Author: [Jeongho Shin](https://github.com/ThePurpleCollar)
+- Author: [JeongHo Shin](https://github.com/ThePurpleCollar)
 - Design:
 - Peer Review: 
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
@@ -43,17 +43,17 @@ This guide provides a comprehensive setup process tailored for developing with L
 ----
 
 ## Opening Terminal
-- Open Spotlight Search by pressing `Command + Space`.
+- Open Spotlight Search by pressing **Command + Space** .
 
-- Search for **`terminal`**  and press Enter to open the Terminal.
+- Search for **terminal** and press Enter to open the Terminal.
 
 ## Installing Homebrew
 
 ### Running the Homebrew Installation Command
 - Run the following command in the Terminal to install Homebrew:
    ```bash
-
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
 
 - Enter your account password when prompted.
 <br>
@@ -67,21 +67,25 @@ This guide provides a comprehensive setup process tailored for developing with L
    ```bash
    
    whoami
+   ```
 ![Jupyter Extension](assets/01-Follow-the-Installation-Video_Mac-02.png)
 
 - Check the installation path of Homebrew:
    ```bash
 
    which brew
+   ```
 
 - Verify the installation path of Homebrew:
-   - **Case 1** : If the output is `/opt/homebrew/bin/brew`, use the following command to configure the environment:
+   - **Case 1** : If the output is **/opt/homebrew/bin/brew** , use the following command to configure the environment:
       ```bash
       echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/<your-username>/.zprofile
+      ```
 
-   - **Case 2** : If the output is `/usr/local/bin/brew`, use the following command:
+   - **Case 2** : If the output is **/usr/local/bin/brew** , use the following command:
       ```bash
       echo 'eval "$(/usr/local/bin/brew shellenv)"' >> /Users/<your-username>/.zprofile
+      ```
 
 ## Verifying Xcode Installation
 
@@ -89,6 +93,7 @@ To check if Xcode Command Line Tools are installed, run the following command in
 
 ```bash
 xcode-select --install
+```
 
 
 ## Downloading Practice Code
@@ -101,28 +106,33 @@ xcode-select --install
 - Check if Git is installed by running the following command in your terminal:
    ```bash
    git --version
+   ```
 
 - If the command outputs the Git version, you already have Git installed, and no further action is required.
 
 - If Git is not installed, you can install it using Homebrew:
    ```bash
    brew install git
+   ```
 
 - After installation, verify Git again:
    ```bash
    git --version
+   ```
 
 
 
 ### Downloading Practice Code with Git
-- Navigate to the `Documents` folder (or any other folder where you want to download the practice code). Use the following command:
+- Navigate to the **Documents** folder (or any other folder where you want to download the practice code). Use the following command:
    ```bash
    cd Documents
+   ```
 - If you want to use a different directory, replace Documents with your desired path.
 
-- Use the `git` command to download the practice code from the repository. Run the following command in your terminal:
+- Use the **git** command to download the practice code from the repository. Run the following command in your terminal:
    ```bash
    git clone https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial.git
+   ```
 ![](assets/01-Follow-the-Installation-Video_Mac-03.png)   
 
 
@@ -142,12 +152,14 @@ For detailed documentation, refer to the [Pyenv GitHub Page](https://github.com/
    ```bash
    brew update
    brew install pyenv
+   ```
 
 2. Add the following lines to your ~/.zshrc file. Copy and paste the commands into your terminal:
    ```bash
    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
    echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
    echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+   ```
 
 3. If you encounter a permissions error, resolve it by running these commands:
    ```bash
@@ -155,10 +167,12 @@ For detailed documentation, refer to the [Pyenv GitHub Page](https://github.com/
    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
    echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
    echo 'eval "$(pyenv init -)"' >> ~/.zshrc
+   ```
 
 4. Restart the terminal shell to apply the changes:
    ```bash
    exec "$SHELL"
+   ```
 
 
 ## Installing Python
@@ -166,18 +180,22 @@ For detailed documentation, refer to the [Pyenv GitHub Page](https://github.com/
 - Use `pyenv` to install Python 3.11:
    ```bash
    pyenv install 3.11
+   ```
 
 - Set Python 3.11 as the global Python version:
     ```bash
     pyenv global 3.11
+    ```
 
 - Restart the shell to ensure the changes take effect:
     ```bash
     exec zsh
+    ```
 
 - Verify the installed Python version:
     ```bash
     python --version
+    ```
 
 - Ensure the output shows 3.11.
 
@@ -193,14 +211,17 @@ For detailed documentation, refer to the [Poetry Official Documentation](https:/
 - Install Poetry using `pip3`:
    ```bash
    pip3 install poetry
+   ```
 
 - Set up a Python virtual environment using Poetry:
    ```bash
     poetry shell
+    ```
 
 - Update all Python dependencies in the project:
    ```bash
     poetry update
+    ```
 
 
 
@@ -213,7 +234,7 @@ For detailed documentation, refer to the [Poetry Official Documentation](https:/
 
 - **Install Visual Studio Code**:
    - Follow the installation instructions for your system.
-   - On macOS, drag the application to the `Applications` folder.
+   - Dag the application to the **Applications** folder.
 
 - **Install Extensions**:
    - Open Visual Studio Code.
@@ -236,7 +257,7 @@ For detailed documentation, refer to the [Poetry Official Documentation](https:/
    - Click on **"Select Kernel"** in the top-right corner of Visual Studio Code.
    - Choose the Python virtual environment you set up earlier.
 
-   - **Note**: If your environment does not appear in the list, restart Visual Studio Code again.
+   - **Note**: If your environment does not appear in the list, restart Visual Studio Code.
 
 ---
 

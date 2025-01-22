@@ -30,19 +30,20 @@ pre {
 
 ## Overview
 
-This tutorial covers a Text Splitter that splits text based on semantic similarity.
+This tutorial dives into a Text Splitter that uses semantic similarity to split text.
 
-The **Semantic Chunker** is a sophisticated tool within **LangChain** that brings an intelligent approach to document chunking. Rather than simply dividing text at fixed intervals, it analyzes the semantic meaning of content to create more meaningful divisions. 
+LangChain's `SemanticChunker` is a powerful tool that takes document chunking to a whole new level. Unlike traiditional methods that split text at fixed intervals, the `SemanticChunker` analyzes the meaning of the content to create more logical divisions.
 
-This process relies on **OpenAI's embedding model** , which evaluates how similar different pieces of text are to each other. The tool offers flexible splitting options, including percentile-based, standard deviation, and interquartile range methods. 
+This approach relies on **OpenAI's embedding model** , calculating how similar different pieces of text are by converting them into numerical representations. The tool offers various splitting options to suit your needs. You can choose from methods based on percentiles, standard deviation, or interquartile range.
 
-What sets it apart from traditional text splitters is its ability to maintain context by identifying natural break points in the text, ultimately leading to better performance when working with large language models. 
+What sets the `SemanticChunker` apart is its ability to preserve context by identifying natural breaks. This ultimately leads to better performance when working with large language models. 
 
-By understanding the actual meaning of the content, it creates more coherent and useful chunks that preserve the original document's context and flow.
+Since the `SemanticChunker` understands the actual content, it generates chunks that are more useful and maintain the flow and context of the original document.
 
- [Greg Kamradt's Notebook](https://github.com/FullStackRetrieval-com/RetrievalTutorials/blob/main/tutorials/LevelsOfTextSplitting/5_Levels_Of_Text_Splitting.ipynb)
+See [Greg Kamradt's notebook](https://github.com/FullStackRetrieval-com/RetrievalTutorials/blob/main/tutorials/LevelsOfTextSplitting/5_Levels_Of_Text_Splitting.ipynb)
 
-The method divides the text into sentence units, then groups them into three sentences, and merges similar sentences in the embedding space.
+
+The method breaks down the text into individual sentences first. Then, it groups sementically similar sentences into chunks (e.g., 3 sentences), and finally merges similar sentences in the embedding space.
 
 ### Table of Contents
 
@@ -54,8 +55,8 @@ The method divides the text into sentence units, then groups them into three sen
 
 ### References
 
-- [Greg Kamradt's Notebook](https://github.com/FullStackRetrieval-com/RetrievalTutorials/blob/main/tutorials/LevelsOfTextSplitting/5_Levels_Of_Text_Splitting.ipynb)
-
+- [Greg Kamradt's notebook](https://github.com/FullStackRetrieval-com/RetrievalTutorials/blob/main/tutorials/LevelsOfTextSplitting/5_Levels_Of_Text_Splitting.ipynb)
+- [Greg Kamradt's video](https://youtu.be/8OJC21T2SL4?si=PzUtNGYJ_KULq3-w&t=2580)
 
 ----
 
@@ -71,7 +72,7 @@ Load sample text and output the content.
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -110,9 +111,9 @@ set_env(
 )
 ```
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
+Alternatively, you can set and load `OPENAI_API_KEY` from a `.env` file.
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+**[Note]** This is only necessary if you haven't already set `OPENAI_API_KEY` in previous steps.
 
 ```python
 # Configuration File for Managing API Keys as Environment Variables
@@ -121,6 +122,8 @@ from dotenv import load_dotenv
 # Load API Key Information
 load_dotenv(override=True)
 ```
+
+Load the sample text and output its content.
 
 ```python
 # Open the data/appendix-keywords.txt file to create a file object called f.
@@ -134,12 +137,11 @@ print(file[:350])
 
 ## Creating a SemanticChunker
 
-`SemanticChunker` is one of LangChain's experimental features, which serves to divide text into semantically similar chunks.
+The `SemanticChunker` is an experimental LangChain feature, that splits text into semantically similar chunks.
 
-This allows you to process and analyze text data more effectively.
+This approach allows for more effective processing and analysis of text data.
 
-Use `SemanticChunker` to divide the text into semantically related chunks.
-
+Use the `SemanticChunker` to divide the text into semantically related chunks.
 
 ```python
 from langchain_experimental.text_splitter import SemanticChunker
@@ -151,20 +153,20 @@ text_splitter = SemanticChunker(OpenAIEmbeddings())
 
 ## Text Splitting
 
-- Use `text_splitter` to divide the `file` text into document units.
+Use the `text_splitter` with your loaded file (`file`) to split the text into smallar, more manageable unit documents. This process is often referred to as chunking.
 
 ```python
 chunks = text_splitter.split_text(file)
 ```
 
-Check the divided chunks.
+After splitting, you can examine the resulting chunks to see how the text has been divided.
 
 ```python
 # Print the first chunk among the divided chunks.
 print(chunks[0])
 ```
 
-You can convert chunks to documents using the `create_documents()` function.
+The `create_documents()` function allows you to convert the individual chunks (`[file]`) into proper document objects (`docs`).
 
 
 ```python
@@ -176,19 +178,20 @@ print(
 ```
 
 ## Breakpoints
-This chunker works by determining when to "split" sentences. 
 
-This is done by examining the embedding differences between two sentences.
+This chunking process works by indentifying natural breaks between sentences.
 
-If the difference exceeds a certain threshold, the sentences are split.
+Here's how it decides where to split the text:
+1. It calculates the difference between these embeddings for each pair of sentences.
+2. When the difference between two sentences exceeds a certain threshold (breakpoint), the `text_splitter` identifies this as a natural break and splits the text at that point.
 
-- Reference video: https://youtu.be/8OJC21T2SL4?si=PzUtNGYJ_KULq3-w&t=2580
+Check out [Greg Kamradt's video](https://youtu.be/8OJC21T2SL4?si=PzUtNGYJ_KULq3-w&t=2580) for more details.
 
-### Percentile
-The basic splitting method is based on `Percentile`.
 
-In this method, all differences between sentences are calculated, then splitting is done based on the specified percentile.
 
+### Percentile-Based Splitting
+
+This method sorts all embedding differences between sentences. Then, it splits the text at a specific percentile (e.g. 70th percentile).
 
 ```python
 text_splitter = SemanticChunker(
@@ -200,7 +203,7 @@ text_splitter = SemanticChunker(
 )
 ```
 
-Check the split results.
+Examine the resulting document list (`docs`).
 
 
 ```python
@@ -213,17 +216,17 @@ for i, doc in enumerate(docs[:5]):
     print("===" * 20)
 ```
 
-Print the length of `docs`.
+Use the `len(docs)` function to get the number of chunks created.
 
 ```python
 print(len(docs))  # Print the length of docs.
 ```
 
-### Standard Deviation
+### Standard Deviation Splitting
 
-In this method, splitting occurs when there is a difference greater than the specified `breakpoint_threshold_amount` standard deviation.
+This method sets a threshold based on a specified number of standard deviations (`breakpoint_threshold_amount`).
 
-- Set the `breakpoint_threshold_type` parameter to "standard_deviation" to specify chunk splitting criteria based on standard deviation.
+To use standard deviation for your breakpoints, set the `breakpoint_threshold_type` parameter to `"standard_deviation"` when initializing the `text_splitter`.
 
 ```python
 text_splitter = SemanticChunker(
@@ -235,7 +238,7 @@ text_splitter = SemanticChunker(
 )
 ```
 
-Check the split results.
+After splitting, check the `docs` list and print its length (`len(docs)`) to see how many chunks were created.
 
 ```python
 # Split using text_splitter.
@@ -252,18 +255,15 @@ for i, doc in enumerate(docs[:5]):
     print("===" * 20)
 ```
 
-Print the length of `docs`.
-
 ```python
 print(len(docs))  # Print the length of docs.
 ```
 
-### Interquartile
+### Interquartile Range Splitting
 
-This method uses interquartile range to split chunks.
+This method utilizes the interquartile range (IQR) of the embedding differences to consider breaks, leading to a text split.
 
-- Set the `breakpoint_threshold_type` parameter to "interquartile" to specify chunk splitting criteria based on interquartile range.
-
+Set the `breakpoint_threshold_type` parameter to `"interquartile"` when initializing the `text_splitter` to use the IQR for splitting.
 
 ```python
 text_splitter = SemanticChunker(
@@ -288,7 +288,7 @@ for i, doc in enumerate(docs[:5]):
     print("===" * 20)
 ```
 
-Print the length of `docs`.
+Finally, print the length of `docs` list (`len(docs)`) to view the number of cunks created.
 
 
 ```python
