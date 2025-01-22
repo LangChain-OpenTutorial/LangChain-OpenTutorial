@@ -71,7 +71,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -89,11 +89,6 @@ package.install(
     upgrade=False,
 )
 ```
-
-<pre class="custom">
-    [1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m A new release of pip is available: [0m[31;49m24.1[0m[39;49m -> [0m[32;49m24.3.1[0m
-    [1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m To update, run: [0m[32;49mpip install --upgrade pip[0m
-</pre>
 
 ```python
 # Set environment variables

@@ -27,22 +27,23 @@ pre {
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/02-Prompt/01-PromptTemplate.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/02-Prompt/01-PromptTemplate.ipynb)
 
 ## Overview
-This tutorial covers how to create and utilize prompt templates using LangChain.
+This tutorial covers how to create and utilize prompt templates using `LangChain` .
 
 Prompt templates are essential for generating dynamic and flexible prompts that cater to various use cases, such as conversation history, structured outputs, and specialized queries.
 
-In this tutorial, we will explore methods for creating PromptTemplate objects, applying partial variables, managing templates through YAML files, and leveraging advanced tools like ChatPromptTemplate and MessagePlaceholder for enhanced functionality.
+In this tutorial, we will explore methods for creating `PromptTemplate` objects, applying partial variables, managing templates through YAML files, and leveraging advanced tools like `ChatPromptTemplate` and `MessagePlaceholder` for enhanced functionality.
 
 ### Table of Contents
+- [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Creating a `PromptTemplate` Object](#creating-a-prompttemplate-object)
-- [Using `partial_variables`](#using-partial_variables)
+- [Creating a PromptTemplate Object](#creating-a-prompttemplate-object)
+- [Using partial_variables](#using-partial_variables)
 - [Load prompt template from YAML file](#load-prompt-template-from-yaml-file)
 - [ChatPromptTemplate](#chatprompttemplate)
 - [MessagePlaceholder](#messageplaceholder)
 
 ### References
-- [LangChain_core Documentation : Prompts](https://python.langchain.com/api_reference/core/prompts.html#)
+- [LangChain Documentation : Prompts](https://python.langchain.com/api_reference/core/prompts.html#)
 ----
 
 ## Environment Setup
@@ -51,12 +52,17 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 **[Note]**
 - `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- You can check out the [`langchain-opentutorial` ](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
+
+<pre class="custom">
+    [notice] A new release of pip is available: 24.1 -> 24.3.1
+    [notice] To update, run: python.exe -m pip install --upgrade pip
+</pre>
 
 ```python
 # Install required packages
@@ -67,9 +73,7 @@ package.install(
         "langsmith",
         "langchain",
         "langchain_core",
-        "langchain-anthropic",
         "langchain_community",
-        "langchain_text_splitters",
         "langchain_openai",
     ],
     verbose=False,
@@ -96,6 +100,8 @@ from langchain_opentutorial import set_env
 
 set_env(
     {
+        # "OPENAI_API_KEY": "",
+        # "LANGCHAIN_API_KEY": "",
         "LANGCHAIN_TRACING_V2": "true",
         "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
         "LANGCHAIN_PROJECT": "Prompt-Template",
@@ -106,10 +112,6 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
-
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
-
 Let's setup `ChatOpenAI` with `gpt-4o` model.
 
 ```python
@@ -119,15 +121,15 @@ from langchain_openai import ChatOpenAI
 llm = ChatOpenAI(model_name="gpt-4o")
 ```
 
-## Creating a `PromptTemplate` Object
+## Creating a PromptTemplate Object
 
 There are two ways to create a `PromptTemplate` object.
 - 1. Using the `from_template()` method.
 - 2. Creating a `PromptTemplate` object and generating a prompt simultaneously.
 
-### Method 1. Using `from_template()` method
+### Method 1. Using from_template() method
 
-- Define template with variable as `{variable}`.
+- Define template with variable as `{variable}` .
 
 ```python
 from langchain_core.prompts import PromptTemplate
@@ -147,18 +149,18 @@ prompt
 
 
 
-You can complete the prompt by assigning a value to the variable `country`.
+You can complete the prompt by assigning a value to the variable `country` .
 
 ```python
 # Create prompt. Assign value to the variable using `format` method
-prompt = prompt.format(country="South Korea")
+prompt = prompt.format(country="United States of America")
 prompt
 ```
 
 
 
 
-<pre class="custom">'What is the capital of South Korea?'</pre>
+<pre class="custom">'What is the capital of United States of America?'</pre>
 
 
 
@@ -185,11 +187,11 @@ chain.invoke("United States of America").content
 
 
 
-### Method 2. Creating a `PromptTemplate` object and a prompt all at once.
+### Method 2. Creating a PromptTemplate object and a prompt all at once.
 
 Explicitly specify `input_variables` for additional validation.
 
-Otherwise, mismatch between such variables and variables within template string can raise an exception in instantiation.
+Otherwise, a mismatch between such variables and the variables within the template string can raise an exception in instantiation.
 
 ```python
 # Define template
@@ -231,7 +233,7 @@ prompt = PromptTemplate(
     template=template,
     input_variables=["country1"],
     partial_variables={
-        "country2": "USA"  # Pass `partial_variables` in dictionary form
+        "country2": "United States of America"  # Pass `partial_variables` in dictionary form
     },
 )
 prompt
@@ -240,7 +242,7 @@ prompt
 
 
 
-<pre class="custom">PromptTemplate(input_variables=['country1'], input_types={}, partial_variables={'country2': 'USA'}, template='What are the capitals of {country1} and {country2}, respectively?')</pre>
+<pre class="custom">PromptTemplate(input_variables=['country1'], input_types={}, partial_variables={'country2': 'United States of America'}, template='What are the capitals of {country1} and {country2}, respectively?')</pre>
 
 
 
@@ -251,7 +253,7 @@ prompt.format(country1="South Korea")
 
 
 
-<pre class="custom">'What are the capitals of South Korea and USA, respectively?'</pre>
+<pre class="custom">'What are the capitals of South Korea and United States of America, respectively?'</pre>
 
 
 
@@ -268,13 +270,13 @@ prompt_partial
 
 
 ```python
-prompt_partial.format(country1="USA")
+prompt_partial.format(country1="South Korea")
 ```
 
 
 
 
-<pre class="custom">'What are the capitals of USA and India, respectively?'</pre>
+<pre class="custom">'What are the capitals of South Korea and India, respectively?'</pre>
 
 
 
@@ -283,30 +285,30 @@ chain = prompt_partial | llm
 ```
 
 ```python
-chain.invoke("USA").content
+chain.invoke("United States of America").content
 ```
 
 
 
 
-<pre class="custom">'The capital of the United States is Washington, D.C., and the capital of India is New Delhi.'</pre>
+<pre class="custom">'The capital of the United States of America is Washington, D.C., and the capital of India is New Delhi.'</pre>
 
 
 
 ```python
-chain.invoke({"country1": "USA", "country2": "India"}).content
+chain.invoke({"country1": "United States of America", "country2": "India"}).content
 ```
 
 
 
 
-<pre class="custom">'The capital of the United States is Washington, D.C., and the capital of India is New Delhi.'</pre>
+<pre class="custom">'The capital of the United States of America is Washington, D.C., and the capital of India is New Delhi.'</pre>
 
 
 
-## Using `partial_variables`
+## Using partial_variables
 
-Using `partial_variables`, you can partially apply functions.  This is particularly useful when there are **common variables** to be shared.
+Using `partial_variables` , you can partially apply functions.  This is particularly useful when there are **common variables** to be shared.
 
 Common examples are **date or time**.
 
@@ -322,7 +324,7 @@ datetime.now().strftime("%B %d")
 
 
 
-<pre class="custom">'January 01'</pre>
+<pre class="custom">'January 14'</pre>
 
 
 
@@ -350,7 +352,7 @@ prompt.format(n=3)
 
 
 
-<pre class="custom">"Today's date is January 01. Please list 3 celebrities whose birthday is today. Please specify their date of birth."</pre>
+<pre class="custom">"Today's date is January 14. Please list 3 celebrities whose birthday is today. Please specify their date of birth."</pre>
 
 
 
@@ -364,15 +366,11 @@ chain = prompt | llm
 print(chain.invoke(3).content)
 ```
 
-<pre class="custom">Here are three celebrities born on January 1:
+<pre class="custom">Here are three celebrities born on January 14:
     
-    1. **Morris Chestnut** - Born on January 1, 1969. He is an American actor known for his roles in films like "Boyz n the Hood" and "The Best Man."
-    
-    2. **Frank Langella** - Born on January 1, 1938. He is an American actor famous for his work in theater and films such as "Frost/Nixon" and "The Ninth Gate."
-    
-    3. **Verne Troyer** - Born on January 1, 1969. He was an American actor and comedian, best known for his role as Mini-Me in the "Austin Powers" film series. 
-    
-    Please verify these details as they may be subject to change or updates.
+    1. **Dave Grohl** - Born on January 14, 1969.
+    2. **LL Cool J** - Born on January 14, 1968.
+    3. **Jason Bateman** - Born on January 14, 1969.
 </pre>
 
 ```python
@@ -380,16 +378,16 @@ print(chain.invoke(3).content)
 print(chain.invoke({"today": "Jan 02", "n": 3}).content)
 ```
 
-<pre class="custom">Certainly! Here are three celebrities born on January 2:
+<pre class="custom">Here are three celebrities born on January 2:
     
     1. **Cuba Gooding Jr.** - Born on January 2, 1968.
-    2. **Kate Bosworth** - Born on January 2, 1983.
-    3. **Taye Diggs** - Born on January 2, 1971.
+    2. **Taye Diggs** - Born on January 2, 1971.
+    3. **Kate Bosworth** - Born on January 2, 1983.
 </pre>
 
 ## Load prompt template from YAML file
 
-You can manage prompt templates in seperate yaml files and load using `load_prompt`.
+You can manage prompt templates in seperate yaml files and load using `load_prompt` .
 
 ```python
 from langchain_core.prompts import load_prompt
@@ -406,22 +404,22 @@ prompt
 
 
 ```python
-prompt.format(fruit="apple")
+prompt.format(fruit="an apple")
 ```
 
 
 
 
-<pre class="custom">'What is the color of apple?'</pre>
+<pre class="custom">'What is the color of an apple?'</pre>
 
 
 
 ```python
 prompt2 = load_prompt("prompts/capital.yaml")
-print(prompt2.format(country="USA"))
+print(prompt2.format(country="United States of America"))
 ```
 
-<pre class="custom">Please provide information about the capital city of USA.
+<pre class="custom">Please provide information about the capital city of United States of America.
     Summarize the characteristics of the capital in the following format, within 300 words.
     ----
     [Format]
@@ -434,16 +432,16 @@ print(prompt2.format(country="USA"))
     
 </pre>
 
-## `ChatPromptTemplate`
+## ChatPromptTemplate
 
 `ChatPromptTemplate` can be used to include a conversation history as a prompt.
 
-Messages are structured as tuples in the format (`role`, `message`) and are created as a list.
+Messages are structured as tuples in the format (`role` , `message` ) and are created as a list.
 
 **role**
-- `"system"`: A system setup message, typically used for global settings-related prompts.
+- `"system"` : A system setup message, typically used for global settings-related prompts.
 - `"human"` : A user input message.
-- `"ai"`: An AI response message.
+- `"ai"` : An AI response message.
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate
@@ -460,13 +458,13 @@ chat_prompt
 
 
 ```python
-chat_prompt.format(country="USA")
+chat_prompt.format(country="United States of America")
 ```
 
 
 
 
-<pre class="custom">'Human: What is the capital of USA?'</pre>
+<pre class="custom">'Human: What is the capital of United States of America?'</pre>
 
 
 
@@ -511,7 +509,7 @@ llm.invoke(messages).content
 
 
 
-You can also create chain to execute.
+You can also create a chain to execute.
 
 ```python
 chain = chat_template | llm
@@ -528,9 +526,9 @@ chain.invoke({"name": "Teddy", "user_input": "What is your name?"}).content
 
 
 
-## `MessagePlaceholder`
+## MessagePlaceholder
 
-LangChain also provides a `MessagePlaceholder`, which provides complete control over rendering messages during formatting.
+`LangChain` also provides a `MessagePlaceholder` , which provides complete control over rendering messages during formatting.
 
 This can be useful if you’re unsure which roles to use in a message prompt template or if you want to insert a list of messages during formatting.
 
@@ -554,11 +552,11 @@ chat_prompt
 
 
 
-<pre class="custom">ChatPromptTemplate(input_variables=['conversation', 'word_count'], input_types={'conversation': list[typing.Annotated[typing.Union[typing.Annotated[langchain_core.messages.ai.AIMessage, Tag(tag='ai')], typing.Annotated[langchain_core.messages.human.HumanMessage, Tag(tag='human')], typing.Annotated[langchain_core.messages.chat.ChatMessage, Tag(tag='chat')], typing.Annotated[langchain_core.messages.system.SystemMessage, Tag(tag='system')], typing.Annotated[langchain_core.messages.function.FunctionMessage, Tag(tag='function')], typing.Annotated[langchain_core.messages.tool.ToolMessage, Tag(tag='tool')], typing.Annotated[langchain_core.messages.ai.AIMessageChunk, Tag(tag='AIMessageChunk')], typing.Annotated[langchain_core.messages.human.HumanMessageChunk, Tag(tag='HumanMessageChunk')], typing.Annotated[langchain_core.messages.chat.ChatMessageChunk, Tag(tag='ChatMessageChunk')], typing.Annotated[langchain_core.messages.system.SystemMessageChunk, Tag(tag='SystemMessageChunk')], typing.Annotated[langchain_core.messages.function.FunctionMessageChunk, Tag(tag='FunctionMessageChunk')], typing.Annotated[langchain_core.messages.tool.ToolMessageChunk, Tag(tag='ToolMessageChunk')]], FieldInfo(annotation=NoneType, required=True, discriminator=Discriminator(discriminator=<function _get_type at 0x000001EA09429C60>, custom_error_type=None, custom_error_message=None, custom_error_context=None))]]}, partial_variables={}, messages=[SystemMessagePromptTemplate(prompt=PromptTemplate(input_variables=[], input_types={}, partial_variables={}, template='You are a summarization specialist AI assistant. Your mission is to summarize conversations using key points.'), additional_kwargs={}), MessagesPlaceholder(variable_name='conversation'), HumanMessagePromptTemplate(prompt=PromptTemplate(input_variables=['word_count'], input_types={}, partial_variables={}, template='Summarize the conversation so far in {word_count} words.'), additional_kwargs={})])</pre>
+<pre class="custom">ChatPromptTemplate(input_variables=['conversation', 'word_count'], input_types={'conversation': list[typing.Annotated[typing.Union[typing.Annotated[langchain_core.messages.ai.AIMessage, Tag(tag='ai')], typing.Annotated[langchain_core.messages.human.HumanMessage, Tag(tag='human')], typing.Annotated[langchain_core.messages.chat.ChatMessage, Tag(tag='chat')], typing.Annotated[langchain_core.messages.system.SystemMessage, Tag(tag='system')], typing.Annotated[langchain_core.messages.function.FunctionMessage, Tag(tag='function')], typing.Annotated[langchain_core.messages.tool.ToolMessage, Tag(tag='tool')], typing.Annotated[langchain_core.messages.ai.AIMessageChunk, Tag(tag='AIMessageChunk')], typing.Annotated[langchain_core.messages.human.HumanMessageChunk, Tag(tag='HumanMessageChunk')], typing.Annotated[langchain_core.messages.chat.ChatMessageChunk, Tag(tag='ChatMessageChunk')], typing.Annotated[langchain_core.messages.system.SystemMessageChunk, Tag(tag='SystemMessageChunk')], typing.Annotated[langchain_core.messages.function.FunctionMessageChunk, Tag(tag='FunctionMessageChunk')], typing.Annotated[langchain_core.messages.tool.ToolMessageChunk, Tag(tag='ToolMessageChunk')]], FieldInfo(annotation=NoneType, required=True, discriminator=Discriminator(discriminator=<function _get_type at 0x0000020B148D7E20>, custom_error_type=None, custom_error_message=None, custom_error_context=None))]]}, partial_variables={}, messages=[SystemMessagePromptTemplate(prompt=PromptTemplate(input_variables=[], input_types={}, partial_variables={}, template='You are a summarization specialist AI assistant. Your mission is to summarize conversations using key points.'), additional_kwargs={}), MessagesPlaceholder(variable_name='conversation'), HumanMessagePromptTemplate(prompt=PromptTemplate(input_variables=['word_count'], input_types={}, partial_variables={}, template='Summarize the conversation so far in {word_count} words.'), additional_kwargs={})])</pre>
 
 
 
-You can use `MessagesPlaceholder` to add the conversation message list
+You can use `MessagesPlaceholder` to add the conversation message list.
 
 ```python
 formatted_chat_prompt = chat_prompt.format(
@@ -602,6 +600,6 @@ chain.invoke(
 
 
 
-<pre class="custom">'Introduction and greeting from Teddy.'</pre>
+<pre class="custom">'Teddy introduces himself, exchanges greetings.'</pre>
 
 

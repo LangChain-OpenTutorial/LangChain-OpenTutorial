@@ -19,7 +19,7 @@ pre {
 
 # Cross Encoder Reranker
 
-- Author: [Jeongho Shin](https://github.com/ThePurpleCollar)
+- Author: [JeongHo Shin](https://github.com/ThePurpleCollar)
 - Design:
 - Peer Review:
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
@@ -28,11 +28,12 @@ pre {
 
 ## Overview
 
-The **Cross Encoder Reranker** is a technique designed to enhance the performance of Retrieval-Augmented Generation (RAG) systems. This guide explains how to implement a reranker using Hugging Face's cross-encoder model to refine the ranking of retrieved documents, promoting those most relevant to a query.
+The **Cross Encoder Reranker** is a technique designed to enhance the performance of **Retrieval-Augmented Generation (RAG)** systems.<br>This guide explains how to implement a reranker using Hugging Face's Cross Encoders to refine the ranking of retrieved documents, promoting those most relevant to a query.
 
 ### Table of Contents
 
 - [Overview](#overview)
+- [Environment Setup](#environment-setup)
 - [Key Features and Mechanism](#key-features-and-mechanism)
 - [Practical Applications](#practical-applications)
 - [Implementation](#implementation)
@@ -42,9 +43,45 @@ The **Cross Encoder Reranker** is a technique designed to enhance the performanc
 
 ### References
 
-[Hugging Face cross encoder models ](https://huggingface.co/cross-encoder)
+[Hugging Face Cross Encoders](https://huggingface.co/cross-encoder)
 
 ----
+
+## Environment Setup
+
+Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
+
+**[Note]**
+- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+
+```python
+# Set environment variables
+from langchain_opentutorial import set_env
+
+set_env(
+    {
+        "OPENAI_API_KEY": "",
+    }
+)
+```
+
+You can alternatively set OPENAI_API_KEY in .env file and load it.
+
+[Note] This is not necessary if you've already set OPENAI_API_KEY in previous steps.
+
+```python
+# Configuration file to manage API keys as environment variables
+from dotenv import load_dotenv
+
+# Load API key information
+load_dotenv(override=True)
+```
+
+```python
+%%capture --no-stderr
+%pip install langchain-opentutorial
+```
 
 ## Key Features and Mechanism
 
@@ -52,76 +89,65 @@ The **Cross Encoder Reranker** is a technique designed to enhance the performanc
 - Re-rank retrieved documents to refine their ranking, prioritizing the most relevant results for the query.
 
 ### Structure
-- Accepts both the `query` and `document` as a single input pair, enabling joint processing.
+- Accepts both the **query** and **document** as a single input pair, enabling joint processing.
 
 ### Mechanism
-- **Single Input Pair**:  
-  Processes the `query` and `document` as a combined input to output a relevance score directly.
-- **Self-Attention Mechanism**:  
-  Uses self-attention to jointly analyze the `query` and `document`, effectively capturing their semantic relationship.
+- **Single Input Pair** :  
+  Processes the **query** and **document** as a combined input to output a relevance score directly.
+- **Self-Attention Mechanism** :  
+  Uses self-attention to jointly analyze the **query** and **document** , effectively capturing their semantic relationship.
 
 ### Advantages
-- **Higher Accuracy**:  
+- **Higher Accuracy** :  
   Provides more precise similarity scores.
-- **Deep Contextual Analysis**:  
-  Explores semantic nuances between `query` and `document`.
+- **Deep Contextual Analysis** :  
+  Explores semantic nuances between **query** and **document** .
 
 ### Limitations
-- **High Computational Costs**:  
+- **High Computational Costs** :  
   Processing can be time-intensive.
-- **Scalability Issues**:  
+- **Scalability Issues** :  
   Not suitable for large-scale document collections without optimization.
 
----
-
 ## Practical Applications
-- A **Bi-Encoder** quickly retrieves candidate `documents` by computing lightweight similarity scores.  
-- A **Cross Encoder** refines these results by deeply analyzing the semantic relationship between the `query` and the retrieved `documents`.
-
----
+- A **Bi-Encoder** quickly retrieves candidate **documents** by computing lightweight similarity scores.  
+- A **Cross Encoder** refines these results by deeply analyzing the semantic relationship between the **query** and the retrieved **documents** .
 
 ## Implementation
-- Use Hugging Face cross encoder models, such as `BAAI/bge-reranker`.
-- Easily integrate with frameworks like `LangChain` through the `CrossEncoderReranker` component.
-
----
+- Use Hugging Face cross encoders or `BAAI/bge-reranker` models.
+- Easily integrate with frameworks like **LangChain** through the `CrossEncoderReranker` component.
 
 ## Key Advantages of Reranker
-- **Precise Similarity Scoring**:  
-  Delivers highly accurate measurements of relevance between the `query` and `documents`.
-- **Semantic Depth**:  
-  Analyzes deeper semantic relationships, uncovering nuances in `query-document` interactions.
-- **Refined Search Quality**:  
-  Improves the relevance and quality of the retrieved `documents`.
-- **RAG System Boost**:  
-  Enhances the performance of `Retrieval-Augmented Generation (RAG)` systems by refining input relevance.
-- **Seamless Integration**:  
+- **Precise Similarity Scoring** :  
+  Delivers highly accurate measurements of relevance between the **query** and **documents**.
+- **Semantic Depth** :  
+  Analyzes deeper semantic relationships, uncovering nuances in **query** - **document** interactions.
+- **Refined Search Quality** :  
+  Improves the relevance and quality of the retrieved **documents** .
+- **RAG System Boost** :  
+  Enhances the performance of **Retrieval-Augmented Generation (RAG)** systems by refining input relevance.
+- **Seamless Integration** :  
   Easily adaptable to various workflows and compatible with multiple frameworks.
-- **Model Versatility**:  
+- **Model Versatility** :  
   Offers flexibility with a wide range of pre-trained models for tailored use cases.
 
----
-
 ## Document Count Settings for Reranker
-- Reranking is generally performed on the top `5–10` `documents` retrieved during the initial search.
-- The ideal number of `documents` for reranking should be determined through experimentation and evaluation, as it depends on the dataset characteristics and computational resources available.
-
----
+- Reranking is generally performed on the top **5–10** **documents** retrieved during the initial search.
+- The ideal number of **documents** for reranking should be determined through experimentation and evaluation, as it depends on the dataset characteristics and computational resources available.
 
 ## Trade-offs When Using a Reranker
-- **Accuracy vs Processing Time**:  
+- **Accuracy vs Processing Time** :  
   Striking a balance between achieving higher accuracy and minimizing processing time.
-- **Performance Improvement vs Computational Cost**:  
+- **Performance Improvement vs Computational Cost** :  
   Weighing the benefits of improved performance against the additional computational resources required.
-- **Search Speed vs Relevance Accuracy**:  
+- **Search Speed vs Relevance Accuracy** :  
   Managing the trade-off between faster retrieval and maintaining high relevance in results.
-- **System Requirements**:  
+- **System Requirements** :  
   Ensuring the system meets the necessary hardware and software requirements to support reranking.
-- **Dataset Characteristics**:  
-  Considering the scale, diversity, and specific attributes of the `dataset` to optimize reranker performance.
----
+- **Dataset Characteristics** :  
+  Considering the scale, diversity, and specific attributes of the dataset to optimize reranker performance.
 
-Explaining the Implementation of Cross Encoder Reranker with a Simple Example
+Explaining the Implementation of **Cross Encoder Reranker** with a Simple Example
 
 ```python
 # Helper function to format and print document content
@@ -149,9 +175,10 @@ text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100
 # Split documents into chunks
 texts = text_splitter.split_documents(documents)
 
-# Set up the embedding model
+# # Set up the embedding model
 embeddings_model = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/msmarco-distilbert-dot-v5"
+    model_name="sentence-transformers/msmarco-distilbert-dot-v5",
+    model_kwargs = {"tokenizer_kwargs": {"clean_up_tokenization_spaces": False}}
 )
 
 # Create FAISS index from documents and set up retriever
@@ -242,12 +269,10 @@ pretty_print_docs(docs)
     Related Keywords: Natural Language Processing (NLP), Text Generation, Deep Learning
 </pre>
 
-Now, let's wrap the base retriever with a `ContextualCompressionRetriever`. The `CrossEncoderReranker` leverages `HuggingFaceCrossEncoder` to re-rank the retrieved results.
+Now, let's wrap the `base_retriever` with a `ContextualCompressionRetriever` . The `CrossEncoderReranker` leverages `HuggingFaceCrossEncoder` to re-rank the retrieved results.
 
 
 Multilingual Support BGE Reranker: [`bge-reranker-v2-m3`](https://huggingface.co/BAAI/bge-reranker-v2-m3)
-
-
 
 ```python
 from langchain.retrievers import ContextualCompressionRetriever
