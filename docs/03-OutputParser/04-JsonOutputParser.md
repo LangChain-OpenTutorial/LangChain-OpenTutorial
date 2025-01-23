@@ -19,9 +19,9 @@ pre {
 
 # JsonOutputParser
 
-- Author: [ash-hun(최재훈)](https://github.com/ash-hun)
+- Author: [Jaehun Choi](https://github.com/ash-hun)
 - Design: 
-- Peer Review : [Jeongeun Lim](https://www.linkedin.com/in/jeongeun-lim-808978188/), [brian604](https://github.com/brian604), [Jeongeun Lim](https://www.linkedin.com/in/jeongeun-lim-808978188/)
+- Peer Review : [Jeongeun Lim](https://www.linkedin.com/in/jeongeun-lim-808978188/), [brian604](https://github.com/brian604)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/04-JsonOutputParser.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/04-JsonOutputParser.ipynb)
@@ -34,7 +34,7 @@ To ensure that the LLM processes data accurately and efficiently, generating JSO
 
 **[Note]**
 
-`JSON (JavaScript Object Notation)` is a lightweight data interchange format used for storing and structuring data. It plays a crucial role in web development and is widely used for communication between servers and clients. JSON is based on text that is easy to read and simple for machines to parse and generate.
+**JSON (JavaScript Object Notation)** is a lightweight data interchange format used for storing and structuring data. It plays a crucial role in web development and is widely used for communication between servers and clients. JSON is based on text that is easy to read and simple for machines to parse and generate.
 
 Basic Structure of JSON  
 JSON data consists of key-value pairs. Here, the "key" is a string, and the "value" can be various data types. JSON has two primary structures:
@@ -58,13 +58,13 @@ JSON data consists of key-value pairs. Here, the "key" is a string, and the "val
 ### Table of Contents
 
 - [Overview](#overview)
-- [Environement Setup](#environment-setup)
+- [Environment Setup](#environment-setup)
 - [Using JsonOutputParser with Pydantic](#using-jsonoutputparser-with-pydantic)
 - [Using JsonOutputParser without Pydantic](#using-jsonoutputparser-without-pydantic)
 
 ### References
 
-- [LangChain Core - OutputParser : JsonOutputParser](https://python.langchain.com/api_reference/core/output_parsers/langchain_core.output_parsers.json.JsonOutputParser.html)
+- [JsonOutputParser](https://python.langchain.com/api_reference/core/output_parsers/langchain_core.output_parsers.json.JsonOutputParser.html)
 ----
 
 ## Environment Setup
@@ -77,7 +77,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -132,10 +132,10 @@ load_dotenv(override=True)
 
 ## Using JsonOutputParser with Pydantic  
 
-If you need to generate output in JSON format, you can easily implement it using LangChain's JsonOutputParser. There are 2 ways to generate output in JSON format: 
+If you need to generate output in JSON format, you can easily implement it using LangChain's `JsonOutputParser`. There are 2 ways to generate output in JSON format: 
 
-- Use Pydantic
-- Don't use Pydantic
+- Use `Pydantic`
+- Don't use `Pydantic`
 
 Follow the steps below to implement it.
 
@@ -230,7 +230,7 @@ answer
 
 ## Using JsonOutputParser Without Pydantic  
 
-You can generate output in JSON format without Pydantic. Follow the steps below to implement it :
+You can generate output in JSON format without `Pydantic`. Follow the steps below to implement it :
 
 ```python
 # Write your question

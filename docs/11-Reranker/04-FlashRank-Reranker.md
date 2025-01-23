@@ -27,9 +27,9 @@ pre {
 
 ## Overview
 
-> [FlashRank](https://github.com/PrithivirajDamodaran/FlashRank) is an ultra-lightweight and ultra-fast Python library designed to add reranking to existing search and `retrieval` pipelines. It is based on state-of-the-art (`SoTA`) `cross-encoders`.
+> [FlashRank](https://github.com/PrithivirajDamodaran/FlashRank) is an ultra-lightweight and ultra-fast Python library designed to add reranking to existing search and **retrieval** pipelines. It is based on state-of-the-art (**SoTA**) **cross-encoders**.
 
-This notebook introduces the use of `FlashRank-Reranker` within the LangChain framework, showcasing how to apply reranking techniques to improve the quality of search or `retrieval` results. It provides practical code examples and explanations for integrating `FlashRank` into a LangChain pipeline, highlighting its efficiency and effectiveness. The focus is on leveraging `FlashRank`'s capabilities to enhance the ranking of outputs in a streamlined and scalable way.
+This notebook introduces the use of `FlashRank-Reranker` within the LangChain framework, showcasing how to apply reranking techniques to improve the quality of search or **retrieval** results. It provides practical code examples and explanations for integrating `FlashRank` into a LangChain pipeline, highlighting its efficiency and effectiveness. The focus is on leveraging `FlashRank`'s capabilities to enhance the ranking of outputs in a streamlined and scalable way.
 
 ### Table of Contents
 
@@ -56,7 +56,7 @@ set_env(
 )
 ```
 
-You can alternatively set OPENAI_API_KEY in .env file and load it.
+You can alternatively set OPENAI_API_KEY in `.env` file and load it.
 
 [Note] This is not necessary if you've already set OPENAI_API_KEY in previous steps.
 
@@ -100,7 +100,7 @@ def pretty_print_docs(docs):
 
 ## FlashrankRerank
 
-Load data for a simple example and create a retriever.
+Load data for a simple example and create a **retriever**.
 
 ```python
 from langchain_community.document_loaders import TextLoader
@@ -136,7 +136,7 @@ docs = retriever.invoke(query)
 pretty_print_docs(docs)
 ```
 
-Now, let's wrap the base `retriever` with a `ContextualCompressionRetriever` and use `FlashrankRerank` as the compressor.
+Now, let's wrap the base **retriever** with a `ContextualCompressionRetriever` and use `FlashrankRerank` as the compressor.
 
 ```python
 from langchain.retrievers import ContextualCompressionRetriever
@@ -163,7 +163,7 @@ compressed_docs = compression_retriever.invoke(
 print([doc.metadata["id"] for doc in compressed_docs])
 ```
 
-Compare the results after reanker is applied.
+Compare the results after reranker is applied.
 
 ```python
 # Print the results of document compressions

@@ -72,7 +72,7 @@ Click the "Add to credit balance" button to enter the amount in USD you wish to 
 
 
 
-You can add funds starting from $5 (meaning you must pay at least the minimum amount of $5).
+You can add funds starting from `$5` (meaning you must pay at least the minimum amount of $5).
 
 After entering the amount, click "Continue" to proceed with the payment.
 
@@ -119,7 +119,7 @@ If your key is leaked, others can use your API KEY to access GPT services, and c
 Setting up the `.env` File
 
 1. Create a `.env` file in your project's root directory.
-2. In the `.env` file, enter `OPENAI_API_KEY=your-copied-key` then press Ctrl + S to save and close the file.
+2. In the `.env` file, enter `OPENAI_API_KEY=your-copied-key` then press Ctrl + S (or Command + S on Mac) to save and close the file.
 
 ![step12](./img/02-OpenAIAPIKeyGeneration-12.png)
 

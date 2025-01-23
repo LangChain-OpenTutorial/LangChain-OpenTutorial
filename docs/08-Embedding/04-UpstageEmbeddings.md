@@ -22,13 +22,14 @@ pre {
 - Author: [Sun Hyoung Lee](https://github.com/LEE1026icarus)
 - Design: 
 - Peer Review : [Pupba](https://github.com/pupba), [DoWoung Kong](https://github.com/krkrong)
+- Proofread:
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/04-UpstageEmbeddings.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/04-UpstageEmbeddings.ipynb)
 
 ## Overview
 
-'Upstage' is a domestic startup specializing in artificial intelligence (AI) technology, particularly in large language models (LLM) and document AI.
+'Upstage' is a Korean startup specializing in artificial intelligence (AI) technology, particularly in large language models (LLM) and document AI.
 
 ### Table of Contents
 
@@ -40,24 +41,25 @@ pre {
 
 - [Upstage API docs](https://console.upstage.ai/docs/getting-started/overview)
 - [Upstage Embeddings](https://console.upstage.ai/docs/capabilities/embeddings)
+---
 
 
 ## Environment Setup
 
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
-**[Note]**
+ **[Note]** 
 - `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
 - You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ### API Key Configuration
-To use `UpstageEmbeddings`, you need to [obtain a Upstage API key](https://console.upstage.ai/api-keys).
+To use `UpstageEmbeddings` , you need to [obtain a Upstage API key](https://console.upstage.ai/api-keys).
 
-Once you have your API key, set it as the value for the variable `UPSTAGE_API_KEY`.
+Once you have your API key, set it as the value for the variable `UPSTAGE_API_KEY` .
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -89,7 +91,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `UPSTAGE_API_KEY` in .env file and load it.
+You can alternatively set `UPSTAGE_API_KEY` in `.env` file and load it.
 
 [Note] This is not necessary if you've already set `UPSTAGE_API_KEY` in previous steps.
 
@@ -124,8 +126,8 @@ texts = [
 
 | Model                              | Release Date | Context Length | Description                                                                                         |
 |------------------------------------|--------------|----------------|-----------------------------------------------------------------------------------------------------|
-| solar-embedding-1-large-query      | 2024-05-10   | 4000           | A Solar-base Query Embedding model with a 4k context limit. This model is optimized for embedding user queries in information retrieval tasks such as search and re-ranking. |
-| solar-embedding-1-large-passage    | 2024-05-10   | 4000           | A Solar-base Passage Embedding model with a 4k context limit. This model is optimized for embedding documents or texts for retrieval purposes. |
+| embedding-query      | 2024-05-10   | 4000           | A Solar-base Query Embedding model with a 4k context limit. This model is optimized for embedding user queries in information retrieval tasks such as search and re-ranking. |
+| embedding-passage    | 2024-05-10   | 4000           | A Solar-base Passage Embedding model with a 4k context limit. This model is optimized for embedding documents or texts for retrieval purposes. |
 
 ```python
 from langchain_upstage import UpstageEmbeddings
@@ -137,13 +139,12 @@ query_embeddings = UpstageEmbeddings(model="embedding-query")
 passage_embeddings = UpstageEmbeddings(model="embedding-passage")
 ```
 
-`Query` is embedded.
-
+Embed the `query`
 
 ```python
 # Query Embedding
 embedded_query = query_embeddings.embed_query(
-    "Please provide detailed information about LangChain."
+    " Please provide detailed information about LangChain. "
 )
 # Print embedding dimension
 len(embedded_query)
@@ -156,7 +157,7 @@ len(embedded_query)
 
 
 
-The document is embedded.
+Embed the document
 
 ```python
 # Document Embedding
