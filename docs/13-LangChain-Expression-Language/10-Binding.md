@@ -17,7 +17,7 @@ pre {
 
 </style>
 
-# Runtime Arguments Binding
+# Binding
 
 - Author: [Wonyoung Lee](https://github.com/BaBetterB)
 - Peer Review: 
@@ -29,18 +29,21 @@ pre {
 
 ## Overview
 
-This tutorial covers a scenario where, when calling a Runnable inside a Runnable sequence, we need to pass constant arguments that are not included in the output of the previous Runnable or user input. 
-In such cases, `Runnable.bind()` can be used to easily pass these arguments.
+This tutorial covers a scenario where you need to pass constant arguments(not included in the output of the previous Runnable or user input) when calling a Runnable inside a Runnable sequence. In such cases, `Runnable.bind()` is a convenient way to pass these arguments
+
 
 ### Table of Contents
 
 - [Overview](#overview)
 - [Environement Setup](#environment-setup)
+- [Runtime Arguments Binding](#runtime-arguments-binding)
 - [Connecting OpenAI Functions](#connecting-openai-functions)
 - [Connecting OpenAI Tools](#connecting-openai-tools)
 
 ### References
 
+- [LangChain RunnablePassthrough API reference](https://python.langchain.com/api_reference/core/runnables/langchain_core.runnables.passthrough.RunnablePassthrough.html)
+- [LangChain ChatPromptTemplate API reference](https://python.langchain.com/api_reference/core/prompts/langchain_core.prompts.chat.ChatPromptTemplate.html)
 
 ----
 
@@ -94,7 +97,7 @@ set_env(
         "LANGCHAIN_API_KEY": "",
         "LANGCHAIN_TRACING_V2": "true",
         "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
-        "LANGCHAIN_PROJECT": "Runtime Arguments Binding",  # title
+        "LANGCHAIN_PROJECT": "Binding",  # title
     }
 )
 ```
@@ -114,9 +117,22 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 ```
 
-Use `RunnablePassthrough` to pass the `{equation_statement}` variable to the prompt, and use `StrOutputParser` to parse the model's output into a string, creating a `runnable` object.
 
-The `runnable.invoke()` method is called to pass the equation statement "x raised to the third plus seven equals 12" and output the result.
+
+
+<pre class="custom">True</pre>
+
+
+
+## Runtime Arguments Binding
+
+This section explains how to use `Runnable.bind()` to pass constant arguments to a `Runnable` within a sequence, especially when those arguments aren't part of the previous Runnable's output or use input.
+
+**Passing variables to prompts:**
+
+1. Use `RunnablePassthrough` to pass the `{equation_statement}` variable to the prompt.
+2. Use `StrOutputParser` to parse the model's output into a string, creating a `runnable` object.
+3. Call the `runnable.invoke()` method to pass the equation statement (e.g., \"x raised to the third plus seven equals 12\") get the result.
 
 ```python
 from langchain_core.output_parsers import StrOutputParser
@@ -153,14 +169,22 @@ print(result)
 ```
 
 <pre class="custom">EQUATION: x^3 + 7 = 12
-    SOLUTION: x^3 = 12 - 7
-    x^3 = 5
-    x = ∛5
+    
+    SOLUTION:
+    1. Subtract 7 from both sides of the equation to isolate the x^3 term:
+       x^3 + 7 - 7 = 12 - 7
+       x^3 = 5
+    
+    2. Take the cube root of both sides to solve for x:
+       x = 5^(1/3)
+    
+    Therefore, the solution is:
+    x ≈ 1.71 (rounded to two decimal places)
 </pre>
 
-Using bind() Method with Stop Word.
-You may want to call the model using a specific `stop` word. 
-`model.bind()` can be used to call the language model and stop the generation at the "SOLUTION" token.
+**Using bind() method with stop words**
+
+For controlling the end of the model's output using a specific stop word, you can use `model.bind()` to instruct the model to halt its generation upon encountering the stop token like `SOLUTION`.
 
 ```python
 runnable = (
@@ -178,14 +202,14 @@ print(runnable.invoke("x raised to the third plus seven equals 12"))
 
 <pre class="custom">EQUATION: x^3 + 7 = 12
     
+    
 </pre>
 
 ## Connecting OpenAI Functions
 
-One particularly useful way to use bind() is to connect OpenAI Functions with compatible OpenAI models.
+`bind()` is particularly useful for connecting OpenAI Functions with compatible OpenAI models.
 
-Below is the code that defines `OpenAI Functions` according to a schema.
-
+Let's define `openai_function` according to a schema.
 
 ```python
 openai_function = {
@@ -212,8 +236,9 @@ openai_function = {
 }
 ```
 
-Binding the solver Function.
-We use the `bind()` method to bind the function call named `solver` to the model.
+**Binding a solver function.**
+
+We can then use the `bind()` method to associate a function call (like `solver`) with the language model.
 
 ```python
 # Write the following equation using algebraic symbols and then solve it
@@ -246,17 +271,15 @@ runnable.invoke("x raised to the third plus seven equals 12")
 
 
 
-<pre class="custom">AIMessage(content='', additional_kwargs={'function_call': {'arguments': '{\n"equation": "x^3 + 7 = 12",\n"solution": "x = ∛5"\n}', 'name': 'solver'}, 'refusal': None}, response_metadata={'token_usage': {'completion_tokens': 28, 'prompt_tokens': 95, 'total_tokens': 123, 'completion_tokens_details': {'accepted_prediction_tokens': 0, 'audio_tokens': 0, 'reasoning_tokens': 0, 'rejected_prediction_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0}}, 'model_name': 'gpt-4-0613', 'system_fingerprint': None, 'finish_reason': 'stop', 'logprobs': None}, id='run-6fa11a89-41ec-4316-8a75-beab094d7803-0', usage_metadata={'input_tokens': 95, 'output_tokens': 28, 'total_tokens': 123, 'input_token_details': {'audio': 0, 'cache_read': 0}, 'output_token_details': {'audio': 0, 'reasoning': 0}})</pre>
+<pre class="custom">AIMessage(content='', additional_kwargs={'function_call': {'arguments': '{"equation":"x^3 + 7 = 12","solution":"x^3 = 12 - 7; x^3 = 5; x = 5^(1/3)"}', 'name': 'solver'}, 'refusal': None}, response_metadata={'token_usage': {'completion_tokens': 44, 'prompt_tokens': 95, 'total_tokens': 139, 'completion_tokens_details': {'accepted_prediction_tokens': 0, 'audio_tokens': 0, 'reasoning_tokens': 0, 'rejected_prediction_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0}}, 'model_name': 'gpt-4o-2024-08-06', 'system_fingerprint': 'fp_50cad350e4', 'finish_reason': 'stop', 'logprobs': None}, id='run-bb333525-2117-4a09-bf1c-c6bdca21b50c-0', usage_metadata={'input_tokens': 95, 'output_tokens': 44, 'total_tokens': 139, 'input_token_details': {'audio': 0, 'cache_read': 0}, 'output_token_details': {'audio': 0, 'reasoning': 0}})</pre>
 
 
 
 ## Connecting OpenAI Tools
 
-Here’s how you can connect and use OpenAI tools.
-
-The tools object helps you use various OpenAI features easily.
-
-For example, by calling the `tool.run` method with a natural language question, the model can generate an answer to that question.
+This section explains how to connect and use OpenAI tools within your LangChain applications.
+The `tools` object simplifies using various OpenAI features.
+For example, calling the `tool.run` method with a natural language query allows the model to utilize the spcified tool to generate a response.
 
 ```python
 tools = [
@@ -282,9 +305,11 @@ tools = [
 ]
 ```
 
-Binding Tools and Invoking the Model
-- Use `bind()` to bind `tools` to the model.
-- Call the `invoke()` method with a question like "Tell me the current weather in San Francisco, New York, and Los Angeles?"
+**Binding tools and invoking the model:**
+
+1. Use `bind()` to associate `tools` with the language model.
+2. Call the `invoke()` method on the bound model, providing a natural language question as input.
+
 
 ```python
 # Initialize the ChatOpenAI model and bind the tools.
@@ -298,6 +323,6 @@ model.invoke(
 
 
 
-<pre class="custom">AIMessage(content='', additional_kwargs={'tool_calls': [{'id': 'call_q8WYveGpmjfckyAU3TENgNMi', 'function': {'arguments': '{\n  "location": "San Francisco, CA"\n}', 'name': 'get_current_weather'}, 'type': 'function'}], 'refusal': None}, response_metadata={'token_usage': {'completion_tokens': 20, 'prompt_tokens': 92, 'total_tokens': 112, 'completion_tokens_details': {'accepted_prediction_tokens': 0, 'audio_tokens': 0, 'reasoning_tokens': 0, 'rejected_prediction_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0}}, 'model_name': 'gpt-4-0613', 'system_fingerprint': None, 'finish_reason': 'tool_calls', 'logprobs': None}, id='run-9c4e4e91-244c-49d1-a54b-b0922a3bc228-0', tool_calls=[{'name': 'get_current_weather', 'args': {'location': 'San Francisco, CA'}, 'id': 'call_q8WYveGpmjfckyAU3TENgNMi', 'type': 'tool_call'}], usage_metadata={'input_tokens': 92, 'output_tokens': 20, 'total_tokens': 112, 'input_token_details': {'audio': 0, 'cache_read': 0}, 'output_token_details': {'audio': 0, 'reasoning': 0}})</pre>
+<pre class="custom">AIMessage(content='', additional_kwargs={'tool_calls': [{'id': 'call_ixydz9CyFSyB0LHUATftfdXA', 'function': {'arguments': '{"location": "San Francisco, CA"}', 'name': 'get_current_weather'}, 'type': 'function'}, {'id': 'call_VFAGF4YanFQVg1lJQ9x1miR3', 'function': {'arguments': '{"location": "New York, NY"}', 'name': 'get_current_weather'}, 'type': 'function'}, {'id': 'call_RMYL8pWFlMarWkOPkigKQSug', 'function': {'arguments': '{"location": "Los Angeles, CA"}', 'name': 'get_current_weather'}, 'type': 'function'}], 'refusal': None}, response_metadata={'token_usage': {'completion_tokens': 71, 'prompt_tokens': 90, 'total_tokens': 161, 'completion_tokens_details': {'accepted_prediction_tokens': 0, 'audio_tokens': 0, 'reasoning_tokens': 0, 'rejected_prediction_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0}}, 'model_name': 'gpt-4o-2024-08-06', 'system_fingerprint': 'fp_50cad350e4', 'finish_reason': 'tool_calls', 'logprobs': None}, id='run-50665b85-c055-413a-8a40-3c1070aa3c45-0', tool_calls=[{'name': 'get_current_weather', 'args': {'location': 'San Francisco, CA'}, 'id': 'call_ixydz9CyFSyB0LHUATftfdXA', 'type': 'tool_call'}, {'name': 'get_current_weather', 'args': {'location': 'New York, NY'}, 'id': 'call_VFAGF4YanFQVg1lJQ9x1miR3', 'type': 'tool_call'}, {'name': 'get_current_weather', 'args': {'location': 'Los Angeles, CA'}, 'id': 'call_RMYL8pWFlMarWkOPkigKQSug', 'type': 'tool_call'}], usage_metadata={'input_tokens': 90, 'output_tokens': 71, 'total_tokens': 161, 'input_token_details': {'audio': 0, 'cache_read': 0}, 'output_token_details': {'audio': 0, 'reasoning': 0}})</pre>
 
 

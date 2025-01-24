@@ -28,17 +28,17 @@ pre {
 
 ## Overview
 
-This tutorial covers how to set up and use LangSmith, a powerful platform for developing, monitoring, and testing LLM applications. 
-LangSmith provides comprehensive tracking capabilities that are essential for understanding and optimizing your LLM applications.
+This tutorial covers how to set up and use `LangSmith`, a powerful platform for developing, monitoring, and testing LLM applications. 
+`LangSmith` provides comprehensive tracking capabilities that are essential for understanding and optimizing your LLM applications.
 
-LangSmith tracking helps you monitor:
+`LangSmith` tracking helps you monitor:
 
-Token usage and associated costs
+- Token usage and associated costs
 - Execution time and performance metrics
 - Error rates and unexpected behaviors
 - Agent interactions and chain operations
 
-In this tutorial, we'll walk through the process of setting up LangSmith tracking and integrating it with your LangChain applications.
+In this tutorial, we'll walk through the process of setting up `LangSmith` tracking and integrating it with your `LangChain` applications.
 
 ### Table of Contents
 
@@ -56,8 +56,8 @@ In this tutorial, we'll walk through the process of setting up LangSmith trackin
 
 ## Setting up a LangSmith trace
 
-LangSmith is a platform for developing, monitoring, and testing LLM applications. 
-If you're starting a project or learning LangChain, LangSmith is a must-have to get set up and running.
+`LangSmith` is a platform for developing, monitoring, and testing LLM applications. 
+If you're starting a project or learning `LangChain`, `LangSmith` is a must-have to get set up and running.
 
 ### Project-Level Tracking
 At the project level, you can check execution counts, error rates, token usage, and billing information.
@@ -89,13 +89,13 @@ Using traces is very simple.
 
 1. Go to https://smith.langchain.com/ and sign up.
 2. After signing up, you will need to verify your email.
-3. Click the left cog (Setting) - centre "Personal" - "Create API Key" to get an API key.
+3. Click the left cog (Setting) - center "Personal" - "Create API Key" to get an API key.
 
 ![get-api-key](./img/03-langsmith-tracking-setup-04.png)
 
 
 
-set environment variables is in `.env`.
+Set environment variables is in the `.env` file.
 
 Copy the contents of `.env_sample` and load it into your `.env` with the key you set.
 
@@ -110,7 +110,7 @@ load_dotenv(override=True)
 <pre class="custom">True</pre>
 
 
-In Description, enter a description that makes sense to you and click the Create API Key button to create it.
+In Description, enter a description that makes sense to you and click the Create API Key button.
 
 ![create-api-key](./assets/03-langsmith-tracking-setup-05.png
 )
@@ -129,10 +129,10 @@ Copy the generated key and proceed to the next step.
 
 First, enter the key you received from LangSmith and your project information in the .env file.
 
-- LANGCHAIN_TRACING_V2: Set to "true" to start tracking.
-- LANGCHAIN_ENDPOINT: https://api.smith.langchain.com Do not change.
-- LANGCHAIN_API_KEY: Enter the key issued in the previous step.
-- LANGCHAIN_PROJECT: If you enter a project name, all runs will be traced to that project group.
+- `LANGCHAIN_TRACING_V2`: Set to "true" to start tracking.
+- `LANGCHAIN_ENDPOINT`: https://api.smith.langchain.com (Do not modify this value).
+- `LANGCHAIN_API_KEY`: Enter the key you received in the previous step.
+- `LANGCHAIN_PROJECT`: Specify a project name to group and trace all runs under that project group.
 
 ![setting-api-key](./img/03-langsmith-tracking-setup-07.png)
 
@@ -142,7 +142,7 @@ First, enter the key you received from LangSmith and your project information in
 
 Enabling tracking is very simple. All you need to do is set an environment variable.
 
-Copy the contents of .env_sample and load it into your .env with the key you set for Bonnie.
+Copy the contents of `.env_sample` and load it into your `.env` with the key you set
 
 ```python
 %%capture --no-stderr
@@ -162,7 +162,7 @@ load_dotenv(override=True)
 
 
 
-As long as your traces are enabled and your API key and project name are set correctly, this should be sufficient.
+As long as your traces are enabled and your API key and project name are set correctly, tracking will work properly.
 
 However, if you want to change the project name or change the tracking, you can do so with the code below.
 
@@ -171,6 +171,6 @@ import os
 
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
-os.environ["LANGCHAIN_PROJECT"] = "<LangChain Peoject Name>"
+os.environ["LANGCHAIN_PROJECT"] = "<LangChain Project Name>"
 os.environ["LANGCHAIN_API_KEY"] = "<LangChain API KEY>"
 ```
