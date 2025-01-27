@@ -220,9 +220,9 @@ print_evaluator_prompt(qa_evalulator)
     
     Grade the student answers based ONLY on their factual accuracy. Ignore differences in punctuation and phrasing between the student answer and true answer. It is OK if the student answer contains more information than the true answer, as long as it does not contain any conflicting statements. Begin! 
     
-    QUESTION: [33;1m[1;3m{query}[0m
-    STUDENT ANSWER: [33;1m[1;3m{result}[0m
-    TRUE ANSWER: [33;1m[1;3m{answer}[0m
+    QUESTION: {query}
+    STUDENT ANSWER: {result}
+    TRUE ANSWER: {answer}
     GRADE:
 </pre>
 
@@ -348,9 +348,9 @@ print_evaluator_prompt(context_qa_evaluator)
     
     Grade the student answers based ONLY on their factual accuracy. Ignore differences in punctuation and phrasing between the student answer and true answer. It is OK if the student answer contains more information than the true answer, as long as it does not contain any conflicting statements. Begin! 
     
-    QUESTION: [33;1m[1;3m{query}[0m
-    CONTEXT: [33;1m[1;3m{context}[0m
-    STUDENT ANSWER: [33;1m[1;3m{result}[0m
+    QUESTION: {query}
+    CONTEXT: {context}
+    STUDENT ANSWER: {result}
     EXPLANATION:
     Context_QA Evaluator Prompt
     You are a teacher grading a quiz.
@@ -364,9 +364,9 @@ print_evaluator_prompt(context_qa_evaluator)
     
     Grade the student answers based ONLY on their factual accuracy. Ignore differences in punctuation and phrasing between the student answer and true answer. It is OK if the student answer contains more information than the true answer, as long as it does not contain any conflicting statements. Begin! 
     
-    QUESTION: [33;1m[1;3m{query}[0m
-    CONTEXT: [33;1m[1;3m{context}[0m
-    STUDENT ANSWER: [33;1m[1;3m{result}[0m
+    QUESTION: {query}
+    CONTEXT: {context}
+    STUDENT ANSWER: {result}
     GRADE:
 </pre>
 
@@ -627,13 +627,13 @@ print_evaluator_prompt(labeled_criteria_evaluator)
 <pre class="custom">You are assessing a submitted answer on a given task or input based on a set of criteria. Here is the data:
     [BEGIN DATA]
     ***
-    [Input]: [33;1m[1;3m{input}[0m
+    [Input]: {input}
     ***
-    [Submission]: [33;1m[1;3m{output}[0m
+    [Submission]: {output}
     ***
     [Criteria]: helpfulness: Is this submission helpful to the user, taking into account the correct reference answer?
     ***
-    [Reference]: [33;1m[1;3m{reference}[0m
+    [Reference]: {reference}
     ***
     [END DATA]
     Does the submission meet the Criteria? First, write out in a step by step manner your reasoning about each criterion to be sure that your conclusion is correct. Avoid simply stating the correct answers at the outset. Then print only the single character "Y" or "N" (without quotes or punctuation) on its own line corresponding to the correct answer of whether the submission meets all criteria. At the end, repeat just the letter again by itself on a new line.
@@ -664,13 +664,13 @@ print_evaluator_prompt(relevance_evaluator)
 <pre class="custom">You are assessing a submitted answer on a given task or input based on a set of criteria. Here is the data:
     [BEGIN DATA]
     ***
-    [Input]: [33;1m[1;3m{input}[0m
+    [Input]: {input}
     ***
-    [Submission]: [33;1m[1;3m{output}[0m
+    [Submission]: {output}
     ***
     [Criteria]: relevance: Is the submission referring to a real quote from the text?
     ***
-    [Reference]: [33;1m[1;3m{reference}[0m
+    [Reference]: {reference}
     ***
     [END DATA]
     Does the submission meet the Criteria? First, write out in a step by step manner your reasoning about each criterion to be sure that your conclusion is correct. Avoid simply stating the correct answers at the outset. Then print only the single character "Y" or "N" (without quotes or punctuation) on its own line corresponding to the correct answer of whether the submission meets all criteria. At the end, repeat just the letter again by itself on a new line.
@@ -737,22 +737,22 @@ labeled_score_evaluator = LangChainStringEvaluator(
 print_evaluator_prompt(labeled_score_evaluator)
 ```
 
-<pre class="custom">================================[1m System Message [0m================================
+<pre class="custom">================================ System Message ================================
     
     You are a helpful assistant.
     
-    ================================[1m Human Message [0m=================================
+    ================================ Human Message =================================
     
     [Instruction]
-    Please act as an impartial judge and evaluate the quality of the response provided by an AI assistant to the user question displayed below. [33;1m[1;3m{criteria}[0m[Ground truth]
-    [33;1m[1;3m{reference}[0m
+    Please act as an impartial judge and evaluate the quality of the response provided by an AI assistant to the user question displayed below. {criteria}[Ground truth]
+    {reference}
     Begin your evaluation by providing a short explanation. Be as objective as possible. After providing your explanation, you must rate the response on a scale of 1 to 10 by strictly following this format: "[[rating]]", for example: "Rating: [[5]]".
     
     [Question]
-    [33;1m[1;3m{input}[0m
+    {input}
     
     [The Start of Assistant's Answer]
-    [33;1m[1;3m{prediction}[0m
+    {prediction}
     [The End of Assistant's Answer]
 </pre>
 

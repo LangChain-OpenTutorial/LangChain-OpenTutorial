@@ -19,12 +19,11 @@ pre {
 
 # Document & Document Loader
 
-- Author: [geminii01](https://github.com/geminii01)
-- Design: None
-- Peer Review : [Taylor(Jihyun Kim)](https://github.com/Taylor0819), [ppakyeah](https://github.com/ppakyeah)- Peer Review :
+- Author: [Jaemin Hong](https://github.com/geminii01)
+- Peer Review : [Taylor(Jihyun Kim)](https://github.com/Taylor0819), [ppakyeah](https://github.com/ppakyeah)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/01-Document-Loader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/01-Document-Loader.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/01-DocumentLoader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/01-DocumentLoader.ipynb)
 
 ## Overview
 
@@ -51,11 +50,11 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 **[Note]**
 - `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -64,6 +63,7 @@ from langchain_opentutorial import package
 
 package.install(
     [
+        "langsmith",
         "langchain_core",
         "langchain_community",
         "langchain_text_splitters",
@@ -84,7 +84,7 @@ set_env(
         "LANGCHAIN_API_KEY": "",
         "LANGCHAIN_TRACING_V2": "true",
         "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
-        "LANGCHAIN_PROJECT": "01-Document-Loader",
+        "LANGCHAIN_PROJECT": "01-DocumentLoader",
     }
 )
 ```
@@ -92,10 +92,15 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
+You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+
+[Note] This is not necessary if you've already set the required API keys in previous steps.
+
 ```python
+# Load API keys from .env file
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 ```
 
 
@@ -151,18 +156,18 @@ document.metadata
 
 ## Document Loader
 
-`Document Loader` is a class that loads Documents from various sources.
+Document Loader is a class that loads Documents from various sources.
 
-Below are some Document Loaders.
+Listed below are some examples of Document Loaders.
 
-- PyPDFLoader: Loads PDF files
-- CSVLoader: Loads CSV files
-- UnstructuredHTMLLoader: Loads HTML files
-- JSONLoader: Loads JSON files
-- TextLoader: Loads text files
-- DirectoryLoader: Loads documents from a directory
+- `PyPDFLoader` : Loads PDF files
+- `CSVLoader` : Loads CSV files
+- `UnstructuredHTMLLoader` : Loads HTML files
+- `JSONLoader` : Loads JSON files
+- `TextLoader` : Loads text files
+- `DirectoryLoader` : Loads documents from a directory
 
-Now, let's learn how to load Documents.
+Now, let's learn how to load Documents .
 
 ```python
 # Example file path
@@ -229,7 +234,7 @@ docs = await loader.aload()
 
 ### load_and_split()
 
-- Loads Documents and automatically splits them into chunks using `TextSplitter` , and returns them as a `list[Document]` .
+- Loads Documents and automatically splits them into chunks using TextSplitter , and returns them as a `list[Document]` .
 
 ```python
 from langchain_text_splitters import RecursiveCharacterTextSplitter

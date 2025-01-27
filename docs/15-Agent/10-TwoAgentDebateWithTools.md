@@ -592,8 +592,8 @@ agent_descriptions
 
 
 
-<pre class="custom">{'Doctor Union': "Doctor Union is a respected leader in the medical community, known for advocating for healthcare professionals' rights and patient care. With extensive experience in the field, Doctor Union brings a wealth of knowledge and expertise to discussions on healthcare policy and medical education reform.",
-     'Government': 'Government: As a key decision-maker in public policy, you hold the responsibility of ensuring the healthcare system meets the needs of the population. Consider the long-term benefits of expanding medical school enrollment in South Korea to address potential shortages and improve access to quality healthcare services.'}</pre>
+<pre class="custom">{'Doctor Union': 'Doctor Union is a respected physician with over 20 years of experience in various medical fields. As a key figure in the medical community, your expertise and insights are highly valued. Your perspective on the necessity of expanding medical school enrollment in South Korea will be crucial in shaping future healthcare policies.',
+     'Government': 'Government: The Government is a representative of the state responsible for policy-making and governance. With a focus on the overall well-being of the population, the Government must consider the long-term healthcare needs of the country when deciding on the necessity of expanding medical school enrollment in South Korea.'}</pre>
 
 
 
@@ -792,8 +792,7 @@ print(f"Detailed topic:\n{specified_topic}\n")
     As of 2024, is expanding medical school enrollment in South Korea necessary?
     
     Detailed topic:
-    To the participants ('Doctor Union', 'Government'): 
-    Is it necessary to increase medical school enrollment in South Korea by a specific percentage each year to address the current healthcare demands and doctor shortage by 2024?
+    "Participants, should the South Korean government increase medical school enrollment by 20% in 2024 to address the shortage of healthcare professionals in rural areas? Discuss the potential impact on improving access to healthcare services and the implications for the quality of medical education and training. Doctor Union, provide insights into the feasibility of expanding enrollment and ensuring quality standards. Government, share your perspective on the necessity and practicality of this proposed increase."
     
 </pre>
 
@@ -872,10 +871,10 @@ agents
 
 
 
-<pre class="custom">[<__main__.DialogueAgentWithTools at 0x2035347d690>,
-     <__main__.DialogueAgentWithTools at 0x203531b32d0>,
-     <__main__.DialogueAgentWithTools at 0x203531ce3d0>,
-     <__main__.DialogueAgentWithTools at 0x2035333e190>]</pre>
+<pre class="custom">[<__main__.DialogueAgentWithTools at 0x246a4cafa50>,
+     <__main__.DialogueAgentWithTools at 0x246a1ebbed0>,
+     <__main__.DialogueAgentWithTools at 0x246a1ee5c10>,
+     <__main__.DialogueAgentWithTools at 0x246a1efdb90>]</pre>
 
 
 
@@ -899,7 +898,7 @@ The debate is based on a specified topic and participating agents, with each ste
 - **`max_iters`**
     - **Purpose**:
         - Sets the maximum number of dialogue iterations.
-        - Here, `max_iters=6` limits the conversation to 6 exchanges.
+        - Here, `max_iters=3` limits the conversation to 3 exchanges.
 
 - **`simulator`**
     - **Purpose**:
@@ -936,7 +935,7 @@ The debate is based on a specified topic and participating agents, with each ste
         3. Outputs the speaker and message at each step.
 
 ```python
-max_iters = 30  # Set the maximum number of iterations to 30
+max_iters = 3  # Set the maximum number of iterations to 3
 n = 0  # Initialize the iteration counter to 0
 
 # Create a DialogueSimulator object with agents and a speaker selection function
@@ -968,218 +967,35 @@ while n < max_iters:
 <pre class="custom">(Moderator): The government has announced that it will increase the medical school enrollment quota by 2,000 starting from the 2025 admissions. In response, medical associations are organizing nationwide protest rallies to oppose this decision. Please identify the controversial issues surrounding the expansion of medical school quotas and discuss solutions for essential healthcare and regional healthcare.
     
     
-    (Government): The Government of South Korea believes that expanding medical school enrollment is necessary to address the country's significant doctor shortage. With a growing elderly population, the demand for healthcare services is increasing, and we need more medical professionals to meet this demand. This expansion is in line with practices in other OECD countries that have successfully increased their medical workforce to improve healthcare access and quality.
+    (Government): The Government of South Korea believes that expanding medical school enrollment is necessary to address the significant shortage of doctors in the country. This shortage is exacerbated by a growing elderly population, which increases the demand for healthcare services. By increasing the medical school enrollment quota, we aim to ensure that there are enough medical professionals to meet this demand.
     
-    We are aware of the concerns raised by medical associations regarding potential impacts on the quality of education and the distribution of healthcare professionals. However, we are committed to implementing strong safeguards to ensure that essential and regional healthcare needs are met. Additionally, we will ensure fairness in compensation systems for newly trained medical professionals to maintain the quality of care.
+    Furthermore, examples from other OECD countries demonstrate that expanding the medical workforce can effectively address similar challenges. We are committed to implementing strong safeguards for essential and regional healthcare, ensuring that all areas of the country have access to necessary medical services. Additionally, we will ensure fairness in compensation systems for newly trained medical professionals to maintain a balanced and motivated healthcare workforce.
     
-    Our decision is based on a comprehensive analysis of the healthcare system's needs and the successful examples from other countries. We believe that this expansion is a crucial step towards ensuring the sustainability and effectiveness of South Korea's healthcare system. 
+    While we understand the concerns raised by medical associations, it is crucial to consider the long-term benefits of having a sufficient number of doctors to provide quality healthcare to all citizens. This expansion is a strategic move to secure the future of South Korea's healthcare system. 
     
-    For more information, you can refer to sources such as [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext) and [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/).
+    Sources:
+    - [The Diplomat](https://thediplomat.com/2024/06/why-doctors-are-against-south-koreas-expansion-of-medical-school-admissions/)
+    - [Chosun](https://www.chosun.com/english/national-en/2024/05/17/QDG2XXHRHRGF5PE4TPORQAWMVU/)
     
     
-    (Doctor Union): Doctor Union: While the government argues that increasing medical school enrollment is necessary to address a doctor shortage, there are significant concerns about the potential negative impacts of such a rapid expansion. According to [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/), experts warn that this move could lead to unintended consequences, such as a decline in the quality of medical education and challenges in maintaining regional sustainability and equitable distribution of healthcare professionals.
+    (Doctor Union): The Doctor Union believes that expanding medical school enrollment in South Korea is not necessary and could be counterproductive for several reasons:
     
-    Moreover, the [Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext) highlights that the government's policy changes have already led to widespread protests and substantial effects on the healthcare system. This suggests that the current infrastructure may not be able to support such a sudden increase in medical students without compromising the quality of education and training.
+    1. **Current Infrastructure Limitations**: The sudden increase in medical school admissions could overwhelm the existing infrastructure for medical education. The quality of education might suffer if resources are stretched too thin, which could ultimately impact the quality of healthcare services provided by future doctors.
     
-    Instead of expanding enrollment, we should focus on optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing the issues of essential and rural healthcare without overwhelming our current educational infrastructure.
+    2. **Regional Healthcare Challenges**: While the government plans to allocate a significant portion of new admissions to universities outside the Seoul Metropolitan Area, this does not guarantee that graduates will remain in these regions to practice. The issue of regional healthcare is complex and requires more than just increasing the number of doctors; it involves creating incentives and support systems to retain medical professionals in underserved areas.
     
+    3. **Protests and Opposition**: There is significant opposition from the medical community, including protests and threats of strikes. This indicates a lack of consensus and collaboration between the government and healthcare professionals, which is crucial for implementing effective healthcare policies. According to a report by [VOA News](https://www.voanews.com/a/south-korean-doctors-protest-medical-school-recruitment-plan-/7511711.html), thousands of doctors have rallied against the government's plan, highlighting the strong resistance within the medical community.
     
-    (Government): The Government of South Korea acknowledges the concerns raised by the Doctor Union regarding the potential impacts of expanding medical school enrollment. However, it is essential to address the pressing issue of doctor shortages, particularly in rural and underserved areas, which is exacerbated by the country's rapidly aging population. According to [NPR](https://www.npr.org/2024/09/15/nx-s1-5113082/as-medical-strike-drags-on-in-south-korea-patients-are-on-edge), South Korea is already experiencing a shortage of doctors in rural regions, and the demand for healthcare is growing.
+    4. **Long-term Impact Uncertainty**: The long-term impact of such an expansion is still debated. As noted by [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/), there are concerns about whether this approach will effectively address the underlying issues in the healthcare system.
     
-    Furthermore, experiences from other OECD countries demonstrate the benefits of expanding the medical workforce. For instance, many OECD countries have increased the number of students admitted to medical and nursing education to address current or future staff shortages, as noted by the [OECD iLibrary](https://www.oecd-ilibrary.org/social-issues-migration-health/health-workforce-policies-in-oecd-countries/education-and-training-for-doctors-and-nurses-what-s-happening-with-numerus-clausus-policies_9789264239517-6-en?crawler=true).
+    In conclusion, while addressing the shortage of doctors is important, the approach should be more strategic and collaborative, focusing on sustainable solutions that consider the existing challenges and infrastructure limitations.
     
-    While there are concerns about the quality of education and the distribution of healthcare professionals, the government is committed to implementing strong safeguards to ensure that these issues are addressed. By expanding medical school enrollment, we aim to increase the availability of healthcare professionals, which is crucial for maintaining the sustainability and effectiveness of South Korea's healthcare system.
     
+    (Government): The Government of South Korea is committed to expanding medical school enrollment as a strategic response to the country's doctor shortage, which is exacerbated by an aging population and increasing healthcare demands. The plan to increase medical school admissions by 2,000 spots is part of a broader initiative to improve public access to healthcare services and enhance the working environment for physicians, especially in essential treatment fields such as pediatrics, obstetrics, and emergency medicine ([Korea Times](https://www.koreatimes.co.kr/www/nation/2024/05/119_375302.html)).
     
-    (Doctor Union): Doctor Union: While the government emphasizes the need to address doctor shortages, particularly in rural areas, it's important to consider the potential negative impacts of rapidly increasing medical school enrollment. According to [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext), the government's policy changes have already led to widespread protests and substantial effects on the healthcare system. This suggests that the current infrastructure may not be able to support such a sudden increase in medical students without compromising the quality of education and training.
+    This approach aligns with trends observed in other OECD countries, where there has been a substantial increase in the number of students admitted to medical and nursing education to address staff shortages. These countries have implemented policies to increase postgraduate training places, particularly in general medicine, to ensure a robust healthcare workforce ([OECD iLibrary](https://www.oecd-ilibrary.org/social-issues-migration-health/health-workforce-policies-in-oecd-countries/education-and-training-for-doctors-and-nurses-what-s-happening-with-numerus-clausus-policies_9789264239517-6-en?crawler=true)).
     
-    Moreover, the [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/) highlights that experts warn of unintended consequences, such as a decline in the quality of medical education and challenges in maintaining regional sustainability and equitable distribution of healthcare professionals. Instead of expanding enrollment, we should focus on optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing the issues of essential and rural healthcare without overwhelming our current educational infrastructure.
-    
-    
-    (Government): The Government of South Korea acknowledges the concerns regarding the potential impacts of expanding medical school enrollment. However, it is crucial to address the pressing issue of doctor shortages, particularly in rural and underserved areas. According to [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/), the government plans to increase medical school admissions by 2,000 spots to address the country's doctor shortage. This expansion is the first in nearly two decades and is necessary to meet the growing healthcare demands of our aging population.
-    
-    While there are concerns about the quality of education and the distribution of healthcare professionals, the government is committed to implementing strong safeguards to ensure that these issues are addressed. By expanding medical school enrollment, we aim to increase the availability of healthcare professionals, which is crucial for maintaining the sustainability and effectiveness of South Korea's healthcare system.
-    
-    Furthermore, experiences from other OECD countries demonstrate the benefits of expanding the medical workforce. Many OECD countries have increased the number of students admitted to medical and nursing education to address current or future staff shortages. This approach has proven effective in improving healthcare access and quality.
-    
-    We believe that this expansion is a crucial step towards ensuring the sustainability and effectiveness of South Korea's healthcare system, and we are committed to addressing any challenges that may arise during this process.
-    
-    
-    (Doctor Union): Doctor Union: The government's plan to increase medical school enrollment by 67% has already led to significant challenges within South Korea's healthcare system. According to [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext), this policy change has resulted in widespread protests and substantial effects on the healthcare system. The rapid expansion could overwhelm the current infrastructure, leading to a decline in the quality of medical education and training.
-    
-    Moreover, the [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/) highlights concerns about unintended consequences, such as challenges in maintaining regional sustainability and equitable distribution of healthcare professionals. Instead of focusing solely on increasing numbers, we should prioritize optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing essential and rural healthcare issues without compromising the quality of education and training.
-    
-    
-    (Government): The Government of South Korea acknowledges the concerns raised by the Doctor Union regarding the rapid expansion of medical school enrollment. However, it is crucial to address the pressing issue of doctor shortages, particularly in rural and underserved areas. According to the [Journal of Korean Medical Science](https://jkms.org/DOIx.php?id=10.3346/jkms.2024.39.e182), there is a significant debate among stakeholders about the expansion, but it is also recognized that the country faces a critical shortage of medical professionals, which this policy aims to address.
-    
-    While there are concerns about the quality of education and the distribution of healthcare professionals, the government is committed to implementing strong safeguards to ensure these issues are addressed. By expanding medical school enrollment, we aim to increase the availability of healthcare professionals, which is crucial for maintaining the sustainability and effectiveness of South Korea's healthcare system.
-    
-    Furthermore, experiences from other OECD countries demonstrate the benefits of expanding the medical workforce. Many OECD countries have increased the number of students admitted to medical and nursing education to address current or future staff shortages. This approach has proven effective in improving healthcare access and quality.
-    
-    We believe that this expansion is a crucial step towards ensuring the sustainability and effectiveness of South Korea's healthcare system, and we are committed to addressing any challenges that may arise during this process.
-    
-    
-    (Doctor Union): Doctor Union: The government's plan to increase medical school enrollment by 2,000 spots, which represents a 67% increase, has already led to significant challenges within South Korea's healthcare system. According to [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext), this policy change has resulted in widespread protests and substantial effects on the healthcare system. The rapid expansion could overwhelm the current infrastructure, leading to a decline in the quality of medical education and training.
-    
-    Furthermore, experts warn that this move could have unintended consequences, such as challenges in maintaining regional sustainability and equitable distribution of healthcare professionals, as highlighted by [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/). Instead of focusing solely on increasing numbers, we should prioritize optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing essential and rural healthcare issues without compromising the quality of education and training.
-    
-    
-    (Government): The Government of South Korea recognizes the concerns about the rapid expansion of medical school enrollment. However, it is important to address the pressing issue of doctor shortages, particularly in rural and underserved areas. According to the [Journal of Korean Medical Science](https://jkms.org/DOIx.php?id=10.3346/jkms.2024.39.e182), there is a significant debate among stakeholders about the expansion, but it is also recognized that the country faces a critical shortage of medical professionals, which this policy aims to address.
-    
-    While there are concerns about the quality of education and the distribution of healthcare professionals, the government is committed to implementing strong safeguards to ensure these issues are addressed. By expanding medical school enrollment, we aim to increase the availability of healthcare professionals, which is crucial for maintaining the sustainability and effectiveness of South Korea's healthcare system.
-    
-    Furthermore, experiences from other OECD countries demonstrate the benefits of expanding the medical workforce. Many OECD countries have increased the number of students admitted to medical and nursing education to address current or future staff shortages. This approach has proven effective in improving healthcare access and quality.
-    
-    We believe that this expansion is a crucial step towards ensuring the sustainability and effectiveness of South Korea's healthcare system, and we are committed to addressing any challenges that may arise during this process.
-    
-    
-    (Doctor Union): The government's plan to increase medical school enrollment by 2,000 spots, representing a 67% increase, has indeed led to significant challenges within South Korea's healthcare system. According to [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext), this policy change has resulted in widespread protests and substantial effects on the healthcare system. The rapid expansion could overwhelm the current infrastructure, leading to a decline in the quality of medical education and training.
-    
-    Furthermore, experts warn that this move could have unintended consequences, such as challenges in maintaining regional sustainability and equitable distribution of healthcare professionals, as highlighted by [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/). Instead of focusing solely on increasing numbers, we should prioritize optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing essential and rural healthcare issues without compromising the quality of education and training.
-    
-    
-    (Government): The Government of South Korea acknowledges the concerns about the rapid expansion of medical school enrollment. However, addressing the doctor shortage, especially in rural and underserved areas, remains a critical priority. According to [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/), the government plans to increase medical school admissions by 2,000 spots to tackle this shortage, marking the first expansion in nearly two decades.
-    
-    While there are concerns about the quality of education and the distribution of healthcare professionals, the government is committed to implementing strong safeguards to ensure these issues are addressed. By expanding medical school enrollment, we aim to increase the availability of healthcare professionals, which is crucial for maintaining the sustainability and effectiveness of South Korea's healthcare system.
-    
-    Furthermore, experiences from other OECD countries demonstrate the benefits of expanding the medical workforce. Many OECD countries have increased the number of students admitted to medical and nursing education to address current or future staff shortages. This approach has proven effective in improving healthcare access and quality.
-    
-    We believe that this expansion is a crucial step towards ensuring the sustainability and effectiveness of South Korea's healthcare system, and we are committed to addressing any challenges that may arise during this process.
-    
-    
-    (Doctor Union): The government's plan to increase medical school enrollment by 2,000 spots, representing a 67% increase, has indeed led to significant challenges within South Korea's healthcare system. According to [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext), this policy change has resulted in widespread protests and substantial effects on the healthcare system. The rapid expansion could overwhelm the current infrastructure, leading to a decline in the quality of medical education and training.
-    
-    Furthermore, experts warn that this move could have unintended consequences, such as challenges in maintaining regional sustainability and equitable distribution of healthcare professionals, as highlighted by [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/). Instead of focusing solely on increasing numbers, we should prioritize optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing essential and rural healthcare issues without compromising the quality of education and training.
-    
-    
-    (Government): The Government of South Korea acknowledges the concerns raised by the Doctor Union regarding the rapid expansion of medical school enrollment. However, addressing the doctor shortage, especially in rural and underserved areas, remains a critical priority. According to [Korea JoongAng Daily](https://koreajoongangdaily.joins.com/news/2024-02-06/national/socialAffairs/Govt-to-increase-med-school-enrollment-by-2000-next-year/1975768), the government plans to increase medical school admissions by 2,000 spots to tackle this shortage, marking the first expansion in nearly two decades.
-    
-    While there are concerns about the quality of education and the distribution of healthcare professionals, the government is committed to implementing strong safeguards to ensure these issues are addressed. By expanding medical school enrollment, we aim to increase the availability of healthcare professionals, which is crucial for maintaining the sustainability and effectiveness of South Korea's healthcare system.
-    
-    Furthermore, experiences from other OECD countries demonstrate the benefits of expanding the medical workforce. According to the [OECD iLibrary](https://www.oecd-ilibrary.org/social-issues-migration-health/health-workforce-policies-in-oecd-countries/key-findings_9789264239517-3-en), many OECD countries have increased the number of students admitted to medical and nursing education to address current or future staff shortages. This approach has proven effective in improving healthcare access and quality.
-    
-    We believe that this expansion is a crucial step towards ensuring the sustainability and effectiveness of South Korea's healthcare system, and we are committed to addressing any challenges that may arise during this process.
-    
-    
-    (Doctor Union): The government's plan to increase medical school enrollment by 2,000 spots, representing a 67% increase, has indeed led to significant challenges within South Korea's healthcare system. According to [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext), this policy change has resulted in widespread protests and substantial effects on the healthcare system. The rapid expansion could overwhelm the current infrastructure, leading to a decline in the quality of medical education and training.
-    
-    Furthermore, experts warn that this move could have unintended consequences, such as challenges in maintaining regional sustainability and equitable distribution of healthcare professionals, as highlighted by [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/). Instead of focusing solely on increasing numbers, we should prioritize optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing essential and rural healthcare issues without compromising the quality of education and training.
-    
-    
-    (Government): The Government of South Korea acknowledges the concerns raised by the Doctor Union regarding the rapid expansion of medical school enrollment. However, addressing the doctor shortage, especially in rural and underserved areas, remains a critical priority. According to [Asia News Network](https://asianews.network/south-korea-to-increase-medical-students-by-2000-despite-doctors-threat-to-strike/), the government plans to increase medical school admissions by 2,000 spots to tackle this shortage, marking the first expansion in nearly two decades. This decision is aimed at addressing the shortage of doctors in non-metropolitan areas and broadening the reach of healthcare services.
-    
-    While there are concerns about the quality of education and the distribution of healthcare professionals, the government is committed to implementing strong safeguards to ensure these issues are addressed. By expanding medical school enrollment, we aim to increase the availability of healthcare professionals, which is crucial for maintaining the sustainability and effectiveness of South Korea's healthcare system.
-    
-    Furthermore, experiences from other OECD countries demonstrate the benefits of expanding the medical workforce. According to the [OECD iLibrary](https://www.oecd-ilibrary.org/social-issues-migration-health/health-workforce-policies-in-oecd-countries/executive-summary_9789264239517-2-en), many OECD countries have increased the number of students admitted to medical and nursing education to address current or future staff shortages. This approach has proven effective in improving healthcare access and quality.
-    
-    We believe that this expansion is a crucial step towards ensuring the sustainability and effectiveness of South Korea's healthcare system, and we are committed to addressing any challenges that may arise during this process.
-    
-    
-    (Doctor Union): The government's plan to increase medical school enrollment by 2,000 spots, representing a 67% increase, has indeed led to significant challenges within South Korea's healthcare system. According to [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext), this policy change has resulted in widespread protests and substantial effects on the healthcare system. The rapid expansion could overwhelm the current infrastructure, leading to a decline in the quality of medical education and training.
-    
-    Furthermore, experts warn that this move could have unintended consequences, such as challenges in maintaining regional sustainability and equitable distribution of healthcare professionals, as highlighted by [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/). Instead of focusing solely on increasing numbers, we should prioritize optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing essential and rural healthcare issues without compromising the quality of education and training.
-    
-    
-    (Government): The Government of South Korea acknowledges the concerns raised by the Doctor Union regarding the rapid expansion of medical school enrollment. However, addressing the doctor shortage, especially in rural and underserved areas, remains a critical priority. According to [Korea JoongAng Daily](https://koreajoongangdaily.joins.com/news/2024-02-06/national/socialAffairs/Govt-to-increase-med-school-enrollment-by-2000-next-year/1975768), the government plans to increase medical school admissions by 2,000 spots to tackle this shortage, marking the first expansion in nearly two decades. This decision is aimed at addressing the shortage of doctors in non-metropolitan areas and broadening the reach of healthcare services.
-    
-    While there are concerns about the quality of education and the distribution of healthcare professionals, the government is committed to implementing strong safeguards to ensure these issues are addressed. By expanding medical school enrollment, we aim to increase the availability of healthcare professionals, which is crucial for maintaining the sustainability and effectiveness of South Korea's healthcare system.
-    
-    Furthermore, experiences from other OECD countries demonstrate the benefits of expanding the medical workforce. According to the [OECD iLibrary](https://www.oecd-ilibrary.org/social-issues-migration-health/health-workforce-policies-in-oecd-countries/executive-summary_9789264239517-2-en), many OECD countries have increased the number of students admitted to medical and nursing education to address current or future staff shortages. This approach has proven effective in improving healthcare access and quality.
-    
-    We believe that this expansion is a crucial step towards ensuring the sustainability and effectiveness of South Korea's healthcare system, and we are committed to addressing any challenges that may arise during this process.
-    
-    
-    (Doctor Union): The government's plan to increase medical school enrollment by 2,000 spots, representing a 67% increase, has indeed led to significant challenges within South Korea's healthcare system. According to [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext), this policy change has resulted in widespread protests and substantial effects on the healthcare system. The rapid expansion could overwhelm the current infrastructure, leading to a decline in the quality of medical education and training.
-    
-    Furthermore, experts warn that this move could have unintended consequences, such as challenges in maintaining regional sustainability and equitable distribution of healthcare professionals, as highlighted by [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/). Instead of focusing solely on increasing numbers, we should prioritize optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing essential and rural healthcare issues without compromising the quality of education and training.
-    
-    
-    (Government): The Government of South Korea acknowledges the concerns raised by the Doctor Union regarding the rapid expansion of medical school enrollment. However, addressing the doctor shortage, especially in rural and underserved areas, remains a critical priority. According to [Asia News Network](https://asianews.network/south-korea-to-increase-medical-students-by-2000-despite-doctors-threat-to-strike/), the government plans to increase medical school admissions by 2,000 spots to tackle this shortage, marking the first expansion in nearly two decades. This decision is aimed at addressing the shortage of doctors in non-metropolitan areas and broadening the reach of healthcare services.
-    
-    While there are concerns about the quality of education and the distribution of healthcare professionals, the government is committed to implementing strong safeguards to ensure these issues are addressed. By expanding medical school enrollment, we aim to increase the availability of healthcare professionals, which is crucial for maintaining the sustainability and effectiveness of South Korea's healthcare system.
-    
-    Furthermore, experiences from other OECD countries demonstrate the benefits of expanding the medical workforce. According to the [OECD iLibrary](https://read.oecd-ilibrary.org/social-issues-migration-health/health-workforce-policies-in-oecd-countries_9789264239517-en?sequence=1), many OECD countries have increased the number of students admitted to medical and nursing education to address current or future staff shortages. This approach has proven effective in improving healthcare access and quality.
-    
-    We believe that this expansion is a crucial step towards ensuring the sustainability and effectiveness of South Korea's healthcare system, and we are committed to addressing any challenges that may arise during this process.
-    
-    
-    (Doctor Union): The government's plan to increase medical school enrollment by 2,000 spots, representing a 67% increase, has indeed led to significant challenges within South Korea's healthcare system. According to [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext), this policy change has resulted in widespread protests and substantial effects on the healthcare system. The rapid expansion could overwhelm the current infrastructure, leading to a decline in the quality of medical education and training.
-    
-    Furthermore, experts warn that this move could have unintended consequences, such as challenges in maintaining regional sustainability and equitable distribution of healthcare professionals, as highlighted by [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/). Instead of focusing solely on increasing numbers, we should prioritize optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing essential and rural healthcare issues without compromising the quality of education and training.
-    
-    
-    (Government): The Government of South Korea acknowledges the concerns raised by the Doctor Union regarding the rapid expansion of medical school enrollment. However, addressing the doctor shortage, especially in rural and underserved areas, remains a critical priority. According to [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/), the government plans to increase medical school admissions by 2,000 spots to tackle this shortage, marking the first expansion in nearly two decades. This decision is aimed at addressing the shortage of doctors in non-metropolitan areas and broadening the reach of healthcare services.
-    
-    While there are concerns about the quality of education and the distribution of healthcare professionals, the government is committed to implementing strong safeguards to ensure these issues are addressed. By expanding medical school enrollment, we aim to increase the availability of healthcare professionals, which is crucial for maintaining the sustainability and effectiveness of South Korea's healthcare system.
-    
-    Furthermore, experiences from other OECD countries demonstrate the benefits of expanding the medical workforce. According to the [OECD iLibrary](https://read.oecd-ilibrary.org/social-issues-migration-health/health-workforce-policies-in-oecd-countries_9789264239517-en?sequence=1), many OECD countries have increased the number of students admitted to medical and nursing education to address current or future staff shortages. This approach has proven effective in improving healthcare access and quality.
-    
-    We believe that this expansion is a crucial step towards ensuring the sustainability and effectiveness of South Korea's healthcare system, and we are committed to addressing any challenges that may arise during this process.
-    
-    
-    (Doctor Union): The government's plan to increase medical school enrollment by 2,000 spots, representing a 67% increase, has indeed led to significant challenges within South Korea's healthcare system. According to [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext), this policy change has resulted in widespread protests and substantial effects on the healthcare system. The rapid expansion could overwhelm the current infrastructure, leading to a decline in the quality of medical education and training.
-    
-    Furthermore, experts warn that this move could have unintended consequences, such as challenges in maintaining regional sustainability and equitable distribution of healthcare professionals, as highlighted by [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/). Instead of focusing solely on increasing numbers, we should prioritize optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing essential and rural healthcare issues without compromising the quality of education and training.
-    
-    
-    (Government): The Government of South Korea acknowledges the concerns raised by the Doctor Union regarding the rapid expansion of medical school enrollment. However, addressing the doctor shortage, especially in rural and underserved areas, remains a critical priority. According to [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/), the government plans to increase medical school admissions by 2,000 spots to tackle this shortage, marking the first expansion in nearly two decades. This decision is aimed at addressing the shortage of doctors in non-metropolitan areas and broadening the reach of healthcare services.
-    
-    While there are concerns about the quality of education and the distribution of healthcare professionals, the government is committed to implementing strong safeguards to ensure these issues are addressed. By expanding medical school enrollment, we aim to increase the availability of healthcare professionals, which is crucial for maintaining the sustainability and effectiveness of South Korea's healthcare system.
-    
-    Furthermore, experiences from other OECD countries demonstrate the benefits of expanding the medical workforce. According to the [OECD iLibrary](https://read.oecd-ilibrary.org/social-issues-migration-health/health-workforce-policies-in-oecd-countries_9789264239517-en?sequence=1), many OECD countries have increased the number of students admitted to medical and nursing education to address current or future staff shortages. This approach has proven effective in improving healthcare access and quality.
-    
-    We believe that this expansion is a crucial step towards ensuring the sustainability and effectiveness of South Korea's healthcare system, and we are committed to addressing any challenges that may arise during this process.
-    
-    
-    (Doctor Union): The government's plan to increase medical school enrollment by 2,000 spots, representing a 67% increase, has indeed led to significant challenges within South Korea's healthcare system. According to [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext), this policy change has resulted in widespread protests and substantial effects on the healthcare system. The rapid expansion could overwhelm the current infrastructure, leading to a decline in the quality of medical education and training.
-    
-    Furthermore, experts warn that this move could have unintended consequences, such as challenges in maintaining regional sustainability and equitable distribution of healthcare professionals, as highlighted by [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/). Instead of focusing solely on increasing numbers, we should prioritize optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing essential and rural healthcare issues without compromising the quality of education and training.
-    
-    
-    (Government): The Government of South Korea acknowledges the concerns raised by the Doctor Union regarding the rapid expansion of medical school enrollment. However, addressing the doctor shortage, especially in rural and underserved areas, remains a critical priority. According to [The Korea Times](https://www.koreatimes.co.kr/www/nation/2024/05/119_375302.html), the government's plan to increase medical school admissions is part of a broader medical sector reform initiative aimed at improving public access to healthcare services and enhancing the working environment for physicians, particularly in essential treatment fields such as pediatrics, obstetrics, and emergency medicine.
-    
-    While there are concerns about the quality of education and the distribution of healthcare professionals, the government is committed to implementing strong safeguards to ensure these issues are addressed. By expanding medical school enrollment, we aim to increase the availability of healthcare professionals, which is crucial for maintaining the sustainability and effectiveness of South Korea's healthcare system.
-    
-    Furthermore, experiences from other OECD countries demonstrate the benefits of expanding the medical workforce. Many OECD countries have increased the number of students admitted to medical and nursing education to address current or future staff shortages. This approach has proven effective in improving healthcare access and quality.
-    
-    We believe that this expansion is a crucial step towards ensuring the sustainability and effectiveness of South Korea's healthcare system, and we are committed to addressing any challenges that may arise during this process.
-    
-    
-    (Doctor Union): The government's plan to increase medical school enrollment by 2,000 spots, representing a 67% increase, has indeed led to significant challenges within South Korea's healthcare system. According to [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext), this policy change has resulted in widespread protests and substantial effects on the healthcare system. The rapid expansion could overwhelm the current infrastructure, leading to a decline in the quality of medical education and training.
-    
-    Furthermore, experts warn that this move could have unintended consequences, such as challenges in maintaining regional sustainability and equitable distribution of healthcare professionals, as highlighted by [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/). Instead of focusing solely on increasing numbers, we should prioritize optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing essential and rural healthcare issues without compromising the quality of education and training.
-    
-    
-    (Government): The Government of South Korea acknowledges the concerns raised by the Doctor Union regarding the rapid expansion of medical school enrollment. However, addressing the doctor shortage, especially in rural and underserved areas, remains a critical priority. According to [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/), the government plans to increase medical school admissions by 2,000 spots to tackle this shortage, marking the first expansion in nearly two decades. This decision is aimed at addressing the shortage of doctors in non-metropolitan areas and broadening the reach of healthcare services.
-    
-    While there are concerns about the quality of education and the distribution of healthcare professionals, the government is committed to implementing strong safeguards to ensure these issues are addressed. By expanding medical school enrollment, we aim to increase the availability of healthcare professionals, which is crucial for maintaining the sustainability and effectiveness of South Korea's healthcare system.
-    
-    Furthermore, experiences from other OECD countries demonstrate the benefits of expanding the medical workforce. Many OECD countries have increased the number of students admitted to medical and nursing education to address current or future staff shortages. This approach has proven effective in improving healthcare access and quality.
-    
-    We believe that this expansion is a crucial step towards ensuring the sustainability and effectiveness of South Korea's healthcare system, and we are committed to addressing any challenges that may arise during this process.
-    
-    
-    (Doctor Union): The government's plan to increase medical school enrollment by 2,000 spots, representing a 67% increase, has indeed led to significant challenges within South Korea's healthcare system. According to [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext), this policy change has resulted in widespread protests and substantial effects on the healthcare system. The rapid expansion could overwhelm the current infrastructure, leading to a decline in the quality of medical education and training.
-    
-    Furthermore, experts warn that this move could have unintended consequences, such as challenges in maintaining regional sustainability and equitable distribution of healthcare professionals, as highlighted by [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/). Instead of focusing solely on increasing numbers, we should prioritize optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing essential and rural healthcare issues without compromising the quality of education and training.
-    
-    In contrast, while experiences from other OECD countries show that expanding the medical workforce can improve healthcare access and quality, these expansions are often accompanied by strict controls and regulations to maintain educational standards. For instance, England has clear regulations regarding medical school enrollment quotas, ensuring that the quality of education is not compromised ([SAGE Journals](https://journals.sagepub.com/doi/full/10.1177/20965311221141450)). This highlights the importance of careful planning and regulation in any expansion efforts.
-    
-    
-    (Government): The Government of South Korea acknowledges the concerns raised by the Doctor Union regarding the rapid expansion of medical school enrollment. However, addressing the doctor shortage, especially in rural and underserved areas, remains a critical priority. According to the [Korea Times](https://www.koreatimes.co.kr/www/nation/2024/05/119_375302.html), the government's plan to increase medical school admissions is part of a broader medical sector reform initiative aimed at improving public access to healthcare services and enhancing the working environment for physicians, particularly in essential treatment fields such as pediatrics, obstetrics, and emergency medicine.
-    
-    While there are concerns about the quality of education and the distribution of healthcare professionals, the government is committed to implementing strong safeguards to ensure these issues are addressed. By expanding medical school enrollment, we aim to increase the availability of healthcare professionals, which is crucial for maintaining the sustainability and effectiveness of South Korea's healthcare system.
-    
-    Furthermore, experiences from other OECD countries demonstrate the benefits of expanding the medical workforce. Many OECD countries have increased the number of students admitted to medical and nursing education to address current or future staff shortages. This approach has proven effective in improving healthcare access and quality.
-    
-    We believe that this expansion is a crucial step towards ensuring the sustainability and effectiveness of South Korea's healthcare system, and we are committed to addressing any challenges that may arise during this process.
-    
-    
-    (Doctor Union): The government's plan to increase medical school enrollment by 2,000 spots, representing a 67% increase, has indeed led to significant challenges within South Korea's healthcare system. According to [The Lancet](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(24)01680-5/fulltext), this policy change has resulted in widespread protests and substantial effects on the healthcare system. The rapid expansion could overwhelm the current infrastructure, leading to a decline in the quality of medical education and training.
-    
-    Furthermore, experts warn that this move could have unintended consequences, such as challenges in maintaining regional sustainability and equitable distribution of healthcare professionals, as highlighted by [Korea Pro](https://koreapro.org/2024/03/south-koreas-med-school-expansion-plan-sparks-debate-over-long-term-impact/). Instead of focusing solely on increasing numbers, we should prioritize optimizing the distribution of existing medical professionals and improving working conditions to attract doctors to underserved areas. This approach would be more effective in addressing essential and rural healthcare issues without compromising the quality of education and training.
-    
-    Additionally, the [2024 South Korean medical crisis](https://en.wikipedia.org/wiki/2024_South_Korean_medical_crisis) highlights the ongoing healthcare crisis following the announcement of new government policies. Thousands of residents and interns have resigned, leading to significant disruptions in healthcare services. This situation underscores the importance of careful planning and regulation in any expansion efforts to avoid overwhelming the current system and ensure the quality of healthcare services.
+    While there is significant opposition from the medical community, the government believes that this expansion is necessary to secure the future of South Korea's healthcare system. By increasing the number of trained medical professionals, we aim to ensure that all regions, including underserved areas, have access to quality healthcare services. This initiative is not only about increasing numbers but also about improving healthcare delivery and ensuring fair compensation for medical professionals, thereby addressing both current and future healthcare needs.
     
     
 </pre>

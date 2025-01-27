@@ -28,7 +28,7 @@ pre {
 
 ## Overview
 
-This tutorial covers how to implement fallback mechanisms in LangChain applications to handle various types of failures and errors gracefully.
+This tutorial covers how to implement fallback mechanisms in LangChain applications to gracefully handle various types of failures and errors.
 
 `Fallbacks` are crucial for building robust LLM applications that can handle API errors, rate limits, and other potential failures without disrupting the user experience.
 
@@ -38,15 +38,15 @@ In this tutorial, we will explore different fallback strategies and implement pr
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [What is Fallbacks?](#what-is-fallbacks)
-- [How to Handle LLM API Errors](#how-to-handle-llm-api-errors)
+- [What are Fallbacks?](#what-are-fallbacks)
+- [Handling LLM API Errors](#handling-llm-api-errors)
 - [Introduction to Rate Limit Testing](#introduction-to-rate-limit-testing)
 - [Why Handle Rate Limit Errors?](#why-handle-rate-limit-errors)
 - [Benefits of Mock Testing](#benefits-of-mock-testing)
 - [Setting up LLM Fallback Configuration](#setting-up-llm-fallback-configuration)
 - [Testing API Rate Limits with Fallback Models](#testing-api-rate-limits-with-fallback-models)
-- [If you specify an error that needs to be handled](#if-you-specify-an-error-that-needs-to-be-handled)
-- [Specifying multiple models in fallback sequentially](#specifying-multiple-models-in-fallback-sequentially)
+- [Specifying Exceptions to Trigger Fallbacks](#specifying-exceptions-to-trigger-fallbacks)
+- [Specifying Multiple Fallback Models Sequentially](#specifying-multiple-fallback-models-sequentially)
 - [Using Different Prompt Templates for Each Model](#using-different-prompt-templates-for-each-model)
 - [Automatic Model Switching Based on Context Length](#automatic-model-switching-based-on-context-length)
 
@@ -60,14 +60,14 @@ In this tutorial, we will explore different fallback strategies and implement pr
    - Implementation of simple fallback chains
 
 2. **API Error Management**
-   - Handling rate limit errors effectively
+   - Effectively handling rate limit errors
    - Managing API downtime scenarios
    - Implementing retry strategies
    - Simulating errors through mock testing
 
 3. **Advanced Fallback Patterns**
    - Configuring multiple fallback models
-   - Custom exception handling setup
+   - Setting up custom exception handling
    - Sequential fallback execution
    - Context-aware model switching
    - Model-specific prompt templating
@@ -116,8 +116,8 @@ package.install(
 ```
 
 <pre class="custom">
-    [1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m A new release of pip is available: [0m[31;49m24.2[0m[39;49m -> [0m[32;49m24.3.1[0m
-    [1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m To update, run: [0m[32;49mpip install --upgrade pip[0m
+    [notice] A new release of pip is available: 24.2 -> 24.3.1
+    [notice] To update, run: pip install --upgrade pip
 </pre>
 
 ```python
@@ -156,31 +156,31 @@ load_dotenv(override=True)
 
 
 
-## What is Fallbacks?
+## What are Fallbacks?
 
-In LLM applications, there are various errors or failures such as LLM API issues, degradation in model output quality, and other integration-related issues. The `fallback` feature can be utilized to gracefully handle and isolate these problems.
+In LLM applications, various errors or failures can occur, such as LLM API issues, degradation in model output quality, and other integration-related problems. The `fallback` feature gracefully handle and isolate these issues.
 
-Importantly, fallbacks can be applied not only at the LLM level but also at the entire executable level.
+Note that they can be applied at both the LLM calls and the level of an entire executable chain.
 
-## How to Handle LLM API Errors
+## Handling LLM API Errors
 
-Handling LLM API errors is one of the most common use cases for using `fallbacks`.
+Handling LLM API errors is one of the most common use cases for `fallbacks`.
 
-Requests to the LLM API can fail for various reasons. The API might be down, you might have reached a rate limit, or there could be several other issues. Using `fallbacks` can help protect against these types of problems.
+API requests can fail due to various reasons. The API might be down, you might have reached usage rate limits, or other issues. By implementing `fallbacks`, you can protect your application against these types of problems.
 
-**Important**: By default, many LLM wrappers capture errors and retry. When using `fallbacks`, it is advisable to disable this default behavior. Otherwise, the first wrapper will keep retrying and not fail.
+**Important**: By default, many LLM wrappers capture errors and retry. When using `fallbacks`, it is advisable to disable this default behavior; otherwise, the first wrapper will keep retrying and prevent the fallback from triggering.
 
 ## Introduction to Rate Limit Testing
 
-First, let's perform a mock test for the `RateLimitError` that can occur with OpenAI. A `RateLimitError` is **an error that occurs when you exceed the API usage limits** of the OpenAI API.
+First, let's perform a mock test for the `RateLimitError` that can occur with OpenAI. A `RateLimitError` is **an error that occurs when you exceed the OpenAI API usage limits** of the OpenAI API.
 
 ## Why Handle Rate Limit Errors?
 
-When this error occurs, API requests are restricted for a certain period, so applications need to handle this situation appropriately. Through mock testing, we can verify how the application behaves when a `RateLimitError` occurs and check the error handling logic.
+`RateLimitError` restricts API requests for a certain period, so applications need to handle them appropriately. Mock testing verifies application behaves and error-handling logic during `RateLimitError`s.
 
 ## Benefits of Mock Testing
 
-This allows us to prevent potential issues that could arise in production environments and ensure stable service delivery.
+Mock testing helps prevent potential production issues and ensures stable service delivery.
 
 ```python
 from openai import RateLimitError
@@ -198,9 +198,9 @@ error = RateLimitError("rate limit", response=response, body="")
 
 ## Setting up LLM Fallback Configuration
 
-Create a `ChatOpenAI` object and assign it to the `openai_llm` variable, setting the `max_retries` parameter to 0 to **prevent retry attempts** that might occur due to API call limits or restrictions.
+Create a `ChatOpenAI` object and assign it to `openai_llm`, setting `max_retries=0` to **prevent retry attempts** that might occur due to API call limits or restrictions.
 
-Using the `with_fallbacks` method, configure `anthropic_llm` as the `fallback` LLM and assign this configuration to the `llm` variable.
+Use `with_fallbacks` to configure `anthropic_llm` as the fallback LLM and assign this configuration to `llm`.
 
 
 ```python
@@ -220,13 +220,13 @@ llm = openai_llm.with_fallbacks([anthropic_llm])
 
 ## Testing API Rate Limits with Fallback Models
 
-In this example, we'll simulate OpenAI API rate limits and test how the system behaves when encountering API cost limitation errors.
+In this example, we'll simulate OpenAI API rate limits and test system behavior during API cost limitation errors.
 
-You'll see that when the OpenAI GPT model encounters an error, the fallback model (Anthropic) successfully takes over and performs the inference instead.
+When the OpenAI GPT model encounters an error, the Anthropic fallback model successfully takes over and performs the inference instead.
 
-When a fallback model is configured using `with_fallbacks()` and successfully executes, the `RateLimitError` won't be raised, ensuring continuous operation of your application.
+When a fallback model, configured with `with_fallbacks()`, executes successfully, the `RateLimitError` is not raised, ensuring continuous operation of your application.
 
-> 💡 This demonstrates how LangChain's fallback mechanism provides resilience against API limitations and ensures your application continues to function even when the primary model is unavailable.
+>💡 This demonstrates LangChain's fallback mechanism, which provides resilience against API limitations and ensures continued application function even when the primary model is unavailable.
 
 ```python
 # Use OpenAI LLM first to show error.
@@ -253,9 +253,9 @@ with patch("openai.resources.chat.completions.Completions.create", side_effect=e
 <pre class="custom">content='The classic answer to the joke "Why did the chicken cross the road?" is:\n\n"To get to the other side."\n\nThis answer is an anti-joke, meaning that the answer is purposely obvious and straightforward, lacking the expected punch line or humor that a joke typically has. The humor, if any, comes from the fact that the answer is so simple and doesn\'t really provide any meaningful explanation for the chicken\'s actions.\n\nThere are, of course, many variations and alternative answers to this joke, but the one mentioned above remains the most well-known and traditional response.' additional_kwargs={} response_metadata={'id': 'msg_01EnWEZFHrLnPx8DeYWAwKcY', 'model': 'claude-3-opus-20240229', 'stop_reason': 'end_turn', 'stop_sequence': None, 'usage': {'cache_creation_input_tokens': 0, 'cache_read_input_tokens': 0, 'input_tokens': 15, 'output_tokens': 124}} id='run-c83ea304-76f5-4bc3-b33b-4ce1ecaa7220-0' usage_metadata={'input_tokens': 15, 'output_tokens': 124, 'total_tokens': 139, 'input_token_details': {'cache_read': 0, 'cache_creation': 0}}
 </pre>
 
-A model set to `llm.with_fallbacks()` will also behave the same as a regular runnable model.
+A model configured with `llm.with_fallbacks()` behaves like a regular Runnable model.
 
-The code below also doesn't throw an ‘error’ because the fallbacks model did a good job.
+The code below also does not throw an **error** because the fallback model performed successfully.
 
 ```python
 from langchain_core.prompts.chat import ChatPromptTemplate
@@ -283,13 +283,13 @@ with patch("openai.resources.chat.completions.Completions.create", side_effect=e
 <pre class="custom">content='The capital of South Korea is Seoul.' additional_kwargs={} response_metadata={'id': 'msg_013Uqu28KjoN25xFPEmP1Uca', 'model': 'claude-3-opus-20240229', 'stop_reason': 'end_turn', 'stop_sequence': None, 'usage': {'cache_creation_input_tokens': 0, 'cache_read_input_tokens': 0, 'input_tokens': 24, 'output_tokens': 11}} id='run-73627f85-a617-4044-9363-be5f451d79b9-0' usage_metadata={'input_tokens': 24, 'output_tokens': 11, 'total_tokens': 35, 'input_token_details': {'cache_read': 0, 'cache_creation': 0}}
 </pre>
 
-## If you specify an error that needs to be handled
+## Specifying Exceptions to Trigger Fallbacks
 
-When working with fallbacks, you can precisely define when the `fallback` should be triggered. This allows for more granular control over the fallback mechanism's behavior.
+You can precisely define when a `fallback` should trigger, allowing for more granular control over the fallback mechanism's behavior.
 
-For example, you can specify certain exception classes or error codes that will trigger the fallback logic. This approach helps you to **reduce unnecessary fallback calls and improve error handling efficiency.**
+For example, you can specify certain exception classes or error codes to trigger the fallback logic, **reducing unnecessary calls and improving efficiency in error handling.**
 
-In the example below, you'll see an "error occurred" message printed. This happens because we've configured the `exceptions_to_handle` parameter to only trigger the fallback when a `KeyboardInterrupt` exception occurs. As a result, the `fallback` won't be triggered for any other exceptions.
+The example below prints an \"error\" message because `exceptions_to_handle` is configured to trigger the fallback only for `KeyboardInterrupt`. The `fallback` will not trigger for other exceptions.
 
 
 ```python
@@ -312,10 +312,9 @@ with patch("openai.resources.chat.completions.Completions.create", side_effect=e
 <pre class="custom">Hit error
 </pre>
 
-## Specifying multiple models in fallback sequentially
+## Specifying Multiple Fallback Models Sequentially
 
-You can specify multiple models in the `fallback` model, not just one. When multiple models are specified, they will be tried sequentially.
-
+You can specify multiple fallback models, not just one. They will be tried sequentially if multiple models are specified.
 
 ```python
 from langchain_core.prompts.prompt import PromptTemplate
@@ -328,7 +327,7 @@ prompt_template = (
 prompt = PromptTemplate.from_template(prompt_template)
 ```
 
-Create two chains, one that causes an error and one that works normally.
+Create two chains: one that causes an error and one that works normally.
 
 
 ```python
@@ -359,7 +358,7 @@ chain.invoke({"question": "What is the capital of South Korea?"})
 
 
 ## Using Different Prompt Templates for Each Model
-You can use different prompt templates tailored to each model's characteristics. For example, GPT-4 can handle complex instructions while GPT-3.5 can work with simpler ones.
+You can use different prompt templates tailored to each model's characteristics. For example, GPT-4 handles complex instructions, while GPT-3.5 works with simpler ones.
 
 ```python
 # Set up model-specific prompt templates
@@ -446,7 +445,7 @@ for question in questions:
 </pre>
 
 ## Automatic Model Switching Based on Context Length
-When handling long contexts, you can automatically switch to models with larger context windows if token limits are exceeded.
+For long contexts, automatically switch to models with larger context windows if token limits are exceeded.
 
 ```python
 import time

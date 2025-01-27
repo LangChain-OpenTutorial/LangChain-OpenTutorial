@@ -20,7 +20,6 @@ pre {
 # ConversationBufferMemory
 
 - Author: [Sungchul Kim](https://github.com/rlatjcj)
-- Design: [Sungchul Kim](https://github.com/rlatjcj)
 - Peer Review : [Shinar12](https://github.com/Shinar12), [BAEM1N](https://github.com/BAEM1N), [YellowGangneng](https://github.com/YellowGangneng)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
@@ -28,18 +27,20 @@ pre {
 
 ## Overview
 
-This tutorial introduces the `ConversationBufferMemory` class, which is a memory class that stores conversation history in a buffer.  
-Usually, it doesn't need any additional processing, but sometimes it may be required, such as when the conversation history is too large to fit in the context window of the model.  
-In this tutorial, we will learn how to use the `ConversationBufferMemory` class to store and retrieve conversation history.
+This tutorial introduces `ConversationBufferMemory`, a memory class that stores conversation history in a buffer.
+
+Typically, no additional processing is required. Sometimes, however, it may be necessary when the conversation history exceeds the model's context window.
+
+In this tutorial, we will learn how to use `ConversationBufferMemory` to store and retrieve conversation history.
 
 
 ### Table of Contents
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Extract messages as strings](#extract-messages-as-strings)
-- [Extract messages as `HumanMessage` and `AIMessage` objects](#extract-messages-as-humanmessage-and-aimessage-objects)
-- [Apply to Chain](#apply-to-chain)
+- [Extracting messages as strings](#extracting-messages-as-strings)
+- [Extracting messages as HumanMessage and AIMessage objects](#extracting-messages-as-humanmessage-and-aimessage-objects)
+- [Applying to a Chain](#applying-to-a-chain)
 
 ### References
 - [LangChain: ConversationBufferMemory](https://python.langchain.com/api_reference/langchain/memory/langchain.memory.buffer.ConversationBufferMemory.html)
@@ -55,7 +56,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -109,9 +110,9 @@ load_dotenv()
 
 
 
-## Extract messages as strings
+## Extracting messages as strings
 
-This memory allows you to extract messages into a variable after storing them.
+After storing conversation messages, this memory allows you to extract messages into a variable.
 
 
 ```python
@@ -136,10 +137,10 @@ memory
 
 You can use the `save_context(inputs, outputs)` method to save conversation records.
 
-- This method takes two arguments, `inputs` and `outputs`.
-- `inputs` stores the user's input, and `outputs` stores the AI's output.
-- Using this method saves the conversation record under the `history` key.
-- Later, you can use the `load_memory_variables` method to check the saved conversation record.
+- This method accepts two arguments, `inputs` and `outputs`.
+- `inputs` stores the user's question, and `outputs` stores the AI's answer.
+- The conversation record is stored internally under the `history` key.
+- You can then use the `load_memory_variables` method to retrieve and inspect the saved conversation history.
 
 
 ```python
@@ -166,7 +167,7 @@ memory
 
 
 
-The `load_memory_variables({})` function of memory returns the message history.
+The `load_memory_variables({})` method of the memory object returns the complete message history as a string.
 
 ```python
 # Check the message history stored in the 'history' key.
@@ -273,10 +274,9 @@ print(memory.load_memory_variables({})["history"])
     AI: Yes, the account has been opened. Your account number and related information have been sent to the email you registered. If you need additional help, please contact us at any time. Thank you!
 </pre>
 
-## Extract messages as `HumanMessage` and `AIMessage` objects
+## Extracting messages as `HumanMessage` and `AIMessage` objects
 
 Setting `return_messages=True` returns `HumanMessage` and `AIMessage` objects.
-
 
 ```python
 memory = ConversationBufferMemory(return_messages=True)
@@ -326,9 +326,9 @@ memory.load_memory_variables({})["history"]
 
 
 
-## Apply to Chain
+## Applying to a Chain
 
-Let's apply the `ConversationBufferMemory` to the `ConversationChain`.
+Let's apply `ConversationBufferMemory` to a `ConversationChain`.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -386,7 +386,7 @@ print(response)
     If you have any specific questions about a particular bank or need further assistance, feel free to ask!
 </pre>
 
-Check if the previous conversation history is being remembered.
+Verify if the system remembers the previous conversation.
 
 ```python
 # Send a request to summarize the previous conversation in bullet points.
@@ -406,7 +406,3 @@ print(response)
     - **Receive Confirmation**: Get account number and online banking details.
     - **Set Up Online Banking**: Manage your account online for transactions and bill payments.
 </pre>
-
-```python
-
-```
