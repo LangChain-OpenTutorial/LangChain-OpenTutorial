@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "langchain-opentutorial"
-version = "0.0.1"
+version = "0.0.3"
 description = "LangChain OpenTutorial for Everyone."
 authors = ["LangChain OpenTutorial <langchain.opentutorial@gmail.com>"]
 license = "MIT License"
