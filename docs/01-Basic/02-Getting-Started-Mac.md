@@ -56,8 +56,7 @@ This guide provides a comprehensive setup process tailored for developing with L
    ```
 
 - Enter your account password when prompted.
-<br>
-     ![PasswordZ](assets/01-Follow-the-Installation-Video_Mac-01.png)
+![PasswordZ](./img/01-Follow-the-Installation-Video_Mac-01.png)
      
 - Press ENTER to proceed with the installation.
 
@@ -68,7 +67,7 @@ This guide provides a comprehensive setup process tailored for developing with L
    
    whoami
    ```
-![Jupyter Extension](assets/01-Follow-the-Installation-Video_Mac-02.png)
+![Jupyter Extension](./img/01-Follow-the-Installation-Video_Mac-02.png)
 
 - Check the installation path of Homebrew:
    ```bash
@@ -133,8 +132,7 @@ xcode-select --install
    ```bash
    git clone https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial.git
    ```
-![](assets/01-Follow-the-Installation-Video_Mac-03.png)   
-
+![](./img/01-Follow-the-Installation-Video_Mac-03.png)
 
 - The repository will be cloned into a folder named LangChain-OpenTutorial within the selected directory.
 
@@ -239,16 +237,13 @@ For detailed documentation, refer to the [Poetry Official Documentation](https:/
 - **Install Extensions**:
    - Open Visual Studio Code.
    - Click on the **Extensions** icon on the left sidebar.
-
-     ![Extensions Icon](assets/01-Follow-the-Installation-Video_Mac-04.png)
+![Extensions Icon](./img/01-Follow-the-Installation-Video_Mac-04.png)
 
    - Search for **"python"** in the Extensions Marketplace and install it.
-
-     ![Python Extension](assets/01-Follow-the-Installation-Video_Mac-05.png)
+![Python Extension](./img/01-Follow-the-Installation-Video_Mac-05.png)
 
    - Search for **"jupyter"** in the Extensions Marketplace and install it.
-
-     ![Jupyter Extension](assets/01-Follow-the-Installation-Video_Mac-06.png)
+![Jupyter Extension](./img/01-Follow-the-Installation-Video_Mac-06.png)
 
 - **Restart Visual Studio Code**:
    - After installing the extensions, restart Visual Studio Code to apply the changes.
@@ -262,4 +257,6 @@ For detailed documentation, refer to the [Poetry Official Documentation](https:/
 ---
 
 Now, Visual Studio Code is fully set up and ready for development with Python and Jupyter support.
+
+
 
