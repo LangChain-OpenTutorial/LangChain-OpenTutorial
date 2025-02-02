@@ -513,4 +513,4 @@ Check the result.
 [ **Note** ]  
 Results are not available for individual datasets but can be reviewed at the experiment level.
 
-![](./assets/10-LangSmith-Summary-Evaluation-01.png)
+![](./img/10-LangSmith-Summary-Evaluation-01.png)

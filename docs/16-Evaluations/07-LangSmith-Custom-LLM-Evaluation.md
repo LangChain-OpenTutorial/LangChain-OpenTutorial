@@ -451,13 +451,13 @@ llm_evaluator_prompt.pretty_print()
     Formula: (Accuracy + Comprehensiveness + Context Precision) / 30
     
     #Given question:
-    [33;1m[1;3m{question}[0m
+    {question}
     
     #LLM's response:
-    [33;1m[1;3m{answer}[0m
+    {answer}
     
     #Provided context:
-    [33;1m[1;3m{context}[0m
+    {context}
     
     Please evaluate the LLM's response according to the criteria above. 
     

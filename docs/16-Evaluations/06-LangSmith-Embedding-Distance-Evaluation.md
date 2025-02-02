@@ -222,4 +222,4 @@ experiment_results = evaluate(
     0it [00:00, ?it/s]
 
 
-![](./assets/06-langSmith-embedding-distance-evaluation-01.png)
+![](./img/06-langSmith-embedding-distance-evaluation-01.png)

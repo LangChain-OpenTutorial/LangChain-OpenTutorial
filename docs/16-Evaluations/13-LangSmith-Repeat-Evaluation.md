@@ -184,7 +184,7 @@ In this tutorial, we use the `llama3.2` model for repetitive evaluations. Make s
 !ollama pull llama3.2
 ```
 
-<pre class="custom">[?25lpulling manifest ⠋ [?25h[?25l[2K[1Gpulling manifest ⠙ [?25h[?25l[2K[1Gpulling manifest ⠹ [?25h[?25l[2K[1Gpulling manifest ⠸ [?25h[?25l[2K[1Gpulling manifest ⠼ [?25h[?25l[2K[1Gpulling manifest ⠴ [?25h[?25l[2K[1Gpulling manifest ⠦ [?25h[?25l[2K[1Gpulling manifest ⠧ [?25h[?25l[2K[1Gpulling manifest ⠇ [?25h[?25l[2K[1Gpulling manifest ⠏ [?25h[?25l[2K[1Gpulling manifest ⠋ [?25h[?25l[2K[1Gpulling manifest ⠙ [?25h[?25l[2K[1Gpulling manifest ⠹ [?25h[?25l[2K[1Gpulling manifest ⠸ [?25h[?25l[2K[1Gpulling manifest ⠼ [?25h[?25l[2K[1Gpulling manifest ⠴ [?25h[?25l[2K[1Gpulling manifest ⠦ [?25h[?25l[2K[1Gpulling manifest 
+<pre class="custom">pulling manifest ⠋ pulling manifest ⠙ pulling manifest ⠹ pulling manifest ⠸ pulling manifest ⠼ pulling manifest ⠴ pulling manifest ⠦ pulling manifest ⠧ pulling manifest ⠇ pulling manifest ⠏ pulling manifest ⠋ pulling manifest ⠙ pulling manifest ⠹ pulling manifest ⠸ pulling manifest ⠼ pulling manifest ⠴ pulling manifest ⠦ pulling manifest 
     pulling dde5aa3fc5ff... 100% ▕████████████████▏ 2.0 GB                         
     pulling 966de95ca8a6... 100% ▕████████████████▏ 1.4 KB                         
     pulling fcc5a6bec9da... 100% ▕████████████████▏ 7.7 KB                         
@@ -193,7 +193,7 @@ In this tutorial, we use the `llama3.2` model for repetitive evaluations. Make s
     pulling 34bb5ab01051... 100% ▕████████████████▏  561 B                         
     verifying sha256 digest 
     writing manifest 
-    success [?25h
+    success 
 </pre>
 
 
