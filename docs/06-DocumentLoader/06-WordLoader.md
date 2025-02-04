@@ -28,10 +28,10 @@ pre {
 
 ## Overview
 
-This tutorial covers two methods for loading Microsoft Word documents into a document format that can be used in RAG. 
+This tutorial covers two methods for loading `Microsoft Word` documents into a document format that can be used in RAG. 
 
 
-We will demonstrate the usage of **Docx2txtLoader** and **UnstructuredWordDocumentLoader**, exploring their functionalities to process and load .docx files effectively. 
+We will demonstrate the usage of `Docx2txtLoader` and `UnstructuredWordDocumentLoader`, exploring their functionalities to process and load .docx files effectively. 
 
 
 Additionally, we provide a comparison to help users choose the appropriate loader for their requirements.
@@ -43,6 +43,11 @@ Additionally, we provide a comparison to help users choose the appropriate loade
 - [Comparison of DOCX Loading Methods](#Comparison-of-DOCX-Loading-Methods)
 - [Docx2txtLoader](#Docx2txtLoader)
 - [UnstructuredWordDocumentLoader](#UnstructuredWordDocumentLoader)
+
+### References
+
+- [UnstructuredWordDocumentLoader Documentation](https://python.langchain.com/api_reference/community/document_loaders/langchain_community.document_loaders.word_document.UnstructuredWordDocumentLoader.html#langchain_community.document_loaders.word_document.UnstructuredWordDocumentLoader/)
+- [Docx2txtLoader Documentation](https://python.langchain.com/api_reference/community/document_loaders/langchain_community.document_loaders.word_document.Docx2txtLoader.html/)
 
 ----
 
@@ -56,7 +61,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -64,19 +69,13 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 from langchain_opentutorial import package
 
 package.install(
-    [
-        "langchain",
-        "langchain_community",
-        "docx2txt",
-        "unstructured",
-        "python-docx"
-    ],
+    ["langchain", "langchain_community", "docx2txt", "unstructured", "python-docx"],
     verbose=False,
     upgrade=False,
 )
 ```
 
-## Comparison of DOCX Loading Methods
+## Comparison of docx Loading Methods
 
 | **Feature**           | **Docx2txtLoader**      | **UnstructuredWordDocumentLoader**    |
 |-----------------------|-------------------------|---------------------------------------|
@@ -106,17 +105,17 @@ loader = Docx2txtLoader("data/sample-word-document_eng.docx")
 docs = loader.load()
 
 # Print the number of documents
-print(f'Document Count: {len(docs)}\n')
+print(f"Document Count: {len(docs)}\n")
 
 # Print the type of the loader
-print(f'Type of loader: {type(loader)}\n')
+print(f"Type of loader: {type(loader)}\n")
 
 # Print the metadata of the document
-print(f'Document Metadata: {docs[0].metadata}\n')
+print(f"Document Metadata: {docs[0].metadata}\n")
 
 # Note: The entire docx file is converted into a single document.
 # It needs to be split into smaller parts using a text splitter.
-print('Document Content')
+print("Document Content")
 print(docs[0])
 ```
 
@@ -514,6 +513,9 @@ print(docs[0])
 
 ### mode: Single (default)
 
+
+In this mode, the entire document is returned as a single LangChain Document object. In other words, all the content of the document is contained within a single object.
+
 ```python
 from langchain_community.document_loaders import UnstructuredWordDocumentLoader
 
@@ -524,17 +526,17 @@ loader = UnstructuredWordDocumentLoader("data/sample-word-document_eng.docx")
 docs = loader.load()
 
 # Print the number of documents
-print(f'Document Count: {len(docs)}\n')
+print(f"Document Count: {len(docs)}\n")
 
 # Print the type of the loader
-print(f'Type of loader: {type(loader)}\n')
+print(f"Type of loader: {type(loader)}\n")
 
 # Print the metadata of the document
-print(f'Document Metadata: {docs[0].metadata}\n')
+print(f"Document Metadata: {docs[0].metadata}\n")
 
 # Note: The entire docx file is converted into a single document.
 # It needs to be split into smaller parts using a text splitter.
-print('Document Content')
+print("Document Content")
 print(docs[0])
 ```
 
@@ -794,26 +796,33 @@ print(docs[0])
 
 ### mode: elements
 
+
+The document is divided into individual elements, such as Title and NarrativeText. Each element is returned as a separate Document object, allowing for more detailed analysis or processing of the document's structure.
+
 ```python
 from langchain_community.document_loaders import UnstructuredWordDocumentLoader
 
 # Initialize the document loader with "elements" mode
-loader = UnstructuredWordDocumentLoader("data/sample-word-document_eng.docx", mode="elements")
+loader = UnstructuredWordDocumentLoader(
+    "data/sample-word-document_eng.docx", mode="elements"
+)
 
 # Load the document
 docs = loader.load()
 
 # Print the number of documents
-print(f'Document Count: {len(docs)}\n')  # Using "elements" mode, each element is converted into a separate Document object
+print(
+    f"Document Count: {len(docs)}\n"
+)  # Using "elements" mode, each element is converted into a separate Document object
 
 # Print the type of the loader
-print(f'Type of loader: {type(loader)}\n')
+print(f"Type of loader: {type(loader)}\n")
 
 # Print the metadata of the first document element
-print(f'Document Metadata: {docs[0].metadata}\n')
+print(f"Document Metadata: {docs[0].metadata}\n")
 
 # Print the content of the first document element
-print('Document Content')
+print("Document Content")
 print(docs[0])
 ```
 
@@ -845,27 +854,27 @@ from langchain_community.document_loaders import UnstructuredWordDocumentLoader
 
 # Initialize the document loader with specific parameters
 loader = UnstructuredWordDocumentLoader(
-    "data/sample-word-document_eng.docx", 
-    strategy='fast',                 # Prioritize fast processing
-    include_page_breaks=True,        # Include page breaks as PageBreak elements
-    infer_table_structure=True,      # Infer table structures and include in HTML format
-    starting_page_number=1           # Start page numbering from 1
+    "data/sample-word-document_eng.docx",
+    strategy="fast",  # Prioritize fast processing
+    include_page_breaks=True,  # Include page breaks as PageBreak elements
+    infer_table_structure=True,  # Infer table structures and include in HTML format
+    starting_page_number=1,  # Start page numbering from 1
 )
 
 # Load the document
 docs = loader.load()
 
 # Print the number of documents
-print(f'Document Count: {len(docs)}\n')
+print(f"Document Count: {len(docs)}\n")
 
 # Print the type of the loader
-print(f'Type of loader: {type(loader)}\n')
+print(f"Type of loader: {type(loader)}\n")
 
 # Print the metadata of the first document
-print(f'Document Metadata: {docs[0].metadata}\n')
+print(f"Document Metadata: {docs[0].metadata}\n")
 
 # Print the content of the first document
-print('Document Content')
+print("Document Content")
 print(docs[0])
 ```
 

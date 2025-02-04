@@ -31,8 +31,8 @@ pre {
 [Microsoft PowerPoint](https://en.wikipedia.org/wiki/Microsoft_PowerPoint) is a presentation program developed by Microsoft.
 
 This tutorial demonstrates two different approaches to process PowerPoint documents for downstream use:
-1. Using Unstructured to load and parse PowerPoint files into document elements
-2. Using MarkItDown to convert PowerPoint files into markdown format and LangChain Document objects
+1. Using `Unstructured` to load and parse PowerPoint files into document elements
+2. Using `MarkItDown` to convert PowerPoint files into markdown format and LangChain Document objects
 
 Both methods enable effective text extraction and processing, with different strengths for various use cases.
 
@@ -59,7 +59,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial 
+%pip install langchain-opentutorial 
 ```
 
 ```python
@@ -208,10 +208,11 @@ For example, an object in the slide would be processed like this:
 
 `![object #](object#.jpg)`
 
-
 Installation is straightforward:
+
 ```python
-pip install markitdown
+# %pip install markitdown
+```
 
 ### Extracting Text from PPTX Using MarkItDown
 In this section, we'll use `MarkItDown` to:
@@ -221,7 +222,7 @@ In this section, we'll use `MarkItDown` to:
 * Generate clean, readable text output
 
 
-First, we need to initialize `MarkItDown` and run `convert` function to load the PPTX file from local.
+First, we need to initialize `MarkItDown` and run `convert` function to load the `.pptx` from local.
 
 ```python
 from markitdown import MarkItDown
@@ -253,7 +254,7 @@ print(result_text[:500])
 
 ### Convert markdown format to Langchain Document format
 
-The code below processes PowerPoint slides by splitting them into individual Document objects. <br/>Each slide is converted into a Langchain Document object with metadata including the slide number and title. 
+The code below processes PowerPoint slides by splitting them into individual Document objects. <br/>Each slide is converted into a Langchain Document object with metadata including the `slide number` and `title`. 
 
 ```python
 from langchain_core.documents import Document
@@ -305,7 +306,9 @@ documents[:2]
 
 
 
-`MarkItDown` efficiently handles tables in PowerPoint slides by converting them into clean Markdown table syntax. <br/>This makes tabular data easily accessible for LLMs while preserving the original structure and formatting.
+`MarkItDown` efficiently handles tables in PowerPoint slides by converting them into clean Markdown table syntax. 
+
+This makes tabular data easily accessible for LLMs while preserving the original structure and formatting.
 
 ```python
 print(documents[15].page_content)
@@ -332,7 +335,3 @@ print(documents[15].page_content)
     | flying | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 |
     | . | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0 |
 </pre>
-
-```python
-
-```
