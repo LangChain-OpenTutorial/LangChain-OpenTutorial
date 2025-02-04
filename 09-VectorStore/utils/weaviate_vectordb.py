@@ -4,7 +4,7 @@ from tqdm import tqdm
 from utils.base import VectorDB
 from weaviate.classes.init import Auth
 from weaviate.collections.classes.filters import Filter
-from weaviate.classes.config import Property, DataType, Configure, VectorDistances
+from weaviate.classes.config import Configure, VectorDistances
 from langchain_core.documents import Document
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, Tuple
@@ -30,17 +30,16 @@ class ConnectDB:
 
 
 class WeaviateDB(VectorDB):
-    def __init__(self):
+    def __init__(self, api_key: str, url: str):
         self._client = None
         self._current_index = None
         self._collection = None
         self._text_key = "text"
-        self._api_key = None
+        self._api_key = api_key
+        self._url = url
 
     def connect(
         self,
-        url: Optional[str] = None,
-        api_key: Optional[str] = None,
         **kwargs: Any,
     ) -> weaviate.Client:
         try:
@@ -51,15 +50,9 @@ class WeaviateDB(VectorDB):
                 "Please install it with `pip install weaviate-client`"
             )
         
-        url = url or os.environ.get("WEAVIATE_URL")
-        api_key = api_key or os.environ.get("WEAVIATE_API_KEY")
-        
-        # api_key 저장
-        self._api_key = api_key
-        self._url = url
         self._client = weaviate.connect_to_weaviate_cloud(
-            cluster_url=url,
-            auth_credentials=Auth.api_key(api_key),
+            cluster_url=self._url,
+            auth_credentials=Auth.api_key(self._api_key),
             **kwargs
         )
         return self._client
@@ -95,7 +88,7 @@ class WeaviateDB(VectorDB):
         except Exception:
             return "Complex filter"
         
-    def get_api_key(self) -> Optional[str]:
+    def get_api_key(self):
         """API 키 반환"""
         return self._api_key
 
