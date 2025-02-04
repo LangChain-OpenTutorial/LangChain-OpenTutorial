@@ -1,195 +1,282 @@
-from utils.vectorstoreInterface import VectorDBInterface
-from concurrent.futures import ThreadPoolExecutor
-import asyncio
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterable, List, Optional
 from qdrant_client import QdrantClient
-from qdrant_client.http.models import PointStruct, PointIdsList, VectorParams, Distance
-from langchain_openai import OpenAIEmbeddings
+from qdrant_client.http.models import (
+    PointStruct,
+    PointIdsList,
+    Filter,
+    VectorParams,
+    Distance,
+)
+from abc import ABC, abstractmethod
+from langchain.schema import Document
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
-class QdrantDB(VectorDBInterface):
-    def __init__(self) -> None:
-        """
-        Initializes the QdrantDB instance.
-        """
-        self.client: Optional[QdrantClient] = None
-        self.collection_name: Optional[str] = None
-        self.embedding_model: Optional[OpenAIEmbeddings] = None
+class DocumentManagerInterface(ABC):
+    """
+    문서 insert/update (upsert, upsert_parallel)
+    문서 search by query (search)
+    문서 delete by id, delete by filter (delete)
+    """
 
-    def connect(
+    @abstractmethod
+    def upsert(
         self,
-        collection_name: str,
-        embeddings,
-        **kwargs: Any,
+        texts: Iterable[str],
+        metadatas: Optional[list[dict]] = None,
+        ids: Optional[List[str]] = None,
+        **kwargs: Any
     ) -> None:
-        """
-        Connects to the Qdrant database.
+        """문서를 업서트합니다."""
+        pass
 
-        Args:
-            collection_name (str): The name of the collection.
-            embeddings (OpenAIEmbeddings): An instance of the embedding model to be used.
-            **kwargs: Additional connection parameters.
-        """
-        if not self.client:
-            self.client = QdrantClient(**kwargs)
-            self.collection_name = collection_name
-            self.embedding_model = embeddings
-            print(f"Connected to QdrantClient with parameters: {kwargs}")
-
-    def create_collection(
-        self, vector_size: Optional[int] = None, distance: Distance = Distance.COSINE
+    @abstractmethod
+    def upsert_parallel(
+        self,
+        texts: Iterable[str],
+        metadatas: Optional[list[dict]] = None,
+        ids: Optional[List[str]] = None,
+        batch_size: int = 32,
+        workers: int = 10,
+        **kwargs: Any
     ) -> None:
+        """병렬로 문서를 업서트합니다."""
+        pass
+
+    @abstractmethod
+    def search(self, query: str, k: int = 10, **kwargs: Any) -> List[Document]:
+        """쿼리를 수행하고 관련 문서를 반환합니다.
+        기본 기능: query (문자열) -> 비슷한 문서 k개 반환
+
+        cosine_similarity 써치하는 것 의미 **문제될 경우 이슈제기
+
+        -그외 기능 (추후 확장)
+        metatdata search
+        이미지 서치할 때 벡터 받는 것
         """
-        Creates a new collection in the Qdrant database.
+        pass
+
+    @abstractmethod
+    def delete(
+        self,
+        ids: Optional[list[str]] = None,
+        filters: Optional[dict] = None,
+        **kwargs: Any
+    ) -> None:
+        """필터를 사용하여 문서를 삭제합니다.
+
+        ids: List of ids to delete. If None, delete all. Default is None.
+        filters: Dictionary of filters (querys) to apply. If None, no filters apply.
+
+        """
+        pass
+
+
+class QdrantDocumentManager(DocumentManagerInterface):
+    """Manages document operations with Qdrant, including upsert, search, and delete.
+
+    This class interfaces with Qdrant to perform operations such as inserting,
+    updating, searching, and deleting documents in a specified collection.
+    """
+
+    def __init__(self, collection_name: str, embedding, **kwargs: Any) -> None:
+        """Initializes the QdrantDocumentManager with a collection name and embedding model.
 
         Args:
-            vector_size (Optional[int]): The size of the vectors. Defaults to None.
-            distance (Distance): The distance metric for the collection. Defaults to COSINE distance.
+            collection_name (str): The name of the collection in Qdrant.
+            embedding: The embedding model used to convert texts into vectors.
+            **kwargs (Any): Additional keyword arguments for QdrantClient configuration.
         """
-        self._ensure_collection_set()
-        vector_size = vector_size or len(self.generate_vector("test"))
-        self.client.create_collection(
-            self.collection_name, VectorParams(size=vector_size, distance=distance)
-        )
-        print(f"Collection '{self.collection_name}' created successfully.")
+        self.client = QdrantClient(**kwargs)
+        self.collection_name = collection_name
+        self.embedding = embedding
+        self.distance_metric = kwargs.get("distance_metric", Distance.COSINE)
+        self._ensure_collection_exists()
 
-    def delete_collection(self) -> None:
-        """
-        Deletes the specified collection.
-        """
-        self._ensure_collection_set()
-        self.client.delete_collection(self.collection_name)
-        print(f"Collection '{self.collection_name}' deleted successfully.")
+    def _ensure_collection_exists(self) -> None:
+        """Ensures that the specified collection exists in Qdrant.
 
-    def add_documents(self, split_docs: List[Any], parallel: bool = False) -> List[str]:
+        If the collection does not exist, it creates a new one with the specified
+        vector size and distance metric.
         """
-        Adds documents to the collection.
+        try:
+            self.client.get_collection(self.collection_name)
+        except Exception:
+            vector_size = len(self.embedding.embed_query("vetor size check"))
+            self.client.create_collection(
+                collection_name=self.collection_name,
+                vectors_config=VectorParams(
+                    size=vector_size, distance=self.distance_metric
+                ),
+            )
+
+    def _create_points(
+        self,
+        texts: Iterable[str],
+        metadatas: Optional[List[dict]],
+        ids: Optional[List[str]],
+    ) -> List[PointStruct]:
+        """Converts strings into Qdrant's point structure.
 
         Args:
-            split_docs (List[Any]): The list of document objects to be added.
-            parallel (bool, optional): Whether to perform parallel processing. Defaults to False.
+            texts (Iterable[str]): The texts to be converted into points.
+            metadatas (Optional[List[dict]]): Optional metadata for each text.
+            ids (Optional[List[str]]): Optional list of ids for each text.
 
         Returns:
-            List[str]: List of document IDs added.
+            List[PointStruct]: A list of PointStruct objects ready for insertion into Qdrant.
         """
-        self._ensure_collection_set()
-        import uuid
-
-        points = [
+        return [
             PointStruct(
-                id=str(uuid.uuid4()),
-                vector=self.generate_vector(doc.page_content),
-                payload={"text": doc.page_content, "metadata": doc.metadata},
+                id=ids[i] if ids else str(i),
+                vector=self.embedding.embed_query(texts[i]),  # Convert text to vector
+                payload={
+                    "content": texts[i],  # Store original text in 'content'
+                    "metadata": metadatas[i],
+                },
             )
-            for doc in split_docs
+            for i in range(len(texts))
         ]
-        if parallel:
-            with ThreadPoolExecutor() as executor:
-                loop = asyncio.get_event_loop()
-                loop.run_in_executor(
-                    executor, self.client.upsert, self.collection_name, points
-                )
-        else:
-            self.client.upsert(self.collection_name, points)
-        return [point.id for point in points]
 
-    def delete_documents(self, parallel: bool = False, **kwargs: Any) -> bool:
-        """
-        Deletes documents from the collection.
+    def upsert(
+        self,
+        texts: Iterable[str],
+        metadatas: Optional[List[dict]] = None,
+        ids: Optional[List[str]] = None,
+        **kwargs: Any
+    ) -> List[str]:
+        """Upserts documents into the collection and returns the upserted ids.
 
         Args:
-            parallel (bool, optional): Whether to perform parallel processing. Defaults to False.
-            **kwargs: Additional filter parameters for deletion.
+            texts (Iterable[str]): The texts to be upserted.
+            metadatas (Optional[List[dict]]): Optional metadata for each text.
+            ids (Optional[List[str]]): Optional list of ids for each text.
+            **kwargs (Any): Additional keyword arguments for the upsert operation.
 
         Returns:
-            bool: True if the deletion is successful.
+            List[str]: The list of successfully upserted ids.
         """
-        self._ensure_collection_set()
-        ids_to_delete = kwargs.get("ids", [])
-        if ids_to_delete:
-            if parallel:
-                with ThreadPoolExecutor() as executor:
-                    loop = asyncio.get_event_loop()
-                    loop.run_in_executor(
-                        executor,
-                        self.client.delete,
-                        self.collection_name,
-                        PointIdsList(points=ids_to_delete),
-                    )
-            else:
-                self.client.delete(
-                    self.collection_name, PointIdsList(points=ids_to_delete)
-                )
-        return True
+        points = self._create_points(texts, metadatas, ids)
+        self.client.upsert(collection_name=self.collection_name, points=points)
 
-    def scroll(self, k: int = 5, **kwargs: Any) -> List[Any]:
-        """
-        Retrieves documents using scroll.
+        # Return the ids used for the upsert operation
+        return ids if ids else [str(i) for i in range(len(texts))]
+
+    def batch_upsert(
+        self,
+        texts: Iterable[str],
+        metadatas: Optional[List[dict]],
+        ids: Optional[List[str]],
+        start: int,
+        end: int,
+    ) -> List[str]:
+        """Performs batch upsert and returns the upserted ids.
 
         Args:
-            k (int, optional): Number of documents to retrieve. Defaults to 5.
-            **kwargs: Additional scroll parameters.
+            texts (Iterable[str]): The texts to be upserted.
+            metadatas (Optional[List[dict]]): Optional metadata for each text.
+            ids (Optional[List[str]]): Optional list of ids for each text.
+            start (int): The starting index of the batch.
+            end (int): The ending index of the batch.
 
         Returns:
-            List[Any]: Retrieved documents.
+            List[str]: The list of upserted ids.
         """
-        self._ensure_collection_set()
-        return self.client.scroll(self.collection_name, limit=k, **kwargs)
-
-    def generate_vector(self, text: str) -> List[float]:
-        """
-        Converts text into an embedding vector.
-
-        Args:
-            text (str): The input text to be embedded.
-
-        Returns:
-            List[float]: The generated embedding vector.
-        """
-        return self.embedding_model.embed_query(text)
-
-    def similarity_search(self, query: str, top_k: int, **kwargs: Any) -> List[Any]:
-        """
-        Performs similarity search.
-
-        Args:
-            query (str): The search query.
-            top_k (int): The number of top results to return.
-            **kwargs: Additional search parameters.
-
-        Returns:
-            List[Any]: Search results.
-        """
-        self._ensure_collection_set()
-        query_vector = self.generate_vector(query)
-        return self.client.search(
-            self.collection_name, query_vector=query_vector, limit=top_k, **kwargs
+        batch_points = self._create_points(
+            texts[start:end],
+            metadatas[start:end] if metadatas else None,
+            ids[start:end] if ids else None,
         )
+        self.client.upsert(collection_name=self.collection_name, points=batch_points)
+        return ids[start:end] if ids else [str(i) for i in range(start, end)]
 
-    def as_retriever(self, top_k: int = 10) -> Any:
-        """
-        Returns a retriever function for similarity search.
+    def upsert_parallel(
+        self,
+        texts: Iterable[str],
+        metadatas: Optional[List[dict]] = None,
+        ids: Optional[List[str]] = None,
+        batch_size: int = 32,
+        workers: int = 10,
+        **kwargs: Any
+    ) -> List[str]:
+        """Performs parallel upsert of documents and returns the upserted ids.
 
         Args:
-            top_k (int, optional): Number of top results to return. Defaults to 10.
+            texts (Iterable[str]): The texts to be upserted.
+            metadatas (Optional[List[dict]]): Optional metadata for each text.
+            ids (Optional[List[str]]): Optional list of ids for each text.
+            batch_size (int): The size of each batch for upsert. Default is 32.
+            workers (int): The number of worker threads to use. Default is 10.
+            **kwargs (Any): Additional keyword arguments.
 
         Returns:
-            Callable: A retriever function that performs search.
+            List[str]: The list of upserted ids.
         """
-        return lambda query: self.similarity_search(query, top_k)
+        all_ids = []
 
-    def _ensure_collection_set(self) -> None:
-        """
-        Ensures that a collection is set before performing operations.
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures = [
+                executor.submit(
+                    self.batch_upsert,
+                    texts,
+                    metadatas,
+                    ids,
+                    i,
+                    min(i + batch_size, len(texts)),
+                )
+                for i in range(0, len(texts), batch_size)
+            ]
+            for future in as_completed(futures):
+                all_ids.extend(future.result())
 
-        Raises:
-            ValueError: If collection name is not set.
+        return all_ids
+
+    def search(self, query: str, k: int = 10, **kwargs: Any) -> List[Dict[str, Any]]:
+        """Performs a search query and returns a list of relevant documents.
+
+        Args:
+            query (str): The search query string to find similar documents.
+            k (int): The number of top documents to return. Default is 10.
+            **kwargs (Any): Additional keyword arguments for the search operation.
+
+        Returns:
+            List[Dict[str, Any]]: A list of dictionaries containing the payload, id, and score of each result.
         """
-        if not self.collection_name:
-            raise ValueError(
-                "Collection name is not set. Please connect to a collection first."
+        search_results = self.client.search(
+            collection_name=self.collection_name,
+            query_vector=self.embedding.embed_query(query),
+            limit=k,
+            **kwargs
+        )
+        return [
+            {
+                "payload": result.payload,
+                "id": result.id,
+                "score": result.score,
+            }
+            for result in search_results
+        ]
+
+    def delete(
+        self,
+        ids: Optional[List[str]] = None,
+        filters: Optional[Filter] = None,
+        **kwargs: Any
+    ) -> None:
+        """Deletes documents from the collection based on ids or filters.
+
+        Args:
+            ids (Optional[List[str]]): A list of document ids to delete. If None, no id-based deletion is performed.
+            filters (Optional[Filter]): A Filter object to apply for deletion. If None, no filter-based deletion is performed.
+            **kwargs (Any): Additional keyword arguments for the delete operation.
+
+        Returns:
+            None
+        """
+        if ids:
+            points_selector = PointIdsList(points=ids)
+            self.client.delete(
+                collection_name=self.collection_name, points_selector=points_selector
             )
-
-    def getRetrival(self):
-
-        return self.client
+        elif filters:
+            self.client.delete(collection_name=self.collection_name, filter=filters)
