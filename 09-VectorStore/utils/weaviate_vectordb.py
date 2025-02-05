@@ -1,8 +1,8 @@
-import os
+import datetime
 from langchain_weaviate import WeaviateVectorStore
 import weaviate
+import logging
 from tqdm import tqdm
-from utils.base import VectorDB
 from weaviate.classes.init import Auth
 from weaviate.collections.classes.filters import Filter
 from weaviate.classes.config import Configure, VectorDistances
@@ -16,14 +16,21 @@ from utils.vectordbinterface import DocumentManager
 from langchain_core.embeddings import Embeddings
 from weaviate.classes.config import Property
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 class WeaviateDB(DocumentManager):
-    def __init__(self, api_key: str, url: str, openai_api_key: str = None):
+    def __init__(self, api_key: str, url: str, openai_api_key: str = None, embeddings: Embeddings = None):
         self._api_key = api_key
         self._url = url
         self._client = None
         self._openai_api_key = openai_api_key
+        self._embeddings = embeddings
 
+    @property
+    def embeddings(self) -> Optional[Embeddings]:
+        return self._embedding
+    
     def _create_filter_query(self, filters: Optional[dict] = None) -> Optional[dict]:
         """
         filters 파라미터가 존재할 경우, Weaviate where 조건에 맞게 변환하여 반환합니다.
@@ -76,6 +83,11 @@ class WeaviateDB(DocumentManager):
     def get_api_key(self):
         """API 키 반환"""
         return self._api_key
+    
+    def _json_serializable(value: Any) -> Any:
+        if isinstance(value, datetime.datetime):
+            return value.isoformat()
+        return value
 
     def create_collection(
         self,
@@ -180,11 +192,11 @@ class WeaviateDB(DocumentManager):
         show_progress = kwargs.get("show_progress", False)
         collection_name = kwargs.get("collection_name", "default_collection")
         collection = self._client.collections.get(collection_name)
-        embeddings = kwargs.get("embeddings")
         is_single_batch = kwargs.get("is_single_batch", False)
 
-        if embeddings is None:
-            raise ValueError("embeddings parameter is required")
+        embeddings: Optional[List[List[float]]] = None
+        if self._embedding:
+            embeddings = self._embedding.embed_documents(list(texts))
 
         try:
             for i in range(0, len(texts), batch_size):
@@ -246,60 +258,35 @@ class WeaviateDB(DocumentManager):
         metadatas = metadatas if metadatas is not None else [{} for _ in texts]
         ids = ids if ids is not None else [str(i) for i in range(len(texts))]
 
-        successful_ids = []
         collection_name = kwargs.get("collection_name", "default_collection")
-        batch_size = kwargs.get("batch_size", 100)
-        max_workers = kwargs.get("max_workers", 4)
-        show_progress = kwargs.get("show_progress", False)
-        embeddings = kwargs.get("embeddings")
 
-        if embeddings is None:
-            raise ValueError("embeddings parameter is required")
 
-        def create_batches(data: List, size: int) -> List[List]:
-            return [data[i : i + size] for i in range(0, len(data), size)]
+        embeddings: Optional[List[List[float]]] = None
+        if self._embedding:
+            embeddings = self._embedding.embed_documents(list(texts))
 
-        # 데이터를 배치로 나누기
-        text_batches = create_batches(list(texts), batch_size)
-        metadata_batches = create_batches(metadatas, batch_size)
-        id_batches = create_batches(ids, batch_size)
-
-        def process_batch(batch_data: tuple) -> List[str]:
-            batch_texts, batch_metadatas, batch_ids = batch_data
-            try:
-                return self.upsert(
-                    texts=batch_texts,
-                    metadatas=batch_metadatas,
-                    ids=batch_ids,
-                    collection_name=collection_name,
-                    batch_size=len(batch_texts),
-                    show_progress=False,
-                    embeddings=embeddings,
-                    is_single_batch=True,
+        with self._client.batch.dynamic() as batch:
+            for i, text in enumerate(texts):
+                data_properties = {self._text_key: text}
+                if metadatas is not None:
+                    for key, val in metadatas[i].items():
+                        data_properties[key] = self._json_serializable(val)
+                
+                batch.add_object(
+                    collection=collection_name,
+                    properties=data_properties,
+                    uuid=ids[i],
+                    vector=embeddings[i] if embeddings else None,
                 )
-            except Exception as e:
-                print(f"\nError occurred while processing batch: {e}")
-                return []
+        failed_objs = self._client.batch.failed_objects
+        for obj in failed_objs:
+            err_message = (
+                f"Failed to add object: {obj.original_uuid}\nReason: {obj.message}"
+            )
 
-        # 배치 데이터 준비
-        batches = list(zip(text_batches, metadata_batches, id_batches))
+            logger.error(err_message)
 
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = [executor.submit(process_batch, batch) for batch in batches]
-
-            for future in tqdm(
-                as_completed(futures),
-                total=len(batches),
-                desc="Processing batches",
-                disable=not show_progress,
-            ):
-                try:
-                    batch_ids = future.result()
-                    successful_ids.extend(batch_ids)
-                except Exception as e:
-                    print(f"\nError occurred while processing batch: {e}")
-
-        return successful_ids
+        return ids
 
     def delete(
         self, 
