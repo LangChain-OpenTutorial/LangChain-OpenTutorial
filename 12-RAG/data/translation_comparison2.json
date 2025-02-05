@@ -1,0 +1,77 @@
+[
+    {
+        "chinese_text": "数据领域迎来国家标准。",
+        "translation_1": "The field of data is welcoming national standards",
+        "translation_2": "The data sector welcomes national standards"
+    },
+    {
+        "chinese_text": "10月8日，国家发改委等部门发布关于印发《国家数据标准体系建设指南》(以下简称《指南》)的通知。",
+        "translation_1": "On October 8, the National Development and Reform Commission (NDRC) and other departments issued a notice regarding the issuance of the \"National Data Standard System Construction Guide\" (hereinafter referred to as the \"Guide\")",
+        "translation_2": "On October 8, the National Development and Reform Commission (NDRC) and other departments issued a notice regarding the release of the \"Guidelines for the Construction of the National Data Standard System\" (hereinafter referred to as the \"Guidelines\")"
+    },
+    {
+        "chinese_text": "为“充分发挥标准在激活数据要素潜能、做强做优做大数字经济等方面的规范和引领作用”，国家发展改革委、国家数据局、中央网信办、工业和信息化部、财政部、国家标准委组织编制了《国家数据标准体系建设指南》。",
+        "translation_1": "To \"fully leverage the normative and guiding role of standards in activating the potential of data elements, strengthening and optimizing the digital economy,\" the NDRC, the National Data Bureau, the Central Cyberspace Affairs Commission, the Ministry of Industry and Information Technology, the Ministry of Finance, and the National Standardization Administration organized the preparation of the \"National Data Standard System Construction Guide",
+        "translation_2": "To \"fully leverage the role of standards in activating the potential of data elements and strengthening and expanding the digital economy,\" the NDRC, the National Data Bureau, the Cyberspace Administration of China, the Ministry of Industry and Information Technology, the Ministry of Finance, and the National Standardization Administration organized the development of the \"Guidelines"
+    },
+    {
+        "chinese_text": "《指南》提出，到2026年底，基本建成国家数据标准体系，围绕数据流通利用基础设施、数据管理、数据服务、训练数据集、公共数据授权运营、数据确权、数据资源定价、企业数据范式交易等方面制修订30项以上数据领域基础通用国家标准，形成一批标准应用示范案例，建成标准验证和应用服务平台，培育一批具备数据管理能力评估、数据评价、数据服务能力评估、公共数据授权运营绩效评估等能力的第三方标准化服务机构。",
+        "translation_1": "\" The \"Guide\" proposes that by the end of 2026, a basic national data standard system will be established, focusing on revising and formulating over 30 fundamental general national standards in areas such as data circulation and utilization infrastructure, data management, data services, training datasets, public data authorized operation, data ownership confirmation, data resource pricing, and enterprise data paradigm transactions",
+        "translation_2": "\" \n\nThe \"Guidelines\" propose that by the end of 2026, a national data standard system will be basically established"
+    },
+    {
+        "chinese_text": "《指南》明确，数据标准体系框架包含基础通用、数据基础设施、数据资源、数据技术、数据流通、融合应用、安全保障等7个部分。",
+        "translation_1": "It aims to create a number of standard application demonstration cases, establish a standard verification and application service platform, and cultivate a batch of third-party standardization service institutions with capabilities in data management capability assessment, data evaluation, data service capability assessment, and public data authorized operation performance assessment",
+        "translation_2": "This will involve the formulation and revision of more than 30 foundational and general national standards covering aspects such as data circulation and utilization infrastructure, data management, data services, training datasets, public data authorization and operation, data rights confirmation, data resource pricing, and enterprise data paradigm transactions"
+    },
+    {
+        "chinese_text": "数据基础设施方面，标准涉及存算设施中的数据算力设施、数据存储设施，网络设施中的5G网络数据传输、光纤数据传输、卫星互联网数据传输，此外还有流通利用设施。",
+        "translation_1": "The \"Guide\" clarifies that the framework of the data standard system includes seven parts: basic general standards, data infrastructure, data resources, data technology, data circulation, integrated applications, and security guarantees",
+        "translation_2": "The goal is to create a number of standard application demonstration cases, establish a standard verification and application service platform, and cultivate a batch of third-party standardized service organizations capable of assessing data management abilities, data evaluation, data service capabilities, and public data authorization operation performance"
+    },
+    {
+        "chinese_text": "数据流通方面，标准包括数据产品、数据确权、数据资源定价、数据流通交易。",
+        "translation_1": "In terms of data infrastructure, the standards cover data computing facilities and data storage facilities within computing infrastructure, as well as 5G network data transmission, fiber-optic data transmission, satellite internet data transmission, and other circulation and utilization facilities within network infrastructure",
+        "translation_2": "The \"Guidelines\" specify that the data standard system framework includes seven components: foundational general standards, data infrastructure, data resources, data technology, data circulation, integrated applications, and security assurance"
+    },
+    {
+        "chinese_text": "融合应用方面，标准涉及工业制造、农业农村、商贸流通、交通运输、金融服务、科技创新、文化旅游(文物)、卫生健康、应急管理、气象服务、城市治理、绿色低碳。",
+        "translation_1": "Regarding data circulation, the standards include data products, data ownership confirmation, data resource pricing, and data circulation transactions",
+        "translation_2": "In terms of data infrastructure, the standards cover data computing and storage facilities, 5G network data transmission, fiber optic data transmission, satellite internet data transmission, and facilities for circulation and utilization"
+    },
+    {
+        "chinese_text": "安全保障方面，标准涉及数据基础设施安全，数据要素市场安全，数据流通安全。",
+        "translation_1": "In terms of integrated applications, the standards involve industrial manufacturing, agriculture and rural areas, commercial circulation, transportation, financial services, technological innovation, cultural tourism (cultural relics), health, emergency management, meteorological services, urban governance, and green low-carbon initiatives",
+        "translation_2": "Regarding data circulation, the standards include data products, data rights confirmation, data resource pricing, and data circulation transactions"
+    },
+    {
+        "chinese_text": "数据资源中的数据治理标准包括数据业务规划、数据质量管理、数据调查盘点、数据资源登记；训练数据集方面的标准包括训练数据集采集处理、训练数据集标注、训练数据集合成。",
+        "translation_1": "For security guarantees, the standards cover data infrastructure security, data element market security, and data circulation security",
+        "translation_2": "In integrated applications, the standards pertain to industrial manufacturing, agriculture and rural areas, commercial circulation, transportation, financial services, technological innovation, cultural tourism (cultural relics), health and wellness, emergency management, meteorological services, urban governance, and green low-carbon initiatives"
+    },
+    {
+        "chinese_text": "在组织保障方面，将指导建立全国数据标准化技术组织，加快推进急用、急需数据标准制修订工作，强化与有关标准化技术组织、行业、地方及相关社团组织之间的沟通协作、协调联动，以标准化促进数据产业生态建设。",
+        "translation_1": "The data governance standards within data resources include data business planning, data quality management, data surveys and inventories, and data resource registration; standards related to training datasets include training dataset collection and processing, training dataset labeling, and training dataset synthesis",
+        "translation_2": "The security assurance standards involve data infrastructure security, data element market security, and data circulation security"
+    },
+    {
+        "chinese_text": "同时还将完善标准试点政策配套，搭建数据标准化公共服务平台，开展标准宣贯，选择重点地方、行业先行先试，打造典型示范。",
+        "translation_1": "In terms of organizational guarantees, guidance will be provided to establish national data standardization technical organizations, expedite the revision and formulation of urgently needed data standards, and strengthen communication and collaboration with relevant standardization technical organizations, industries, localities, and related associations to promote data industry ecosystem construction through standardization",
+        "translation_2": "Data governance standards in data resources include data business planning, data quality management, data inventory and assessment, and data resource registration"
+    },
+    {
+        "chinese_text": "探索推动数据产品第三方检验检测，深化数据标准实施评价管理。",
+        "translation_1": "Additionally, policies for standard pilot projects will be improved, a public service platform for data standardization will be established, standard promotion will be conducted, and key regions and industries will be selected for pilot testing to create typical demonstrations",
+        "translation_2": "Standards related to training datasets encompass collection and processing, labeling, and synthesis of training datasets"
+    },
+    {
+        "chinese_text": "在人才培养方面，将打造标准配套的数据人才培训课程，形成一批数据标准化专业人才。",
+        "translation_1": "The exploration of third-party inspection and testing of data products will also be promoted, along with deepening the evaluation and management of data standard implementation",
+        "translation_2": "In terms of organizational support, the guidelines will guide the establishment of national data standardization technical organizations, accelerate the formulation and revision of urgently needed data standards, and enhance communication and collaboration with relevant standardization technical organizations, industries, localities, and related associations to promote the construction of a data industry ecosystem through standardization"
+    },
+    {
+        "chinese_text": "优化数据国际标准化专家队伍，支持参与国际标准化活动，强化国际交流。",
+        "translation_1": "In terms of talent training, training courses for data professionals compatible with standards will be developed, forming a group of standardized data professionals",
+        "translation_2": "Additionally, the guidelines will improve policies supporting standard pilot projects, establish a public service platform for data standardization, conduct standard dissemination, select key regions and industries for pilot initiatives, and create typical demonstrations"
+    }
+]
