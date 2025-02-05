@@ -1,4 +1,5 @@
 import os
+from langchain_weaviate import WeaviateVectorStore
 import weaviate
 from tqdm import tqdm
 from utils.base import VectorDB
@@ -180,6 +181,7 @@ class WeaviateDB(DocumentManager):
         collection_name = kwargs.get("collection_name", "default_collection")
         collection = self._client.collections.get(collection_name)
         embeddings = kwargs.get("embeddings")
+        is_single_batch = kwargs.get("is_single_batch", False)
 
         if embeddings is None:
             raise ValueError("embeddings parameter is required")
@@ -221,7 +223,7 @@ class WeaviateDB(DocumentManager):
                         print(f"문서 처리 중 오류 발생 (ID: {batch_ids[j]}): {e}")
                         continue
 
-                if show_progress:
+                if show_progress and is_single_batch:
                     print(
                         f"Processed batch {i//batch_size + 1}/{(len(texts)-1)//batch_size + 1}"
                     )
@@ -273,6 +275,7 @@ class WeaviateDB(DocumentManager):
                     batch_size=len(batch_texts),
                     show_progress=False,
                     embeddings=embeddings,
+                    is_single_batch=True,
                 )
             except Exception as e:
                 print(f"\nError occurred while processing batch: {e}")
@@ -515,10 +518,10 @@ class WeaviateDB(DocumentManager):
 
 
 class WeaviateSearch:
-    def __init__(self, client: weaviate.Client, collection_name: str):
-        self._client = client
-        self._collection_name = collection_name
-        self._text_key = "text"
+    def __init__(self, vector_store: WeaviateVectorStore ):
+        self.vector_store = vector_store
+        self.collection = vector_store._client.collections.get(vector_store._index_name)
+        self.text_key = vector_store._text_key
 
     def _format_filter(self, filter_query: Filter) -> str:
         """
@@ -554,59 +557,17 @@ class WeaviateSearch:
     def similarity_search(
         self,
         query: str,
-        k: int = 4,
-        filters: Optional[dict] = None,
+        filter_query: Optional[Filter] = None,
+        k: int = 3,
         **kwargs: Any,
     ) -> List[Document]:
         """
-        의미 기반 유사도 검색을 수행합니다.
-
-        Args:
-            query (str): 검색할 텍스트 쿼리
-            k (int): 반환할 결과 개수 (기본값: 4)
-            filters (Optional[dict]): 검색 필터 조건 (예: {"category": "news"})
-            **kwargs: 추가 매개변수
-                - collection_name (str): 검색할 컬렉션 이름 (기본값: "default_collection")
-                - properties (List[str]): 반환받을 속성 목록 (기본값: ["text"])
-
-        Returns:
-            List[Document]: 검색 결과 문서 리스트
+        Perform basic similarity search
         """
-        collection_name = self._collection_name
-        collection = self._client.collections.get(collection_name)
-
-        # 필터 조건 생성
-        filter_query = self._format_filter(filters)
-
-        # 반환받을 속성 설정
-        properties = kwargs.get("properties", ["text"])
-
-        try:
-            # near_text 쿼리 실행
-            response = collection.query.near_text(
-                query=query, limit=k, filters=filter_query, **kwargs
-            )
-
-            # 결과를 Document 객체로 변환
-            documents = []
-            for obj in response.objects:
-                # text를 제외한 나머지 속성들은 metadata로 저장
-                metadata = {
-                    key: value for key, value in obj.properties.items() if key != "text"
-                }
-                metadata["uuid"] = str(obj.uuid)
-
-                doc = Document(
-                    page_content=obj.properties.get("text", str(obj.properties)),
-                    metadata=metadata,
-                )
-                documents.append(doc)
-
-            return documents
-
-        except Exception as e:
-            print(f"검색 중 오류 발생: {e}")
-            return []
+        documents = self.vector_store.similarity_search(
+            query, k=k, filters=filter_query, **kwargs
+        )
+        return documents
 
     def similarity_search_with_score(
         self,
