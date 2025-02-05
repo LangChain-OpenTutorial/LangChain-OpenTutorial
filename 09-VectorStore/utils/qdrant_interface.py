@@ -7,108 +7,120 @@ from qdrant_client.http.models import (
     VectorParams,
     Distance,
 )
-from abc import ABC, abstractmethod
-from langchain.schema import Document
+from qdrant_client import models
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from utils.vectordbinterface import DocumentManager
+from qdrant_client.http.models import Distance
 
 
-class DocumentManagerInterface(ABC):
-    """
-    문서 insert/update (upsert, upsert_parallel)
-    문서 search by query (search)
-    문서 delete by id, delete by filter (delete)
-    """
-
-    @abstractmethod
-    def upsert(
-        self,
-        texts: Iterable[str],
-        metadatas: Optional[list[dict]] = None,
-        ids: Optional[List[str]] = None,
-        **kwargs: Any
-    ) -> None:
-        """문서를 업서트합니다."""
-        pass
-
-    @abstractmethod
-    def upsert_parallel(
-        self,
-        texts: Iterable[str],
-        metadatas: Optional[list[dict]] = None,
-        ids: Optional[List[str]] = None,
-        batch_size: int = 32,
-        workers: int = 10,
-        **kwargs: Any
-    ) -> None:
-        """병렬로 문서를 업서트합니다."""
-        pass
-
-    @abstractmethod
-    def search(self, query: str, k: int = 10, **kwargs: Any) -> List[Document]:
-        """쿼리를 수행하고 관련 문서를 반환합니다.
-        기본 기능: query (문자열) -> 비슷한 문서 k개 반환
-
-        cosine_similarity 써치하는 것 의미 **문제될 경우 이슈제기
-
-        -그외 기능 (추후 확장)
-        metatdata search
-        이미지 서치할 때 벡터 받는 것
-        """
-        pass
-
-    @abstractmethod
-    def delete(
-        self,
-        ids: Optional[list[str]] = None,
-        filters: Optional[dict] = None,
-        **kwargs: Any
-    ) -> None:
-        """필터를 사용하여 문서를 삭제합니다.
-
-        ids: List of ids to delete. If None, delete all. Default is None.
-        filters: Dictionary of filters (querys) to apply. If None, no filters apply.
-
-        """
-        pass
-
-
-class QdrantDocumentManager(DocumentManagerInterface):
+class QdrantDocumentManager(DocumentManager):
     """Manages document operations with Qdrant, including upsert, search, and delete.
 
     This class interfaces with Qdrant to perform operations such as inserting,
     updating, searching, and deleting documents in a specified collection.
     """
 
-    def __init__(self, collection_name: str, embedding, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        collection_name: str,
+        embedding,
+        metric: Distance = Distance.COSINE,
+        force_recreate: bool = False,
+        **kwargs: Any,
+    ) -> None:
         """Initializes the QdrantDocumentManager with a collection name and embedding model.
 
         Args:
             collection_name (str): The name of the collection in Qdrant.
             embedding: The embedding model used to convert texts into vectors.
+            metric (Distance): The distance metric for vector comparisons.
+            force_recreate (bool): Whether to forcefully recreate the collection if it exists.
             **kwargs (Any): Additional keyword arguments for QdrantClient configuration.
         """
         self.client = QdrantClient(**kwargs)
         self.collection_name = collection_name
         self.embedding = embedding
-        self.distance_metric = kwargs.get("distance_metric", Distance.COSINE)
-        self._ensure_collection_exists()
+        self.metric = metric
+        self._ensure_collection_exists(force_recreate=force_recreate)
 
-    def _ensure_collection_exists(self) -> None:
-        """Ensures that the specified collection exists in Qdrant.
+    def create_collection(
+        self,
+        dense_vectors_config: Optional[VectorParams] = None,
+        sparse_vector_config: Optional[dict] = None,
+        force_recreate: bool = False,
+    ) -> None:
+        if force_recreate:
+            self._delete_collection()
 
-        If the collection does not exist, it creates a new one with the specified
-        vector size and distance metric.
-        """
+        collection_config = self._build_collection_config(
+            dense_vectors_config, sparse_vector_config
+        )
+
+        self.client.create_collection(
+            collection_name=self.collection_name, **collection_config
+        )
+        print(
+            f"Collection '{self.collection_name}' created successfully with configuration: {collection_config}"
+        )
+
+    def _delete_collection(self) -> None:
         try:
-            self.client.get_collection(self.collection_name)
-        except Exception:
-            vector_size = len(self.embedding.embed_query("vetor size check"))
-            self.client.create_collection(
-                collection_name=self.collection_name,
-                vectors_config=VectorParams(
-                    size=vector_size, distance=self.distance_metric
-                ),
+            self.client.delete_collection(self.collection_name)
+            print(f"Collection '{self.collection_name}' deleted for recreation.")
+        except Exception as delete_exception:
+            print(
+                f"Failed to delete existing collection '{self.collection_name}': {delete_exception}"
             )
+            raise
+
+    def _build_collection_config(
+        self,
+        dense_vectors_config: Optional[VectorParams],
+        sparse_vector_config: Optional[dict],
+    ) -> dict:
+        collection_config = {}
+        if dense_vectors_config:
+            collection_config["vectors_config"] = dense_vectors_config
+        if sparse_vector_config:
+            collection_config["sparse_vectors_config"] = sparse_vector_config
+        if not collection_config:
+            raise ValueError(
+                "At least one of dense_vectors_config or sparse_vector_config must be provided."
+            )
+        return collection_config
+
+    def _ensure_collection_exists(
+        self, force_recreate: bool = False, sparse_embedding=None
+    ) -> None:
+        vector_size = len(self.embedding.embed_query("vector size check"))
+        dense_vectors_config = VectorParams(size=vector_size, distance=self.metric)
+
+        sparse_vector_config = None
+        if sparse_embedding:
+            sparse_vector_config = {
+                "sparse-vector": models.SparseVectorParams(
+                    index=models.SparseIndexParams(
+                        on_disk=False,
+                    )
+                )
+            }
+
+        if not self._collection_exists() or force_recreate:
+            print(
+                f"Collection '{self.collection_name}' does not exist or force recreate is enabled. Creating new collection..."
+            )
+            self.create_collection(
+                dense_vectors_config=dense_vectors_config,
+                sparse_vector_config=sparse_vector_config,
+                force_recreate=force_recreate,
+            )
+
+    def _collection_exists(self) -> bool:
+        try:
+            collection_info = self.client.get_collection(self.collection_name)
+            return collection_info is not None
+        except Exception:
+            return False
 
     def _create_points(
         self,
@@ -131,7 +143,7 @@ class QdrantDocumentManager(DocumentManagerInterface):
                 id=ids[i] if ids else str(i),
                 vector=self.embedding.embed_query(texts[i]),  # Convert text to vector
                 payload={
-                    "content": texts[i],  # Store original text in 'content'
+                    "page_content": texts[i],  # Store original text in 'content'
                     "metadata": metadatas[i],
                 },
             )
@@ -143,7 +155,7 @@ class QdrantDocumentManager(DocumentManagerInterface):
         texts: Iterable[str],
         metadatas: Optional[List[dict]] = None,
         ids: Optional[List[str]] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> List[str]:
         """Upserts documents into the collection and returns the upserted ids.
 
@@ -197,7 +209,7 @@ class QdrantDocumentManager(DocumentManagerInterface):
         ids: Optional[List[str]] = None,
         batch_size: int = 32,
         workers: int = 10,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> List[str]:
         """Performs parallel upsert of documents and returns the upserted ids.
 
@@ -246,7 +258,7 @@ class QdrantDocumentManager(DocumentManagerInterface):
             collection_name=self.collection_name,
             query_vector=self.embedding.embed_query(query),
             limit=k,
-            **kwargs
+            **kwargs,
         )
         return [
             {
@@ -261,7 +273,7 @@ class QdrantDocumentManager(DocumentManagerInterface):
         self,
         ids: Optional[List[str]] = None,
         filters: Optional[Filter] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         """Deletes documents from the collection based on ids or filters.
 
@@ -280,3 +292,40 @@ class QdrantDocumentManager(DocumentManagerInterface):
             )
         elif filters:
             self.client.delete(collection_name=self.collection_name, filter=filters)
+
+    def scroll(self, scroll_filter, with_vectors=False, k=None) -> List[Dict[str, Any]]:
+        """
+        Retrieve records from a Qdrant collection using the scroll method.
+
+        Args:
+            scroll_filter: The filter condition to apply for retrieving records.
+            k (int, optional): The number of top records to return. If None, retrieve all records.
+
+        Returns:
+            List[Dict[str, Any]]: A list of records in the collection.
+        """
+        all_records = []
+        next_page_offset = None
+        total_retrieved = 0
+
+        try:
+            while True:
+                limit = 100 if k is None else min(100, k - total_retrieved)
+                response, next_page_offset = self.client.scroll(
+                    collection_name=self.collection_name,
+                    limit=limit,
+                    scroll_filter=scroll_filter,
+                    offset=next_page_offset,
+                    with_payload=True,
+                    with_vectors=with_vectors,
+                )
+                all_records.extend(response)
+                total_retrieved += len(response)
+
+                if next_page_offset is None or (k is not None and total_retrieved >= k):
+                    break
+
+        except Exception as e:
+            print(f"Error retrieving records: {e}")
+
+        return all_records
