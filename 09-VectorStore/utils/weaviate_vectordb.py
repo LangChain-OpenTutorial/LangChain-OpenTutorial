@@ -19,8 +19,15 @@ from weaviate.classes.config import Property
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+
 class WeaviateDB(DocumentManager):
-    def __init__(self, api_key: str, url: str, openai_api_key: str = None, embeddings: Embeddings = None):
+    def __init__(
+        self,
+        api_key: str,
+        url: str,
+        openai_api_key: str = None,
+        embeddings: Embeddings = None,
+    ):
         self._api_key = api_key
         self._url = url
         self._client = None
@@ -30,7 +37,7 @@ class WeaviateDB(DocumentManager):
     @property
     def embeddings(self) -> Optional[Embeddings]:
         return self._embeddings
-    
+
     def _create_filter_query(self, filters: Optional[dict] = None) -> Optional[dict]:
         """
         filters 파라미터가 존재할 경우, Weaviate where 조건에 맞게 변환하여 반환합니다.
@@ -73,9 +80,7 @@ class WeaviateDB(DocumentManager):
         self._client = weaviate.connect_to_weaviate_cloud(
             cluster_url=self._url,
             auth_credentials=Auth.api_key(self._api_key),
-            headers={
-                "X-OpenAI-Api-Key": self._openai_api_key
-            },
+            headers={"X-OpenAI-Api-Key": self._openai_api_key},
             **kwargs,
         )
         return self._client
@@ -83,7 +88,7 @@ class WeaviateDB(DocumentManager):
     def get_api_key(self):
         """API 키 반환"""
         return self._api_key
-    
+
     def _json_serializable(self, value: Any) -> Any:
         if isinstance(value, datetime.datetime):
             return value.isoformat()
@@ -272,7 +277,7 @@ class WeaviateDB(DocumentManager):
                 if metadatas is not None:
                     for key, val in metadatas[i].items():
                         data_properties[key] = self._json_serializable(val)
-                
+
                 batch.add_object(
                     collection=collection_name,
                     properties=data_properties,
@@ -290,10 +295,7 @@ class WeaviateDB(DocumentManager):
         return ids
 
     def delete(
-        self, 
-        ids: List[str] = None, 
-        filters: Optional[dict] = None, 
-        **kwargs: Any
+        self, ids: List[str] = None, filters: Optional[dict] = None, **kwargs: Any
     ) -> bool:
         """
         주어진 ids와 filters 조건을 만족하는 객체들을 삭제합니다.
@@ -304,19 +306,18 @@ class WeaviateDB(DocumentManager):
             **kwargs: 추가 옵션
                 - collection_name (str): 컬렉션 이름
                 - batch_size (int): 한 번에 삭제할 객체 수 (기본값: 10000)
-                
+
         Returns:
             bool: 삭제 성공 여부
         """
         collection_name = kwargs.get("collection_name", "default_collection")
         collection = self._client.collections.get(collection_name)
-        id_filter = weaviate.classes.query.Filter.by_id().contains_any(ids)
-        
+
         try:
             if ids and filters:
                 # ID와 필터 조건을 모두 적용
                 filter_builder = Filter.by_property
-                
+
                 # 필터 조건 변환
                 weaviate_filter = None
                 for key, value in filters.items():
@@ -326,23 +327,22 @@ class WeaviateDB(DocumentManager):
                         weaviate_filter = weaviate_filter.and_filter(
                             filter_builder(key).equal(value)
                         )
-                
+                # ID 조건 추가
+                id_filter = Filter.by_id().in_list(ids)
                 if weaviate_filter:
                     weaviate_filter = weaviate_filter.and_filter(id_filter)
                 else:
                     weaviate_filter = id_filter
-                
+
                 # 조건을 모두 만족하는 객체 삭제
                 collection.data.delete_many(
                     where=weaviate_filter,
                 )
-                
+
             elif ids:
                 # ID만으로 삭제
-                collection.data.delete_many(
-                    uuids=ids
-                )
-            
+                collection.data.delete_many(uuids=ids)
+
             elif filters:
                 # 필터만으로 삭제
                 filter_builder = Filter.by_property
@@ -354,13 +354,13 @@ class WeaviateDB(DocumentManager):
                         weaviate_filter = weaviate_filter.and_filter(
                             filter_builder(key).equal(value)
                         )
-                
+
                 collection.data.delete_many(
                     where=weaviate_filter,
                 )
-                
+
             return True
-            
+
         except Exception as e:
             print(f"삭제 중 오류 발생: {e}")
             return False
@@ -404,11 +404,7 @@ class WeaviateDB(DocumentManager):
                         filter_builder(key).equal(value)
                     )
 
-        hybrid_kwargs = {
-            "query": query,
-            "vector": vector,
-            "limit": k,
-        }
+        hybrid_kwargs = {"query": query, "vector": vector, "limit": k}
 
         if weaviate_filter:
             hybrid_kwargs["filters"] = weaviate_filter
@@ -437,80 +433,74 @@ class WeaviateDB(DocumentManager):
         except Exception as e:
             print(f"검색 중 오류 발생: {e}")
             return []
-        
 
     def keyword_search(
-      self,
-      query: str,
-      k: int = 4,
-      filters: Optional[dict] = None,
-      **kwargs: Any,
-  ) -> List[Document]:
-      """
-      BM25 키워드 기반 검색을 수행합니다.
-      
-      Args:
-          query (str): 검색할 키워드
-          k (int): 반환할 결과 개수 (기본값: 4)
-          filters (Optional[dict]): 검색 필터 조건 (예: {"category": "news"})
-          **kwargs: 추가 매개변수
-              - collection_name (str): 검색할 컬렉션 이름
-              - properties (List[str]): 검색할 특정 속성들
-              
-      Returns:
-          List[Document]: 검색 결과 문서 리스트
-      """
-      collection_name = kwargs.pop("collection_name", "default_collection")
-      collection = self._client.collections.get(collection_name)
-      
-      # BM25 검색을 위한 기본 설정
-      bm25_kwargs = {
-          "query": query,
-          "limit": k
-      }
-      
-      # 필터 변환 및 적용
-      if filters:
-          filter_builder = Filter.by_property
-          weaviate_filter = None
-          for key, value in filters.items():
-              if weaviate_filter is None:
-                  weaviate_filter = filter_builder(key).equal(value)
-              else:
-                  weaviate_filter = weaviate_filter.and_filter(
-                      filter_builder(key).equal(value)
-                  )
-          bm25_kwargs["filters"] = weaviate_filter
-      
-      try:
-          # BM25 검색 실행
-          response = collection.query.bm25(**bm25_kwargs)
-          
-          # 결과를 Document 객체로 변환
-          documents = []
-          for obj in response.objects:
-              metadata = {
-                  key: value 
-                  for key, value in obj.properties.items()
-                  if key != "text"
-              }
-              metadata["uuid"] = str(obj.uuid)
-              
-              doc = Document(
-                  page_content=obj.properties.get("text", str(obj.properties)),
-                  metadata=metadata
-              )
-              documents.append(doc)
-              
-          return documents
-          
-      except Exception as e:
-          print(f"검색 중 오류 발생: {e}")
-          return []
+        self,
+        query: str,
+        k: int = 4,
+        filters: Optional[dict] = None,
+        **kwargs: Any,
+    ) -> List[Document]:
+        """
+        BM25 키워드 기반 검색을 수행합니다.
+
+        Args:
+            query (str): 검색할 키워드
+            k (int): 반환할 결과 개수 (기본값: 4)
+            filters (Optional[dict]): 검색 필터 조건 (예: {"category": "news"})
+            **kwargs: 추가 매개변수
+                - collection_name (str): 검색할 컬렉션 이름
+                - properties (List[str]): 검색할 특정 속성들
+
+        Returns:
+            List[Document]: 검색 결과 문서 리스트
+        """
+        collection_name = kwargs.pop("collection_name", "default_collection")
+        collection = self._client.collections.get(collection_name)
+
+        # BM25 검색을 위한 기본 설정
+        bm25_kwargs = {"query": query, "limit": k}
+
+        # 필터 변환 및 적용
+        if filters:
+            filter_builder = Filter.by_property
+            weaviate_filter = None
+            for key, value in filters.items():
+                if weaviate_filter is None:
+                    weaviate_filter = filter_builder(key).equal(value)
+                else:
+                    weaviate_filter = weaviate_filter.and_filter(
+                        filter_builder(key).equal(value)
+                    )
+            bm25_kwargs["filters"] = weaviate_filter
+
+        try:
+            # BM25 검색 실행
+            response = collection.query.bm25(**bm25_kwargs)
+
+            # 결과를 Document 객체로 변환
+            documents = []
+            for obj in response.objects:
+                metadata = {
+                    key: value for key, value in obj.properties.items() if key != "text"
+                }
+                metadata["uuid"] = str(obj.uuid)
+
+                doc = Document(
+                    page_content=obj.properties.get("text", str(obj.properties)),
+                    metadata=metadata,
+                )
+                documents.append(doc)
+
+            return documents
+
+        except Exception as e:
+            print(f"검색 중 오류 발생: {e}")
+            return []
 
 
 class WeaviateSearch:
-    def __init__(self, vector_store: WeaviateVectorStore ):
+    def __init__(self, vector_store: WeaviateVectorStore):
         self.vector_store = vector_store
         self.collection = vector_store._client.collections.get(vector_store._index_name)
         self.text_key = vector_store._text_key
