@@ -27,17 +27,17 @@ pre {
 
 ## Overview
 
-This tutorial covers `RunnableParallel` .
+This tutorial covers `RunnableParallel` , a core component of the LangChain Expression Language(LCEL).
 
-`RunnableParallel` is a core component of the LangChain Expression Language(LCEL), designed to execute multiple `Runnable` objects in parallel and return a mapping of their outputs.
+`RunnableParallel` is designed to execute multiple Runnable objects in parallel and return a mapping of their outputs.
 
-This class delivers the same input to each `Runnable` , making it ideal for running independent tasks concurrently. Moreover, `RunnableParallel` can be instantiated directly or defined using a dict literal within a sequence.
+This class delivers the same input to each Runnable, making it ideal for running independent tasks concurrently. Moreover, we can instantiate `RunnableParallel` directly or use a dictionary literal within a sequence.
 
 ### Table of Contents
 
 - [Overview](#overview)
 - [Environement Setup](#environment-setup)
-- [Input and Output Manipulation](#input-and-output-manipulation)
+- [Handling Input and Output](#handling-input-and-output)
 - [Using itemgetter as a Shortcut](#using-itemgetter-as-a-shortcut)
 - [Understanding Parallel Processing Step-by-Step](#understanding-parallel-processing-step-by-step)
 - [Parallel Processing](#parallel-processing)
@@ -115,13 +115,13 @@ load_dotenv(override=True)
 
 
 
-## Input and Output Manipulation
+## Handling Input and Output
 
-`RunnableParallel` is useful for manipulating the output of one `Runnable` within a sequence to match the input format required by the next `Runnable` .
+`RunnableParallel` is useful for manipulating the output of one Runnable within a sequence to match the input format requirements of the next Runnable.
 
-Here, the input to the prompt is expected to be in the form of a map with keys `context` and `question`.
+Let's suppose a prompt expects input as a map with keys ( `context` , `question` ).
 
-The user input is simply the question content. Therefore, you need to retrieve the context using a retriever and pass the user input under the `question` key.
+The user input is simply the question, providing content. Therefore, you'll need to use a retriever to get the context and pass the user input under the `question` key.
 
 ```python
 from langchain_community.vectorstores import FAISS
@@ -170,9 +170,9 @@ retrieval_chain.invoke("What is Teddy's occupation?")
 
 
 
-When configuring `RunnableParallel` with other `Runnables` , note that type conversion is automatically handled. There is no need to separately wrap the dict input provided to the `RunnableParallel` class.
+Note that type conversion is handled automatically when configuring `RunnableParallel` with other Runnables. We don't need to manually wrap the dictionary input provided to the `RunnableParallel` class.
 
-The following three methods are treated identically:
+The following three methods present different initialization approaches that produce the same result:
 
 ```python
 # Automatically wrapped into a RunnableParallel
@@ -185,9 +185,9 @@ The following three methods are treated identically:
 
 ## Using itemgetter as a Shortcut
 
-When combined with `RunnableParallel` , Python’s `itemgetter` can be used as a shortcut to extract data from a map.
+Python’s `itemgetter` function offers a shortcut for extracting specific data from a map when it is combined with `RunnableParallel` .
 
-In the example below, `itemgetter` is used to extract specific keys from a map.
+For example, `itemgetter` extracts specific keys from a map.
 
 ```python
 from operator import itemgetter
@@ -241,7 +241,7 @@ chain.invoke({"question": "What is Teddy's occupation?", "language": "English"})
 
 ## Understanding Parallel Processing Step-by-Step
 
-Using `RunnableParallel` , you can easily run multiple `Runnables` in parallel and return a map of their outputs.
+Using `RunnableParallel` can easily run multiple Runnables in parallel and return a map of their outputs.
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate
@@ -280,7 +280,7 @@ map_chain.invoke({"country": "United States"})
 
 
 
-Chains with different input template variables can also be executed as follows.
+The following example explains how to execute chains that have different input template variables.
 
 ```python
 # Define the chain for asking about capitals
@@ -314,9 +314,9 @@ map_chain2.invoke({"country1": "Republic of Korea", "country2": "United States"}
 
 ## Parallel Processing
 
-`RunnableParallel` is particularly useful for running independent processes in parallel because each `Runnable` in the map is executed concurrently.
+`RunnableParallel` is particularly useful for running independent processes in parallel because each Runnable in the map is executed concurrently.
 
-For example, you can see that `area_chain`, `capital_chain`, and `map_chain` take almost the same execution time, even though `map_chain` runs both chains in parallel.
+For example, you can see that `area_chain`, `capital_chain`, and `map_chain` take the almost same execution time, even though `map_chain` runs the other two chains in parallel.
 
 ```python
 %%timeit
@@ -331,7 +331,7 @@ area_chain.invoke({"country": "United States"})
 ```python
 %%timeit
 
-# Invoke the chain for area and measure execution time
+# Invoke the chain for capital and measure execution time
 capital_chain.invoke({"country": "United States"})
 ```
 

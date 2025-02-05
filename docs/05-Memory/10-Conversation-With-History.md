@@ -17,10 +17,9 @@ pre {
 
 </style>
 
-# Conversation-With-History
+# Conversation With History
 
-- Author: [3dkids](https://github.com/3dkids)
-- Design: [](https://)
+- Author: [3dkids](https://github.com/3dkids), [Joonha Jeon](https://github.com/realjoonha)
 - Peer Review : [Teddy Lee](https://github.com/teddylee777), [Shinar12](https://github.com/Shinar12), [Kenny Jung](https://www.linkedin.com/in/kwang-yong-jung), [Sunyoung Park (architectyou)](https://github.com/Architectyou)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
@@ -28,17 +27,17 @@ pre {
 
 ## Overview
 
-This tutorial covers how to create a Multi-turn Chain that remembers previous conversations using LangChain.<br>
-It includes managing conversation history, defining a ChatPromptTemplate, and utilizing an LLM model(ChatGPT) for chain creation. <br>
-The conversation history is managed using chat_history.
+This tutorial covers how to create a multi-turn `Chain` that remembers previous conversations, using LangChain.<br>
+It includes managing conversation history, defining a `ChatPromptTemplate`, and utilizing an LLM for chain creation.<br>
+The conversation history is managed using `chat_history`.
 
 
 
 ### Table of Contents
 
 - [Overview](#overview)
-- [Environement Setup](#environment-setup)
-- [How to Create a Chain that Remembers Previous Conversations](#how-to-create-a-chain-that-remembers-previous-conversations)
+- [Environment Setup](#environment-setup)
+- [Creating a Chain that Remembers Previous Conversations](#creating-a-chain-that-remembers-previous-conversations)
 - [Creating a Chain to Record Conversations](#creating-a-chain-to-record-conversations-chain_with_history)
 
 ### References
@@ -58,7 +57,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -78,11 +77,11 @@ from langchain_opentutorial import set_env
 
 set_env(
     {
-        "OPENAI_API_KEY": "your key",
-        "LANGCHAIN_API_KEY": "your key",
+        "OPENAI_API_KEY": "",
+        "LANGCHAIN_API_KEY": "",
         "LANGCHAIN_TRACING_V2": "true",
         "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
-        "LANGCHAIN_PROJECT": "Conversation-With-History",  # 프로젝트 이름을 변경해주세요.
+        "LANGCHAIN_PROJECT": "ConversationWithHistory",
     }
 )
 ```
@@ -90,36 +89,34 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
+Alternatively, environment variables can also be set using a `.env` file.
+
+**[Note]**
+
+- This is not necessary if you've already set the environment variables in the previous step.
+
 ```python
 from dotenv import load_dotenv
 
 load_dotenv()
-# Check environment variables
 ```
 
+## Creating a Chain that Remembers Previous Conversations
 
+`MessagesPlaceholder` is a class in LangChain used to handle conversation history. It is primarily utilized in chatbots or multi-turn conversation systems to store and reuse previous conversation content.
 
-
-<pre class="custom">False</pre>
-
-
-
-## How to Create a Chain that Remembers Previous Conversations
-
-MessagesPlaceholder is a tool in LangChain used to handle conversation history. It is primarily utilized in chatbots or multi-turn conversation systems to store and reuse previous conversation content.
-
-Key Roles  
+### Key Roles  
 **Inserting Conversation History** :  
 - Used to insert prior conversations (e.g., question-and-answer history) into the prompt.  
 - This allows the model to understand the context of the conversation and generate appropriate responses.  
 
 **Managing Variables** :  
-- Manages conversation history within the prompt using a specific key (e.g., "chat_history").  
+- Manages conversation history within the prompt using a specific key (e.g., `chat_history`).  
 - It is linked to a user-defined variable name.  
 
-Usage  
+### Usage  
 `MessagesPlaceholder(variable_name="chat_history")`  
-- Here, "chat_history" is the variable name where conversation history is stored.  
+- Here, `chat_history` is the variable name where conversation history is stored.  
 - As the conversation progresses, `chat_history` is continually updated with pairs of questions and responses.
 
 
@@ -152,7 +149,7 @@ llm = ChatOpenAI(model_name="gpt-4o")
 chain = prompt | llm | StrOutputParser()
 ```
 
-## Creating a Chain to Record Conversations (chain_with_history)
+## Creating a Chain to Record Conversations (`chain_with_history`)
 
 In this step, we create a system that manages **session-based conversation history** and generates an **executable chain**.
 
@@ -200,7 +197,7 @@ chain_with_history.invoke(
 
 
 
-    'Hello, Teddy! How can I assist you today?'
+    "Hello, Teddy! Do you have a question or something specific you'd like to discuss?"
 
 
 
@@ -225,7 +222,7 @@ chain_with_history.invoke(
 
 
 
-Below is the case where a new session is created when the session_id is different.
+Below is a case where a new session is created when the `session_id` is different.
 
 ```python
 chain_with_history.invoke(
@@ -242,6 +239,6 @@ chain_with_history.invoke(
 
 
 
-    "I'm sorry, but I can't determine your name based on the information provided."
+    "I'm sorry, but I don't have access to personal information about you, including your name."
 
 

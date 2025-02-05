@@ -45,7 +45,7 @@ The `ContextualCompressionRetriever` is particularly suited for applications lik
 
 By using this retriever, developers can significantly reduce computational overhead and improve the quality of information presented to end-users.
 
-![](./assets/02-contextual-compression-retriever-workflow.png)  
+![](./img/02-contextual-compression-retriever-workflow.png)  
 
 
 ### Table of Contents

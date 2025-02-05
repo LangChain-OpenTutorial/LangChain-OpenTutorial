@@ -36,7 +36,7 @@ pre {
     - 2️⃣ **multilingual-e5-large:** A powerful multilingual embedding model.  
     - 3️⃣ **bge-m3:** Optimized for large-scale text processing.  
 
-![](./assets/03-huggingfaceembeddings-workflow.png)  
+![](./img/03-huggingfaceembeddings-workflow.png)  
 
 ### Table of Contents  
 
@@ -239,13 +239,13 @@ docs = [
 | 3️⃣ **bge-m3** | Optimized for large-scale text processing, excelling in retrieval and semantic similarity tasks. |
 
 1️⃣ **multilingual-e5-large-instruct**
-![](./assets/03-huggingfaceembeddings-leaderboard-01.png)
+![](./img/03-huggingfaceembeddings-leaderboard-01.png)
 
 2️⃣ **multilingual-e5-large**
-![](./assets/03-huggingfaceembeddings-leaderboard-02.png)
+![](./img/03-huggingfaceembeddings-leaderboard-02.png)
 
 3️⃣ **bge-m3**
-![](./assets/03-huggingfaceembeddings-leaderboard-03.png)
+![](./img/03-huggingfaceembeddings-leaderboard-03.png)
 
 ## Similarity Calculation
 
