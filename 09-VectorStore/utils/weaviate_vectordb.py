@@ -29,7 +29,7 @@ class WeaviateDB(DocumentManager):
 
     @property
     def embeddings(self) -> Optional[Embeddings]:
-        return self._embedding
+        return self._embeddings
     
     def _create_filter_query(self, filters: Optional[dict] = None) -> Optional[dict]:
         """
@@ -84,7 +84,7 @@ class WeaviateDB(DocumentManager):
         """API 키 반환"""
         return self._api_key
     
-    def _json_serializable(value: Any) -> Any:
+    def _json_serializable(self, value: Any) -> Any:
         if isinstance(value, datetime.datetime):
             return value.isoformat()
         return value
@@ -192,11 +192,11 @@ class WeaviateDB(DocumentManager):
         show_progress = kwargs.get("show_progress", False)
         collection_name = kwargs.get("collection_name", "default_collection")
         collection = self._client.collections.get(collection_name)
-        is_single_batch = kwargs.get("is_single_batch", False)
+        text_key = kwargs.get("text_key", "text")
 
         embeddings: Optional[List[List[float]]] = None
-        if self._embedding:
-            embeddings = self._embedding.embed_documents(list(texts))
+        if self._embeddings:
+            embeddings = self._embeddings.embed_documents(list(texts))
 
         try:
             for i in range(0, len(texts), batch_size):
@@ -206,10 +206,10 @@ class WeaviateDB(DocumentManager):
                 batch_metadatas = metadatas[i : i + batch_size] if metadatas else None
 
                 for j, text in enumerate(batch_texts):
-                    properties = {"text": text}
-                    properties["order"] = j
+                    data_properties = {text_key: text}
+                    data_properties["order"] = j
                     if batch_metadatas:
-                        properties.update(batch_metadatas[j])
+                        data_properties.update(batch_metadatas[j])
 
                     try:
                         # 먼저 객체가 존재하는지 확인
@@ -219,14 +219,14 @@ class WeaviateDB(DocumentManager):
                             # 객체가 존재하면 업데이트
                             collection.data.replace(
                                 uuid=batch_ids[j],
-                                properties=properties,
+                                properties=data_properties,
                                 vector=batch_embeddings[j],
                             )
                         else:
                             # 객체가 없으면 삽입
                             collection.data.insert(
                                 uuid=batch_ids[j],
-                                properties=properties,
+                                properties=data_properties,
                                 vector=batch_embeddings[j],
                             )
                         successful_ids.append(batch_ids[j])
@@ -235,7 +235,7 @@ class WeaviateDB(DocumentManager):
                         print(f"문서 처리 중 오류 발생 (ID: {batch_ids[j]}): {e}")
                         continue
 
-                if show_progress and is_single_batch:
+                if show_progress:
                     print(
                         f"Processed batch {i//batch_size + 1}/{(len(texts)-1)//batch_size + 1}"
                     )
@@ -259,15 +259,16 @@ class WeaviateDB(DocumentManager):
         ids = ids if ids is not None else [str(i) for i in range(len(texts))]
 
         collection_name = kwargs.get("collection_name", "default_collection")
-
+        text_key = kwargs.get("text_key", "text")
 
         embeddings: Optional[List[List[float]]] = None
-        if self._embedding:
-            embeddings = self._embedding.embed_documents(list(texts))
+        if self._embeddings:
+            embeddings = self._embeddings.embed_documents(list(texts))
 
         with self._client.batch.dynamic() as batch:
             for i, text in enumerate(texts):
-                data_properties = {self._text_key: text}
+                data_properties = {text_key: text}
+                data_properties["order"] = i
                 if metadatas is not None:
                     for key, val in metadatas[i].items():
                         data_properties[key] = self._json_serializable(val)
@@ -309,6 +310,7 @@ class WeaviateDB(DocumentManager):
         """
         collection_name = kwargs.get("collection_name", "default_collection")
         collection = self._client.collections.get(collection_name)
+        id_filter = weaviate.classes.query.Filter.by_id().contains_any(ids)
         
         try:
             if ids and filters:
@@ -325,8 +327,6 @@ class WeaviateDB(DocumentManager):
                             filter_builder(key).equal(value)
                         )
                 
-                # ID 조건 추가
-                id_filter = Filter.by_id().in_list(ids)
                 if weaviate_filter:
                     weaviate_filter = weaviate_filter.and_filter(id_filter)
                 else:
@@ -387,7 +387,11 @@ class WeaviateDB(DocumentManager):
             List[Document]: 검색 결과 문서 리스트
         """
         collection_name = kwargs.get("collection_name", "default_collection")
+        vector = kwargs.get("vector", None)
         collection = self._client.collections.get(collection_name)
+
+        if vector is None:
+            vector = self._embeddings.embed_query(query)
 
         weaviate_filter = None
         if filters:
@@ -400,17 +404,18 @@ class WeaviateDB(DocumentManager):
                         filter_builder(key).equal(value)
                     )
 
-        near_text_kwargs = {
+        hybrid_kwargs = {
             "query": query,
+            "vector": vector,
             "limit": k,
         }
 
         if weaviate_filter:
-            near_text_kwargs["filters"] = weaviate_filter
+            hybrid_kwargs["filters"] = weaviate_filter
 
         try:
             # near_text 쿼리 실행
-            response = collection.query.near_text(**near_text_kwargs)
+            response = collection.query.hybrid(**hybrid_kwargs)
 
             # 결과를 Document 객체로 변환
             documents = []
