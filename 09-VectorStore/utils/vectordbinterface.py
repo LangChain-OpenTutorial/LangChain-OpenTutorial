@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional, List, Iterable
 from langchain_core.documents import Document
 
-class DocumentManagerInterface(ABC):
+class DocumentManager(ABC):
     """
     문서 insert/update (upsert, upsert_parallel)
     문서 search by query (search)
