@@ -2,36 +2,23 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional, List, Iterable
 from langchain_core.documents import Document
 
-
-# ==========================================
-# 1️⃣ 인덱스 관리 인터페이스
-# ==========================================
 class DocumentManager(ABC):
     """
-    인덱스 관리 인터페이스
+    문서 insert/update (upsert, upsert_parallel)
+    문서 search by query (search)
+    문서 delete by id, delete by filter (delete)
     """
 
     @abstractmethod
-    def upsert(
-        self,
-        texts: Iterable[str],
-        metadatas: Optional[list[dict]] = None,
-        ids: Optional[List[str]] = None,
-        **kwargs: Any
-    ) -> None:
-        """문서를 업서트합니다."""
+    def upsert(self, texts: Iterable[str], metadatas: Optional[list[dict]] = None, ids: Optional[List[str]] = None, **kwargs: Any
+              ) -> None:
+        """문서를 업서트합니다.        """
         pass
 
     @abstractmethod
-    def upsert_parallel(
-        self,
-        texts: Iterable[str],
-        metadatas: Optional[list[dict]] = None,
-        ids: Optional[List[str]] = None,
-        batch_size: int = 32,
-        workers: int = 10,
-        **kwargs: Any
-    ) -> None:
+    def upsert_parallel(self, texts: Iterable[str], metadatas: Optional[list[dict]] = None, ids: Optional[List[str]] = None
+                        , batch_size: int = 32, workers: int = 10, **kwargs: Any
+                       ) -> None:
         """병렬로 문서를 업서트합니다."""
         pass
 
@@ -39,7 +26,9 @@ class DocumentManager(ABC):
     def search(self, query: str, k: int = 10, **kwargs: Any) -> List[Document]:
         """쿼리를 수행하고 관련 문서를 반환합니다.
         기본 기능: query (문자열) -> 비슷한 문서 k개 반환
+
         cosine_similarity 써치하는 것 의미 **문제될 경우 이슈제기
+
         -그외 기능 (추후 확장)
         metatdata search
         이미지 서치할 때 벡터 받는 것
@@ -47,17 +36,53 @@ class DocumentManager(ABC):
         pass
 
     @abstractmethod
-    def delete(
-        self,
-        ids: Optional[list[str]] = None,
-        filters: Optional[dict] = None,
-        **kwargs: Any
-    ) -> None:
+    def delete(self, ids: Optional[list[str]] = None, filters: Optional[dict] = None, **kwargs: Any
+               ) -> None:
         """필터를 사용하여 문서를 삭제합니다.
-        ids: List of ids to delete. If None, delete all. Default is None.
-        filters: Dictionary of filters (querys) to apply. If None, no filters apply.
+
+            ids: List of ids to delete. If None, delete all. Default is None.
+            filters: Dictionary of filters (querys) to apply. If None, no filters apply.
+
         """
         pass
+
+
+
+# deprecated
+# # ==========================================
+# # 1️⃣ 인덱스 관리 인터페이스
+# # ==========================================
+# class IndexManagerInterface(ABC):
+#     """
+#     인덱스 관리 인터페이스
+#     """
+
+#     @abstractmethod
+#     def create_index(
+#         self,
+#         index_name: str,
+#         dimension: int,
+#         metric: str = "dotproduct",
+#         pod_spec=None,
+#         **kwargs
+#     ) -> Any:
+#         """인덱스를 생성하고 반환합니다. 즉, index_name으로 인덱스를 생성하고 생성이 완료되면 index_name을 반환하고, 없다면 None을 반환합니다."""
+#         pass
+
+#     @abstractmethod
+#     def list_indexs(self) -> Any:
+#         """인덱스 리스트를 반환합니다"""
+#         pass
+
+#     @abstractmethod
+#     def get_index(self, index_name: str) -> Any:
+#         """인덱스를 조회합니다. 즉, index_name을 가진 인덱스가 있는지 조회하고, 있다면 index_name을 반환하고, 없다면 None을 반환합니다."""
+#         pass
+
+#     @abstractmethod
+#     def delete_index(self, index_name: str) -> None:
+#         """인덱스를 삭제합니다. 즉, index_name을 가진 인덱스를 삭제합니다."""
+#         pass
 
 
 # # ==========================================
@@ -109,9 +134,9 @@ class DocumentManager(ABC):
 #         pass
 
 
-# ==========================================
-# 4️⃣ 통합 인터페이스 (VectorDBInterface)
-# ==========================================
+# # ==========================================
+# # 4️⃣ 통합 인터페이스 (VectorDBInterface)
+# # ==========================================
 # class VectorDBInterface(
 #     IndexManagerInterface, DocumentManagerInterface, QueryManagerInterface, ABC
 # ):
