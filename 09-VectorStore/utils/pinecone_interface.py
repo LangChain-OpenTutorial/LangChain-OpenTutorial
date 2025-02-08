@@ -1,5 +1,5 @@
 import os
-from typing import Optional, List, Dict
+from typing import Optional, List, Dict, Iterable, Any
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 import re
@@ -7,23 +7,11 @@ import glob
 import string
 import tempfile
 from PIL import Image
-from langchain_experimental.open_clip import OpenCLIPEmbeddings
-
-try:
-    from pinecone.grpc import PineconeGRPC as Pinecone
-except:
-    from pinecone import Pinecone
-from pinecone_text.hybrid import hybrid_convex_scale
-
-from langchain_community.document_loaders import PyMuPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-
-from PIL import Image
 import matplotlib.pyplot as plt
-
 import nltk
 import ssl
 
+# SSL settings (for NLTK downloads)
 try:
     _create_unverified_https_context = ssl._create_unverified_context
 except AttributeError:
@@ -31,8 +19,29 @@ except AttributeError:
 else:
     ssl._create_default_https_context = _create_unverified_https_context
 
+# OpenCLIP embedding (example)
+from langchain_experimental.open_clip import OpenCLIPEmbeddings
 
-class PineconeDB:
+# Pinecone module (grpc or standard)
+try:
+    from pinecone.grpc import PineconeGRPC as Pinecone
+except ImportError:
+    from pinecone import Pinecone
+
+from pinecone_text.hybrid import hybrid_convex_scale
+
+from langchain_community.document_loaders import PyMuPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+# Import the DocumentManager interface (defined in vectordbinterface.py)
+from .vectordbinterface import DocumentManager
+from langchain_core.documents import Document
+
+
+########################################################################
+# PineconeDB class (Based on the DocumentManager interface)
+########################################################################
+class PineconeDB(DocumentManager):
     def __init__(
         self,
         api_key: Optional[str] = None,
@@ -390,11 +399,11 @@ class PineconeDB:
         :param image_embedding: OpenCLIPEmbeddings object
         :param namespace: Pinecone namespace
         :param batch_size: Batch size
-        :param max_workers: Number of parallel workers
+        :param max_workers: Number of parallel worker threads
         """
         if not (len(image_paths) == len(prompts) == len(categories)):
             raise ValueError(
-                "[ERROR] image_paths, prompts, categories must have the same length"
+                "[ERROR] image_paths, prompts, and categories must have the same length"
             )
 
         def process_batch(batch):
@@ -542,7 +551,7 @@ class PineconeDB:
     @staticmethod
     def save_temp_image(image: Image) -> str:
         """
-        Save an image temporarily and return its file path.
+        Saves an image to a temporary file and returns its file path.
         """
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".png")
         image.save(temp_file, format="PNG")
@@ -559,7 +568,7 @@ class PineconeDB:
         namespace: str,
     ):
         """
-        Upload image embeddings to Pinecone index.
+        Uploads image embeddings to the Pinecone index.
 
         :param image_paths: List of image file paths
         :param prompts: List of prompts associated with the images
@@ -591,20 +600,109 @@ class PineconeDB:
         index.upsert(vectors=vectors, namespace=namespace)
         print(f"Uploaded {len(vectors)} images to Pinecone.")
 
+    def upsert(
+        self,
+        texts: Iterable[str],
+        metadatas: Optional[List[Dict]] = None,
+        ids: Optional[List[str]] = None,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Implements the interface method to upsert documents.
+        Expects kwargs to include: index, embedder, sparse_encoder, namespace, batch_size.
+        """
+        index = kwargs.get("index")
+        embedder = kwargs.get("embedder")
+        sparse_encoder = kwargs.get("sparse_encoder")
+        namespace = kwargs.get("namespace")
+        batch_size = kwargs.get("batch_size", 32)
+        self.upsert_documents(
+            index,
+            list(texts),
+            metadatas,
+            embedder,
+            sparse_encoder,
+            namespace,
+            batch_size,
+        )
+
+    def upsert_parallel(
+        self,
+        texts: Iterable[str],
+        metadatas: Optional[List[Dict]] = None,
+        ids: Optional[List[str]] = None,
+        batch_size: int = 32,
+        workers: int = 10,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Implements the interface method to upsert documents in parallel.
+        Expects kwargs to include: index, embedder, sparse_encoder, namespace.
+        """
+        index = kwargs.get("index")
+        embedder = kwargs.get("embedder")
+        sparse_encoder = kwargs.get("sparse_encoder")
+        namespace = kwargs.get("namespace")
+        self.upsert_documents_parallel(
+            index,
+            list(texts),
+            metadatas,
+            embedder,
+            sparse_encoder,
+            namespace,
+            batch_size,
+            workers,
+        )
+
+    def search(self, query: str, k: int = 10, **kwargs: Any) -> List[Document]:
+        """
+        Implements the interface method to search documents.
+        Expects kwargs to include: index, clip_embedder, namespace, and optionally local_image_paths.
+        """
+        index = kwargs.get("index")
+        clip_embedder = kwargs.get("clip_embedder")
+        namespace = kwargs.get("namespace")
+        local_image_paths = kwargs.get("local_image_paths", None)
+        return self.search_by_text(
+            index, query, clip_embedder, namespace, k, local_image_paths
+        )
+
+    def delete(
+        self,
+        ids: Optional[List[str]] = None,
+        filters: Optional[dict] = None,
+        **kwargs: Any,
+    ) -> None:
+        """
+        Implements the interface method to delete documents.
+        This wrapper calls the delete method on the index.
+        """
+        if self.index:
+            self.index.delete(ids=ids, filter=filters, namespace=self.namespace)
+            print(f"Deleted documents from index '{self.index_name}'.")
+
+
+########################################################################
+# DocumentProcessor class (For preprocessing PDF files, etc.)
+########################################################################
+
 
 class DocumentProcessor:
     def __init__(
         self,
-        directory_path,
-        chunk_size=300,
-        chunk_overlap=50,
-        use_basename=False,
+        directory_path: str,
+        chunk_size: int = 300,
+        chunk_overlap: int = 50,
+        use_basename: bool = False,
     ):
         """
         Initializes the document processing class.
-        :param chunk_size: Chunk size used for splitting text.
-        :param chunk_overlap: Overlapping portion size when splitting text.
-        :param use_basename: Whether to use only the file name for "source" metadata.
+
+        Parameters:
+            - directory_path: The directory path where documents are located
+            - chunk_size: Text chunk size
+            - chunk_overlap: Chunk overlap length
+            - use_basename: Whether to use only the file name for the 'source' metadata
         """
         self.directory_path = directory_path
         self.text_splitter = RecursiveCharacterTextSplitter(
@@ -613,45 +711,36 @@ class DocumentProcessor:
         self.use_basename = use_basename
 
     @staticmethod
-    def clean_text(text):
+    def clean_text(text: str) -> str:
         """
         Cleans the text.
-        :param text: Original text.
-        :return: Cleaned text.
+
+        - Removes non-ASCII characters
+        - Removes extra spaces and trims the text
+        - Removes patterns where special characters and numbers repeat three or more times
         """
-        # Remove non-ASCII characters
         text = re.sub(r"[^\x00-\x7F]+", "", text)
-        # Remove multiple spaces and trim the text
         text = re.sub(r"\s+", " ", text).strip()
-        # Remove abnormal strings with special characters and numbers
         text = re.sub(r"[0-9#%$&()*+,\-./:;<=>?@\[\]^_`{|}~]{3,}", "", text)
         return text
 
-    def process_pdf_files(self, directory_path):
+    def process_pdf_files(self, directory_path: str) -> List[Document]:
         """
         Loads, preprocesses, and splits PDF files.
-        :param directory_path: Directory containing PDF file paths.
-        :return: List of processed documents.
         """
         split_docs = []
         files = sorted(glob.glob(directory_path))
-
         if not files:
             print(f"[WARNING] No PDF files found in directory: {directory_path}")
             return split_docs
-
         for file in files:
             loader = PyMuPDFLoader(file)
             raw_docs = loader.load_and_split(self.text_splitter)
-
             for doc in raw_docs:
                 doc.page_content = self.clean_text(doc.page_content)
-
                 if self.use_basename and "source" in doc.metadata:
                     doc.metadata["source"] = os.path.basename(doc.metadata["source"])
-
                 split_docs.append(doc)
-
         print(f"[INFO] Processed {len(split_docs)} documents from {len(files)} files.")
         return split_docs
 
@@ -679,6 +768,11 @@ class DocumentProcessor:
                         metadatas[k].append(value)
 
         return contents, metadatas
+
+
+########################################################################
+# NLTKBM25Tokenizer class (NLTK-based BM25 tokenizer)
+########################################################################
 
 
 class NLTKBM25Tokenizer:
