@@ -227,7 +227,7 @@ print(word_tokenize(sent2))
 
   > Note: What is N-gram?
 
-  ![image.png](assets/08-langsmith-heuristic-evaluation-01.png)
+  ![image.png](./img/08-langsmith-heuristic-evaluation-01.png)
 
 
 
@@ -807,4 +807,4 @@ experiment_results = evaluate(
 Check the results.
 
 
-  ![image.png](assets/08-langsmith-heuristic-evaluation-02.png)
+  ![image.png](./img/08-langsmith-heuristic-evaluation-02.png)

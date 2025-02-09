@@ -55,11 +55,11 @@ Download 64-bit Git for Windows Setup
 
 Confirm options during installation and proceed
 
-![](./assets/01-follow-the-installation-video-windows-02.png)
+![](./img/01-follow-the-installation-video-windows-02.png)
 
 Click the Next button for all the rest to proceed with the installation.
 
-![](./assets/01-follow-the-installation-video-windows-03.png)
+![](./img/01-follow-the-installation-video-windows-03.png)
 
 Window key - PowerShell must be run as administrator
 
@@ -68,7 +68,7 @@ Enter the command "`git`" and verify that the output looks like the image below
 git
 ```
 
-![](./assets/01-follow-the-installation-video-windows-04.png)
+![](./img/01-follow-the-installation-video-windows-04.png)
 
 
 - Apply PowerShell Policy 
@@ -109,7 +109,7 @@ Enter the following command to verify that it works.
 pyenv
 ```
  
-![](./assets/01-follow-the-installation-video-windows-05.png )
+![](./img/01-follow-the-installation-video-windows-05.png )
 
 
 - Install python
@@ -176,16 +176,16 @@ Install the downloaded Visual Studio Code (copy it to the Applications folder)
 
 Click 'install' of Jupyter on left Menu of extensions 
 
-![](./assets/01-follow-the-installation-video-windows-06.png)
+![](./img/01-follow-the-installation-video-windows-06.png)
 
 ## Install Jupyter Extension
 Search for "python" and install
 
-![](./assets/01-follow-the-installation-video-windows-07.png)
+![](./img/01-follow-the-installation-video-windows-07.png)
 
 Search for "jupyter" and install
 
-![](./assets/01-follow-the-installation-video-windows-08.png)
+![](./img/01-follow-the-installation-video-windows-08.png)
 
 Turn off and restart Visual Studio Code
 

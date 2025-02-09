@@ -80,8 +80,8 @@ package.install(
 ```
 
 <pre class="custom">
-    [1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m A new release of pip is available: [0m[31;49m24.2[0m[39;49m -> [0m[32;49m24.3.1[0m
-    [1m[[0m[34;49mnotice[0m[1;39;49m][0m[39;49m To update, run: [0m[32;49mpip install --upgrade pip[0m
+    [notice] A new release of pip is available: 24.2 -> 24.3.1
+    [notice] To update, run: pip install --upgrade pip
 </pre>
 
 ```python

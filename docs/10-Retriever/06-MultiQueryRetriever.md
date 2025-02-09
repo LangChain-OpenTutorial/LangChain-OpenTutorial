@@ -24,32 +24,34 @@ pre {
 - Peer Review: 
 - This is a part of [LangChain OpenTutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/langchain-ai/langchain-academy/blob/main/module-4/sub-graph.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/06-MultiQueryRetriever.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/06-MultiQueryRetriever.ipynb)
 
 
 ## Overview
 
-`MultiQueryRetriever` offers a thoughtful approach to improving distance-based vector database searches by generating diverse queries with the help of a Language Learning Model (LLM). This method simplifies the search process, minimizes the need for manual prompt adjustments, and aims to provide more nuanced and comprehensive results.
+`MultiQueryRetriever` offers a thoughtful approach to improving distance-based vector database retrieval by generating diverse queries with the help of an LLM. 
+
+This method simplifies the retrieval process, minimizes the need for manual prompt adjustments, and aims to provide more nuanced and comprehensive results.
 
 - **Understanding Distance-Based Vector Search**  
-  Distance-based vector search is a technique that identifies documents with embeddings similar to a query embedding based on their "distance" in high-dimensional space. However, subtle variations in query details or embedding representations can occasionally make it challenging to fully capture the intended meaning, which might affect the search results.
+  Distance-based vector search is a technique that identifies documents with embeddings similar to a query embedding based on their 'distance' in a high-dimensional space. However, subtle variations in query details or embedding representations can occasionally make it challenging to fully capture the intended meaning, which might affect the search results.
 
 - **Streamlined Prompt Tuning**  
-  MultiQueryRetriever reduces the complexity of prompt tuning by utilizing an LLM to automatically generate multiple queries from different perspectives for a single input. This helps minimize the effort required for manual adjustments or prompt engineering.
+  `MultiQueryRetriever` reduces the complexity of prompt tuning by utilizing an LLM to automatically generate multiple queries from different perspectives for a single input. This helps minimize the effort required for manual adjustments or prompt engineering.
 
 - **Broader Document Retrieval**  
   Each generated query is used to perform a search, and the unique documents retrieved from all queries are combined. This approach helps uncover a wider range of potentially relevant documents, increasing the chances of retrieving valuable information.
 
 - **Improved Search Robustness**  
-  By exploring a question from multiple perspectives through diverse queries, MultiQueryRetriever addresses some of the limitations of distance-based searches. This approach can better account for nuanced differences and deeper meanings in the data, leading to more contextually relevant and well-rounded results.
+  By exploring a question from multiple perspectives through diverse queries, `MultiQueryRetriever` addresses some of the limitations of distance-based searches. This approach can better account for nuanced differences and deeper meanings in the data, leading to more contextually relevant and well-rounded results.
 
 ### Table of Contents
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Building a Vector Database](#Building-a-Vector-Database)
+- [Building a Vector Database](#building-a-vector-database)
 - [Usage](#usage)
-- [How to use the LCEL Chain](#how-to-use-the-LCEL-Chain)
+- [How to Use the LCEL Chain](#how-to-use-the-lcel-chain)
 
 ### References
 
@@ -70,23 +72,6 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 %pip install langchain-opentutorial
 ```
 
-<pre class="custom">WARNING: Ignoring invalid distribution -angchain-community (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
-    WARNING: Ignoring invalid distribution -orch (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
-    WARNING: Ignoring invalid distribution -rotobuf (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
-    WARNING: Ignoring invalid distribution -treamlit (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
-    WARNING: Error parsing dependencies of torchsde: .* suffix can only be used with `==` or `!=` operators
-        numpy (>=1.19.*) ; python_version >= "3.7"
-               ~~~~~~~^
-    WARNING: Ignoring invalid distribution -angchain-community (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
-    WARNING: Ignoring invalid distribution -orch (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
-    WARNING: Ignoring invalid distribution -rotobuf (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
-    WARNING: Ignoring invalid distribution -treamlit (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
-    WARNING: Ignoring invalid distribution -angchain-community (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
-    WARNING: Ignoring invalid distribution -orch (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
-    WARNING: Ignoring invalid distribution -rotobuf (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
-    WARNING: Ignoring invalid distribution -treamlit (c:\users\user\appdata\local\programs\python\python310\lib\site-packages)
-</pre>
-
 ```python
 # Install required packages
 from langchain_opentutorial import package
@@ -101,21 +86,6 @@ package.install(
     upgrade=False,
 )
 ```
-
-```python
-# Configuration file to manage API keys as environment variables
-from dotenv import load_dotenv
-
-# Load API key information
-load_dotenv()
-```
-
-
-
-
-<pre class="custom">True</pre>
-
-
 
 ```python
 # Set environment variables
@@ -133,9 +103,32 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
+Alternatively, environment variables can also be set using a `.env` file.
+
+**[Note]**
+
+- This is not necessary if you've already set the environment variables in the previous step.
+
+```python
+# Configuration file to manage API keys as environment variables
+from dotenv import load_dotenv
+
+# Load API key information
+load_dotenv()
+```
+
+
+
+
+<pre class="custom">True</pre>
+
+
+
 ## Building a Vector Database
 
-Vector databases enable efficient retrieval of relevant documents by embedding textual data into a high-dimensional vector space. This example demonstrates creating a simple vector database using LangChain, which involves loading and splitting a document, generating embeddings with OpenAI, and performing a search query to retrieve contextually relevant information.
+Vector databases enable efficient retrieval of relevant documents by embedding text data into a high-dimensional vector space. 
+
+This example demonstrates creating a simple vector database using LangChain, which involves loading and splitting a document, generating embeddings with OpenAI, and performing a search query to retrieve contextually relevant information.
 
 ```python
 # Build a sample vector DB
@@ -224,7 +217,7 @@ Below is code that you can run to debug the intermediate process of generating m
 
 First, we retrieve the `"langchain.retrievers.multi_query"` logger.
 
-This is done using the `logging.getLogger()` function. Then, we set the logger's log level to `INFO`, so that only log messages at the `INFO` level or above are printed.
+This is done using the `logging.getLogger` method. Then, we set the logger's log level to `INFO`, so that only log messages at the `INFO` level or above are printed.
 
 
 ```python
@@ -237,7 +230,9 @@ logging.getLogger("langchain.retrievers.multi_query").setLevel(logging.INFO)
 
 This code uses the `invoke` method of the `retriever_from_llm` object to search for documents relevant to the given `question`.
 
-The retrieved documents are stored in the variable `relevant_docs`, and checking the length of this variable lets you see how many relevant documents were found. Through this process, you can effectively locate information related to the user's question and assess how much of it is available.
+The retrieved documents are stored in the variable `relevant_docs`, and checking the length of this variable lets you see how many relevant documents were found.
+
+Through this process, you can effectively locate information related to the user's question and assess how much of it is available.
 
 
 ```python
@@ -256,11 +251,11 @@ print(
 print(relevant_docs[0].page_content)
 ```
 
-<pre class="custom">INFO:langchain.retrievers.multi_query:Generated queries: ['What are the main components and structural design of the LangChain framework?', 'Can you describe the essential characteristics and architectural elements of the LangChain framework?', 'What are the fundamental features and the architecture behind the LangChain framework?']
+<pre class="custom">INFO:langchain.retrievers.multi_query:Generated queries: ['What are the main components and architectural design of the LangChain framework?', 'Can you describe the essential characteristics and structure of the LangChain framework?', 'What are the significant features and the underlying architecture of the LangChain framework?']
 </pre>
 
     ===============
-    Number of retrieved documents: 5
+    Number of retrieved documents: 6
     ===============
     noteThese docs focus on the Python LangChain library. Head here for docs on the JavaScript LangChain library.
     Architecture​
@@ -268,10 +263,10 @@ print(relevant_docs[0].page_content)
     Architecture page.
     
 
-## How to use the LCEL Chain
+## How to Use the LCEL Chain
 
-- Define a custom prompt, then create a Chain with that prompt.
-- When the Chain receives a user question (in the following example), it generates 5 questions, and returns the 5 generated questions separated by "\n".
+- Define a custom prompt, then create a `Chain` with that prompt.
+- When the `Chain` receives a user question (in the following example), it generates 5 questions, and returns the 5 generated questions separated by '\n'.
 
 
 ```python
@@ -311,13 +306,13 @@ print(multi_queries)
 ```
 
 <pre class="custom">What are the main components and structure of the LangChain framework?  
-    Can you describe the architecture and essential features of LangChain?  
-    What are the significant characteristics and design of the LangChain framework?  
-    Could you provide an overview of the LangChain framework's architecture and its key features?  
-    What should I know about the LangChain framework's architecture and its primary functionalities?  
+    Can you describe the architecture and essential characteristics of LangChain?  
+    What are the significant features and design elements of the LangChain framework?  
+    How is the LangChain framework structured, and what are its key functionalities?  
+    Could you provide an overview of the LangChain framework's architecture and its primary features?  
 </pre>
 
-You can pass the previously created Chain to `MultiQueryRetriever` to perform retrieval.
+You can pass the previously created `Chain` to the `MultiQueryRetriever` to perform retrieval.
 
 ```python
 multiquery_retriever = MultiQueryRetriever.from_llm(
@@ -325,7 +320,7 @@ multiquery_retriever = MultiQueryRetriever.from_llm(
 )
 ```
 
-Use `MultiQueryRetriever` to search documents and check the results.
+Use the `MultiQueryRetriever` to search documents and check the results.
 
 ```python
 # Result
@@ -341,7 +336,7 @@ print(
 print(relevant_docs[0].page_content)
 ```
 
-<pre class="custom">INFO:langchain.retrievers.multi_query:Generated queries: ['What are the main characteristics and structure of the LangChain framework?', 'Can you describe the essential features and design of the LangChain framework?', 'Could you provide an overview of the key components and architecture of the LangChain framework?', 'What are the fundamental aspects and architectural elements of the LangChain framework?', 'Please outline the primary features and framework architecture of LangChain.']
+<pre class="custom">INFO:langchain.retrievers.multi_query:Generated queries: ['What are the main characteristics and structure of the LangChain framework?  ', 'Can you describe the essential features and design of the LangChain framework?  ', 'Could you provide an overview of the key components and architecture of the LangChain framework?  ', 'What are the fundamental aspects and architectural elements of the LangChain framework?  ', 'Please outline the primary features and framework architecture of LangChain.']
 </pre>
 
     ===============
