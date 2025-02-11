@@ -395,18 +395,21 @@ class ElasticsearchDocumentManager(DocumentManager):
             for batch in batches:
                 executor.submit(bulk_upsert_batch, batch)
 
-    def get_documents_ids(self, index_name: str) -> List[Dict]:
+    def get_documents_ids(self, index_name: str, size: int = 1000) -> List[Dict]:
         """
         Retrieve all document IDs from a specified index.
 
         Parameters:
             index_name (str): The index from which to retrieve document IDs.
+            size (int, optional): Maximum number of documents to retrieve. Defaults to 1000.
 
         Returns:
             List[Dict]: A list of document IDs.
         """
         response = self.es.search(
-            index=index_name, body={"_source": False, "query": {"match_all": {}}}
+            index=index_name,
+            body={"_source": False, "query": {"match_all": {}}},
+            size=size,
         )
         return [doc["_id"] for doc in response["hits"]["hits"]]
 
