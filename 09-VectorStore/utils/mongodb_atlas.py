@@ -2,6 +2,7 @@ import os
 import certifi
 from pathlib import Path
 from typing import List, Iterable, Tuple, Optional, Any, Mapping, Union, Dict, Callable
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pymongo import MongoClient
 from pymongo.synchronous.collection import Collection
 from pymongo.synchronous.cursor import Cursor
@@ -127,8 +128,11 @@ class MongoDBAtlas:
 
 class MongoDBAtlasDocumentManager(DocumentManager):
 
-    def __init__(self, atlas: MongoDBAtlas) -> None:
+    def __init__(
+        self, atlas: MongoDBAtlas, embedding_function: Callable[[str], List[float]]
+    ) -> None:
         self.collection = atlas.connect()
+        self.embedding_function = embedding_function
 
     def get_documents(
         self,
@@ -145,52 +149,57 @@ class MongoDBAtlasDocumentManager(DocumentManager):
         split_condition: Callable[[str], Iterable[str]],
         split_index_name: str,
     ) -> List[Document]:
-        split_documents = []
-        for document in documents:
-            split_documents.extend(
-                self._split_texts(
-                    document.page_content, split_condition, split_index_name
-                )
+        return [
+            Document(page_content=text, metadata=metadata)
+            for document in documents
+            for text, metadata in self.split_texts(
+                document.page_content, split_condition, split_index_name
             )
-        return split_documents
+        ]
 
     def split_documents_by_splitter(
         self, splitter: TextSplitter, documents: Iterable[Document]
     ) -> List[Document]:
         return splitter.split_documents(documents)
 
-    def _split_texts(
+    def split_texts(
         self,
         texts: str,
         split_condition: Callable[[str], Iterable[str]],
         split_index_name: str,
-    ) -> Iterable[Document]:
-        documents = split_condition(texts)
-        for index, document in enumerate(documents):
-            yield Document(page_content=document, metadata={split_index_name: index})
+    ) -> List[Tuple[str, dict[str, Any]]]:
+        return [
+            (document, {split_index_name: index})
+            for index, document in enumerate(split_condition(texts))
+        ]
 
     def convert_document_to_raw_bson(
         self,
-        document: Document,
+        document: Mapping[str, Any],
     ) -> RawBSONDocument:
-        document_dict = {
-            "page_content": document.page_content,
-            "metadata": document.metadata,
-        }
-        return RawBSONDocument(encode(document_dict))
+        """Convert Document to RawBSONDocument.
+        RawBSONDocument represent BSON document using the raw bytes.
+        BSON, the binary representation of JSON, is primarily used internally by MongoDB.
+        """
+        return RawBSONDocument(encode(document))
 
     def convert_documents_to_raw_bson(
         self,
-        documents: List[Document],
+        documents: List[Mapping[str, Any]],
     ) -> Iterable[RawBSONDocument]:
+        """Convert a list of Document objects to an iterable of RawBSONDocument.
+
+        Each Document is individually converted to RawBSONDocument using
+        convert_document_to_raw_bson.
+        """
         for document in documents:
             yield self.convert_document_to_raw_bson(document)
 
-    def insert_one(self, document: Document) -> InsertOneResult:
+    def _insert_one(self, document: Mapping[str, Any]) -> InsertOneResult:
         bson_document = self.convert_document_to_raw_bson(document)
         return self.collection.insert_one(bson_document)
 
-    def insert_many(self, documents: List[Document]) -> InsertManyResult:
+    def _insert_many(self, documents: List[Mapping[str, Any]]) -> InsertManyResult:
         bson_documents = self.convert_documents_to_raw_bson(documents)
         return self.collection.insert_many(bson_documents)
 
@@ -253,6 +262,16 @@ class MongoDBAtlasDocumentManager(DocumentManager):
     ) -> DeleteResult:
         return self.collection.delete_many(filter=filter, comment=comment)
 
+    def get_metadata_and_content(
+        self, documents: List[Document]
+    ) -> List[Dict[str, Any]]:
+        results = []
+        for doc in documents:
+            results.append(
+                {"page_content": doc["page_content"], "metadata": doc["metadata"]}
+            )
+        return results
+
     def upsert(
         self,
         texts: Iterable[str],
@@ -260,7 +279,22 @@ class MongoDBAtlasDocumentManager(DocumentManager):
         ids: Optional[List[str]] = None,
         **kwargs: Any,
     ) -> None:
-        pass
+        """
+        Update documents that match the filter or insert new documents.
+        """
+        for i, text in enumerate(texts):
+            embedding = self.embedding_function(text)
+            doc = {
+                "page_content": text,
+                "embedding": embedding,
+                "metadata": metadatas[i] if metadatas else {},
+            }
+            if ids:
+                self.update_one_by_filter(
+                    filter={"_id": ids[i]}, update_operation={"$set": doc}, upsert=True
+                )
+            else:
+                self._insert_one(doc)
 
     def upsert_parallel(
         self,
@@ -271,10 +305,76 @@ class MongoDBAtlasDocumentManager(DocumentManager):
         workers: int = 10,
         **kwargs: Any,
     ) -> None:
-        pass
 
-    def search(self, query: str, k: int = 10, **kwargs: Any) -> List[Document]:
-        return super().search(query, k, **kwargs)
+        def upsert_batch(batch, batch_ids):
+            requests = []
+            for i, doc in enumerate(batch):
+                if batch_ids and i < len(batch_ids):
+                    requests.append(
+                        self.update_one_by_filter(
+                            filter={"_id": batch_ids[i]},
+                            update_operation={"$set": doc},
+                            upsert=True,
+                        )
+                    )
+                else:
+                    self._insert_one(doc)
+            if requests:
+                self.collection.bulk_write(requests)
+
+        def get_embeddings_parallel(texts_batch: List[str]) -> List[Any]:
+            embeddings = []
+            with ThreadPoolExecutor(max_workers=workers) as executor:
+                futures = [
+                    executor.submit(self.embedding_function, text)
+                    for text in texts_batch
+                ]
+                for future in as_completed(futures):
+                    embeddings.append(future.result())
+            return embeddings
+
+        futures = []
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            for i in range(0, len(texts), batch_size):
+                texts_batch = texts[i : i + batch_size]
+                metadatas_batch = metadatas[i : i + batch_size] if metadatas else []
+                ids_batch = ids[i : i + batch_size] if ids else None
+
+                embeddings = get_embeddings_parallel(texts_batch)
+                batch_docs = [
+                    {
+                        "page_content": text,
+                        "embedding": embeddings[j],
+                        "metadata": metadatas_batch[j] if metadatas_batch else {},
+                    }
+                    for j, text in enumerate(texts_batch)
+                ]
+
+                future = executor.submit(
+                    upsert_batch,
+                    batch_docs,
+                    ids_batch,
+                )
+                futures.append(future)
+
+            for future in as_completed(futures):
+                future.result()
+
+    def search(self, query: str, k: int = 4, **kwargs: Any) -> List[Document]:
+        query_vector = self.embedding_function(query)
+        vector_index = kwargs.get("vector_index")
+        pipeline = [
+            {
+                "$vectorSearch": {
+                    "index": vector_index,
+                    "path": "embedding",
+                    "queryVector": query_vector,
+                    "numCandidates": k * 5,
+                    "limit": k,
+                }
+            }
+        ]
+        return list(self.collection.aggregate(pipeline))
 
     def delete(
         self,
@@ -282,4 +382,9 @@ class MongoDBAtlasDocumentManager(DocumentManager):
         filters: Optional[dict] = None,
         **kwargs: Any,
     ) -> None:
-        pass
+        if ids:
+            self.delete_many_by_filter(filter={"_id": {"$in": ids}})
+        elif filters:
+            self.delete_many_by_filter(filter=filters)
+        else:
+            self.delete_many_by_filter(filter={})
