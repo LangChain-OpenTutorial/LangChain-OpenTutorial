@@ -4,8 +4,15 @@ from pathlib import Path
 from typing import List, Iterable, Tuple, Optional, Any, Mapping, Union, Dict, Callable
 from pymongo import MongoClient
 from pymongo.synchronous.collection import Collection
-from pymongo.typings import _DocumentType
+from pymongo.synchronous.cursor import Cursor
+from pymongo.typings import _DocumentType, _Pipeline
 from pymongo.operations import SearchIndexModel
+from pymongo.results import (
+    DeleteResult,
+    InsertManyResult,
+    InsertOneResult,
+    UpdateResult,
+)
 from bson import encode
 from bson.raw_bson import RawBSONDocument
 from langchain_mongodb import MongoDBAtlasVectorSearch
@@ -74,14 +81,18 @@ class MongoDBAtlas:
         dimensions: int,
         filters: Optional[List[str]] = None,
         update: bool = False,
-    ):
+    ) -> None:
         if not self._is_index_exists(index_name):
             self.vector_store.create_vector_search_index(
                 dimensions=dimensions, filters=filters, update=update
             )
 
-    def update_vector_search_index(self, index_name, dimensions, filters):
-        self.create_vector_search_index(self, index_name, dimensions, filters, True)
+    def update_vector_search_index(
+        self, dimensions: int, filters: Optional[List[str]] = None
+    ) -> None:
+        self.vector_store.create_vector_search_index(
+            dimensions=dimensions, filters=filters, update=True
+        )
 
     def add_documents(self, documents: List[Document]) -> List[str]:
         return self.vector_store.add_documents(documents=documents)
@@ -98,65 +109,20 @@ class MongoDBAtlas:
         pre_filter: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
     ) -> List[Document]:
-        self.vector_store.similarity_search(
+        return self.vector_store.similarity_search(
             query=query, k=k, pre_filter=pre_filter, **kwargs
         )
 
-    # ==========================================
-    # TODO: pymongo
-    # ==========================================
-
-    def convert_document_to_raw_bson(
-        document: Document,
-    ) -> RawBSONDocument:
-        document_dict = {
-            "page_content": document.page_content,
-            "metadata": document.metadata,
-        }
-        return RawBSONDocument(encode(document_dict))
-
-    def convert_documents_to_raw_bson(
+    def similarity_search_with_score(
         self,
-        documents: List[Document],
-    ) -> Iterable[RawBSONDocument]:
-        for document in documents:
-            yield self.convert_document_to_raw_bson(document)
-
-    def insert_one(self, document: Document):
-        bson_document = self.convert_document_to_raw_bson(document)
-        self.collection.insert_one(bson_document)
-
-    def insert_many(self, documents: List[Document]):
-        bson_documents = self.convert_documents_to_raw_bson(documents)
-        self.collection.insert_many(bson_documents)
-
-    def find_one_by_filter(self, filter) -> Mapping[str, Any]:
-        return self.collection.find_one(filter=filter)
-
-    def find_all_by_filter(self, filter) -> List[Mapping[str, Any]]:
-        cursor = self.collection.find(filter=filter)
-        documents = []
-        for doc in cursor:
-            documents.append(doc)
-        return documents
-
-    def update_one_by_filter(self, filter, update_operation, upsert=False):
-        self.collection.update_one(filter, update_operation, upsert)
-
-    def update_many_by_filter(self, filter, update_operation, upsert=False):
-        self.collection.update_many(filter, update_operation, upsert)
-
-    def upsert_one_by_filter(self, filter, update_operation):
-        self.update_one_by_filter(filter, update_operation, True)
-
-    def upsert_many_by_filter(self, filter, update_operation):
-        self.update_many_by_filter(filter, update_operation, True)
-
-    def delete_one_by_filter(self, filter, comment):
-        self.collection.delete_one(filter, comment)
-
-    def delete_many_by_filter(self, filter, comment):
-        self.collection.delete_many(filter, comment)
+        query: str,
+        k: int = 4,
+        pre_filter: Optional[Dict[str, Any]] = None,
+        **kwargs: Any,
+    ) -> List[Tuple[Document, float]]:
+        return self.vector_store.similarity_search_with_score(
+            query=query, k=k, pre_filter=pre_filter, **kwargs
+        )
 
 
 class MongoDBAtlasDocumentManager(DocumentManager):
@@ -182,7 +148,7 @@ class MongoDBAtlasDocumentManager(DocumentManager):
         split_documents = []
         for document in documents:
             split_documents.extend(
-                self.split_texts(
+                self._split_texts(
                     document.page_content, split_condition, split_index_name
                 )
             )
@@ -193,7 +159,7 @@ class MongoDBAtlasDocumentManager(DocumentManager):
     ) -> List[Document]:
         return splitter.split_documents(documents)
 
-    def split_texts(
+    def _split_texts(
         self,
         texts: str,
         split_condition: Callable[[str], Iterable[str]],
@@ -202,6 +168,90 @@ class MongoDBAtlasDocumentManager(DocumentManager):
         documents = split_condition(texts)
         for index, document in enumerate(documents):
             yield Document(page_content=document, metadata={split_index_name: index})
+
+    def convert_document_to_raw_bson(
+        self,
+        document: Document,
+    ) -> RawBSONDocument:
+        document_dict = {
+            "page_content": document.page_content,
+            "metadata": document.metadata,
+        }
+        return RawBSONDocument(encode(document_dict))
+
+    def convert_documents_to_raw_bson(
+        self,
+        documents: List[Document],
+    ) -> Iterable[RawBSONDocument]:
+        for document in documents:
+            yield self.convert_document_to_raw_bson(document)
+
+    def insert_one(self, document: Document) -> InsertOneResult:
+        bson_document = self.convert_document_to_raw_bson(document)
+        return self.collection.insert_one(bson_document)
+
+    def insert_many(self, documents: List[Document]) -> InsertManyResult:
+        bson_documents = self.convert_documents_to_raw_bson(documents)
+        return self.collection.insert_many(bson_documents)
+
+    def find(self, *args: Any, **kwargs: Any) -> Cursor[_DocumentType]:
+        """Query the database
+
+        :param filter: find all documents that match the condition.
+        """
+        return self.collection.find(*args, **kwargs)
+
+    def find_one_by_filter(
+        self, filter: Optional[Any] = None, *args: Any, **kwargs: Any
+    ) -> Optional[_DocumentType]:
+        return self.collection.find_one(filter=filter, *args, **kwargs)
+
+    def find_all_by_filter(self, *args: Any, **kwargs: Any) -> List[Mapping[str, Any]]:
+        cursor = self.collection.find(*args, **kwargs)
+        documents = []
+        for doc in cursor:
+            documents.append(doc)
+        return documents
+
+    def update_one_by_filter(
+        self,
+        filter: Mapping[str, Any],
+        update_operation: Union[Mapping[str, Any], _Pipeline],
+        upsert: bool = False,
+    ) -> UpdateResult:
+        return self.collection.update_one(filter, update_operation, upsert)
+
+    def update_many_by_filter(
+        self,
+        filter: Mapping[str, Any],
+        update_operation: Union[Mapping[str, Any], _Pipeline],
+        upsert: bool = False,
+    ) -> UpdateResult:
+        return self.collection.update_many(filter, update_operation, upsert)
+
+    def upsert_one_by_filter(
+        self,
+        filter: Mapping[str, Any],
+        update_operation: Union[Mapping[str, Any], _Pipeline],
+    ) -> UpdateResult:
+        return self.update_one_by_filter(filter, update_operation, True)
+
+    def upsert_many_by_filter(
+        self,
+        filter: Mapping[str, Any],
+        update_operation: Union[Mapping[str, Any], _Pipeline],
+    ) -> UpdateResult:
+        return self.update_many_by_filter(filter, update_operation, True)
+
+    def delete_one_by_filter(
+        self, filter: Mapping[str, Any], comment: Optional[Any] = None
+    ) -> DeleteResult:
+        return self.collection.delete_one(filter=filter, comment=comment)
+
+    def delete_many_by_filter(
+        self, filter: Mapping[str, Any], comment: Optional[Any] = None
+    ) -> DeleteResult:
+        return self.collection.delete_many(filter=filter, comment=comment)
 
     def upsert(
         self,
