@@ -1,59 +1,66 @@
 import os
 import certifi
+from pathlib import Path
+from typing import List, Iterable, Tuple, Optional, Any, Mapping, Union, Dict
 from pymongo import MongoClient
-from langchain_mongodb import MongoDBAtlasVectorSearch
-from typing import List, Iterable, Optional, Any, Dict, Mapping
+from pymongo.synchronous.collection import Collection
+from pymongo.typings import _DocumentType
+from pymongo.operations import SearchIndexModel
 from bson import encode
 from bson.raw_bson import RawBSONDocument
+from langchain_mongodb import MongoDBAtlasVectorSearch
 from langchain_core.documents import Document
+from langchain_community.document_loaders import TextLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from utils.vectordbinterface import DocumentManager
 
 
 class MongoDBAtlas:
 
-    # ==========================================
-    # TODO: setup
-    # ==========================================
-
-    def __init__(self, embedding=None):
+    def __init__(self, db_name: str, collection_name: str, embedding=None):
+        MONGODB_ATLAS_CLUSTER_URI = os.getenv("MONGODB_ATLAS_CLUSTER_URI")
+        client = MongoClient(MONGODB_ATLAS_CLUSTER_URI, tlsCAFile=certifi.where())
+        self.database = client[db_name]
+        self.collection_name = collection_name
         self.embedding = embedding
         self.collection = None
         self.vector_store = None
 
-    def connect(self, db_name, collection_name):
-        MONGODB_ATLAS_CLUSTER_URI = os.getenv("MONGODB_ATLAS_CLUSTER_URI")
-        client = MongoClient(MONGODB_ATLAS_CLUSTER_URI, tlsCAFile=certifi.where())
-        database = client[db_name]
-        collection_names = database.list_collection_names()
-        if collection_name not in collection_names:
-            self.collection = database.create_collection(collection_name)
+    def connect(self) -> Collection[_DocumentType]:
+        collection_names = self.database.list_collection_names()
+        if self.collection_name not in collection_names:
+            self.collection = self.database.create_collection(self.collection_name)
         else:
-            self.collection = database[collection_name]
+            self.collection = self.database[self.collection_name]
+        return self.collection
 
     # ==========================================
     # TODO: Index
     # ==========================================
-    def is_index_exists(self, index_name):
+    def _is_index_exists(self, index_name: str):
         search_indexes = self.collection.list_search_indexes()
         index_names = [search_index["name"] for search_index in search_indexes]
         return index_name in index_names
 
-    def create_index(self, index_name, model):
-        if not self.is_index_exists(self.collection, index_name):
+    def create_index(
+        self, index_name: str, model: Union[Mapping[str, Any], SearchIndexModel]
+    ):
+        if not self._is_index_exists(index_name):
             self.collection.create_search_index(model)
 
-    def update_index(self, index_name, definition):
-        if self.is_index_exists(self.collection, index_name):
+    def update_index(self, index_name: str, definition: Mapping[str, Any]):
+        if self._is_index_exists(index_name):
             self.collection.update_search_index(name=index_name, definition=definition)
 
-    def delete_index(self, index_name):
-        if self.is_index_exists(self.collection, index_name):
+    def delete_index(self, index_name: str):
+        if self._is_index_exists(index_name):
             self.collection.drop_search_index(index_name)
 
     # ==========================================
     # TODO: langchain_mongodb
     # ==========================================
 
-    def create_vector_store(self, index_name, relevance_score_fn):
+    def create_vector_store(self, index_name: str, relevance_score_fn: str):
         self.vector_store = MongoDBAtlasVectorSearch(
             collection=self.collection,
             embedding=self.embedding,
@@ -61,8 +68,14 @@ class MongoDBAtlas:
             relevance_score_fn=relevance_score_fn,
         )
 
-    def create_vector_search_index(self, index_name, dimensions, filters, update=False):
-        if not self.is_index_exists(self.collection, index_name):
+    def create_vector_search_index(
+        self,
+        index_name: str,
+        dimensions: int,
+        filters: Optional[List[str]] = None,
+        update: bool = False,
+    ):
+        if not self._is_index_exists(index_name):
             self.vector_store.create_vector_search_index(
                 dimensions=dimensions, filters=filters, update=update
             )
@@ -70,7 +83,7 @@ class MongoDBAtlas:
     def update_vector_search_index(self, index_name, dimensions, filters):
         self.create_vector_search_index(self, index_name, dimensions, filters, True)
 
-    def add_documents(self, documents) -> List[str]:
+    def add_documents(self, documents: List[Document]) -> List[str]:
         return self.vector_store.add_documents(documents=documents)
 
     def delete_documents(
@@ -144,3 +157,40 @@ class MongoDBAtlas:
 
     def delete_many_by_filter(self, filter, comment):
         self.collection.delete_many(filter, comment)
+
+
+class MongoDBAtlasDocumentManager(DocumentManager):
+
+    def __init__(self, atlas: MongoDBAtlas) -> None:
+        self.collection = atlas.connect()
+
+    def upsert(
+        self,
+        texts: Iterable[str],
+        metadatas: Optional[list[dict]] = None,
+        ids: Optional[List[str]] = None,
+        **kwargs: Any,
+    ) -> None:
+        pass
+
+    def upsert_parallel(
+        self,
+        texts: Iterable[str],
+        metadatas: Optional[list[dict]] = None,
+        ids: Optional[List[str]] = None,
+        batch_size: int = 32,
+        workers: int = 10,
+        **kwargs: Any,
+    ) -> None:
+        pass
+
+    def search(self, query: str, k: int = 10, **kwargs: Any) -> List[Document]:
+        return super().search(query, k, **kwargs)
+
+    def delete(
+        self,
+        ids: Optional[list[str]] = None,
+        filters: Optional[dict] = None,
+        **kwargs: Any,
+    ) -> None:
+        pass
