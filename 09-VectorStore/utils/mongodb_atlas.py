@@ -1,7 +1,7 @@
 import os
 import certifi
 from pathlib import Path
-from typing import List, Iterable, Tuple, Optional, Any, Mapping, Union, Dict
+from typing import List, Iterable, Tuple, Optional, Any, Mapping, Union, Dict, Callable
 from pymongo import MongoClient
 from pymongo.synchronous.collection import Collection
 from pymongo.typings import _DocumentType
@@ -11,7 +11,7 @@ from bson.raw_bson import RawBSONDocument
 from langchain_mongodb import MongoDBAtlasVectorSearch
 from langchain_core.documents import Document
 from langchain_community.document_loaders import TextLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_text_splitters.base import TextSplitter
 from utils.vectordbinterface import DocumentManager
 
 
@@ -163,6 +163,45 @@ class MongoDBAtlasDocumentManager(DocumentManager):
 
     def __init__(self, atlas: MongoDBAtlas) -> None:
         self.collection = atlas.connect()
+
+    def get_documents(
+        self,
+        file_path: Union[str, Path],
+        encoding: Optional[str] = None,
+        autodetect_encoding: bool = False,
+    ) -> list[Document]:
+        loader = TextLoader(file_path, encoding, autodetect_encoding)
+        return loader.load()
+
+    def split_documents(
+        self,
+        documents: Iterable[Document],
+        split_condition: Callable[[str], Iterable[str]],
+        split_index_name: str,
+    ) -> List[Document]:
+        split_documents = []
+        for document in documents:
+            split_documents.extend(
+                self.split_texts(
+                    document.page_content, split_condition, split_index_name
+                )
+            )
+        return split_documents
+
+    def split_documents_by_splitter(
+        self, splitter: TextSplitter, documents: Iterable[Document]
+    ) -> List[Document]:
+        return splitter.split_documents(documents)
+
+    def split_texts(
+        self,
+        texts: str,
+        split_condition: Callable[[str], Iterable[str]],
+        split_index_name: str,
+    ) -> Iterable[Document]:
+        documents = split_condition(texts)
+        for index, document in enumerate(documents):
+            yield Document(page_content=document, metadata={split_index_name: index})
 
     def upsert(
         self,
