@@ -526,16 +526,16 @@ agent_executor.invoke(
 
 <pre class="custom">
     
-    [1m> Entering new SQL Agent Executor chain...[0m
-    [32;1m[1;3m
+    > Entering new SQL Agent Executor chain...
+    
     Invoking: `sql_db_list_tables` with `{}`
     
     
-    [0m[38;5;200m[1;3maccounts, customers, transactions[0m[32;1m[1;3m
+    accounts, customers, transactions
     Invoking: `sql_db_schema` with `{'table_names': 'accounts'}`
     
     
-    [0m[33;1m[1;3m
+    
     CREATE TABLE accounts (
     	account_id INTEGER, 
     	customer_id INTEGER, 
@@ -550,11 +550,11 @@ agent_executor.invoke(
     1	1	1000.5
     2	2	2500.75
     3	3	1500.0
-    */[0m[32;1m[1;3m
+    */
     Invoking: `sql_db_schema` with `{'table_names': 'customers'}`
     
     
-    [0m[33;1m[1;3m
+    
     CREATE TABLE customers (
     	customer_id INTEGER, 
     	name TEXT, 
@@ -568,11 +568,11 @@ agent_executor.invoke(
     1	Altman	40	Sam@example.com
     2	Huang	62	Jensen@example.com
     3	Zuckerberg	41	Mark@example.com
-    */[0m[32;1m[1;3m
+    */
     Invoking: `sql_db_schema` with `{'table_names': 'transactions'}`
     
     
-    [0m[33;1m[1;3m
+    
     CREATE TABLE transactions (
     	transaction_id INTEGER, 
     	account_id INTEGER, 
@@ -588,7 +588,7 @@ agent_executor.invoke(
     1	1	74.79	2024-07-13
     2	1	-224.1	2024-05-13
     3	1	-128.9	2024-01-25
-    */[0m[32;1m[1;3m
+    */
     Invoking: `sql_db_query_checker` with `{'query': "SELECT customer_id, name FROM customers WHERE name IN ('Altman', 'Zuckerberg')"}`
     responded: The relevant tables and their structures are as follows:
     
@@ -620,40 +620,40 @@ agent_executor.invoke(
     
     I will start by querying the `customer_id` for both customers.
     
-    [0m[36;1m[1;3m```sql
+    ```sql
     SELECT customer_id, name FROM customers WHERE name IN ('Altman', 'Zuckerberg')
-    ```[0m[32;1m[1;3m
+    ```
     Invoking: `sql_db_query` with `{'query': "SELECT customer_id, name FROM customers WHERE name IN ('Altman', 'Zuckerberg')"}`
     
     
-    [0m[36;1m[1;3m[(1, 'Altman'), (3, 'Zuckerberg')][0m[32;1m[1;3m
+    [(1, 'Altman'), (3, 'Zuckerberg')]
     Invoking: `sql_db_query_checker` with `{'query': 'SELECT account_id FROM accounts WHERE customer_id IN (1, 3)'}`
     
     
-    [0m[36;1m[1;3m```sql
+    ```sql
     SELECT account_id FROM accounts WHERE customer_id IN (1, 3)
-    ```[0m[32;1m[1;3m
+    ```
     Invoking: `sql_db_query` with `{'query': 'SELECT account_id FROM accounts WHERE customer_id IN (1, 3)'}`
     
     
-    [0m[36;1m[1;3m[(1,), (3,)][0m[32;1m[1;3m
+    [(1,), (3,)]
     Invoking: `sql_db_query_checker` with `{'query': 'SELECT SUM(amount) FROM transactions WHERE account_id IN (1, 3) GROUP BY account_id'}`
     
     
-    [0m[36;1m[1;3m```sql
+    ```sql
     SELECT SUM(amount) FROM transactions WHERE account_id IN (1, 3) GROUP BY account_id
-    ```[0m[32;1m[1;3m
+    ```
     Invoking: `sql_db_query` with `{'query': 'SELECT SUM(amount) FROM transactions WHERE account_id IN (1, 3) GROUP BY account_id'}`
     
     
-    [0m[36;1m[1;3m[(-965.7,), (656.6400000000002,)][0m[32;1m[1;3mThe total transactions for each customer are as follows:
+    [(-965.7,), (656.6400000000002,)]The total transactions for each customer are as follows:
     
     - **Altman** (account_id 1): Total transactions amount to **-965.7**.
     - **Zuckerberg** (account_id 3): Total transactions amount to **656.64**.
     
-    In summary, Zuckerberg has a positive total transaction amount, while Altman has a negative total transaction amount.[0m
+    In summary, Zuckerberg has a positive total transaction amount, while Altman has a negative total transaction amount.
     
-    [1m> Finished chain.[0m
+    > Finished chain.
 </pre>
 
 

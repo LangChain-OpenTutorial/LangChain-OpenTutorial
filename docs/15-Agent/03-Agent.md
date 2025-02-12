@@ -29,17 +29,17 @@ pre {
 
 ## Overview
 
-Tool calling allows models to detect when one or more **tools** need to be **called and what inputs should be passed** to those tools.
+This tutorial explains tool calling in LangChain, allowing models to detect when one or more **tools** are **called and what inputs to pass** to those tools.
  
-In API calls, you can describe tools and intelligently choose to have the model output structured objects like JSON that contain arguments for calling these tools.
+When making API calls, you can define tools and intelligently guide the model to generate structured objects, such as JSON, containing arguments for calling these tools.
  
-The goal of the tools API is to return valid and useful **tool calls** more reliably than what could be accomplished using plain text completion or chat APIs.
+The goal of the tools API is to provide more reliable generation of valid and useful **tool calls** beyond what standard text completion or chat APIs can achieve.
  
-By combining this structured output with the ability to bind multiple tools to a tool-calling chat model and letting the model choose which tools to call, you can create agents that iteratively call tools and receive results until a query is resolved.
+You can create agents that iteratively call tools and receive results until a query is resolved by integrating this structured output with the ability to bind multiple tools to a tool-calling chat model and letting the model choose which tools to call.
  
-This is a more **generalized version** of the OpenAI tools agent that was designed specifically for OpenAI's particular tool-calling style.
+This represents a more **generalized version** of the OpenAI tools agent which was specifically designed for OpenAI's particular tool-calling style.
  
-This agent uses LangChain's ToolCall interface to support a wider range of provider implementations beyond OpenAI, including `Anthropic` , `Google Gemini` , and `Mistral` .
+This agent uses LangChain's ToolCall interface to support a broader spectrum of provider implementations beyond OpenAI, including `Anthropic`, `Google Gemini`, and `Mistral`.
 
 
 ### Table of Contents
@@ -47,11 +47,11 @@ This agent uses LangChain's ToolCall interface to support a wider range of provi
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
 - [Creating Tools](#creating-tools)
-- [Creating Agent Prompt](#creating-agent-prompt)
+- [Constructing an Agent Prompt](#constructing-an-agent-prompt)
 - [Creating Agent](#creating-agent)
 - [AgentExecutor](#agentexecutor)
 - [Checking step-by-step results using Stream output](#checking-step-by-step-results-using-stream-output)
-- [Customizing intermediate steps output using user-defined functions](#customizing-intermediate-steps-output-using-user-defined-functions)
+- [Customizing intermediate step output using user-defined functions](#customizing-intermediate-step-output-using-user-defined-functions)
 - [Communicating Agent with previous conversation history](#communicating-agent-with-previous-conversation-history)
 
 ### References
@@ -59,7 +59,7 @@ This agent uses LangChain's ToolCall interface to support a wider range of provi
 - [LangChain Python API Reference > langchain: 0.3.14 > agents > create_tool_calling_agent](https://python.langchain.com/api_reference/langchain/agents/langchain.agents.tool_calling_agent.base.create_tool_calling_agent.html#create-tool-calling-agent)
 - [LangChain Python API Reference > langchain: 0.3.14 > core > runnables > langchain_core.runnables.history > RunnableWithMessageHistory](https://python.langchain.com/api_reference/core/runnables/langchain_core.runnables.history.RunnableWithMessageHistory.html)
 
-![](./assets/15-agent-agent-concept.png)
+![](./img/15-agent-agent-concept.png)
 
 ----
 
@@ -130,10 +130,11 @@ load_dotenv(override=True)
 
 ## Creating Tools
 
-- Creating tools for searching news and executing python code
-- `@tool` decorator is used to create a tool
-- `TavilySearchResults` is a tool for searching news
-- `PythonREPL` is a tool for executing python code
+LangChain allows you to define custom tools that your agents can interact with. You can create tools for searching news or executing Python code.
+
+The `@tool` decorator is used to create tools:
+- `TavilySearchResults` is a tool for searching news.
+- `PythonREPL` is a tool for executing Python code.
 
 
 ```python
@@ -193,11 +194,11 @@ print(f"Tool description: {python_repl_tool.description}")
 tools = [search_news, python_repl_tool]
 ```
 
-## Creating Agent Prompt
+## Constructing an Agent Prompt
 
-- `chat_history` : variable for storing previous conversation (if multi-turn is not supported, it can be omitted.)
-- `agent_scratchpad` : variable for storing temporary variables
-- `input` : user's input
+- `chat_history`: This variable stores the conversation history if your agent supports multi-turn. (Otherwise, you can omit this.)
+- `agent_scratchpad`: This variable serves as temporary storage for intermediate variables.
+- `input`: This variable represents the user's input.
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate
@@ -220,6 +221,8 @@ prompt = ChatPromptTemplate.from_messages(
 
 ## Creating Agent
 
+Define an agent using the `create_tool_calling_agent` function.
+
 ```python
 from langchain_openai import ChatOpenAI
 from langchain.agents import create_tool_calling_agent
@@ -231,37 +234,37 @@ llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 agent = create_tool_calling_agent(llm, tools, prompt)
 ```
 
-## AgentExecutor
+## `AgentExecutor`
 
-- AgentExecutor is a class for running an agent that uses tools.
+The `AgentExecutor` is a class for managing an agent that uses tools.
 
 **Key properties**
-- `agent` : agent that creates plans and decides actions at each step of the execution loop
-- `tools` : list of valid tools that the agent can use
-- `return_intermediate_steps` : whether to return the intermediate steps of the agent with the final output
-- `max_iterations` : maximum number of steps before terminating the execution loop
-- `max_execution_time` : maximum time the execution loop can take
-- `early_stopping_method` : method to use when the agent does not return `AgentFinish` . ("force" or "generate")
-  - `"force"` : returns a string indicating that the execution loop was stopped due to time or iteration limit.
-  - `"generate"` : calls the agent's LLM chain once to generate the final answer based on the previous steps.
-- `handle_parsing_errors` : Method of handling parsing errors. (True, False, or error handling function)
-- `trim_intermediate_steps` : Method of trimming intermediate steps. (-1 trim not, or trimming function)
+- `agent`: the underlying agent responsible for creating plans and determining actions at each step of the execution loop.
+- `tools`: a list containing all the valid tools that the agent is authorized to use.
+- `return_intermediate_steps`: boolean flag determins whether to return the intermediate steps the agent took along with the final output.
+- `max_iterations`: a maximum number of steps the agent can take before the execution loop is terminated.
+- `max_execution_time`: the maximum amount of time the execution loop is allowed to run.
+- `early_stopping_method`: a defined method how to handle situations when the agent does not return an `AgentFinish`. ("force" or "generate")
+  - `"force"` : returns a string indicating that the execution loop was stopped due to reaching the time or iteration limit.
+  - `"generate"` : calls the agent's LLM chain once to generate a final answer based on the previous steps taken.
+- `handle_parsing_errors` : a specification how to handle parsing errors. (You can set `True`, `False`, or provide a custom error handling function.)
+- `trim_intermediate_steps` : method of trimming intermediate steps. (You can set `-1` to keep all steps, or provide a custom trimming function.)
 
 **Key methods**
-1. `invoke` : Run the agent
-2. `stream` : Stream the steps needed to reach the final output
+1. `invoke` : Executes the agent.
+2. `stream` : Stream the steps required to reach the final output.
 
 **Key features**
-1. **Tool validation** : Check if the tool is compatible with the agent
-2. **Execution control** : Set maximum number of iterations and execution time limit
-3. **Error handling** : Various processing options for output parsing errors
-4. **Intermediate step management** : Trimming intermediate steps and returning options
-5. **Asynchronous support** : Asynchronous execution and streaming support
+1. **Tool validation** : Ensure that the tool is compatible with the agent.
+2. **Execution control** : Set maximum interations and execution time limits to manage agent bahavior.
+3. **Error handling** : Offers various processing options for output parsing errors.
+4. **Intermediate step management** : Allows for trimming intermediate steps or returning options for debugging.
+5. **Asynchronous support** : Supports asynchronous execution and streaming of results.
 
 **Optimization tips**
-- Set `max_iterations` and `max_execution_time` appropriately to manage execution time
-- Use `trim_intermediate_steps` to optimize memory usage
-- For complex tasks, use the `stream` method to monitor step-by-step results
+- Set appropriate values for `max_iterations` and `max_execution_time` to manage execution time.
+- Use `trim_intermediate_steps` to optimize memory usage.
+- For complex tasks, use the `stream` method to monitor step-by-step results.
 
 ```python
 from langchain.agents import AgentExecutor
@@ -285,12 +288,12 @@ print(result["output"])
 
 <pre class="custom">
     
-    [1m> Entering new AgentExecutor chain...[0m
-    [32;1m[1;3m
+    > Entering new AgentExecutor chain...
+    
     Invoking: `search_news` with `{'query': 'AI Agent 2025'}`
     
     
-    [0m[36;1m[1;3m[{'url': 'https://www.analyticsvidhya.com/blog/2024/12/ai-agent-trends/', 'content': 'In a similar study, Deloitte forecasts that 25% of enterprises using GenAI will deploy AI Agents by 2025, growing to 50% by 2027. Meanwhile, Gartner predicts that by 2028, at least 15% of day-to-day work decisions will be made autonomously through agentic AI. It also states that by then, 33% of enterprise software applications will also include'}, {'url': 'https://www.techtarget.com/searchEnterpriseAI/feature/Next-year-will-be-the-year-of-AI-agents', 'content': 'Next year will be the year of AI agents | TechTarget This will make the AI agent more accurate in completing its task, Greene said. Other than the rise of single-task AI agents, 2025 may also be the year of building the infrastructure for AI agents, said Olivier Blanchard, an analyst with Futurum Group. "2025 isn\'t going to be the year when we see a fully developed agentic AI," he said. AI agents need an orchestration layer that works across different platforms and devices, Blanchard said. Because data is usually spread across different sources and processes, it might be challenging to give AI agents the data they need to perform the tasks they\'re being asked to do, Greene said.'}, {'url': 'https://hai.stanford.edu/news/predictions-ai-2025-collaborative-agents-ai-skepticism-and-new-risks', 'content': 'According to leading experts from Stanford Institute for Human-Centered AI, one major trend is the rise of collaborative AI systems where multiple specialized agents work together, with humans providing high-level guidance. I expect to see more focus on multimodal AI models in education, including in processing speech and images. AI Agents Work Together In 2025, we will see a significant shift from relying on individual AI models to using systems where multiple AI agents of diverse expertise work together. As an example, we recently introduced the\xa0Virtual Lab, where a professor AI agent leads a team of AI scientist agents (e.g., AI chemist, AI biologist) to tackle challenging, open-ended research, with a human researcher providing high-level feedback. We will experience an emerging paradigm of research around how humans work together with AI agents.'}][0m[32;1m[1;3mHere are some recent news articles discussing the future of AI agents in 2025:
+    [{'url': 'https://www.analyticsvidhya.com/blog/2024/12/ai-agent-trends/', 'content': 'In a similar study, Deloitte forecasts that 25% of enterprises using GenAI will deploy AI Agents by 2025, growing to 50% by 2027. Meanwhile, Gartner predicts that by 2028, at least 15% of day-to-day work decisions will be made autonomously through agentic AI. It also states that by then, 33% of enterprise software applications will also include'}, {'url': 'https://www.techtarget.com/searchEnterpriseAI/feature/Next-year-will-be-the-year-of-AI-agents', 'content': 'Next year will be the year of AI agents | TechTarget This will make the AI agent more accurate in completing its task, Greene said. Other than the rise of single-task AI agents, 2025 may also be the year of building the infrastructure for AI agents, said Olivier Blanchard, an analyst with Futurum Group. "2025 isn\'t going to be the year when we see a fully developed agentic AI," he said. AI agents need an orchestration layer that works across different platforms and devices, Blanchard said. Because data is usually spread across different sources and processes, it might be challenging to give AI agents the data they need to perform the tasks they\'re being asked to do, Greene said.'}, {'url': 'https://hai.stanford.edu/news/predictions-ai-2025-collaborative-agents-ai-skepticism-and-new-risks', 'content': 'According to leading experts from Stanford Institute for Human-Centered AI, one major trend is the rise of collaborative AI systems where multiple specialized agents work together, with humans providing high-level guidance. I expect to see more focus on multimodal AI models in education, including in processing speech and images. AI Agents Work Together In 2025, we will see a significant shift from relying on individual AI models to using systems where multiple AI agents of diverse expertise work together. As an example, we recently introduced the\xa0Virtual Lab, where a professor AI agent leads a team of AI scientist agents (e.g., AI chemist, AI biologist) to tackle challenging, open-ended research, with a human researcher providing high-level feedback. We will experience an emerging paradigm of research around how humans work together with AI agents.'}]Here are some recent news articles discussing the future of AI agents in 2025:
     
     1. **AI Agent Trends**  
        - **Source**: [Analytics Vidhya](https://www.analyticsvidhya.com/blog/2024/12/ai-agent-trends/)  
@@ -304,9 +307,9 @@ print(result["output"])
        - **Source**: [Stanford Institute for Human-Centered AI](https://hai.stanford.edu/news/predictions-ai-2025-collaborative-agents-ai-skepticism-and-new-risks)  
        - **Summary**: Experts predict a shift towards collaborative AI systems where multiple specialized agents work together, guided by humans. This includes the development of multimodal AI models in education and research, where AI agents collaborate on complex tasks with human oversight.
     
-    These articles highlight the anticipated growth and evolution of AI agents, emphasizing collaboration, infrastructure development, and the integration of AI into enterprise decision-making processes.[0m
+    These articles highlight the anticipated growth and evolution of AI agents, emphasizing collaboration, infrastructure development, and the integration of AI into enterprise decision-making processes.
     
-    [1m> Finished chain.[0m
+    > Finished chain.
     Agent execution result:
     Here are some recent news articles discussing the future of AI agents in 2025:
     
@@ -327,11 +330,11 @@ print(result["output"])
 
 ## Checking step-by-step results using Stream output
 
-We will use the `stream()` method of AgentExecutor to stream the intermediate steps of the agent.
+We will use the `stream()` method of `AgentExecutor` to stream the intermediate steps of the agent.
 
 The output of `stream()` alternates between (Action, Observation) pairs, and finally ends with the agent's answer if the goal is achieved.
 
-It will look like the following.
+The flow will look like the followings:
 
 1. Action output
 2. Observation output
@@ -340,15 +343,15 @@ It will look like the following.
 
 ... (Continue until the goal is achieved) ...
 
-Then, the agent will output the final answer if the goal is achieved.
+Then, the agent will conclude a final answer if its goal is achieved.
 
-The content of this output is summarized as follows.
+The following table summarizes the content you'll encounter in the output:
 
-| Output | Content |
-|--------|----------|
-| Action | `actions`: AgentAction or its subclass<br>`messages`: Chat messages corresponding to the action call |
-| Observation | `steps`: Record of the agent's work including the current action and its observation<br>`messages`: Chat messages including the function call result (i.e., observation) |
-| Final Answer | `output`: AgentFinish<br>`messages`: Chat messages including the final output |
+| Output | Description |
+|--------|-------------|
+| Action | `actions`: Represents the `AgentAction` or its subclass. <br>`messages`: Chat messages corresponding to the action call. |
+| Observation | `steps`: A record of the agent's work, including the current action and its observation. <br>`messages`: Chat messages containing the results from function calls (i.e., observations). |
+| Final Answer | `output`: Represents `AgentFinish` signal. <br>`messages`: Chat messages containing the final output. |
 ```
 
 ```python
@@ -381,17 +384,17 @@ for step in result:
     ============================================================
 </pre>
 
-## Customizing intermediate steps output using user-defined functions
+## Customizing intermediate step output using user-defined functions
 
-Define the following 3 functions to customize the intermediate steps output.
+You can define the following 3 functions to customize the intermediate steps output:
 
-- `tool_callback`: Function to handle tool call output
-- `observation_callback`: Function to handle observation (Observation) output
-- `result_callback`: Function to handle final answer output
+- `tool_callback`: This function handles the output generated by tool calls.
+- `observation_callback`: This function deals with the observation data output.
+- `result_callback`: This function allows you to handle the final answer output.
 
-The following is a callback function used to output the intermediate steps of the Agent in a clean manner.
+Here's an example callback function that demonstrates how to clean up the intermediate steps of the Agent.
 
-This callback function can be useful when outputting intermediate steps to users in Streamlit.
+This callback function can be useful when presenting intermediate steps to users in an application like Streamlit.
 
 ```python
 from typing import Dict, Any
@@ -435,7 +438,7 @@ class AgentStreamParser:
 agent_stream_parser = AgentStreamParser()
 ```
 
-Check the response process of Agent in streaming mode.
+Check the response process of your Agent in streaming mode.
 
 ```python
 # Run in streaming mode
@@ -604,7 +607,7 @@ agent_callbacks = AgentCallbacks(
 agent_stream_parser = AgentStreamParser(agent_callbacks)
 ```
 
-Check the output content. You can see that the output value of the intermediate content has been changed to the output value of the callback function I modified.
+Check the output content. You can reflect the output value of your callback functions, providing intermediate content that has been changed.
 
 ```python
 # Request streaming output for the query
@@ -643,7 +646,7 @@ for step in result:
 
 ## Communicating Agent with previous conversation history
 
-To remember previous conversation history, wrap `AgentExecutor` with `RunnableWithMessageHistory`.
+To remember past conversations, you can wrap the `AgentExecutor` with `RunnableWithMessageHistory`.
 
 For more details on `RunnableWithMessageHistory`, please refer to the link below.
 

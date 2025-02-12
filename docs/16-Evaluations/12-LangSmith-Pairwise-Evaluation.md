@@ -201,4 +201,4 @@ evaluate_comparative(
 
 
 
-![](./assets/12-langsmith-pairwise-evaluation-01.png)
+![](./img/12-langsmith-pairwise-evaluation-01.png)

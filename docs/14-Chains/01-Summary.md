@@ -216,7 +216,7 @@ prompt.pretty_print()
     - Limit the summary to three sentences.
     
     Text to summarize:
-    [33;1m[1;3m{context}[0m
+    {context}
     
     Summary:
 </pre>
@@ -327,11 +327,11 @@ map_prompt = hub.pull("teddynote/map-prompt")
 map_prompt.pretty_print()
 ```
 
-<pre class="custom">================================[1m System Message [0m================================
+<pre class="custom">================================ System Message ================================
     
     You are a professional main thesis extractor.
     
-    ================================[1m Human Message [0m=================================
+    ================================ Human Message =================================
     
     Your task is to extract main thesis from given documents. Answer should be in same language as given document. 
     
@@ -342,7 +342,7 @@ map_prompt.pretty_print()
     - ...
     
     Here is a given document: 
-    [33;1m[1;3m{doc}[0m
+    {doc}
     
     Write 1~5 sentences.
     #Answer:
@@ -403,16 +403,16 @@ reduce_prompt = hub.pull("teddynote/reduce-prompt")
 reduce_prompt.pretty_print()
 ```
 
-<pre class="custom">================================[1m System Message [0m================================
+<pre class="custom">================================ System Message ================================
     
     You are a professional summarizer. You are given a list of summaries of documents and you are asked to create a single summary of the documents.
     
-    ================================[1m Human Message [0m=================================
+    ================================ Human Message =================================
     
     #Instructions: 
     1. Extract main points from a list of summaries of documents
     2. Make final summaries in bullet points format.
-    3. Answer should be written in [33;1m[1;3m{language}[0m.
+    3. Answer should be written in {language}.
     
     #Format: 
     - summary 1
@@ -421,7 +421,7 @@ reduce_prompt.pretty_print()
     - ...
     
     Here is a list of summaries of documents: 
-    [33;1m[1;3m{doc_summaries}[0m
+    {doc_summaries}
     
     #SUMMARY:
 </pre>
@@ -592,11 +592,11 @@ map_summary = hub.pull("teddynote/map-summary-prompt")
 map_summary.pretty_print()
 ```
 
-<pre class="custom">================================[1m System Message [0m================================
+<pre class="custom">================================ System Message ================================
     
-    You are an expert summarizer. Your task is to summarize the following document in [33;1m[1;3m{language}[0m.
+    You are an expert summarizer. Your task is to summarize the following document in {language}.
     
-    ================================[1m Human Message [0m=================================
+    ================================ Human Message =================================
     
     Extract most important main thesis from the documents, then summarize in bullet points.
     
@@ -607,7 +607,7 @@ map_summary.pretty_print()
     -...
     
     Here is a given document: 
-    [33;1m[1;3m{documents}[0m
+    {documents}
     
     Write 1~5 sentences. Think step by step.
     #Summary:
@@ -688,22 +688,22 @@ refine_prompt = hub.pull("teddynote/refine-prompt")
 refine_prompt.pretty_print()
 ```
 
-<pre class="custom">================================[1m System Message [0m================================
+<pre class="custom">================================ System Message ================================
     
     You are an expert summarizer.
     
-    ================================[1m Human Message [0m=================================
+    ================================ Human Message =================================
     
     Your job is to produce a final summary
     
     We have provided an existing summary up to a certain point:
-    [33;1m[1;3m{previous_summary}[0m
+    {previous_summary}
     
     We have the opportunity to refine the existing summary(only if needed) with some more context below.
     ------------
-    [33;1m[1;3m{current_summary}[0m
+    {current_summary}
     ------------
-    Given the new context, refine the original summary in [33;1m[1;3m{language}[0m.
+    Given the new context, refine the original summary in {language}.
     If the context isn't useful, return the original summary.
 </pre>
 
@@ -879,55 +879,55 @@ cod_prompt = hub.pull("teddynote/chain-of-density-prompt")
 cod_prompt.pretty_print()
 ```
 
-<pre class="custom">================================[1m System Message [0m================================
+<pre class="custom">================================ System Message ================================
     
-    As an expert copy-writer, you will write increasingly concise, entity-dense summaries of the user provided [33;1m[1;3m{content_category}[0m. The initial summary should be under [33;1m[1;3m{max_words}[0m words and contain [33;1m[1;3m{entity_range}[0m informative Descriptive Entities from the [33;1m[1;3m{content_category}[0m.
+    As an expert copy-writer, you will write increasingly concise, entity-dense summaries of the user provided {content_category}. The initial summary should be under {max_words} words and contain {entity_range} informative Descriptive Entities from the {content_category}.
     
     A Descriptive Entity is:
     - Relevant: to the main story.
     - Specific: descriptive yet concise (5 words or fewer).
-    - Faithful: present in the [33;1m[1;3m{content_category}[0m.
-    - Anywhere: located anywhere in the [33;1m[1;3m{content_category}[0m.
+    - Faithful: present in the {content_category}.
+    - Anywhere: located anywhere in the {content_category}.
     
     # Your Summarization Process
-    - Read through the [33;1m[1;3m{content_category}[0m and the all the below sections to get an understanding of the task.
-    - Pick [33;1m[1;3m{entity_range}[0m informative Descriptive Entities from the [33;1m[1;3m{content_category}[0m (";" delimited, do not add spaces).
-    - In your output JSON list of dictionaries, write an initial summary of max [33;1m[1;3m{max_words}[0m words containing the Entities.
+    - Read through the {content_category} and the all the below sections to get an understanding of the task.
+    - Pick {entity_range} informative Descriptive Entities from the {content_category} (";" delimited, do not add spaces).
+    - In your output JSON list of dictionaries, write an initial summary of max {max_words} words containing the Entities.
     - You now have `[{"missing_entities": "...", "denser_summary": "..."}]`
     
-    Then, repeat the below 2 steps [33;1m[1;3m{iterations}[0m times:
+    Then, repeat the below 2 steps {iterations} times:
     
-    - Step 1. In a new dict in the same list, identify [33;1m[1;3m{entity_range}[0m new informative Descriptive Entities from the [33;1m[1;3m{content_category}[0m which are missing from the previously generated summary.
+    - Step 1. In a new dict in the same list, identify {entity_range} new informative Descriptive Entities from the {content_category} which are missing from the previously generated summary.
     - Step 2. Write a new, denser summary of identical length which covers every Entity and detail from the previous summary plus the new Missing Entities.
     
     A Missing Entity is:
-    - An informative Descriptive Entity from the [33;1m[1;3m{content_category}[0m as defined above.
+    - An informative Descriptive Entity from the {content_category} as defined above.
     - Novel: not in the previous summary.
     
     # Guidelines
-    - The first summary should be long (max [33;1m[1;3m{max_words}[0m words) yet highly non-specific, containing little information beyond the Entities marked as missing. Use overly verbose language and fillers (e.g., "this [33;1m[1;3m{content_category}[0m discusses") to reach ~[33;1m[1;3m{max_words}[0m words.
+    - The first summary should be long (max {max_words} words) yet highly non-specific, containing little information beyond the Entities marked as missing. Use overly verbose language and fillers (e.g., "this {content_category} discusses") to reach ~{max_words} words.
     - Make every word count: re-write the previous summary to improve flow and make space for additional entities.
-    - Make space with fusion, compression, and removal of uninformative phrases like "the [33;1m[1;3m{content_category}[0m discusses".
-    - The summaries should become highly dense and concise yet self-contained, e.g., easily understood without the [33;1m[1;3m{content_category}[0m.
+    - Make space with fusion, compression, and removal of uninformative phrases like "the {content_category} discusses".
+    - The summaries should become highly dense and concise yet self-contained, e.g., easily understood without the {content_category}.
     - Missing entities can appear anywhere in the new summary.
     - Never drop entities from the previous summary. If space cannot be made, add fewer new entities.
-    - You're finished when your JSON list has 1+[33;1m[1;3m{iterations}[0m dictionaries of increasing density.
+    - You're finished when your JSON list has 1+{iterations} dictionaries of increasing density.
     
     # IMPORTANT
-    - Remember, to keep each summary to max [33;1m[1;3m{max_words}[0m words.
-    - Never remove Entities or details. Only add more from the [33;1m[1;3m{content_category}[0m.
-    - Do not discuss the [33;1m[1;3m{content_category}[0m itself, focus on the content: informative Descriptive Entities, and details.
-    - Remember, if you're overusing filler phrases in later summaries, or discussing the [33;1m[1;3m{content_category}[0m itself, not its contents, choose more informative Descriptive Entities and include more details from the [33;1m[1;3m{content_category}[0m.
+    - Remember, to keep each summary to max {max_words} words.
+    - Never remove Entities or details. Only add more from the {content_category}.
+    - Do not discuss the {content_category} itself, focus on the content: informative Descriptive Entities, and details.
+    - Remember, if you're overusing filler phrases in later summaries, or discussing the {content_category} itself, not its contents, choose more informative Descriptive Entities and include more details from the {content_category}.
     - Answer with a minified JSON list of dictionaries with keys "missing_entities" and "denser_summary".
     - "denser_summary" should be written in the same language as the "content".
     
     ## Example output
     [{"missing_entities": "ent1;ent2", "denser_summary": "<vague initial summary with entities 'ent1','ent2'>"}, {"missing_entities": "ent3", "denser_summary": "denser summary with 'ent1','ent2','ent3'"}, ...]
     
-    ================================[1m Human Message [0m=================================
+    ================================ Human Message =================================
     
-    [33;1m[1;3m{content_category}[0m:
-    [33;1m[1;3m{content}[0m
+    {content_category}:
+    {content}
 </pre>
 
 The following code demonstrates how to create a Chain of Density (CoD) pipeline that iteratively refines a document summary by progressively adding key entities and improving the summary detail through multiple iterations.

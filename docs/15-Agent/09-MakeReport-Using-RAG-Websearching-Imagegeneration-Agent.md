@@ -651,7 +651,7 @@ for step in result_1:
 </pre>
 
 When you check the contents of the generated report file (`report.md`), it will display as follows.  
-![](./assets/09-makereport-using-rag-websearching-imagegeneration-report-using-rag.png)
+![](./img/09-makereport-using-rag-websearching-imagegeneration-report-using-rag.png)
 
 ### Step 2: Perform Web Search and Append to report.md
 
@@ -814,7 +814,7 @@ for step in result_2:
 </pre>
 
 When you check the contents of the updated report file (`report.md`), it will display as follows.  
-![](./assets/09-makereport-using-rag-websearching-imagegeneration-report-using-websearching.png)
+![](./img/09-makereport-using-rag-websearching-imagegeneration-report-using-websearching.png)
 
 ### Step 3: Create a Professional Report and Save to `report-final.md`
 
@@ -987,7 +987,7 @@ for step in result_3:
 
 When you check the contents of the newly created report file (`report-final.md`), it will display as follows.  
 
-![](./assets/09-makereport-using-rag-websearching-imagegeneration-report-summary.png)
+![](./img/09-makereport-using-rag-websearching-imagegeneration-report-summary.png)
 
 ### Step 4: Generate and Embed an Image into `report-final.md`
 
@@ -1172,6 +1172,6 @@ for step in result_4:
 
 Finally, when you check a portion of the most recently generated report file (`report-final.md`), it will display as follows.  
 
-![](./assets/09-makereport-using-rag-websearching-imagegeneration-report-add-image.png)
+![](./img/09-makereport-using-rag-websearching-imagegeneration-report-add-image.png)
 
 

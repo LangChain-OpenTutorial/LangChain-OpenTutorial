@@ -53,10 +53,6 @@ To learn more about `pd.DataFrame` and its capabilities, visit one of Pandas off
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
 - [Without model use](#without-model-use)
-    - [When input is `pd.DataFrame` or file](#when-input-is-pd.DataFrame-or-file)
-    - [Example of looking up a value for a column](#example-of-looking-up-a-value-for-a-column)
-    - [Example of a row lookup](#example-of-a-row-lookup)
-    - [Further Operations on Column](#further-operations-on-column)
 - [With model](#with-model)
 
 ### References
@@ -75,16 +71,14 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 - `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
 - You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
-## Without model use
-
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
-!pip install pprintpp
-!pip install typing
+%pip install pprintpp
+%pip install typing
 ```
 
 <pre class="custom">Collecting pprintpp
@@ -115,9 +109,9 @@ package.install(
 )
 ```
 
-<pre class="custom">[31mERROR: Could not find a version that satisfies the requirement pprint (from versions: none)[0m[31m
-    [0m[31mERROR: No matching distribution found for pprint[0m[31m
-    [0m</pre>
+<pre class="custom">ERROR: Could not find a version that satisfies the requirement pprint (from versions: none)
+    ERROR: No matching distribution found for pprint
+</pre>
 
 ```python
 # Set environment variables
@@ -180,10 +174,8 @@ model = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
 ```
 
 ## Without model use
-
-### When input is `pd.DataFrame` or file.
-
-The `format_parser_output` function is used to convert parser output to dictionary format and format the output.
+- The `format_parser_output` function is used to convert parser output to dictionary format and format the output.
+- When input is `pd.DataFrame` or file. 
 
 ```python
 # Purpose: Only to print. It is a helper function.
@@ -397,7 +389,7 @@ print(parser.get_format_instructions())
     
 </pre>
 
-### Example of looking up a value for a column.
+- Example of looking up a value for a column.
 
 ```python
 print(df["GEO Region"].head())
@@ -448,7 +440,7 @@ format_parser_output(output)
                     4: 'Europe'}}
 </pre>
 
-### Example of a row lookup.
+- Example of a row lookup.
 
 ```python
 # Example of retrieving first row
@@ -484,7 +476,7 @@ format_parser_output(output)
                              'AM'}}
 </pre>
 
-### Further Operations on Column
+- Further Operations on Column
 
 ```python
 df["Passenger Count"].head(5)

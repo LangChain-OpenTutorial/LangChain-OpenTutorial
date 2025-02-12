@@ -334,21 +334,21 @@ print(result["output"])
 
 <pre class="custom">
     
-    [1m> Entering new AgentExecutor chain...[0m
-    [32;1m[1;3m
+    > Entering new AgentExecutor chain...
+    
     Invoking: `search_news` with `{'query': 'AI Investment'}`
     
     
-    [0m[36;1m[1;3m[{'url': 'https://news.google.com/rss/articles/CBMikgFBVV95cUxOakdlR2ltVnh5WjRsa0UzaUJ1YkVpR1Z0Z0tpVWRKbXJ4RkZpVkdKTHJGcUxMblpsUDA4UVk5engxWktDY2J1UG1YQzVTQm9fcnp1d0hyV083YVZkejZUVXJMem9tZ1ZWUzllNDNpUXBfSElhU01sQm9RUW1jZE9vZGlpZEVDZ1lnU2hnS192V0Y3dw?oc=5', 'content': 'The Best AI Stocks to Invest $500 in This Year - The Motley Fool'}, {'url': 'https://news.google.com/rss/articles/CBMiswFBVV95cUxQTGZVQnZlaFBBUVpCTVVqQzhvM3AyNzR5QXRIbUczM1FZQzMwTmpIZUxIelB2TUlyeGxGTVhmMFJFa3V4MXA0TklYZEpLcXZDVlNoQmI4RWZibkFka0JudTREZ2s2VlduTUp3OExkcjA3Z01tX0hCS0JuQkpoUlp6Nm1IRnByR2FnZEtlcUNDZFdKUWtKZGR5aTZYWEp5SnNEZ19nUi1zN1RhTFdxUFNESk5RMA?oc=5', 'content': 'Health AI investments are off to a roaring start in 2025 - STAT'}, {'url': 'https://news.google.com/rss/articles/CBMijAFBVV95cUxQZ0FnbS1MOWJYeFhtWE1FSGNrQjgwZ3hqbnpLNXpnOEpaR192LW5FV1NVOTBQUUlNVEhTRHlfd3VoRnJFRkl6M0pndWJwemlMUFdPa25PRWt6LWh1Uk4ta2RVQV9lb0Vjb2ZGVlNJWXQxVlNtWF9uTEFmZnFlemxfT2Z3bEYzcnJkRl9CNQ?oc=5', 'content': 'Microsoft’s Stock Revival Hinges on Showing Growth From AI Binge - Yahoo Finance'}, {'url': 'https://news.google.com/rss/articles/CBMiqwFBVV95cUxNWE0wMHdXSDN3aTlMal9aTGpkaUdkOEVmRHhxajFWRXJiOVNweXV0M2RHSWFyWDdwSWYwSmp5UVlva1hFTFRyOXRZY050X25JbWlDcDgtTHlya1Zha2EtMGlvVFEwcmEzblUtLUZhby1uMks1eDlCdGY4ZkV0dm5ES1BYTlM3cXhYeG8wTDd6NlZNWDFrNm9fNkp0bHJkRm1IRXRzbXNwRW5CZTg?oc=5', 'content': 'Palantir in Talks to Invest in Drone Startup at $5 Billion Valuation - The Information'}, {'url': 'https://news.google.com/rss/articles/CBMiiAFBVV95cUxNWjFlOHRHa3N3TVpadWlSTjlKeFNaX3g3MVhyMzlHNzNMbXEzb2tlNV9fRXUwUTFVWWxYZm9NVFhoMlFYdkExS1FEVEVXdWdlNHR5NFJTMkFNcVR2TkxBTjR2UzBTeG9XUGhLd2RFa1VPMUNsOHBiWWtQWWsxRkVKNmd3cXd3MDBs?oc=5', 'content': 'Best AI Stocks to Invest in Now - Morningstar'}][0m[32;1m[1;3mHere are some of the latest news about AI investment:
+    [{'url': 'https://news.google.com/rss/articles/CBMikgFBVV95cUxOakdlR2ltVnh5WjRsa0UzaUJ1YkVpR1Z0Z0tpVWRKbXJ4RkZpVkdKTHJGcUxMblpsUDA4UVk5engxWktDY2J1UG1YQzVTQm9fcnp1d0hyV083YVZkejZUVXJMem9tZ1ZWUzllNDNpUXBfSElhU01sQm9RUW1jZE9vZGlpZEVDZ1lnU2hnS192V0Y3dw?oc=5', 'content': 'The Best AI Stocks to Invest $500 in This Year - The Motley Fool'}, {'url': 'https://news.google.com/rss/articles/CBMiswFBVV95cUxQTGZVQnZlaFBBUVpCTVVqQzhvM3AyNzR5QXRIbUczM1FZQzMwTmpIZUxIelB2TUlyeGxGTVhmMFJFa3V4MXA0TklYZEpLcXZDVlNoQmI4RWZibkFka0JudTREZ2s2VlduTUp3OExkcjA3Z01tX0hCS0JuQkpoUlp6Nm1IRnByR2FnZEtlcUNDZFdKUWtKZGR5aTZYWEp5SnNEZ19nUi1zN1RhTFdxUFNESk5RMA?oc=5', 'content': 'Health AI investments are off to a roaring start in 2025 - STAT'}, {'url': 'https://news.google.com/rss/articles/CBMijAFBVV95cUxQZ0FnbS1MOWJYeFhtWE1FSGNrQjgwZ3hqbnpLNXpnOEpaR192LW5FV1NVOTBQUUlNVEhTRHlfd3VoRnJFRkl6M0pndWJwemlMUFdPa25PRWt6LWh1Uk4ta2RVQV9lb0Vjb2ZGVlNJWXQxVlNtWF9uTEFmZnFlemxfT2Z3bEYzcnJkRl9CNQ?oc=5', 'content': 'Microsoft’s Stock Revival Hinges on Showing Growth From AI Binge - Yahoo Finance'}, {'url': 'https://news.google.com/rss/articles/CBMiqwFBVV95cUxNWE0wMHdXSDN3aTlMal9aTGpkaUdkOEVmRHhxajFWRXJiOVNweXV0M2RHSWFyWDdwSWYwSmp5UVlva1hFTFRyOXRZY050X25JbWlDcDgtTHlya1Zha2EtMGlvVFEwcmEzblUtLUZhby1uMks1eDlCdGY4ZkV0dm5ES1BYTlM3cXhYeG8wTDd6NlZNWDFrNm9fNkp0bHJkRm1IRXRzbXNwRW5CZTg?oc=5', 'content': 'Palantir in Talks to Invest in Drone Startup at $5 Billion Valuation - The Information'}, {'url': 'https://news.google.com/rss/articles/CBMiiAFBVV95cUxNWjFlOHRHa3N3TVpadWlSTjlKeFNaX3g3MVhyMzlHNzNMbXEzb2tlNV9fRXUwUTFVWWxYZm9NVFhoMlFYdkExS1FEVEVXdWdlNHR5NFJTMkFNcVR2TkxBTjR2UzBTeG9XUGhLd2RFa1VPMUNsOHBiWWtQWWsxRkVKNmd3cXd3MDBs?oc=5', 'content': 'Best AI Stocks to Invest in Now - Morningstar'}]Here are some of the latest news about AI investment:
     
     * The Best AI Stocks to Invest $500 in This Year - The Motley Fool
     * Health AI investments are off to a roaring start in 2025 - STAT
     * Microsoft’s Stock Revival Hinges on Showing Growth From AI Binge - Yahoo Finance
     * Palantir in Talks to Invest in Drone Startup at $5 Billion Valuation - The Information
     * Best AI Stocks to Invest in Now - Morningstar
-    [0m
     
-    [1m> Finished chain.[0m
+    
+    > Finished chain.
     Results of Agent Execution:
     Here are some of the latest news about AI investment:
     
