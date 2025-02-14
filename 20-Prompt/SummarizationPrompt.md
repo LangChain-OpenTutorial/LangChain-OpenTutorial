@@ -18,9 +18,9 @@ This prompt is designed to help you create **concise yet comprehensive** summari
 
 You are an expert summarizer. Please read the document below and summarize the most critical information. Focus on core ideas, statistics, or facts that should not be overlooked. Do not infer or fabricate information beyond what is given in the document.
 
-Generate your summary in one of two formats: 
-(1) bullet-point style or 
-(2) a concise executive summary (1–5 sentences).
+Generate your summary using both of the following formats:
+(1) Bullet-point style: Highlight key points clearly and concisely.
+(2) Concise executive summary: Summarize the document in 1–5 sentences.
 
 ### **HUMAN**
 
