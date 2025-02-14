@@ -18,23 +18,33 @@ from bson import encode
 from bson.raw_bson import RawBSONDocument
 from langchain_mongodb import MongoDBAtlasVectorSearch
 from langchain_core.documents import Document
+from langchain_core.embeddings import Embeddings
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters.base import TextSplitter
 from utils.vectordbinterface import DocumentManager
 
 
 class MongoDBAtlas:
+    """Manages MongoDB collections and vector store.
+    Provides methods to add, update, delete indexes and manage documents in the vector store.
+    """
 
-    def __init__(self, db_name: str, collection_name: str, embedding=None):
+    def __init__(self, db_name: str, collection_name: str):
+        """Initialize a MongoDB client and configures the database.
+
+        Args:
+            db_name (str): The name of the database to connect to.
+            collection_name (str): The name of the collection to use.
+        """
         MONGODB_ATLAS_CLUSTER_URI = os.getenv("MONGODB_ATLAS_CLUSTER_URI")
         client = MongoClient(MONGODB_ATLAS_CLUSTER_URI, tlsCAFile=certifi.where())
         self.database = client[db_name]
         self.collection_name = collection_name
-        self.embedding = embedding
         self.collection = None
         self.vector_store = None
 
     def connect(self) -> Collection[_DocumentType]:
+        """Create a collection."""
         collection_names = self.database.list_collection_names()
         if self.collection_name not in collection_names:
             self.collection = self.database.create_collection(self.collection_name)
@@ -42,10 +52,15 @@ class MongoDBAtlas:
             self.collection = self.database[self.collection_name]
         return self.collection
 
-    # ==========================================
-    # TODO: Index
-    # ==========================================
-    def _is_index_exists(self, index_name: str):
+    def _is_index_exists(self, index_name: str) -> bool:
+        """Check whether the specified search index exists in the collection.
+
+        Args:
+            index_name (str): The name of the search index to check.
+
+        Returns:
+            bool: True if the index exists, False otherwise.
+        """
         search_indexes = self.collection.list_search_indexes()
         index_names = [search_index["name"] for search_index in search_indexes]
         return index_name in index_names
@@ -53,37 +68,65 @@ class MongoDBAtlas:
     def create_index(
         self, index_name: str, model: Union[Mapping[str, Any], SearchIndexModel]
     ):
+        """Create a search index if it does not already exist.
+
+        Args:
+            index_name (str): The name of the search index to create.
+            model (Union[Mapping[str, Any], SearchIndexModel]): The model for the new search index.
+        """
         if not self._is_index_exists(index_name):
             self.collection.create_search_index(model)
 
     def update_index(self, index_name: str, definition: Mapping[str, Any]):
+        """Update a search index by replacing the existing index definition.
+
+        Args:
+            index_name (str): The name of the search index to update.
+            definition ([Mapping[str, Any]): The new search index definition.
+        """
         if self._is_index_exists(index_name):
             self.collection.update_search_index(name=index_name, definition=definition)
 
     def delete_index(self, index_name: str):
+        """Delete a search index.
+
+        Args:
+            index_name (str): The name of the search index to delete.
+        """
         if self._is_index_exists(index_name):
             self.collection.drop_search_index(index_name)
 
-    # ==========================================
-    # TODO: langchain_mongodb
-    # ==========================================
+    def create_vector_store(
+        self, embedding: Embeddings, index_name: str, relevance_score_fn: str
+    ):
+        """Create a vector store.
+        `MongoDBAtlasVectorSearch` is a vector store that integrates Atlas Vector Search and Langchain.
 
-    def create_vector_store(self, index_name: str, relevance_score_fn: str):
+        Args:
+            embedding (Embeddings): Text embedding model to use.
+            index_name (str): The name of the search index to create.
+            relevance_score_fn (str): The similarity score used for the index
+                Currently supported: 'euclidean', 'cosine', and 'dotProduct'
+        """
+        self.vector_index_name = index_name
+        self.embedding = embedding
         self.vector_store = MongoDBAtlasVectorSearch(
             collection=self.collection,
-            embedding=self.embedding,
+            embedding=embedding,
             index_name=index_name,
             relevance_score_fn=relevance_score_fn,
         )
 
+    def get_embedding(self, text: str) -> List[float]:
+        return self.embedding.embed_query(text)
+
     def create_vector_search_index(
         self,
-        index_name: str,
         dimensions: int,
         filters: Optional[List[str]] = None,
         update: bool = False,
     ) -> None:
-        if not self._is_index_exists(index_name):
+        if not self._is_index_exists(self.vector_index_name):
             self.vector_store.create_vector_search_index(
                 dimensions=dimensions, filters=filters, update=update
             )
@@ -128,11 +171,9 @@ class MongoDBAtlas:
 
 class MongoDBAtlasDocumentManager(DocumentManager):
 
-    def __init__(
-        self, atlas: MongoDBAtlas, embedding_function: Callable[[str], List[float]]
-    ) -> None:
+    def __init__(self, atlas: MongoDBAtlas) -> None:
         self.collection = atlas.connect()
-        self.embedding_function = embedding_function
+        self.embedding_function = atlas.get_embedding
 
     def get_documents(
         self,
