@@ -28,7 +28,8 @@ pre {
 
 ## Overview
 
-This tutorial focuses on implementing and comparing different ensemble retrieval methods in LangChain. While LangChain's built-in EnsembleRetriever uses the Reciprocal Rank Fusion (RRF) method, we'll explore an additional approach by implementing the **Convex Combination (CC)** method. The tutorial guides you through creating custom implementations of both RRF and CC methods, allowing for a direct performance comparison between these ensemble techniques.
+This tutorial focuses on implementing and comparing different ensemble retrieval methods in LangChain. While LangChain's built-in `EnsembleRetriever` uses the **Reciprocal Rank Fusion (`RRF`)** method, we'll explore an additional approach by implementing the **Convex Combination (`CC`)** method.<br>
+The tutorial guides you through creating custom implementations of both **`RRF` and `CC` methods** , allowing for a direct performance comparison between these ensemble techniques.
 
 ### Table of Contents
 
@@ -41,7 +42,7 @@ This tutorial focuses on implementing and comparing different ensemble retrieval
 
 ### References
 
-- [LangChain Python API Reference > langchain: 0.3.14 > retrievers > EnsembleRetriever](https://python.langchain.com/api_reference/langchain/retrievers/langchain.retrievers.ensemble.EnsembleRetriever.html)
+- [EnsembleRetriever](https://python.langchain.com/api_reference/langchain/retrievers/langchain.retrievers.ensemble.EnsembleRetriever.html)
 ----
 
 ## Environment Setup
@@ -93,7 +94,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
+You can alternatively set `OPENAI_API_KEY` in **.env** file and load it.
 
 [Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
 
@@ -132,7 +133,7 @@ split_documents = loader.load_and_split(text_splitter)
 
 ## Initialize Retrievers
 
-This section initializes retrievers to implement two different search approaches. We create embeddings using OpenAI's text-embedding-3-small model and set up `FAISS` vector search based on these embeddings. 
+This section initializes retrievers to implement two different search approaches. We create embeddings using OpenAI's `text-embedding-3-small` model and set up `FAISS` vector search based on these embeddings. 
 
 Additionally, we configure a `BM25` retriever for keyword-based search, with both retrievers set to return the top 5 most relevant results.
 
@@ -156,9 +157,9 @@ bm25.k = 5
 
 ## Implement Ensemble Retrievers
 
-This section introduces a custom retriever implementing two ensemble search methods, designed to compare performance against LangChain's built-in `EnsembleRetriever`. 
+This section introduces a custom retriever implementing two ensemble search methods, designed to compare performance against LangChain's built-in `EnsembleRetriever` . 
 
-We implement both Reciprocal Rank Fusion (RRF), which combines results based on document rankings, and **Convex Combination (CC)**, which utilizes normalized scores. 
+We implement both **Reciprocal Rank Fusion (`RRF`)** , which combines results based on document rankings, and **Convex Combination (`CC`)** , which utilizes normalized scores. 
 
 Both methods integrate results from `FAISS` and `BM25` retrievers to provide more accurate and diverse search results, allowing users to select the most suitable ensemble approach for their needs.
 
@@ -283,7 +284,7 @@ cc_ensemble_retriever = EnsembleRetriever(
 
 This section presents a test function for comparing ensemble retrieval results. 
 
-While the 'RRF' method, which follows LangChain's default implementation, produces identical results to 'Original', the 'CC' method utilizing normalized scores and weights offers different search patterns. 
+While the **`RRF` method** , which follows LangChain's default implementation, produces identical results to **Original** , the **`CC` method** utilizing normalized scores and weights offers different search patterns. 
 
 By testing with real queries and comparing these approaches, we can identify which ensemble method better suits our project requirements.
 
