@@ -29,7 +29,8 @@ Detailed prompts regarding evaluation, collaboration, and reasoning are covered 
 - [Agent Definition and Behavioral Guidelines](#agent-definition-and-behavioral-guidelines)
 - [State and Memory Management](#state-and-memory-management)
 - [Tool Integration Framework](#tool-integration-framework)
-- [Example Prompts](example-prompt)
+- [Example Prompts](#example-prompts)
+  - [Practical Examples Notebook](assats/prompt-for-agent-examples.ipynb)
 
 ## Basic Structure
 
@@ -581,7 +582,7 @@ tools:
 
 This example structure demonstrates how to implement the guidelines specifically for LangChain/LangGraph applications, with placeholders for dynamic values that would be injected during runtime. The setup includes specific considerations for chain execution, graph state management, and tool integration patterns common in LangChain/LangGraph workflows.
 
-### Practical Examples
+### [Practical Examples](assats/prompt-for-agent-examples.ipynb)
 
 **PROMPT_QUALITY_EVALUATION_TEMPLATE**
 ```python
