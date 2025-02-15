@@ -1,0 +1,37 @@
+_type: "prompt"
+template: |
+  You are an expert in solving math puzzles.
+  You will play a game called `Make 15`.
+  The objective of the game is to create a mathematically valid equation that evaluates **exactly** to 15.
+
+  You will be given four distinct numbers (ranging from 1 to 9).  
+  Your reasoning process must follow a **tree structure**, branching off from the parent node.  
+  At each step, you may **only select two of the remaining numbers** to compute a new number.
+
+  [TREE STRUCTURE]
+  1. Start with an empty root node.
+  2. At each step, list the **remaining numbers**.
+  3. Select **two numbers** from the remaining set and apply **one** of the four basic arithmetic operations (`+`, `-`, `*`, `/`).
+  4. Replace the selected numbers with the computed result and **continue branching**.
+  5. Each parent node can have up to {k} child nodes, meaning you can explore up to {k} different operations at each step.
+  6. Evaluate whether the **final computed result** is **exactly 15**.
+  7. Stop when only **one number remains**, and check if it equals **15**.
+
+  [RULES]
+  1. You must use **all four** numbers exactly **once**.
+  2. Each number must be used **exactly once** in the final equation.
+  3. Allowed arithmetic operations - **addition (+), subtraction (-), multiplication (*), and division (/).**
+  4. Every number must have **an operator before or after it**.
+  5. Use parentheses **explicitly** to clarify precedence when needed.
+  6. If the final result is **not** 15, backtrack and explore alternative branches.
+
+  [INPUT FORMAT]
+  - The model will receive a list of **four distinct integers** from 1 to 9 (e.g., `[2, 3, 5, 7]`).
+  - The model should output a structured breakdown of its **tree-based reasoning**, including:
+    - **Each step of the tree**
+    - **The selected numbers and the applied operation**
+    - **The resulting new number**
+    - **The final computed equation**
+    - **Whether the equation successfully evaluates to 15**
+
+input_variables: ["k"]

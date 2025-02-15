@@ -18,7 +18,6 @@ pre {
 </style>
 
 # Kiwi BM25 Retriever
-
 - Author: [JeongGi Park](https://github.com/jeongkpa)
 - Design: []()
 - Peer Review: 
@@ -27,27 +26,24 @@ pre {
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/07-LCEL-Interface.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/07-LCEL-Interface.ipynb)
 
 ## Overview
-This document explores the use of `kiwipiepy` for Korean morphological analysis and demonstrates its integration within the `LangChain` framework. 
-It highlights methods to tokenize text, compare retrieval models like `BM25` and `FAISS`, and analyze relationships between queries and documents using metrics such as cosine similarity. 
-Additionally, it emphasizes the role of these techniques in enhancing workflows like text analysis and information retrieval.
+This tutorial explores the use of `kiwipiepy` for Korean morphological analysis and demonstrates its integration within the `LangChain` framework. 
+It highlights Korean text tokenization, and the comparison of different retrievers with various setups.
 
-Since this tutorial covers Korean morphological analysis, the output primarily contains Korean text, reflecting the language structure being analyzed
-For international users, we provide English translations alongside Korean examples in this tutorial.
-
+Since this tutorial covers Korean morphological analysis, the output primarily contains Korean text, reflecting the language structure being analyzed.
+For international users, we provide English translations alongside Korean examples.
 
 ### Table of Contents
-
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Korean Word Retriever Tuning](#Korean-Word-Retriever-Tuning)
-- [Testing with Various Sentences](#Testing-with-Various-Sentences)
-- [Experiment: Compare Search Results Using Different Retrievers](#Experiment-Compare-Search-Results-Using-Different-Retrievers)
+- [Korean Tokenization](#korean-tokenization)
+- [Testing with Various Sentences](#testing-with-various-sentences)
+- [Comparing Search Results Using Different Retrievers](#comparing-search-results-using-different-retrievers)
 - [Conclusion](#conclusion)
 
 ### References
 - [kiwipiepy](https://github.com/bab2min/kiwipiepy)
-- [fiass](https://python.langchain.com/docs/integrations/vectorstores/faiss/)
-- [openai-embeddings](https://python.langchain.com/docs/integrations/text_embedding/openai/)
+- [FAISS](https://python.langchain.com/docs/integrations/vectorstores/faiss/)
+- [OpenAIEmbeddings](https://python.langchain.com/docs/integrations/text_embedding/openai/)
 
 ---
 
@@ -119,22 +115,16 @@ load_dotenv(override=True)
 
 
 
-### Why Korean Tokenization?
+## Korean Tokenization
 
-- In Korean, words are morphologically rich. For instance, “안녕하세요” is tokenized into:
+Korean words are morphologically rich. A single word is often split into multiple morphemes (root, affix, suffix, etc.).
+
+For instance, “안녕하세요” is tokenized into:
   - Token(form='안녕', tag='NNG')
   - Token(form='하', tag='XSA')
   - Token(form='세요', tag='EF')
 
-- Compared to English tokenization at the word level (e.g., “Hello” remains one word), Korean often splits into multiple morphemes (어근, 접사, 어미 등).
-- Kiwi provides detailed POS tagging such as NNG(일반 명사), XSA(형용사 파생 접사), EF(종결 어미) to reflect these language-specific nuances.
-
-
-## Korean Word Retriever Tuning
-
-Install the Korean morphological analyzer library, `kiwipiepy`.
-
-[Project Link for kiwipiepy](https://github.com/bab2min/kiwipiepy)
+We utilize `kiwipiepy`, which is a Python module for **Kiwi**, an open-source Korean morphological analyzer, to tokenize Korean text.
 
 ```python
 from kiwipiepy import Kiwi
@@ -142,11 +132,11 @@ from kiwipiepy import Kiwi
 kiwi = Kiwi()
 ```
 
-Perform Tokenization
+With this, we can easily perform tokenization.
 
 ```python
 kiwi.tokenize("안녕하세요? 형태소 분석기 키위입니다")
-# "안녕하세요? 형태소 분석기 키위입니다." it means "Hi, this is Kiwi, the morphological analyser."
+# Translation: Hi, this is Kiwi, a morphological analyzer.
 ```
 
 
@@ -166,10 +156,7 @@ kiwi.tokenize("안녕하세요? 형태소 분석기 키위입니다")
 
 ## Testing with Various Sentences
 
-BM25 is a traditional ranking function based on term frequency and inverse document frequency. It works well when exact keyword matches are important.
-
-
-FAISS uses vector embeddings to capture semantic similarity. By combining BM25 with FAISS in an ensemble, we can leverage the lexical match benefits from BM25 and the semantic understanding from FAISS.
+To test different retrieval methods, we define a list of documents composed of similar yet distinguishable contents.
 
 ```python
 from langchain.retrievers import EnsembleRetriever
@@ -182,48 +169,33 @@ from langchain_openai import OpenAIEmbeddings
 docs = [
     Document(
         page_content="금융보험은 장기적인 자산 관리와 위험 대비를 목적으로 고안된 금융 상품입니다."
+        # Translation: Financial insurance is a financial product designed for long term asset management and risk coverage.
     ),
     Document(
         page_content="금융저축보험은 규칙적인 저축을 통해 목돈을 마련할 수 있으며, 생명보험 기능도 겸비하고 있습니다."
+        # Translation: Financial savings insurance allows individuals to accumulate a lump sum through regular savings, and also offers life insurance benefits.
     ),
     Document(
         page_content="저축금융보험은 저축과 금융을 통해 목돈 마련에 도움을 주는 보험입니다. 또한, 사망 보장 기능도 제공합니다."
+        # Translation: Savings financial insurance helps individuals gather a lump sum through savings and finance, and also provides death benefit coverage.
     ),
     Document(
         page_content="금융저축산물보험은 장기적인 저축 목적과 더불어, 축산물 제공 기능을 갖추고 있는 특별 금융 상품입니다."
+        # Translation: Financial savings livestock insurance is a special financial product designed for long term savings, which also includes provisions for livestock products.
     ),
     Document(
         page_content="금융단폭격보험은 저축은 커녕 위험 대비에 초점을 맞춘 상품입니다. 높은 위험을 감수하고자 하는 고객에게 적합합니다."
+        # Translation: Financial 'carpet bombing' insurance focuses on risk coverage rather than savings. It is suitable for customers willing to take on high risk.
     ),
     Document(
         page_content="금보험은 저축성과를 극대화합니다. 특히 노후 대비 저축에 유리하게 구성되어 있습니다."
+        # Translation: Gold insurance maximizes returns on savings. It is especially advantageous for retirement savings.
     ),
     Document(
         page_content="금융보씨 험한말 좀 하지마시고, 저축이나 좀 하시던가요. 뭐가 그리 급하신지 모르겠네요."
+        # Translation: Hey, Mr. 'Financial Bo,' please refrain from harsh words and consider saving money. I'm not sure why you're in such a hurry.
     ),
 ]
-
-# 금융보험은 장기적인 자산 관리와 위험 대비를 목적으로 고안된 금융 상품입니다.
-# Financial insurance is a financial product designed for long term asset management and risk coverage.
-
-# 금융저축보험은 규칙적인 저축을 통해 목돈을 마련할 수 있으며, 생명보험 기능도 겸비하고 있습니다.
-# Financial savings insurance allows individuals to accumulate a lump sum through regular savings, and also offers life insurance benefits.
-
-# 저축금융보험은 저축과 금융을 통해 목돈 마련에 도움을 주는 보험입니다. 또한, 사망 보장 기능도 제공합니다.
-# Savings financial insurance helps individuals gather a lump sum through savings and finance, and also provides death benefit coverage.
-
-# 금융저축산물보험은 장기적인 저축 목적과 더불어, 축산물 제공 기능을 갖추고 있는 특별 금융 상품입니다.
-# Financial savings livestock insurance is a special financial product designed for long term savings, which also includes provisions for livestock products.
-
-# 금융단폭격보험은 저축은 커녕 위험 대비에 초점을 맞춘 상품입니다. 높은 위험을 감수하고자 하는 고객에게 적합합니다.
-# Financial 'carpet bombing' insurance focuses on risk coverage rather than savings. It is suitable for customers willing to take on high risk.
-
-# 금보험은 저축성과를 극대화합니다. 특히 노후 대비 저축에 유리하게 구성되어 있습니다.
-# Gold insurance maximizes returns on savings. It is especially advantageous for retirement savings.
-
-# 금융보씨 험한말 좀 하지마시고, 저축이나 좀 하시던가요. 뭐가 그리 급하신지 모르겠네요.
-# Hey, Mr. 'Financial Bo,' please refrain from harsh words and consider saving money. I'm not sure why you're in such a hurry.
-
 ```
 
 ```python
@@ -243,39 +215,38 @@ for doc in docs:
 </pre>
 
 ```python
-# Create a tokenization function
-
+# Define a tokenization function
 def kiwi_tokenize(text):
     return [token.form for token in kiwi.tokenize(text)]
-
 ```
 
-## Experiment: Compare Search Results Using Different Retrievers
+## Comparing Search Results Using Different Retrievers
+
 
 In this section, we compare how different retrieval methods rank documents when given the same query. We are using:
 
-* `BM25`: A traditional ranking function based on term frequency (TF) and inverse document frequency (IDF).
-* `Kiwi BM25`: `BM25` with an added benefit of kiwipiepy tokenization, enabling more accurate splitting of Korean words into morphemes (especially important for Korean queries).
-* `FAISS`: A vector-based retriever using embeddings (in this case, `OpenAIEmbeddings`). It captures semantic similarity, so it’s less reliant on exact keyword matches and more on meaning.
-* `Ensemble`: A combination of BM25 (or `Kiwi BM25`) and `FAISS`, weighted to leverage both the lexical matching strengths of `BM25` and the semantic understanding of FAISS.
+- **BM25**: A traditional ranking function based on term frequency (TF) and inverse document frequency (IDF).
+- **Kiwi BM25**: BM25 with an added benefit of kiwipiepy tokenization, enabling more accurate splitting of Korean words into morphemes (especially important for Korean queries).
+- **FAISS**: A vector-based retriever using embeddings (in this case, `OpenAIEmbeddings`). It captures semantic similarity, so it’s less reliant on exact keyword matches and more on meaning.
+- **Ensemble**: A combination of BM25 (or Kiwi BM25) and FAISS, weighted to leverage both the lexical matching strengths of BM25 and the semantic understanding of FAISS.
 
 ### Key points of Comparison
 
 **Exact Keyword Matching vs. Semantic Matching**
 
-* `BM25` (and `Kiwi BM25`) excel in finding documents that share exact terms or closely related morphological variants.
-* `FAISS` retrieves documents that may not have exact lexical overlap but are semantically similar (e.g., synonyms or paraphrases).
+- **BM25** (and **Kiwi BM25**) excel in finding documents that share exact terms or closely related morphological variants.
+- **FAISS** retrieves documents that may not have exact lexical overlap but are semantically similar (e.g., synonyms or paraphrases).
 
-**Impact of Korean Morphological Analysis**
+**Impact of Korean morphological analysis**
 
-* Korean often merges stems and endings into single words (“안녕하세요” → “안녕 + 하 + 세요”). `Kiwi BM25` handles this by splitting the query and documents more precisely.
-* This can yield more relevant results when dealing with conjugated verbs, particles, or compound nouns.
+- Korean often merges stems and endings into single words (“안녕하세요” → “안녕 + 하 + 세요”). **Kiwi BM25** handles this by splitting the query and documents more precisely.
+- This can yield more relevant results when dealing with conjugated verbs, particles, or compound nouns.
 
 **Ensemble Approaches**
 
-* By combining lexical (`BM25`) and semantic (`FAISS`) retrievers, we can produce a more balanced set of results.
-* The weighting (e.g., 70:30 or 30:70) can be tuned to emphasize one aspect over the other.
-* Using MMR (Maximal Marginal Relevance) ensures diversity in the retrieved results, reducing redundancy.
+- By combining lexical (BM25) and semantic (FAISS) retrievers, we can produce a more balanced set of results.
+- The weighting (e.g., 70:30 or 30:70) can be tuned to emphasize one aspect over the other.
+- Using MMR (Maximal Marginal Relevance) ensures diversity in the retrieved results, reducing redundancy.
 
 ```python
 from langchain.retrievers import BM25Retriever, EnsembleRetriever
@@ -333,7 +304,7 @@ retrievers = {
 ```
 
 ```python
-# Function to print search results from multiple retrievers
+# Define a function to print search results from multiple retrievers
 def print_search_results(retrievers, query):
     """
     Prints the top search result from each retriever for a given query.
@@ -350,42 +321,8 @@ def print_search_results(retrievers, query):
 
 ```
 
-### Display Search Results
-
-금융보험은 장기적인 자산 관리와 위험 대비를 목적으로 고안된 금융 상품입니다.
-
--> Financial insurance is a financial product designed for long term asset management and risk coverage
-
-
-금융저축보험은 규칙적인 저축을 통해 목돈을 마련할 수 있으며, 생명보험 기능도 겸비하고 있습니다.
-
--> Financial savings insurance allows individuals to accumulate a lump sum through regular savings, and also offers life insurance benefits
-
-
-저축금융보험은 저축과 금융을 통해 목돈 마련에 도움을 주는 보험입니다. 또한, 사망 보장 기능도 제공합니다.
-
--> Savings financial insurance helps individuals gather a lump sum through savings and finance, and also provides death benefit coverage
-
-
-금융저축산물보험은 장기적인 저축 목적과 더불어, 축산물 제공 기능을 갖추고 있는 특별 금융 상품입니다.
-
--> Financial savings livestock insurance is a special financial product designed for long term savings, which also includes provisions for livestock products
-
-
-금융단폭격보험은 저축은 커녕 위험 대비에 초점을 맞춘 상품입니다. 높은 위험을 감수하고자 하는 고객에게 적합합니다.
-
--> Financial 'carpet bombing' insurance focuses on risk coverage rather than savings. It is suitable for customers willing to take on high risk
-
-
-금보험은 저축성과를 극대화합니다. 특히 노후 대비 저축에 유리하게 구성되어 있습니다.
-
--> Gold insurance maximizes returns on savings. It is especially advantageous for retirement savings
-
-
-금융보씨 험한말 좀 하지마시고, 저축이나 좀 하시던가요. 뭐가 그리 급하신지 모르겠네요.
-
--> Hey, Mr. 'Financial Bo,' please refrain from harsh words and consider saving money. I'm not sure why you're in such a hurry.
-
+### Displaying Search Results
+Let's display the search results for a variety of queries, and see how different retrievers perform.
 
 ```python
 print_search_results(retrievers, "금융보험")
@@ -479,11 +416,9 @@ print_search_results(retrievers, "금융보씨 개인정보 조회")
 
 ## Conclusion
 
-By running the code and observing the top documents returned for each query, you’ll see how each retriever type has its strengths:
+By running the code and observing the top documents returned for each query, you can see how each retriever type has its strengths:
 
-`BM25` / `Kiwi BM25`: Great for precise keyword matching, beneficial for Korean morphological nuances.
-
-`FAISS`: Finds semantically related documents even if the wording differs.
-
-`Ensemble`: Balances both worlds, often achieving better overall coverage for a wide range of queries.
+- `BM25` / `Kiwi BM25`: Great for precise keyword matching, beneficial for Korean morphological nuances.
+- `FAISS`: Finds semantically related documents even if the wording differs.
+- `Ensemble`: Balances both worlds, often achieving better overall coverage for a wide range of queries.
 
