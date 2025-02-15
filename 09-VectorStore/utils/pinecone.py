@@ -35,7 +35,7 @@ from langchain_core.documents import Document
 
 
 ########################################################################
-# PineconeDB class (Based on the DocumentManager interface)
+# PineconeDocumentManager class (Based on the DocumentManager interface)
 ########################################################################
 class PineconeDocumentManager(DocumentManager):
     def __init__(
@@ -153,7 +153,7 @@ class PineconeDocumentManager(DocumentManager):
         """
         Converts documents to vectors and upserts them into Pinecone.
         :param index: Pinecone Index object.
-        :param contents: List of documents.
+        :param contenxs: List of documents.
         :param metadatas: Dictionary of metadata.
         :param embedder: Dense vector embedding object.
         :param sparse_encoder: Sparse vector embedding object.
@@ -170,16 +170,16 @@ class PineconeDocumentManager(DocumentManager):
             batch_end = min(batch_start + batch_size, len(contents))
 
             # Extract current batch data
-            context_batch = contents[batch_start:batch_end]
+            content_batch = contents[batch_start:batch_end]
             metadata_batch = {
                 key: metadatas[key][batch_start:batch_end] for key in metadatas
             }
 
             # Dense vector creation (batch)
-            dense_vectors = embedder.embed_documents(context_batch)
+            dense_vectors = embedder.embed_documents(content_batch)
 
             # Sparse vector creation (batch)
-            sparse_vectors = sparse_encoder.encode_documents(context_batch)
+            sparse_vectors = sparse_encoder.encode_documents(content_batch)
 
             # Configuring data to upsert into Pinecone
             vectors = [
@@ -192,10 +192,10 @@ class PineconeDocumentManager(DocumentManager):
                     },
                     "metadata": {
                         **{key: metadata_batch[key][i] for key in metadata_batch},
-                        "context": content,  # Add content
+                        "context": context,
                     },
                 }
-                for i, content in enumerate(context_batch)
+                for i, context in enumerate(content_batch)
             ]
 
             # Upsert to Pinecone
@@ -207,7 +207,7 @@ class PineconeDocumentManager(DocumentManager):
     def process_batch(
         self,
         index,
-        context_batch: List[str],
+        content_batch: List[str],
         metadata_batch: Dict[str, List],
         embedder,
         sparse_encoder,
@@ -218,10 +218,10 @@ class PineconeDocumentManager(DocumentManager):
         Processes a single batch and upserts it into Pinecone.
         """
         # Dense vectors creation
-        dense_vectors = embedder.embed_documents(context_batch)
+        dense_vectors = embedder.embed_documents(content_batch)
 
         # Sparse vectors creation
-        sparse_vectors = sparse_encoder.encode_documents(context_batch)
+        sparse_vectors = sparse_encoder.encode_documents(content_batch)
 
         # Configuring data to upsert into Pinecone
         vectors = [
@@ -234,10 +234,10 @@ class PineconeDocumentManager(DocumentManager):
                 },
                 "metadata": {
                     **{key: metadata_batch[key][i] for key in metadata_batch},
-                    "context": content,  # Add content
+                    "content": content,
                 },
             }
-            for i, content in enumerate(context_batch)
+            for i, content in enumerate(content_batch)
         ]
 
         # Upsert to Pinecone
@@ -257,7 +257,7 @@ class PineconeDocumentManager(DocumentManager):
         """
         Upserts documents into Pinecone in parallel.
         :param index: Pinecone Index object.
-        :param contents: List of documents.
+        :param contexts: List of documents.
         :param metadatas: Metadata dictionary.
         :param embedder: Dense vector generator object.
         :param sparse_encoder: Sparse vector generator object.
