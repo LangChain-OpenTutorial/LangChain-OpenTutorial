@@ -118,6 +118,14 @@ class MongoDBAtlas:
         )
 
     def get_embedding(self, text: str) -> List[float]:
+        """Embed query text.
+
+        Args:
+            text: The text to embed.
+
+        Returns:
+            Embedding for the text.
+        """
         return self.embedding.embed_query(text)
 
     def create_vector_search_index(
@@ -126,6 +134,13 @@ class MongoDBAtlas:
         filters: Optional[List[str]] = None,
         update: bool = False,
     ) -> None:
+        """Create a vectorSearch index.
+
+        Args:
+            dimensions (int): Number of dimensions in embedding
+            filters (Optional[List[str]]): Index definition.
+            update (Optional[bool]): Update existing vectorSearch index.
+        """
         if not self._is_index_exists(self.vector_index_name):
             self.vector_store.create_vector_search_index(
                 dimensions=dimensions, filters=filters, update=update
@@ -134,6 +149,12 @@ class MongoDBAtlas:
     def update_vector_search_index(
         self, dimensions: int, filters: Optional[List[str]] = None
     ) -> None:
+        """Update a vectorSearch index.
+
+        Args:
+            dimensions (int): Number of dimensions in embedding
+            filters (Optional[List[str]]): Index definition.
+        """
         self.vector_store.create_vector_search_index(
             dimensions=dimensions, filters=filters, update=True
         )
@@ -170,8 +191,14 @@ class MongoDBAtlas:
 
 
 class MongoDBAtlasDocumentManager(DocumentManager):
+    """A document manager that handles document processing and CRUD operations in MongoDB Atlas."""
 
     def __init__(self, atlas: MongoDBAtlas) -> None:
+        """Initialize connection to the database and retrieve the embedding function.
+
+        Args:
+            atlas (MongoDBAtlas): A MongoDBAtlas instance to use MongoDB client function.
+        """
         self.collection = atlas.connect()
         self.embedding_function = atlas.get_embedding
 
@@ -181,6 +208,7 @@ class MongoDBAtlasDocumentManager(DocumentManager):
         encoding: Optional[str] = None,
         autodetect_encoding: bool = False,
     ) -> list[Document]:
+        """Load text file and return Document objects."""
         loader = TextLoader(file_path, encoding, autodetect_encoding)
         return loader.load()
 
@@ -190,6 +218,17 @@ class MongoDBAtlasDocumentManager(DocumentManager):
         split_condition: Callable[[str], Iterable[str]],
         split_index_name: str,
     ) -> List[Document]:
+        """Splits documents into smaller units according to be specified splitting condition.
+
+        Args:
+            documents (Iterable[Document]): A collection of documents.
+            split_condition (Callable[[str], Iterable[str]]): A function that takes a text string
+                and returns the split text.
+            split_index_name (str): The name of the index to add to the document metadata.
+
+        Returns:
+            List[Document]: A list of documents containing split text and corresponding metadata.
+        """
         return [
             Document(page_content=text, metadata=metadata)
             for document in documents
@@ -201,6 +240,7 @@ class MongoDBAtlasDocumentManager(DocumentManager):
     def split_documents_by_splitter(
         self, splitter: TextSplitter, documents: Iterable[Document]
     ) -> List[Document]:
+        """Splits documents into smaller units using a given splitter."""
         return splitter.split_documents(documents)
 
     def split_texts(
@@ -209,6 +249,7 @@ class MongoDBAtlasDocumentManager(DocumentManager):
         split_condition: Callable[[str], Iterable[str]],
         split_index_name: str,
     ) -> List[Tuple[str, dict[str, Any]]]:
+        """Splits texts into smaller units and returns split text and corresponding metadata."""
         return [
             (document, {split_index_name: index})
             for index, document in enumerate(split_condition(texts))
@@ -346,8 +387,19 @@ class MongoDBAtlasDocumentManager(DocumentManager):
         workers: int = 10,
         **kwargs: Any,
     ) -> None:
+        """Upsert on a collection by batching text data and updating or inserting documents.
+
+        Args:
+        texts (Iterable[str]): A collection of text data to be upserted.
+        metadatas (Optional[list[dict]]): List of data corresponding each text.
+        ids (Optional[List[str]]): List of unique document IDs.
+            If provided, existing documents with matching IDs will be updated; otherwise, new documents are inserted.
+        batch_size (int): The number of documents per batch.
+        workers (int): The number of parallel threads.
+        """
 
         def upsert_batch(batch, batch_ids):
+            """Upsert documents in parallel."""
             requests = []
             for i, doc in enumerate(batch):
                 if batch_ids and i < len(batch_ids):
@@ -364,6 +416,7 @@ class MongoDBAtlasDocumentManager(DocumentManager):
                 self.collection.bulk_write(requests)
 
         def get_embeddings_parallel(texts_batch: List[str]) -> List[Any]:
+            """Uses multithreading to generate embeddings for the text data."""
             embeddings = []
             with ThreadPoolExecutor(max_workers=workers) as executor:
                 futures = [
@@ -402,6 +455,18 @@ class MongoDBAtlasDocumentManager(DocumentManager):
                 future.result()
 
     def search(self, query: str, k: int = 4, **kwargs: Any) -> List[Document]:
+        """Retrieve the top `k` most relevant documents.
+        Converts the input query into an embedding using `embedding_function`.
+
+        Args:
+            query (str): The input query string to search for.
+            k (int): The number of top results to retrieve.
+            **kwargs (Any):
+                - vector_index (str): The name of the vector index to use for the search.
+
+        Returns:
+            List[Document]: A list of documents that best match the query.
+        """
         query_vector = self.embedding_function(query)
         vector_index = kwargs.get("vector_index")
         pipeline = [
@@ -423,6 +488,14 @@ class MongoDBAtlasDocumentManager(DocumentManager):
         filters: Optional[dict] = None,
         **kwargs: Any,
     ) -> None:
+        """Delete documents from the collection.
+        If neither `ids` nor `filters` are provided, all documents in the collection will be deleted.
+
+        Args:
+            ids (Optional[list[str]]): A list of document IDs to delete. If provided,
+                deletes all documents matching these IDs.
+            filters (Optional[dict]): If provided and `ids` is None, deletes documents matching the filter.
+        """
         if ids:
             self.delete_many_by_filter(filter={"_id": {"$in": ids}})
         elif filters:
