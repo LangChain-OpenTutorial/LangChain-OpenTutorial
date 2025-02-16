@@ -153,7 +153,7 @@ class PineconeDocumentManager(DocumentManager):
         """
         Converts documents to vectors and upserts them into Pinecone.
         :param index: Pinecone Index object.
-        :param contenxs: List of documents.
+        :param contents: List of documents.
         :param metadatas: Dictionary of metadata.
         :param embedder: Dense vector embedding object.
         :param sparse_encoder: Sparse vector embedding object.
@@ -234,7 +234,7 @@ class PineconeDocumentManager(DocumentManager):
                 },
                 "metadata": {
                     **{key: metadata_batch[key][i] for key in metadata_batch},
-                    "content": content,
+                    "context": content,
                 },
             }
             for i, content in enumerate(content_batch)
@@ -257,7 +257,7 @@ class PineconeDocumentManager(DocumentManager):
         """
         Upserts documents into Pinecone in parallel.
         :param index: Pinecone Index object.
-        :param contexts: List of documents.
+        :param contents: List of documents.
         :param metadatas: Metadata dictionary.
         :param embedder: Dense vector generator object.
         :param sparse_encoder: Sparse vector generator object.
