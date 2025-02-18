@@ -26,40 +26,52 @@ pre {
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/16-Evaluations/02-Evaluation-using-RAGAS.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/16-Evaluations/02-Evaluation-using-RAGAS.ipynb)
 
 ## Overview
-This tutorial will show you how to evaluate the quality of your LLM output using RAGAS.
+This tutorial will show you how to evaluate the quality of your LLM output using `RAGAS` .
 
-Before starting this tutorial, let's review metrics to be used in this tutorial, **Context Recall**, **Context Precision**, **Answer Relevancy**, and **Faithfulness** first.
+Before starting this tutorial, let's review metrics to be used in this tutorial, **Context Recall** , **Context Precision** , **Answer Relevancy** , and **Faithfulness** first.
 
 ### Context Recall
 
-It estimates "how well the retrieved context matches the LLM-generated answer".  
-It is calculated using question, ground truth, and retrieved context. The value is between 0 and 1, and higher values indicate better performance. To estimate context recall from the ground truth answer, each claim in the ground truth answer is analyzed to see if it can be attributed to the retrieved context. In the ideal scenario, all claims in the ground truth answer should be able to be attributed to the retrieved context.
+It estimates **"how well the retrieved context matches the LLM-generated answer"** .  
+It is calculated using question, ground truth, and retrieved context. The value is between 0 and 1, and higher values indicate better performance. To estimate $\text{Context Recall}$ from the ground truth answer, each claim in the ground truth answer is analyzed to see if it can be attributed to the retrieved context. In the ideal scenario, all claims in the ground truth answer should be able to be attributed to the retrieved context.
+
+<p align="center">
 
 $$\text{Context Recall} = \frac{|\text{GT claims that can be attributed to context}|}{|\text{Number of claims in GT}|}$$
+
+</p>
 
 
 ### Context Precision
 
-It estimates "whether ground-truth related items in contexts are ranked at the top".
+It estimates **"whether ground-truth related items in contexts are ranked at the top"** .
 
 Ideally, all relevant chunks should appear in the top ranks. This metric is calculated using question, ground_truth, and contexts, with values ranging from 0 to 1. Higher scores indicate better precision.
 
-The formula for Context Precision@K is as follows:
+The formula for $\text{Context Precision@K}$ is as follows:
+
+<p align="center">
 
 $$\text{Context Precision@K} = \frac{\sum_{k=1}^{K} (\text{Precision@k} \times v_k)}{\text{Total number of relevant items in the top K results}}$$
 
-Here, Precision@k is calculated as follows:
+</p>
+
+Here, $\text{Precision@k}$ is calculated as follows:
+
+<p align="center">
 
 $$\text{Precision@k} = \frac{\text{true positives@k}}{(\text{true positives@k + false positives@k})}$$
 
-K is the total number of chunks in contexts, and $v_k \in \{0, 1\}$ is the relevance indicator at rank k.
+</p>
+
+$\text{K}$ is the total number of chunks in contexts, and $v_k \in \{0, 1\}$ is the relevance indicator at rank k.
 
 This metric is used to evaluate the quality of the retrieved context in information retrieval systems. It measures how well relevant information is placed in the top ranks, allowing for performance assessment.
 
 
 ### Answer Relevancy (Response Relevancy)
 
-It is a metric that evaluates "how well the generated answer matches the given prompt".
+It is a metric that evaluates **"how well the generated answer matches the given prompt"** .
 
 The main features and calculation methods of this metric are as follows:
 
@@ -67,18 +79,18 @@ The main features and calculation methods of this metric are as follows:
 2. Score interpretation: Lower scores indicate incomplete or duplicate information in the answer, while higher scores indicate better relevance.
 3. Elements used in calculation: question, context, answer
 
-The calculation method for Answer Relevancy is defined as the average cosine similarity between the original question and the generated synthetic questions.
+The calculation method for $\text{Answer Relevancy}$ is defined as the average cosine similarity between the original question and the generated synthetic questions.
 
-$$\text{answer relevancy} = \frac{1}{N} \sum_{i=1}^N \cos(E_{g_i}, E_o)$$
+<p align="center">
 
-or
+$$\text{Answer Relevancy} = \frac{1}{N} \sum_{i=1}^N \cos(E_{g_i}, E_o) = \frac{1}{N} \sum_{i=1}^N \frac{E_{g_i} \cdot E_o}{\|E_{g_i}\| \|E_o\|}$$
 
-$$\text{answer relevancy} = \frac{1}{N} \sum_{i=1}^N \frac{E_{g_i} \cdot E_o}{\|E_{g_i}\| \|E_o\|}$$
+</p>
 
 Here:
-- $E_{g_i}$ is the embedding of the generated question $i$
-- $E_o$ is the embedding of the original question
-- $N$ is the number of generated questions (default value is 3)
+- $E_{g_i}$ : the embedding of the generated question $i$
+- $E_o$ : the embedding of the original question
+- $N$ : the number of generated questions (default value is 3)
 
 Note:
 - The actual score is mostly between 0 and 1, but mathematically it can be between -1 and 1 due to the characteristics of cosine similarity.
@@ -88,7 +100,7 @@ This metric is useful for evaluating the performance of question-answering syste
 
 ### Faithfulness
 
-It is a metric that evaluates "the factual consistency of the generated answer compared to the given context".
+It is a metric that evaluates **"the factual consistency of the generated answer compared to the given context"** .
 
 The main features and calculation methods of this metric are as follows:
 
@@ -96,9 +108,13 @@ The main features and calculation methods of this metric are as follows:
 2. Calculation elements: Use the generated answer and the retrieved context.
 3. Score range: Adjusted between 0 and 1, with higher values indicating better performance.
 
-The calculation method for Faithfulness score is as follows:
+The calculation method for $\text{Faithfulness score}$ is as follows:
+
+<p align="center">
 
 $$\text{Faithfulness score} = \frac{|\text{Number of claims in the generated answer that can be inferred from given context}|}{|\text{Total number of claims in the generated answer}|}$$
+
+</p>
 
 Calculation process:
 1. Identify claims in the generated answer.
@@ -182,7 +198,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as `OPENAI_API_KEY` in a **.env** file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -200,10 +216,10 @@ load_dotenv(override=True)
 
 
 
-## Load saved RAGAS dataset
+## Load saved `RAGAS` dataset
 
-`# TODO (sungchul): update the filename & link`  
-Load the RAGAS dataset that you saved in the previous step ([16-Evaluations/01-Test-Dataset-Generator-RAGAS.ipynb](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/16-Evaluations/01-Test-Dataset-Generator-RAGAS.ipynb)).
+Load the `RAGAS` dataset that you saved in the previous step.
+
 
 ```python
 import pandas as pd
@@ -385,9 +401,10 @@ chain = (
 )
 ```
 
-Create batch dataset. Batch dataset is useful when you want to process a large number of questions at once.
+Create a batch dataset by assigning the questions to `batch_dataset` .  
+Batch dataset is useful when you want to process a large number of questions at once.
 
-- Reference for `batch`: [Link](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/07-LCEL-Interface.ipynb)
+- Reference for **batch** : [Link](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/07-LCEL-Interface.ipynb)
 
 ```python
 batch_dataset = [question for question in test_dataset["user_input"]]
@@ -403,7 +420,7 @@ batch_dataset[:3]
 
 
 
-Call `batch()` to get answers for the batch dataset.
+Call `batch()` to get answers for the batch dataset ( `batch_dataset` ).
 
 ```python
 answer = chain.batch(batch_dataset)
@@ -419,7 +436,7 @@ answer[:3]
 
 
 
-Store the answers generated by the LLM in the 'answer' column.
+Store the answers generated by the LLM in the `answer` column.
 
 ```python
 # Overwrite or add 'answer' column
