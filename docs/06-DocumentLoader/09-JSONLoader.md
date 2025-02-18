@@ -24,20 +24,14 @@ Let's look at how to load files with the `.json` extension using a loader.
 - Author: [leebeanbin](https://github.com/leebeanbin)
 - Design:
 - Peer Review : [syshin0116](https://github.com/syshin0116), [Teddy Lee](https://github.com/teddylee777)
+- Proofread:
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/tree/main/06-DocumentLoader)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/10-JSON-Loader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/10-JSON-Loader.ipynb)
 
-## Environment Setup
-
-Setting up your environment is the first step. See the [Environment Setup](https://wikidocs.net/257836) guide for more details.
-
-**[Note]**
-- The `langchain-opentutorial` is a bundle of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-- Check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ## Overview
-This tutorial demonstrates how to use LangChain's JSONLoader to load and process JSON files. We'll explore how to extract specific data from structured JSON files using jq-style queries.
+This tutorial demonstrates how to use LangChain's `JSONLoader` to load and process JSON files. We'll explore how to extract specific data from structured JSON files using jq-style queries.
 
 ### Table of Contents
 - [Environment Set up](#environment-setup)
@@ -46,94 +40,91 @@ This tutorial demonstrates how to use LangChain's JSONLoader to load and process
 - [Generate JSON Data](#generate-json-data)
 - [JSONLoader](#jsonloader)
   
-When you want to extract values under the content field within the message key of JSON data, you can easily do this using JSONLoader as shown below.
+When you want to extract values under the content field within the message key of JSON data, you can easily do this using `JSONLoader` as shown below.
 
 
-### reference
+### References
 - https://python.langchain.com/docs/how_to/document_loader_json/
+
+---
+
 
 ## Environment Setup
 
-You can set and load `OPENAI_API_KEY` from a `.env` file when you'd like to make new json file.
+Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
+[Note]
+- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
-%pip install langchain langchain_openai langchain_community rq
+%%capture --no-stderr
+%pip install langchain-opentutorial
 ```
 
-<pre class="custom">Requirement already satisfied: langchain in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (0.3.13)
-    Requirement already satisfied: langchain_openai in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (0.2.14)
-    Requirement already satisfied: langchain_community in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (0.3.13)
-    Collecting rq
-      Downloading rq-2.1.0-py3-none-any.whl.metadata (5.8 kB)
-    Requirement already satisfied: PyYAML>=5.3 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain) (6.0.2)
-    Requirement already satisfied: SQLAlchemy<3,>=1.4 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain) (2.0.36)
-    Requirement already satisfied: aiohttp<4.0.0,>=3.8.3 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain) (3.11.11)
-    Requirement already satisfied: langchain-core<0.4.0,>=0.3.26 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain) (0.3.28)
-    Requirement already satisfied: langchain-text-splitters<0.4.0,>=0.3.3 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain) (0.3.4)
-    Requirement already satisfied: langsmith<0.3,>=0.1.17 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain) (0.2.7)
-    Requirement already satisfied: numpy<2,>=1.22.4 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain) (1.26.4)
-    Requirement already satisfied: pydantic<3.0.0,>=2.7.4 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain) (2.10.4)
-    Requirement already satisfied: requests<3,>=2 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain) (2.32.3)
-    Requirement already satisfied: tenacity!=8.4.0,<10,>=8.1.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain) (9.0.0)
-    Requirement already satisfied: openai<2.0.0,>=1.58.1 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain_openai) (1.58.1)
-    Requirement already satisfied: tiktoken<1,>=0.7 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain_openai) (0.8.0)
-    Requirement already satisfied: dataclasses-json<0.7,>=0.5.7 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain_community) (0.6.7)
-    Requirement already satisfied: httpx-sse<0.5.0,>=0.4.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain_community) (0.4.0)
-    Requirement already satisfied: pydantic-settings<3.0.0,>=2.4.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain_community) (2.7.1)
-    Collecting click>=5 (from rq)
-      Downloading click-8.1.8-py3-none-any.whl.metadata (2.3 kB)
-    Collecting redis>=3.5 (from rq)
-      Downloading redis-5.2.1-py3-none-any.whl.metadata (9.1 kB)
-    Requirement already satisfied: aiohappyeyeballs>=2.3.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from aiohttp<4.0.0,>=3.8.3->langchain) (2.4.4)
-    Requirement already satisfied: aiosignal>=1.1.2 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from aiohttp<4.0.0,>=3.8.3->langchain) (1.3.2)
-    Requirement already satisfied: attrs>=17.3.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from aiohttp<4.0.0,>=3.8.3->langchain) (24.3.0)
-    Requirement already satisfied: frozenlist>=1.1.1 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from aiohttp<4.0.0,>=3.8.3->langchain) (1.5.0)
-    Requirement already satisfied: multidict<7.0,>=4.5 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from aiohttp<4.0.0,>=3.8.3->langchain) (6.1.0)
-    Requirement already satisfied: propcache>=0.2.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from aiohttp<4.0.0,>=3.8.3->langchain) (0.2.1)
-    Requirement already satisfied: yarl<2.0,>=1.17.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from aiohttp<4.0.0,>=3.8.3->langchain) (1.18.3)
-    Requirement already satisfied: marshmallow<4.0.0,>=3.18.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from dataclasses-json<0.7,>=0.5.7->langchain_community) (3.23.2)
-    Requirement already satisfied: typing-inspect<1,>=0.4.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from dataclasses-json<0.7,>=0.5.7->langchain_community) (0.9.0)
-    Requirement already satisfied: jsonpatch<2.0,>=1.33 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain-core<0.4.0,>=0.3.26->langchain) (1.33)
-    Requirement already satisfied: packaging<25,>=23.2 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain-core<0.4.0,>=0.3.26->langchain) (24.2)
-    Requirement already satisfied: typing-extensions>=4.7 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langchain-core<0.4.0,>=0.3.26->langchain) (4.12.2)
-    Requirement already satisfied: httpx<1,>=0.23.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langsmith<0.3,>=0.1.17->langchain) (0.27.2)
-    Requirement already satisfied: orjson<4.0.0,>=3.9.14 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langsmith<0.3,>=0.1.17->langchain) (3.10.13)
-    Requirement already satisfied: requests-toolbelt<2.0.0,>=1.0.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from langsmith<0.3,>=0.1.17->langchain) (1.0.0)
-    Requirement already satisfied: anyio<5,>=3.5.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from openai<2.0.0,>=1.58.1->langchain_openai) (4.7.0)
-    Requirement already satisfied: distro<2,>=1.7.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from openai<2.0.0,>=1.58.1->langchain_openai) (1.9.0)
-    Requirement already satisfied: jiter<1,>=0.4.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from openai<2.0.0,>=1.58.1->langchain_openai) (0.8.2)
-    Requirement already satisfied: sniffio in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from openai<2.0.0,>=1.58.1->langchain_openai) (1.3.1)
-    Requirement already satisfied: tqdm>4 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from openai<2.0.0,>=1.58.1->langchain_openai) (4.67.1)
-    Requirement already satisfied: annotated-types>=0.6.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from pydantic<3.0.0,>=2.7.4->langchain) (0.7.0)
-    Requirement already satisfied: pydantic-core==2.27.2 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from pydantic<3.0.0,>=2.7.4->langchain) (2.27.2)
-    Requirement already satisfied: python-dotenv>=0.21.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from pydantic-settings<3.0.0,>=2.4.0->langchain_community) (1.0.1)
-    Requirement already satisfied: charset-normalizer<4,>=2 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from requests<3,>=2->langchain) (3.4.1)
-    Requirement already satisfied: idna<4,>=2.5 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from requests<3,>=2->langchain) (3.10)
-    Requirement already satisfied: urllib3<3,>=1.21.1 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from requests<3,>=2->langchain) (2.3.0)
-    Requirement already satisfied: certifi>=2017.4.17 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from requests<3,>=2->langchain) (2024.12.14)
-    Requirement already satisfied: regex>=2022.1.18 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from tiktoken<1,>=0.7->langchain_openai) (2024.11.6)
-    Requirement already satisfied: httpcore==1.* in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from httpx<1,>=0.23.0->langsmith<0.3,>=0.1.17->langchain) (1.0.7)
-    Requirement already satisfied: h11<0.15,>=0.13 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from httpcore==1.*->httpx<1,>=0.23.0->langsmith<0.3,>=0.1.17->langchain) (0.14.0)
-    Requirement already satisfied: jsonpointer>=1.9 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from jsonpatch<2.0,>=1.33->langchain-core<0.4.0,>=0.3.26->langchain) (3.0.0)
-    Requirement already satisfied: mypy-extensions>=0.3.0 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from typing-inspect<1,>=0.4.0->dataclasses-json<0.7,>=0.5.7->langchain_community) (1.0.0)
-    Downloading rq-2.1.0-py3-none-any.whl (96 kB)
-    Downloading click-8.1.8-py3-none-any.whl (98 kB)
-    Downloading redis-5.2.1-py3-none-any.whl (261 kB)
-    Installing collected packages: redis, click, rq
-    Successfully installed click-8.1.8 redis-5.2.1 rq-2.1.0
+```python
+# Install required packages
+from langchain_opentutorial import package
+
+package.install(
+    [
+        "langsmith",
+        "langchain",
+        "langchain_community",
+        "langchain_openai"
+    ],
+    verbose=False,
+    upgrade=False,
+)
+```
+
+```python
+%pip install rq
+```
+
+<pre class="custom">Requirement already satisfied: rq in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (2.1.0)
+    Requirement already satisfied: click>=5 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from rq) (8.1.8)
+    Requirement already satisfied: redis>=3.5 in /Users/leejungbin/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-LGorndcz-py3.11/lib/python3.11/site-packages (from rq) (5.2.1)
     Note: you may need to restart the kernel to use updated packages.
 </pre>
+
+```python
+# Set environment variables
+from langchain_opentutorial import set_env
+
+set_env(
+    {
+        "OPENAI_API_KEY": "",
+        "LANGCHAIN_API_KEY": "",
+        "LANGCHAIN_TRACING_V2": "true",
+        "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
+        "LANGCHAIN_PROJECT": "09-JSONLoader",
+    }
+)
+```
+
+You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+
+[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+
+```python
+# Load environment variables
+# Reload any variables that need to be overwritten from the previous cell
+
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
+```
 
 ## Generate JSON Data
 
 ---
 
-if you want to generate JSON data, you can use the following code.
+If you want to generate JSON data, you can use the following code.
 
 
 ```python
-from langchain.prompts import PromptTemplate
+from langchain import PromptTemplate
 from langchain_openai import ChatOpenAI
 from pathlib import Path
 from dotenv import load_dotenv
@@ -180,108 +171,112 @@ pprint(generated_data)
                              'country': 'USA',
                              'state': 'IL',
                              'street': '123 Maple St',
-                             'zip': '62704'},
+                             'zip': '62701'},
                  'age': 28,
-                 'contact': {'email': 'alice.johnson@example.com',
-                             'phone': '+1-555-0123',
-                             'social_media': {'linkedin': 'linkedin.com/in/alicejohnson',
-                                              'twitter': '@alice_j'}},
-                 'interesting_fact': 'Alice has traveled to over 15 countries and '
-                                     'speaks 3 languages.',
-                 'name': {'first': 'Alice', 'last': 'Johnson'},
-                 'personal_preferences': {'favorite_food': 'Italian',
-                                          'hobbies': ['Reading',
-                                                      'Hiking',
-                                                      'Cooking'],
-                                          'music_genre': 'Jazz',
-                                          'travel_destinations': ['Japan',
-                                                                  'Italy',
-                                                                  'Canada']}},
-                {'address': {'city': 'Metropolis',
+                 'contact_details': {'email': 'alice.johnson@example.com',
+                                     'phone': '+1-555-123-4567'},
+                 'interesting_information': {'pet': {'breed': 'Golden Retriever',
+                                                     'name': 'Buddy',
+                                                     'type': 'dog'},
+                                             'travel_history': [{'country': 'Japan',
+                                                                 'year': 2019},
+                                                                {'country': 'Italy',
+                                                                 'year': 2021}]},
+                 'name': 'Alice Johnson',
+                 'personal_preferences': {'favorite_food': 'sushi',
+                                          'hobbies': ['reading',
+                                                      'hiking',
+                                                      'photography'],
+                                          'music_genres': ['jazz',
+                                                           'classical',
+                                                           'indie']}},
+                {'address': {'city': 'Denver',
                              'country': 'USA',
-                             'state': 'NY',
+                             'state': 'CO',
                              'street': '456 Oak Ave',
-                             'zip': '10001'},
+                             'zip': '80202'},
                  'age': 34,
-                 'contact': {'email': 'bob.smith@example.com',
-                             'phone': '+1-555-0456',
-                             'social_media': {'linkedin': 'linkedin.com/in/bobsmith',
-                                              'twitter': '@bobsmith34'}},
-                 'interesting_fact': 'Bob is an avid gamer and has competed in '
-                                     'several national tournaments.',
-                 'name': {'first': 'Bob', 'last': 'Smith'},
-                 'personal_preferences': {'favorite_food': 'Mexican',
-                                          'hobbies': ['Photography',
-                                                      'Cycling',
-                                                      'Video Games'],
-                                          'music_genre': 'Rock',
-                                          'travel_destinations': ['Brazil',
-                                                                  'Australia',
-                                                                  'Germany']}},
-                {'address': {'city': 'Gotham',
-                             'country': 'USA',
-                             'state': 'NJ',
-                             'street': '789 Pine Rd',
-                             'zip': '07001'},
-                 'age': 45,
-                 'contact': {'email': 'charlie.davis@example.com',
-                             'phone': '+1-555-0789',
-                             'social_media': {'linkedin': 'linkedin.com/in/charliedavis',
-                                              'twitter': '@charliedavis45'}},
-                 'interesting_fact': 'Charlie has a small farm where he raises '
-                                     'chickens and grows organic vegetables.',
-                 'name': {'first': 'Charlie', 'last': 'Davis'},
-                 'personal_preferences': {'favorite_food': 'Barbecue',
-                                          'hobbies': ['Gardening',
-                                                      'Fishing',
-                                                      'Woodworking'],
-                                          'music_genre': 'Country',
-                                          'travel_destinations': ['Canada',
-                                                                  'New Zealand',
-                                                                  'Norway']}},
-                {'address': {'city': 'Star City',
-                             'country': 'USA',
-                             'state': 'CA',
-                             'street': '234 Birch Blvd',
-                             'zip': '90001'},
-                 'age': 22,
-                 'contact': {'email': 'dana.lee@example.com',
-                             'phone': '+1-555-0111',
-                             'social_media': {'linkedin': 'linkedin.com/in/danalee',
-                                              'twitter': '@danalee22'}},
-                 'interesting_fact': 'Dana is a dance instructor and has won '
-                                     'several local competitions.',
-                 'name': {'first': 'Dana', 'last': 'Lee'},
-                 'personal_preferences': {'favorite_food': 'Thai',
-                                          'hobbies': ['Dancing',
-                                                      'Sketching',
-                                                      'Traveling'],
-                                          'music_genre': 'Pop',
-                                          'travel_destinations': ['Thailand',
-                                                                  'France',
-                                                                  'Spain']}},
-                {'address': {'city': 'Central City',
+                 'contact_details': {'email': 'michael.smith@example.com',
+                                     'phone': '+1-555-234-5678'},
+                 'interesting_information': {'pet': {'breed': 'Siamese',
+                                                     'name': 'Whiskers',
+                                                     'type': 'cat'},
+                                             'volunteering': {'organization': 'Local '
+                                                                              'Food '
+                                                                              'Bank',
+                                                              'years_active': 5}},
+                 'name': 'Michael Smith',
+                 'personal_preferences': {'favorite_food': 'pizza',
+                                          'hobbies': ['cycling',
+                                                      'cooking',
+                                                      'gaming'],
+                                          'music_genres': ['rock',
+                                                           'pop',
+                                                           'hip-hop']}},
+                {'address': {'city': 'Austin',
                              'country': 'USA',
                              'state': 'TX',
-                             'street': '345 Cedar St',
-                             'zip': '75001'},
-                 'age': 31,
-                 'contact': {'email': 'ethan.garcia@example.com',
-                             'phone': '+1-555-0999',
-                             'social_media': {'linkedin': 'linkedin.com/in/ethangarcia',
-                                              'twitter': '@ethangarcia31'}},
-                 'interesting_fact': 'Ethan runs a popular travel blog where he '
-                                     'shares his adventures and culinary '
-                                     'experiences.',
-                 'name': {'first': 'Ethan', 'last': 'Garcia'},
-                 'personal_preferences': {'favorite_food': 'Indian',
-                                          'hobbies': ['Running',
-                                                      'Travel Blogging',
-                                                      'Cooking'],
-                                          'music_genre': 'Hip-Hop',
-                                          'travel_destinations': ['India',
-                                                                  'Italy',
-                                                                  'Mexico']}}]}
+                             'street': '789 Pine Rd',
+                             'zip': '73301'},
+                 'age': 22,
+                 'contact_details': {'email': 'emily.davis@example.com',
+                                     'phone': '+1-555-345-6789'},
+                 'interesting_information': {'pet': None,
+                                             'study': {'graduation_year': 2024,
+                                                       'major': 'Fine Arts',
+                                                       'university': 'University '
+                                                                     'of Texas'}},
+                 'name': 'Emily Davis',
+                 'personal_preferences': {'favorite_food': 'tacos',
+                                          'hobbies': ['painting',
+                                                      'traveling',
+                                                      'yoga'],
+                                          'music_genres': ['country',
+                                                           'folk',
+                                                           'dance']}},
+                {'address': {'city': 'Seattle',
+                             'country': 'USA',
+                             'state': 'WA',
+                             'street': '101 Birch Blvd',
+                             'zip': '98101'},
+                 'age': 45,
+                 'contact_details': {'email': 'david.brown@example.com',
+                                     'phone': '+1-555-456-7890'},
+                 'interesting_information': {'career': {'job_title': 'Software '
+                                                                     'Engineer',
+                                                        'years_experience': 20},
+                                             'pet': {'breed': 'Canary',
+                                                     'name': 'Tweety',
+                                                     'type': 'bird'}},
+                 'name': 'David Brown',
+                 'personal_preferences': {'favorite_food': 'steak',
+                                          'hobbies': ['golf', 'reading', 'fishing'],
+                                          'music_genres': ['blues',
+                                                           'classic rock',
+                                                           'jazz']}},
+                {'address': {'city': 'Miami',
+                             'country': 'USA',
+                             'state': 'FL',
+                             'street': '202 Cedar Ct',
+                             'zip': '33101'},
+                 'age': 39,
+                 'contact_details': {'email': 'sophia.wilson@example.com',
+                                     'phone': '+1-555-567-8901'},
+                 'interesting_information': {'pet': {'breed': 'Bulldog',
+                                                     'name': 'Max',
+                                                     'type': 'dog'},
+                                             'travel_history': [{'country': 'Spain',
+                                                                 'year': 2018},
+                                                                {'country': 'Brazil',
+                                                                 'year': 2020}]},
+                 'name': 'Sophia Wilson',
+                 'personal_preferences': {'favorite_food': 'paella',
+                                          'hobbies': ['dancing',
+                                                      'gardening',
+                                                      'cooking'],
+                                          'music_genres': ['latin',
+                                                           'pop',
+                                                           'salsa']}}]}
 </pre>
 
 The case of loading JSON data is as follows when you want to load your own JSON data.
@@ -413,11 +408,15 @@ print(type(data))
 <pre class="custom"><class 'dict'>
 </pre>
 
-# JSONLoader
+## `JSONLoader`
 
 ---
 
-When you want to extract values under the content field within the message key of JSON data, you can easily do this using JSONLoader as shown below.
+When you want to extract values under the content field within the message key of JSON data, you can easily do this using `JSONLoader` as shown below.
+
+### Basic Usage
+
+This usage shows off how to execute load JSON and print what I get from
 
 ```python
 from langchain_community.document_loaders import JSONLoader
@@ -429,28 +428,235 @@ loader = JSONLoader(
     text_content=False,
 )
 
-# Example: extract only contact_details
-# loader = JSONLoader(
-#     file_path="data/people.json",
-#     jq_schema=".people[].contact_details",
-#     text_content=False,
-# )
-
-# Or extract only hobbies from personal_preferences
-# loader = JSONLoader(
-#     file_path="data/people.json",
-#     jq_schema=".people[].personal_preferences.hobbies",
-#     text_content=False,
-# )
-
 # Load documents
 docs = loader.load()
 pprint(docs)
 ```
 
-<pre class="custom">[Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 1}, page_content='{"name": "Alice Smith", "age": 32, "contact": {"email": "alice.smith@example.com", "phone": "555-123-4567"}, "address": {"street": "123 Main St", "city": "New York", "state": "NY", "zip": "10001"}, "personal_preferences": {"favorite_color": "blue", "hobbies": ["reading", "yoga"], "favorite_food": "sushi"}}'),
-     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 2}, page_content='{"name": "John Doe", "age": 45, "contact": {"email": "john.doe@example.com", "phone": "555-987-6543"}, "address": {"street": "456 Elm St", "city": "Los Angeles", "state": "CA", "zip": "90001"}, "personal_preferences": {"favorite_color": "green", "hobbies": ["hiking", "gardening"], "favorite_food": "pizza"}}'),
-     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 3}, page_content='{"name": "Emily Johnson", "age": 28, "contact": {"email": "emily.johnson@example.com", "phone": "555-456-7890"}, "address": {"street": "789 Oak St", "city": "Chicago", "state": "IL", "zip": "60601"}, "personal_preferences": {"favorite_color": "pink", "hobbies": ["painting", "traveling"], "favorite_food": "tacos"}}'),
-     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 4}, page_content='{"name": "Michael Brown", "age": 38, "contact": {"email": "michael.brown@example.com", "phone": "555-234-5678"}, "address": {"street": "321 Maple St", "city": "Houston", "state": "TX", "zip": "77001"}, "personal_preferences": {"favorite_color": "red", "hobbies": ["playing guitar", "cooking"], "favorite_food": "barbecue"}}'),
-     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 5}, page_content='{"name": "Sarah Wilson", "age": 35, "contact": {"email": "sarah.wilson@example.com", "phone": "555-345-6789"}, "address": {"street": "654 Pine St", "city": "Miami", "state": "FL", "zip": "33101"}, "personal_preferences": {"favorite_color": "purple", "hobbies": ["photography", "dancing"], "favorite_food": "sushi"}}')]
+<pre class="custom">[Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 1}, page_content='{"name": "Alice Johnson", "age": 28, "contact_details": {"email": "alice.johnson@example.com", "phone": "+1-555-123-4567"}, "address": {"street": "123 Maple St", "city": "Springfield", "state": "IL", "zip": "62701", "country": "USA"}, "personal_preferences": {"hobbies": ["reading", "hiking", "photography"], "favorite_food": "sushi", "music_genres": ["jazz", "classical", "indie"]}, "interesting_information": {"pet": {"type": "dog", "name": "Buddy", "breed": "Golden Retriever"}, "travel_history": [{"country": "Japan", "year": 2019}, {"country": "Italy", "year": 2021}]}}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 2}, page_content='{"name": "Michael Smith", "age": 34, "contact_details": {"email": "michael.smith@example.com", "phone": "+1-555-234-5678"}, "address": {"street": "456 Oak Ave", "city": "Denver", "state": "CO", "zip": "80202", "country": "USA"}, "personal_preferences": {"hobbies": ["cycling", "cooking", "gaming"], "favorite_food": "pizza", "music_genres": ["rock", "pop", "hip-hop"]}, "interesting_information": {"pet": {"type": "cat", "name": "Whiskers", "breed": "Siamese"}, "volunteering": {"organization": "Local Food Bank", "years_active": 5}}}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 3}, page_content='{"name": "Emily Davis", "age": 22, "contact_details": {"email": "emily.davis@example.com", "phone": "+1-555-345-6789"}, "address": {"street": "789 Pine Rd", "city": "Austin", "state": "TX", "zip": "73301", "country": "USA"}, "personal_preferences": {"hobbies": ["painting", "traveling", "yoga"], "favorite_food": "tacos", "music_genres": ["country", "folk", "dance"]}, "interesting_information": {"pet": null, "study": {"major": "Fine Arts", "university": "University of Texas", "graduation_year": 2024}}}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 4}, page_content='{"name": "David Brown", "age": 45, "contact_details": {"email": "david.brown@example.com", "phone": "+1-555-456-7890"}, "address": {"street": "101 Birch Blvd", "city": "Seattle", "state": "WA", "zip": "98101", "country": "USA"}, "personal_preferences": {"hobbies": ["golf", "reading", "fishing"], "favorite_food": "steak", "music_genres": ["blues", "classic rock", "jazz"]}, "interesting_information": {"pet": {"type": "bird", "name": "Tweety", "breed": "Canary"}, "career": {"job_title": "Software Engineer", "years_experience": 20}}}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 5}, page_content='{"name": "Sophia Wilson", "age": 39, "contact_details": {"email": "sophia.wilson@example.com", "phone": "+1-555-567-8901"}, "address": {"street": "202 Cedar Ct", "city": "Miami", "state": "FL", "zip": "33101", "country": "USA"}, "personal_preferences": {"hobbies": ["dancing", "gardening", "cooking"], "favorite_food": "paella", "music_genres": ["latin", "pop", "salsa"]}, "interesting_information": {"pet": {"type": "dog", "name": "Max", "breed": "Bulldog"}, "travel_history": [{"country": "Spain", "year": 2018}, {"country": "Brazil", "year": 2020}]}}')]
 </pre>
+
+### Loading Each Person as a Separate Document
+
+We can load each person object from `people.json` as an individual document using the `jq_schema=".people[]"`
+
+```python
+loader = JSONLoader(
+    file_path="data/people.json",
+    jq_schema=".people[]",
+    text_content=False,
+)
+
+data = loader.load()
+data
+```
+
+
+
+
+<pre class="custom">[Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 1}, page_content='{"name": "Alice Johnson", "age": 28, "contact_details": {"email": "alice.johnson@example.com", "phone": "+1-555-123-4567"}, "address": {"street": "123 Maple St", "city": "Springfield", "state": "IL", "zip": "62701", "country": "USA"}, "personal_preferences": {"hobbies": ["reading", "hiking", "photography"], "favorite_food": "sushi", "music_genres": ["jazz", "classical", "indie"]}, "interesting_information": {"pet": {"type": "dog", "name": "Buddy", "breed": "Golden Retriever"}, "travel_history": [{"country": "Japan", "year": 2019}, {"country": "Italy", "year": 2021}]}}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 2}, page_content='{"name": "Michael Smith", "age": 34, "contact_details": {"email": "michael.smith@example.com", "phone": "+1-555-234-5678"}, "address": {"street": "456 Oak Ave", "city": "Denver", "state": "CO", "zip": "80202", "country": "USA"}, "personal_preferences": {"hobbies": ["cycling", "cooking", "gaming"], "favorite_food": "pizza", "music_genres": ["rock", "pop", "hip-hop"]}, "interesting_information": {"pet": {"type": "cat", "name": "Whiskers", "breed": "Siamese"}, "volunteering": {"organization": "Local Food Bank", "years_active": 5}}}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 3}, page_content='{"name": "Emily Davis", "age": 22, "contact_details": {"email": "emily.davis@example.com", "phone": "+1-555-345-6789"}, "address": {"street": "789 Pine Rd", "city": "Austin", "state": "TX", "zip": "73301", "country": "USA"}, "personal_preferences": {"hobbies": ["painting", "traveling", "yoga"], "favorite_food": "tacos", "music_genres": ["country", "folk", "dance"]}, "interesting_information": {"pet": null, "study": {"major": "Fine Arts", "university": "University of Texas", "graduation_year": 2024}}}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 4}, page_content='{"name": "David Brown", "age": 45, "contact_details": {"email": "david.brown@example.com", "phone": "+1-555-456-7890"}, "address": {"street": "101 Birch Blvd", "city": "Seattle", "state": "WA", "zip": "98101", "country": "USA"}, "personal_preferences": {"hobbies": ["golf", "reading", "fishing"], "favorite_food": "steak", "music_genres": ["blues", "classic rock", "jazz"]}, "interesting_information": {"pet": {"type": "bird", "name": "Tweety", "breed": "Canary"}, "career": {"job_title": "Software Engineer", "years_experience": 20}}}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 5}, page_content='{"name": "Sophia Wilson", "age": 39, "contact_details": {"email": "sophia.wilson@example.com", "phone": "+1-555-567-8901"}, "address": {"street": "202 Cedar Ct", "city": "Miami", "state": "FL", "zip": "33101", "country": "USA"}, "personal_preferences": {"hobbies": ["dancing", "gardening", "cooking"], "favorite_food": "paella", "music_genres": ["latin", "pop", "salsa"]}, "interesting_information": {"pet": {"type": "dog", "name": "Max", "breed": "Bulldog"}, "travel_history": [{"country": "Spain", "year": 2018}, {"country": "Brazil", "year": 2020}]}}')]</pre>
+
+
+
+### Using `content_key` within `jq_schema`
+
+To load documents from a JSON file using `content_key` within the `jq_schema`, set `is_content_key_jq_parsable=True`. Ensure that `content_key` is compatible and can be parsed using the `jq_schema`.
+
+```python
+loader = JSONLoader(
+    file_path="data/people.json",
+    jq_schema=".people[]",
+    content_key="name",
+    text_content=False
+)
+
+data = loader.load()
+data
+```
+
+
+
+
+<pre class="custom">[Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 1}, page_content='Alice Johnson'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 2}, page_content='Michael Smith'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 3}, page_content='Emily Davis'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 4}, page_content='David Brown'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 5}, page_content='Sophia Wilson')]</pre>
+
+
+
+### Extracting Metadata from `people.json`
+
+Let's define a `metadata_func` to extract relevant information like name, age, and city from each person object.
+
+
+```python
+def metadata_func(record: dict, metadata: dict) -> dict:
+    metadata["name"] = record.get("name")
+    metadata["age"] = record.get("age")
+    metadata["city"] = record.get("address", {}).get("city")
+    return metadata
+
+loader = JSONLoader(
+    file_path="data/people.json",
+    jq_schema=".people[]",
+    content_key="name",
+    metadata_func=metadata_func,
+    text_content=False
+)
+
+data = loader.load()
+data
+```
+
+
+
+
+<pre class="custom">[Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 1, 'name': 'Alice Johnson', 'age': 28, 'city': 'Springfield'}, page_content='Alice Johnson'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 2, 'name': 'Michael Smith', 'age': 34, 'city': 'Denver'}, page_content='Michael Smith'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 3, 'name': 'Emily Davis', 'age': 22, 'city': 'Austin'}, page_content='Emily Davis'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 4, 'name': 'David Brown', 'age': 45, 'city': 'Seattle'}, page_content='David Brown'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 5, 'name': 'Sophia Wilson', 'age': 39, 'city': 'Miami'}, page_content='Sophia Wilson')]</pre>
+
+
+
+### Understanding JSON Query Syntax
+
+Let's explore the basic syntax of jq-style queries used in `JSONLoader`:
+
+Basic Selectors
+   - **`.`** : Current object
+   - **`.key`** : Access specific key in object
+   - **`.[]`** : Iterate over array elements
+
+Pipe Operator
+   - **`|`** : Pass result of left expression as input to right expression
+   
+Object Construction
+   - **`{key: value}`** : Create new object
+
+Example JSON:
+```json
+{
+  "people": [
+    {"name": "Alice", "age": 30, "contactDetails": {"email": "alice@example.com", "phone": "123-456-7890"}},
+    {"name": "Bob", "age": 25, "contactDetails": {"email": "bob@example.com", "phone": "098-765-4321"}}
+  ]
+}
+```
+
+**Common Query Patterns**:
+- `.people[]` : Access each array element
+- `.people[].name` : Get all names
+- `.people[] | {name: .name}` : Create new object with name
+- `.people[] | {name, email: .contact.email}` : Extract nested data
+
+[Note] 
+- Always use `text_content=False` when working with complex JSON data
+- This ensures proper handling of non-string values (objects, arrays, numbers)
+
+### Advanced Queries
+
+Here are examples of extracting specific information using different jq schemas:
+
+```python
+# Extract only contact details
+contact_loader = JSONLoader(
+    file_path="data/people.json",
+    jq_schema=".people[] | {name: .name, contact: .contactDetails}",
+    text_content=False
+)
+
+docs = contact_loader.load()
+docs
+```
+
+
+
+
+<pre class="custom">[Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 1}, page_content='{"name": "Alice Johnson", "contact": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 2}, page_content='{"name": "Michael Smith", "contact": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 3}, page_content='{"name": "Emily Davis", "contact": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 4}, page_content='{"name": "David Brown", "contact": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 5}, page_content='{"name": "Sophia Wilson", "contact": null}')]</pre>
+
+
+
+```python
+# Extract nested data
+hobbies_loader = JSONLoader(
+    file_path="data/people.json",
+    jq_schema=".people[] | {name: .name, hobbies: .personalPreferences.hobbies}",
+    text_content=False
+)
+
+docs = hobbies_loader.load()
+docs
+```
+
+
+
+
+<pre class="custom">[Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 1}, page_content='{"name": "Alice Johnson", "hobbies": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 2}, page_content='{"name": "Michael Smith", "hobbies": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 3}, page_content='{"name": "Emily Davis", "hobbies": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 4}, page_content='{"name": "David Brown", "hobbies": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 5}, page_content='{"name": "Sophia Wilson", "hobbies": null}')]</pre>
+
+
+
+```python
+# Get all interesting facts
+facts_loader = JSONLoader(
+    file_path="data/people.json",
+    jq_schema=".people[] | {name: .name, facts: .interestingFacts}",
+    text_content=False
+)
+
+docs = facts_loader.load()
+docs
+```
+
+
+
+
+<pre class="custom">[Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 1}, page_content='{"name": "Alice Johnson", "facts": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 2}, page_content='{"name": "Michael Smith", "facts": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 3}, page_content='{"name": "Emily Davis", "facts": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 4}, page_content='{"name": "David Brown", "facts": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 5}, page_content='{"name": "Sophia Wilson", "facts": null}')]</pre>
+
+
+
+```python
+# Extract email and phone together
+contact_info = JSONLoader(
+    file_path="data/people.json",
+    jq_schema='.people[] | {name: .name, email: .contactDetails.email, phone: .contactDetails.phone}',
+    text_content=False
+)
+
+docs = contact_loader.load()
+docs
+```
+
+
+
+
+<pre class="custom">[Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 1}, page_content='{"name": "Alice Johnson", "contact": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 2}, page_content='{"name": "Michael Smith", "contact": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 3}, page_content='{"name": "Emily Davis", "contact": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 4}, page_content='{"name": "David Brown", "contact": null}'),
+     Document(metadata={'source': '/Users/leejungbin/Downloads/LangChain-OpenTutorial/06-DocumentLoader/data/people.json', 'seq_num': 5}, page_content='{"name": "Sophia Wilson", "contact": null}')]</pre>
+
+
+
+These examples demonstrate the flexibility of jq queries in fetching data in various ways.

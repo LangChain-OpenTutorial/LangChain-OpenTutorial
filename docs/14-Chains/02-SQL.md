@@ -20,6 +20,7 @@ pre {
 # SQL
 
 - Author: [Jinu Cho](https://github.com/jinucho)
+- Design:
 - Peer Review: 
 - Proofread:
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
@@ -30,7 +31,7 @@ pre {
 
 This tutorial covers how to use ```create_sql_query_chain``` to generate SQL queries, execute them, and derive answers. 
 
-Additionally, let's explore the differences in operation between this method and the SQL Agent.
+Additionally, we'll explore the differences between this method and the SQL Agent.
 
 ![sql-chain-work-flow](./img/02-sql-sql-chain-work-flow.png)
 
@@ -38,9 +39,9 @@ Additionally, let's explore the differences in operation between this method and
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Load SQL Database](#load-sql-database)
-- [SQL generate chain](#sql-generate-chain)
-- [Using SQL generating chain with an Agent](#using-sql-generating-chain-with-an-agent)
+- [Loading SQL Databases](#loading-sql-databases)
+- [SQL Query Chain](#sql-query-chain)
+- [Using SQL Query Chain with an Agent](#using-sql-query-chain-with-an-agent)
 - [Appendix : Chain with gpt-4o and a Post-Processing Function](#appendix--chain-with-gpt-4o-and-a-post-processing-function)                                                                
 
 ### References
@@ -118,9 +119,9 @@ load_dotenv(override=True)
 
 
 
-## Load SQL Database
+## Loading SQL Database
 
-### Usage methods for various databases and required library list.
+### Usage methods for various databases and required library list:
 
 | **Database**        | **Required Library**      | **Code Example**                                                                                                                                    |
 |---------------------|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -129,8 +130,10 @@ load_dotenv(override=True)
 | **SQLite**          | Included in standard lib | db = SQLDatabase.from_uri("sqlite:///path/to/your_database.db")                                                                                   |
 | **Oracle**          | ```cx_Oracle```              | db = SQLDatabase.from_uri("oracle+cx_oracle://<username>:<password>@<host>:<port>/<sid>")                                                         |
 
-example for postgresql : 
-- db = SQLDatabase.from_uri("postgresql://postgre_user_name:password@ip_address:port/db_name")
+Example for PostgreSQL : 
+```python
+    db = SQLDatabase.from_uri("postgresql://postgre_user_name:password@ip_address:port/db_name")
+```
 
 Load and verify the sample database data.
 
@@ -153,18 +156,18 @@ print(db.get_usable_table_names())
     ['accounts', 'customers', 'transactions']
 </pre>
 
-## SQL generate chain
+## SQL Query Chain
 
 ```create_sql_query_chain``` generates a chain for creating SQL queries based on natural language input. 
 
 It leverages LLMs to translate natural language into SQL statements.
 
-[RECOMMED] Create an LLM object and generate a chain by providing the LLM and DB as parameters.
+[RECOMMEDED] Create an LLM object and generate a chain by providing the LLM and DB as parameters.
 
-Since changing the model may cause unexpected behavior, this tutorial will proceed with **gpt-3.5-turbo** .
+Since changing the model may cause unexpected behavior, this tutorial will proceed with ```gpt-3.5-turbo``` .
 
 ```python
-# Create an OpenAI LLM
+# Create an OpenAI LLM object
 llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
 
 # Generate a chain by providing the LLM and DB as parameters.
@@ -184,12 +187,12 @@ chain.invoke({"question": "List the all customer names."})
 
 
 
-### If the latest version is used?
+### What if the latest model is used?
 
 Using the latest version of OpenAI's LLM may cause issues with the output.
 
 ```python
-# Create an OpenAI LLM
+# Create an OpenAI LLM object
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
 # Generate a chain by providing the LLM and DB as parameters.
@@ -198,7 +201,7 @@ bad_case_chain = create_sql_query_chain(
 )  # k(for query Limit)'s default values is 5
 ```
 
-Unnecessary information, such as **'SQLQuery: '** , is included in the output along with the query.
+Unnecessary information, such as ```'SQLQuery: '``` , is included in the output along with the query.
 
 ```python
 bad_case_chain.invoke({"question": "List the all customer names."})
@@ -242,7 +245,7 @@ Question: {input}
 """
 ).partial(dialect=db.dialect)
 
-# Create an OpenAI LLM
+# Create an OpenAI LLM object
 llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
 
 # Generate a chain by providing the LLM and DB as parameters.
@@ -264,7 +267,7 @@ print(generated_sql_query.__repr__())
 
 ### How to use the ```get_prompts``` method
 
-The chain.get_prompt() method allows you to retrieve the current prompt template used in a LangChain chain. 
+The ```chain.get_prompt``` method allows you to retrieve the current prompt template used in a LangChain chain. 
 
 This prompt contains the instructions given to the LLM, including the input structure, expected variables, and contextual guidelines.
 
@@ -277,7 +280,7 @@ This prompt contains the instructions given to the LLM, including the input stru
 - Enables users to modify parts of the prompt dynamically.
 
 
-check the .get_prompts()'s contents
+check the ```get_prompts``` 's contents
 
 There are various elements:  
 - ```input_variables```
@@ -286,7 +289,7 @@ There are various elements:
 - ```template```
 
 ```python
-# check the prompt template configuration
+# Check the prompt template configuration
 print(f"input_variables : {chain.get_prompts()[0].input_variables}", "\n")
 print(f"input_types : {chain.get_prompts()[0].input_types}", "\n")
 print(f"partial_variables : {chain.get_prompts()[0].partial_variables}", "\n")
@@ -379,7 +382,7 @@ chain.invoke({"question": "List all customer names.", "dialect": "mysql"})
 
 
 
-### QuerySQLDatabaseTool
+### ```QuerySQLDatabaseTool```
 
 1. Executing SQL Queries:
 - Executes the provided SQL query on the connected database and retrieves the results.
@@ -417,7 +420,7 @@ from langchain_community.tools.sql_database.tool import QuerySQLDatabaseTool
 # Tool
 execute_query = QuerySQLDatabaseTool(db=db)
 
-# SQL query generation chain
+# SQL query chain
 write_query = create_sql_query_chain(llm, db, prompt)
 
 # Create a chain to execute the generated query.
@@ -480,7 +483,7 @@ chain.invoke({"question": "Calculate the total of Altman's transactions."})
 
 
 
-## Using SQL generating chain with an Agent
+## Using SQL Query Chain with an Agent
 
 ### What is ```agent_toolkits``` ?
 
@@ -490,7 +493,7 @@ Each toolkit encapsulates the functionality and workflows needed for specific ta
 
 ### ```create_sql_agent```
 
-```create_sql_agent``` is a specialized function within the agent_toolkits library that simplifies the process of interacting with SQL databases. 
+```create_sql_agent``` is a specialized function within the ```agent_toolkits``` library that simplifies the process of interacting with SQL databases. 
 
 It is designed to streamline SQL query generation and execution by leveraging LangChain’s agent capabilities. Developers can integrate this tool to enable agents to:
 - Connect to SQL databases seamlessly.
@@ -499,7 +502,7 @@ It is designed to streamline SQL query generation and execution by leveraging La
 
 This functionality is particularly useful for scenarios requiring dynamic database interactions, such as reporting, analytics, or user-facing applications that need query-based responses.
 
-Using an Agent, you can generate SQL queries and output the results as answers.
+Using an agent, you can generate SQL queries and output the results as answers.
 
 Agents work well with models like **gpt-4o** and **gpt-4o-mini**, in contrast to the issues encountered with chains when changing the model.
 
@@ -513,7 +516,7 @@ llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 # Connect to the SQLite database
 db = SQLDatabase.from_uri("sqlite:///data/finance.db")
 
-# Create the Agent
+# Create the agent
 agent_executor = create_sql_agent(llm, db=db, agent_type="openai-tools", verbose=True)
 ```
 
@@ -664,20 +667,20 @@ agent_executor.invoke(
 
 
 
-### Differences Between create_sql_query_chain and SQL Agent
-1. create_sql_query_chain:
+### Differences Between ```create_sql_query_chain``` and SQL Agent
+1. ```create_sql_query_chain``` :
     - Translates user input into a single SQL query and executes it directly.
     - Best for simple, direct query execution.
-2. SQL Agent:
+2. SQL Agent :
     - Handles more complex workflows, involving multiple queries and reasoning steps.
     - Ideal for dynamic or multi-step tasks.
-3. Conclusion: It is recommended to use ```create_sql_query_chain``` for simple queries, while ```SQL Agent``` is suggested for complex or iterative processes.
+3. Conclusion: It is recommended to use ```create_sql_query_chain``` for simple queries, while SQL Agent is suggested for complex or iterative processes.
 
 ---
 
-## Appendix : Chain with gpt-4o and a Post-Processing Function
+## Appendix : Chain with ```gpt-4o``` and a Post-Processing Function
 
-As observed earlier, `gpt-4o` output can be inconsistent.
+As observed earlier, ```gpt-4o``` output can be inconsistent.
 
 To improve this, a chain can be constructed with a post-processing function applied.
 
@@ -736,7 +739,7 @@ Question: {input}
 """
 ).partial(dialect=db.dialect)
 
-# Create an OpenAI LLM
+# Create an OpenAI LLM object
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
 # Generate a chain by providing the LLM and DB as parameters.

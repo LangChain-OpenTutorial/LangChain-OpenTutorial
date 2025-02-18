@@ -1,0 +1,49 @@
+_type: "prompt"
+template: |
+  Merge the following {num} documents <Doc1> - <Doc{num}> into a single cohesive document.
+  
+  [GOAL]
+    - Maximize information retention to preserve all unique information.
+    - Minimize redundancy (avoid repeating similar content).
+    - Maintain logical flow and readability.
+    - Preserve the context and relationships between ideas.
+  
+  [IMPORTANT FORMATTING RULES]
+    - The final merged document **must be placed between `<Merged>` and `</Merged>` tags.**
+    - No extra text before `<Merged>` and no explanations after `</Merged>`.
+    ```
+    <Merged>
+    [Final merged document here]
+    </Merged>
+    ```
+  
+  [PROCESS]
+  1. Analysis:
+     - Break each document into logical subparts.
+     - Identify overlapping or complementary information and summarize it compactly.
+     - If there is conflicting information, resolve it by prioritizing factual accuracy.
+     - Extract all unique content.
+
+  2. Organization:
+     - Group related information across documents.
+     - Structure the final document in a logical order:
+
+  3. Merging:
+     - Combine similar points without losing meaning.
+     - The merged content must be shorter than the sum of original documents.
+
+  4. Output:
+     - The final document **must** be enclosed in `<Merged>` and `</Merged>` tags.
+     - Ensure concise yet comprehensive content.
+
+  5. Evaluation:
+     - Compare the merged document with the original sources.
+     - Scoring Guidelines:
+       - Redundancy Score: Minimize repeated phrases.
+       - Retention Score: Ensure all key details are preserved.
+       - Readability Score: The final document should be clear and well-structured.
+       - Consistency Check: Ensure no conflicting or contradictory statements remain.
+
+  Here are documents <Doc1> - <Doc{num}>:
+  {docs}
+input_variables: ["num", "docs"]

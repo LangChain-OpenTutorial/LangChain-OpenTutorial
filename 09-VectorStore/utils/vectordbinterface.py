@@ -2,207 +2,129 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional, List, Iterable
 from langchain_core.documents import Document
 
+
 class DocumentManager(ABC):
     """
-    문서 insert/update (upsert, upsert_parallel)
-    문서 search by query (search)
-    문서 delete by id, delete by filter (delete)
+    Document insert/update (upsert, upsert_parallel)
+    Document search by query (search)
+    Document delete by id, delete by filter (delete)
     """
 
     @abstractmethod
-    def upsert(self, texts: Iterable[str], metadatas: Optional[list[dict]] = None, ids: Optional[List[str]] = None, **kwargs: Any
-              ) -> None:
-        """문서를 업서트합니다.        """
+    def upsert(
+        self,
+        texts: Iterable[str],
+        metadatas: Optional[list[dict]] = None,
+        ids: Optional[List[str]] = None,
+        **kwargs: Any
+    ) -> None:
+        """Upsert Document"""
         pass
 
     @abstractmethod
-    def upsert_parallel(self, texts: Iterable[str], metadatas: Optional[list[dict]] = None, ids: Optional[List[str]] = None
-                        , batch_size: int = 32, workers: int = 10, **kwargs: Any
-                       ) -> None:
-        """병렬로 문서를 업서트합니다."""
+    def upsert_parallel(
+        self,
+        texts: Iterable[str],
+        metadatas: Optional[list[dict]] = None,
+        ids: Optional[List[str]] = None,
+        batch_size: int = 32,
+        workers: int = 10,
+        **kwargs: Any
+    ) -> None:
+        """Upsert Document Parallel"""
         pass
 
     @abstractmethod
     def search(self, query: str, k: int = 10, **kwargs: Any) -> List[Document]:
-        """쿼리를 수행하고 관련 문서를 반환합니다.
-        기본 기능: query (문자열) -> 비슷한 문서 k개 반환
+        """Performs a query and returns relevant documents.
+        Basic function: query (string) -> return k similar documents
 
-        cosine_similarity 써치하는 것 의미 **문제될 경우 이슈제기
+        Meaning to search cosine_similarity **If a problem arises, raise an issue
 
-        -그외 기능 (추후 확장)
+        -Other features (future extensions)
         metatdata search
-        이미지 서치할 때 벡터 받는 것
+        Getting a vector when searching for an image
         """
         pass
 
     @abstractmethod
-    def delete(self, ids: Optional[list[str]] = None, filters: Optional[dict] = None, **kwargs: Any
-               ) -> None:
-        """필터를 사용하여 문서를 삭제합니다.
+    def delete(
+        self,
+        ids: Optional[list[str]] = None,
+        filters: Optional[dict] = None,
+        **kwargs: Any
+    ) -> None:
+        """Use a filter to delete the document.
 
-            ids: List of ids to delete. If None, delete all. Default is None.
-            filters: Dictionary of filters (querys) to apply. If None, no filters apply.
+        IDS: List of IDs to delete. Delete all if none. Default is none.
+        Filter: filter (query) dictionary to be applied; no filter will be applied.
 
         """
         pass
 
 
+"""
+New Interface for VectorDB CRUD
+"""
 
-# deprecated
-# # ==========================================
-# # 1️⃣ 인덱스 관리 인터페이스
-# # ==========================================
-# class IndexManagerInterface(ABC):
-#     """
-#     인덱스 관리 인터페이스
-#     """
-
-#     @abstractmethod
-#     def create_index(
-#         self,
-#         index_name: str,
-#         dimension: int,
-#         metric: str = "dotproduct",
-#         pod_spec=None,
-#         **kwargs
-#     ) -> Any:
-#         """인덱스를 생성하고 반환합니다. 즉, index_name으로 인덱스를 생성하고 생성이 완료되면 index_name을 반환하고, 없다면 None을 반환합니다."""
-#         pass
-
-#     @abstractmethod
-#     def list_indexs(self) -> Any:
-#         """인덱스 리스트를 반환합니다"""
-#         pass
-
-#     @abstractmethod
-#     def get_index(self, index_name: str) -> Any:
-#         """인덱스를 조회합니다. 즉, index_name을 가진 인덱스가 있는지 조회하고, 있다면 index_name을 반환하고, 없다면 None을 반환합니다."""
-#         pass
-
-#     @abstractmethod
-#     def delete_index(self, index_name: str) -> None:
-#         """인덱스를 삭제합니다. 즉, index_name을 가진 인덱스를 삭제합니다."""
-#         pass
+from typing import Optional, List, Iterable, Any, Dict
 
 
-# # ==========================================
-# # 2️⃣ 문서 업서트 인터페이스
-# # ==========================================
-# class DocumentManagerInterface(ABC):
-#     """
-#     문서 관리 인터페이스 (upsert, upsert_parallel)
-#     """
+class DocumentManager(ABC):
+    """
+    Document insert/update (upsert, upsert_parallel)
+    Document search by query (search)
+    Document delete by id, delete by filter (delete)
+    """
 
-#     @abstractmethod
-#     def upsert_documents(
-#         self, index_name: str, documents: List[Dict], **kwargs
-#     ) -> None:
-#         """문서를 업서트합니다."""
-#         pass
+    @abstractmethod
+    def upsert(
+        self,
+        texts: Iterable[str],
+        metadatas: Optional[List[Dict]] = None,
+        ids: Optional[List[str]] = None,
+        **kwargs: Any
+    ) -> None:
+        """Upsert Document"""
+        pass
 
-#     @abstractmethod
-#     def upsert_documents_parallel(
-#         self,
-#         index_name: str,
-#         documents: List[Dict],
-#         batch_size: int = 32,
-#         max_workers: int = 10,
-#         **kwargs
-#     ) -> None:
-#         """병렬로 문서를 업서트합니다."""
-#         pass
+    @abstractmethod
+    def upsert_parallel(
+        self,
+        texts: Iterable[str],
+        metadatas: Optional[List[Dict]] = None,
+        ids: Optional[List[str]] = None,
+        batch_size: int = 32,
+        workers: int = 10,
+        **kwargs: Any
+    ) -> None:
+        """Upsert Document Parallel"""
+        pass
 
+    @abstractmethod
+    def search(self, query: str, k: int = 10, **kwargs: Any) -> List[Document]:
+        """Performs a query and returns relevant documents.
+        Basic function: query (string) -> return k similar documents
 
-# # ==========================================
-# # 3️⃣ 문서 조회 및 삭제 인터페이스
-# # ==========================================
-# class QueryManagerInterface(ABC):
-#     """
-#     문서 검색 및 삭제 인터페이스 (query, delete_by_filter)
-#     """
+        Meaning to search cosine_similarity **If a problem arises, raise an issue
 
-#     @abstractmethod
-#     def query(
-#         self, index_name: str, query_vector: List[float], top_k: int = 10, **kwargs
-#     ) -> List[Document]:
-#         """쿼리를 수행하고 관련 문서를 반환합니다."""
-#         pass
+        -Other features (future extensions)
+        metatdata search
+        Getting a vector when searching for an image
+        """
+        pass
 
-#     @abstractmethod
-#     def delete_by_filter(self, index_name: str, filters: Dict, **kwargs) -> None:
-#         """필터를 사용하여 문서를 삭제합니다."""
-#         pass
+    @abstractmethod
+    def delete(
+        self,
+        ids: Optional[List[str]] = None,
+        filters: Optional[Dict] = None,
+        **kwargs: Any
+    ) -> None:
+        """Use a filter to delete the document.
 
+        IDS: List of IDs to delete. Delete all if none. Default is none.
+        Filter: filter (query) dictionary to be applied; no filter will be applied.
 
-# # ==========================================
-# # 4️⃣ 통합 인터페이스 (VectorDBInterface)
-# # ==========================================
-# class VectorDBInterface(
-#     IndexManagerInterface, DocumentManagerInterface, QueryManagerInterface, ABC
-# ):
-#     """
-#     벡터 데이터베이스의 통합 인터페이스
-#     - 인덱스 관리
-#     - 문서 업서트
-#     - 문서 검색 및 삭제
-#     """
-
-#     @abstractmethod
-#     def connect(self, **kwargs) -> None:
-#         """DB 연결을 초기화합니다."""
-#         pass
-
-#     @abstractmethod
-#     def preprocess_documents(self, documents: List[Document], **kwargs) -> List[Dict]:
-#         """LangChain Document 객체를 특정 DB에 맞는 형식으로 변환합니다."""
-#         pass
-
-#     @abstractmethod
-#     def get_api_key(self) -> str:
-#         """DB 연결을 위한 API 키 또는 인증 정보 반환"""
-#         pass
-
-
-# ==========================================
-# pinecone 구현 예시
-# ==========================================
-# from pinecone import ServerlessSpec, Pinecone
-
-
-# class PineconeDB(VectorDBInterface):
-#     def __init__(self, api_key: str):
-#         self.api_key = api_key
-#         self.pc = None
-
-#     def connect(self, **kwargs) -> None:
-#         """Pinecone API 연결"""
-#         self.pc = Pinecone(api_key=self.api_key)
-
-#     def create_index(
-#         self, index_name: str, dimension: int, metric: str = "dotproduct", **kwargs
-#     ) -> Any:
-#         """Pinecone 인덱스 생성"""
-#         pod_spec = ServerlessSpec(cloud="aws", region="us-east-1")
-#         if index_name not in self.pc.list_indexes().names():
-#             self.pc.create_index(
-#                 name=index_name, dimension=dimension, metric=metric, spec=pod_spec
-#             )
-
-#     def get_index(self, index_name: str) -> Any:
-#         """Pinecone 특정 인덱스 조회"""
-#         return self.pc.Index(index_name)
-
-#     def list_indexes(self) -> List[str]:
-#         """Pinecone에서 현재 존재하는 모든 인덱스를 조회"""
-#         return self.pc.list_indexes().names()
-
-#     def delete_index(self, index_name: str) -> None:
-#         """Pinecone 인덱스 삭제"""
-#         self.pc.delete_index(index_name)
-
-#     def upsert_documents(
-#         self, index_name: str, documents: List[Dict], **kwargs
-#     ) -> None:
-#         """문서를 Pinecone에 업서트"""
-#         index = self.pc.Index(index_name)
-#         index.upsert(vectors=documents, namespace=kwargs.get("namespace"))
+        """
+        pass
