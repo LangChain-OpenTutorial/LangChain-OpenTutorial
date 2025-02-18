@@ -28,7 +28,7 @@ pre {
 
 ## Overview
 
-This tutorial demonstrates how to implement Structured output generation using LangChain and OpenAI's language models.
+This tutorial demonstrates how to implement structured output generation using LangChain and OpenAI's language models.
 
 We'll build a quiz generation system that creates multiple-choice questions with consistent formatting and structure.
 
@@ -38,11 +38,7 @@ We'll build a quiz generation system that creates multiple-choice questions with
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
 - [Implementing Structured Output Chain](#implementing-structured-output-chain)
-- [Invoking Generation Chain](#invoking-generation-chain)
-
-### References
-
-----
+- [Invoking the Chain](#invoking-the-chain)
 
 ## Environment Setup
 
@@ -52,7 +48,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -78,9 +74,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -103,9 +99,9 @@ if not load_dotenv():
 
 This tutorial walks you through the process of generating 4-option multiple-choice quizzes for a given topic.
 
-The `Quiz` class defines the structure of the quiz, including the question, difficulty level, and four answer options.
+The ```Quiz``` class defines the structure of the quiz, including the question, difficulty level, and four answer options.
 
-A `ChatOpenAI` instance leverages the **GPT-4o** model for natural language processing, while a `ChatPromptTemplate` specifies the conversational instructions for generating the quizzes dynamically.
+A ```ChatOpenAI``` instance leverages the **GPT-4o** model for natural language processing, while a ```ChatPromptTemplate``` specifies the conversational instructions for generating the quizzes dynamically.
 
 ```python
 # Import required modules and libraries
@@ -153,9 +149,9 @@ llm_with_structured_output = llm.with_structured_output(Quiz)
 chain = prompt | llm_with_structured_output
 ```
 
-## Invoking Generation Chain
+## Invoking the Chain
 
-In this section, we demonstrate how to invoke the **Structured Output Chain** to generate quizzes dynamically. The chain combines a prompt template and a structured output model to ensure the output adheres to the desired Quiz structure.
+In this section, we demonstrate how to invoke the **structured output chain** to generate quizzes dynamically. The chain combines a prompt template and a structured output model to ensure the output adheres to the desired ```Quiz``` structure.
 
 ```python
 # Request the generation of a quiz based on a given topic

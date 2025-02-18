@@ -477,6 +477,13 @@ print("Manual Ids == Output Ids:", sorted(result) == sorted(uuids))
 ```
 
 
+<pre class="custom">Upserting documents...:   0%|          | 0/22 [00:00<?, ?it/s]</pre>
+
+
+    1359
+    Manual Ids == Output Ids: True
+    
+
 ### Delete items from vector store
 
 We can delete nodes by filter or ids with `delete_node` method.
