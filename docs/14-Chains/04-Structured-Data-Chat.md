@@ -29,13 +29,13 @@ pre {
 
 ## Overview
 
-This notebook demonstrates various data analysis and query techniques, combining traditional data processing with advanced AI-driven insights. By integrating pandas for data handling and LangChain for LLM-powered query resolution, it explores interactive and automated approaches to data exploration.
+This notebook demonstrates various data analysis and query techniques, combining traditional data processing with advanced AI-driven insights. By integrating Pandas for data handling and LangChain for LLM-powered query resolution, it explores interactive and automated approaches to data exploration.
 
 - **Data Loading and Preparation**  
-  The notebook begins by loading a Titanic dataset using pandas. The data is preprocessed and stored in a DataFrame (`df`). This section demonstrates how to read CSV files and prepare data for analysis.
+  The notebook begins by loading a Titanic dataset using pandas. The data is preprocessed and stored in a DataFrame (```df```). This section demonstrates how to read CSV files and prepare data for analysis.
 
 - **Interactive Query with LangChain Tools**  
-  Using LangChain's `PythonAstREPLTool`, the notebook allows direct interaction with the DataFrame via Python commands. This tool provides an intuitive way to execute queries and retrieve results dynamically within the notebook environment.
+  Using LangChain's ```PythonAstREPLTool```, the notebook allows direct interaction with the DataFrame via Python commands. This tool provides an intuitive way to execute queries and retrieve results dynamically within the notebook environment.
 
 - **Agent-Based Query System**  
   A key highlight of the notebook is the creation of an agent powered by LangChain and OpenAI models. This agent processes natural language queries and translates them into actionable insights using the dataset. For instance, it calculates survival rates based on specific conditions and provides context-aware responses.
@@ -123,7 +123,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-Alternatively, environment variables can also be set using a `.env` file.
+Alternatively, environment variables can also be set using a ```.env``` file.
 
 **[Note]**
 
@@ -510,7 +510,7 @@ tool.invoke(hello)
 
 ## Data Loading
 
-The `pd.read_csv` function is used to read the CSV file and store its contents in a structured tabular format. By calling `df.head()`, we can preview the first few rows of the dataset to understand its structure and ensure the data has been loaded correctly.
+The ```pd.read_csv``` function is used to read the CSV file and store its contents in a structured tabular format. By calling ```df.head```, we can preview the first few rows of the dataset to understand its structure and ensure the data has been loaded correctly.
 
 
 ```python
@@ -639,7 +639,7 @@ df.head()
 
 ## Pandas DataFrame Agent
 
-The Pandas DataFrame Agent allows you to interact with tabular data in a conversational and dynamic way. Using LangChain’s integration with tools like `ChatOpenAI` and `create_pandas_dataframe_agent`, you can perform complex queries on your DataFrame with natural language instructions. Below, we create an agent capable of analyzing the Titanic dataset and answering questions like survival rates based on specific criteria or data summary statistics.
+The **Pandas DataFrame Agent** allows you to interact with tabular data in a conversational and dynamic way. Using LangChain’s integration with tools like ```ChatOpenAI``` and ```create_pandas_dataframe_agent```, you can perform complex queries on your DataFrame with natural language instructions. Below, we create an agent capable of analyzing the Titanic dataset and answering questions like survival rates based on specific criteria or data summary statistics.
 
 ```python
 from langchain.agents.agent_types import AgentType
@@ -773,7 +773,7 @@ agent.invoke(
 
 ## Two or More DataFrames
 
-You can perform LLM-based queries based on two or more DataFrames. When entering two or more DataFrames, enclose them in `[]`.
+You can perform LLM-based queries based on two or more DataFrames. When entering two or more DataFrames, enclose them in ```[]```.
 
 
 ```python

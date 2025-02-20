@@ -23,20 +23,21 @@ pre {
 - Peer Review: [choincnp](https://github.com/choincnp), [Hye-yoonJeong](https://github.com/Hye-yoonJeong)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/07-MultiVectorRetriever.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/07-MultiVectorRetriever.ipynb)
 
 ## Overview
 
-In LangChain, there's a special feature called `MultiVectorRetriever` that enables efficient querying of documents in various contexts. This feature allows documents to be stored and managed with multiple vectors, significantly enhancing the accuracy and efficiency of information retrieval.
+`MultiVectorRetriever` enables efficient querying of documents in various contexts. 
+It allows documents to be stored and managed with **multiple vectors**, significantly enhancing the accuracy and efficiency of information retrieval.
 
 ### Table of Contents
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Methods for Generating Multiple Vectors Per Document](#methods-for-generating-multiple-vectors-per-document)
-- [Chunk + Original Document Retrieval](#chunk--original-document-retrieval)
-- [Storing summaries in vector storage](#storing-summaries-in-vector-storage)
-- [Utilizing Hypothetical Queries to explore document content](#utilizing-hypothetical-queries-to-explore-document-content)
+- [Methods to Create Multiple Vectors per Document](#methods-to-create-multiple-vectors-per-document)
+- [Creating Smaller Chunks](#creating-smaller-chunks)
+- [Storing Summary Embeddings](#storing-summary-embeddings)
+- [Utilizing Hypothetical Questions](#utilizing-hypothetical-questions)
 
 ### References
 
@@ -93,6 +94,12 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
+Alternatively, environment variables can also be set using a `.env` file.
+
+**[Note]**
+
+- This is not necessary if you've already set the environment variables in the previous step.
+
 ```python
 from dotenv import load_dotenv
 
@@ -106,18 +113,20 @@ load_dotenv(override=True)
 
 
 
-## Methods for Generating Multiple Vectors Per Document
+## Methods to Create Multiple Vectors per Document
 
-1. **Creating Small Chunks**: Divide the document into smaller chunks and generate separate embeddings for each chunk. This method enables a more granular focus on specific parts of the document. It can be implemented using the `ParentDocumentRetriever`, making it easier to explore detailed information.
+There are several approaches to creating multiple vectors for a given document.
+Some of them include:
 
-2. **Summary Embeddings**: Generate a summary for each document and create embeddings based on this summary. Summary embeddings are particularly useful for quickly grasping the core content of a document. By focusing only on the summary instead of analyzing the entire document, efficiency can be significantly improved.
+1. **Creating Smaller Chunks**: Split the document into smaller chunks and embed them. This method enables a more granular focus on specific parts of the document. It can be implemented using the `ParentDocumentRetriever`, making it easier to explore detailed information.
 
-3. **Utilizing Hypothetical Questions**: Create relevant hypothetical questions for each document and generate embeddings based on these questions. This approach is helpful when deeper exploration of specific topics or content is needed. Hypothetical questions enable a broader perspective on the document's content, facilitating a more comprehensive understanding.
+2. **Storing Summary Embeddings**: Create a summary for each document and embed it along with the original document. Summary embeddings are particularly useful for quickly grasping the core content of a document. By focusing only on the summary instead of analyzing the entire document, efficiency can be significantly improved.
+
+3. **Utilizing Hypothetical Questions**: Create relevant hypothetical questions for each document and embed them along with the original document. This approach is helpful when deeper exploration of specific topics or content is needed. Hypothetical questions enable a broader perspective on the document's content, facilitating a more comprehensive understanding.
 
 4. **Manual Addition**: Users can manually add specific questions or queries that should be considered during document retrieval. This method provides users with more control over the search process, allowing for customized searches tailored to their specific needs.
 
-
-The preprocessing process involves loading data from a text file and splitting the loaded documents into specified sizes.
+Let's first preprocess the document data by loading data from a text file, and splitting the loaded documents into specified sizes.
 
 The split documents can later be used for tasks such as vectorization and retrieval.
 
@@ -145,7 +154,7 @@ print(docs[5].page_content[:500])
     celona where ‘data sovereignty’
 </pre>
 
-## Chunk + Original Document Retrieval
+## Creating Smaller Chunks
 
 When searching through large volumes of information, embedding data into smaller chunks can be highly beneficial.
 
@@ -186,7 +195,7 @@ retriever = MultiVectorRetriever(
 # Generate document IDs
 doc_ids = [str(uuid.uuid4()) for _ in docs]
 
-# Verify two of the generated IDs
+# Check two of the generated IDs
 print(doc_ids[:2])
 ```
 
@@ -203,7 +212,7 @@ parent_text_splitter = RecursiveCharacterTextSplitter(chunk_size=600)
 child_text_splitter = RecursiveCharacterTextSplitter(chunk_size=200)
 ```
 
-Create Parent documents as larger chunks.
+Create **parent documents** , which are larger chunks.
 
 ```python
 parent_docs = []
@@ -215,7 +224,7 @@ for i, doc in enumerate(docs):
     parent_doc = parent_text_splitter.split_documents([doc])
 
     for _doc in parent_doc:
-        # Store the document ID in the metadata
+        # Set the document ID in the metadata
         _doc.metadata[id_key] = _id
     parent_docs.extend(parent_doc)
 ```
@@ -224,7 +233,7 @@ Verify the `doc_id` assigned to `parent_docs`
 
 
 ```python
-# Check the metadata of the generated Parent documents.
+# Check the metadata of the generated parent documents.
 parent_docs[0].metadata
 ```
 
@@ -249,7 +258,7 @@ parent_docs[0].metadata
 
 
 
-Create Child documents as relatively smaller chunks.
+Create **child documents** , which are relatively smaller chunks.
 
 ```python
 child_docs = []
@@ -259,7 +268,7 @@ for i, doc in enumerate(docs):
     # Split the current document into child documents
     child_doc = child_text_splitter.split_documents([doc])
     for _doc in child_doc:
-        # Store the document ID in the metadata
+        # Set the document ID in the metadata
         _doc.metadata[id_key] = _id
     child_docs.extend(child_doc)
 ```
@@ -267,7 +276,7 @@ for i, doc in enumerate(docs):
 Verify the `doc_id` assigned to `child_docs`.
 
 ```python
-# Check the metadata of the generated Child documents.
+# Check the metadata of the generated child documents.
 child_docs[0].metadata
 ```
 
@@ -303,11 +312,11 @@ print(f"Number of split child_docs: {len(child_docs)}")
     Number of split child_docs: 950
 </pre>
 
-Add the newly created smaller child document set to the vector store
+Add the newly created smaller child document set to the vector store.
 
-Next, map the parent documents to the generated UUIDs and add them to the `docstore`.
+Then, map the parent documents to the generated UUIDs and add them to the `docstore`.
 
-- Use the `mset()` method to store document IDs and their content as key-value pairs in the document store.
+- Use the `mset` method to store document IDs and their content as key-value pairs in the document store.
 
 ```python
 # Add both parent and child documents to the vector store
@@ -318,9 +327,9 @@ retriever.vectorstore.add_documents(child_docs)
 retriever.docstore.mset(list(zip(doc_ids, docs)))
 ```
 
-Perform Similarity Search and Display the Most Similar Document Chunk
+Perform similarity search, and display the most similar document chunks.
 
-Use the `retriever.vectorstore.similarity_search` method to search within child and parent document chunks.
+Use the `retriever.vectorstore.similarity_search` method to search within the child and parent document chunks.
 
 The first document chunk with the highest similarity will be displayed.
 
@@ -367,9 +376,9 @@ for chunk in relevant_chunks:
     
 </pre>
 
-Execute a Query Using the `retriever.invoke()` Method
+Execute a query using the `retriever.invoke` method.
 
-The `retriever.invoke()` method performs a search across the full content of the original documents.
+The `retriever.invoke` method performs a search across the full content of the original documents.
 
 ```python
 relevant_docs = retriever.invoke(
@@ -468,7 +477,7 @@ print(relevant_docs[0].page_content)
 
 The default search type performed by the retriever in the vector database is similarity search.
 
-LangChain Vector Stores also support searching using [Max Marginal Relevance](https://api.python.langchain.com/en/latest/vectorstores/langchain_core.vectorstores.VectorStore.html#langchain_core.vectorstores.VectorStore.max_marginal_relevance_search). 
+LangChain's `VectorStore` also support searching using [Max Marginal Relevance](https://api.python.langchain.com/en/latest/vectorstores/langchain_core.vectorstores.VectorStore.html#langchain_core.vectorstores.VectorStore.max_marginal_relevance_search). 
 
 If you want to use this method instead, you can configure the `search_type` property as follows.
 
@@ -688,11 +697,11 @@ print(
 <pre class="custom">0
 </pre>
 
-## Storing summaries in vector storage
+## Storing Summary Embeddings
 
 Summaries can often provide a more accurate extraction of the contents of a chunk, which can lead to better search results.
 
-This section describes how to generate summaries and how to embed them.
+This section describes how to generate summaries, and how to embed them.
 
 ```python
 # Importing libraries for loading PDF files and splitting text
@@ -874,7 +883,7 @@ print(result_docs[0].page_content)
     - The 2020 White Paper outlines a European approach to AI, emphasizing the importance of excellence and trust in AI systems.
 </pre>
 
-Use the `invoke()` of the `retriever` object to retrieve documents related to your question.
+Use the `invoke` method of the `retriever` object to retrieve documents related to the query.
 
 
 ```python
@@ -894,16 +903,16 @@ print(retrieved_docs[0].page_content)
     proach to Excellence and Trust. COM(2020) 65 final, Brussels: European Commission.
 </pre>
 
-## Utilizing Hypothetical Queries to explore document content
+## Utilizing Hypothetical Questions
 
-LLM can also be used to generate a list of questions that can be hypothesized about a particular document.
+An LLM can also be used to generate a list of questions that can be hypothesized about a particular document.
 
 These generated questions can be embedded to further explore and understand the content of the document.
 
-Generating hypothetical questions can help you identify key topics and concepts in your documentation, and can encourage readers to ask more questions about the content of your documentation.
+Generating hypothetical questions can help you identify key topics and concepts in your document, and can encourage readers to ask more questions about the content of your document.
 
 
-Below is an example of creating a hypothesis question utilizing `Function Calling`.
+Below is an example of creating a hypothesis question via **function calling** .
 
 ```python
 functions = [
@@ -954,7 +963,7 @@ hypothetical_query_chain = (
 
 Output the answers to the documents.
 
-- The output contains the three Hypothetical Queries you created.
+- The output contains the three hypothetical questions you created.
 
 
 ```python
@@ -993,7 +1002,7 @@ hypothetical_questions[33]
 
 
 
-Below is the process for storing the Hypothetical Queries you created in Vector Storage, the same way we did before.
+Below is the process for storing the **hypothetical questions** you created in the **vector store**, the same way we did before.
 
 
 ```python
@@ -1027,7 +1036,7 @@ for i, question_list in enumerate(hypothetical_questions):
     )
 ```
 
-Add the hypothesized query to the document, and add the original document to `docstore`.
+Add the `hypothetical_questions` to the document, and add the original document to `docstore`.
 
 
 ```python
@@ -1050,7 +1059,7 @@ result_docs = hypothetical_vectorstore.similarity_search(
 
 Below are the results of the similarity search.
 
-Here, we've only added the hypothesized query we created, so it returns the documents with the highest similarity among the hypothesized queries we created.
+Here, we've only added the hypothetical questions we created, so it returns the documents with the highest similarity among the stored hypothetical questions.
 
 
 ```python
