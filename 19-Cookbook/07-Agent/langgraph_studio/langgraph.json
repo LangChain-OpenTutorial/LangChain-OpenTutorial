@@ -1,0 +1,7 @@
+{
+    "graphs": {
+      "people_researcher": "./output_script.py:graph"
+    },
+    "env": "./.env",
+    "dependencies": ["."]
+  }
