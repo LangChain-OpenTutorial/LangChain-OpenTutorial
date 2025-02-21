@@ -1,0 +1,83 @@
+# Vector Stores
+faiss-cpu==1.9.0.post1
+langchain-chroma==0.2.0
+chromadb==0.5.23
+langchain-qdrant>=0.2.0
+langchain-milvus==0.1.7
+
+# Python Utilities
+python-dotenv==1.0.1
+certifi>=2024.12.14
+chardet==5.2.0
+pytesseract>=0.3.13
+lxml>=5.3.0
+pillow>=11.1.0
+pydantic>=2.10.5
+matplotlib>=3.10.0
+feedparser>=6.0.11
+pandas>=2.2.3
+anytree==2.12.1
+arxiv>=2.1.3
+pymupdf>=1.25.1
+pdfplumber>=0.11.5
+pdf2image==1.17.0
+olefile==0.47
+beautifulsoup4==4.12.3
+
+# LangChain Ecosystem
+langchain==0.3.13
+langchain-openai==0.2.14
+langchain-ollama==0.2.2
+langchain-anthropic==0.3.1
+langchain-upstage==0.4.0
+langchain-cohere==0.3.4
+langchain-google-genai==2.0.7
+langchain-huggingface==0.1.2
+langchain-together==0.2.0
+langchain-experimental>=0.3.4
+ragas==0.2.9
+langgraph==0.2.60
+
+# LLM Index and Readers
+llama-index-core==0.11.23
+llama-parse==0.5.19
+llama-index-readers-file==0.2.2
+markitdown==0.0.1a3
+
+# Pinecone
+pinecone-plugin-interface==0.0.7
+pinecone-plugin-inference==1.1.0
+pinecone-client==5.0.1
+pinecone==5.0.1
+
+# Elasticsearch
+elastic-transport==8.17.0
+simsimd==6.2.1
+elasticsearch==8.17.0
+langchain-elasticsearch==0.3.2
+
+# Database and Query Engines
+neo4j>=5.27.0
+langchain-neo4j>=0.2.0
+langchain-mongodb>=0.3.0
+pymongo>=4.10.1
+
+# Jupyter and Notebook Tools
+jupyter==1.1.1
+notebook==7.3.2
+
+# Unstructured Document Processing
+unstructured[all-docs]>=0.16.13
+openai>=1.59.7
+
+# Other AI Tools
+tiktoken>=0.8.0
+tavily-python>=0.5.0
+pyalex>=0.15.1
+
+# 윈도우 전용 패키지
+python-magic-bin>=0.4.14; sys_platform != "darwin"
+
+# macOS 전용 패키지
+mlx==0.22.0 ; sys_platform == "darwin"
+mlx-lm==0.21.1 ; sys_platform == "darwin"
