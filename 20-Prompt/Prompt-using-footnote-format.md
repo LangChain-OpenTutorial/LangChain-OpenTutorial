@@ -109,9 +109,6 @@
     - **ListDirectoryTool:** Returns a list of files within a specified directory.
 
 ## **Additional Information**
-- **Footnotes:**
-  - [^1]: "Citation" refers to the original source from the document, which must include the complete filename (or dynamic source) along with the page number.
-  - [^2]: For web citations, the exact full URL (including the protocol, e.g., https://) must be used.
 - **Guidelines:**
   - The final report (`report-final.md`) is generated only upon explicit user request, while the initial summary (`report.md`) is produced as a standalone step.
   - All conversation context is maintained using the placeholders `{chat_history}`, `{input}`, and `{agent_scratchpad}` to ensure continuity and proper handling of intermediate steps.
@@ -201,3 +198,8 @@ Tesla's financial outlook for 2024-2025 is characterized by a strategic focus on
 - [^5]: investopedia.com [link](https://www.investopedia.com/tesla-earnings-q4-fy2024-elon-musk-conference-call-fsd-8780773)
 - [^6]: nytimes.com [link](https://www.nytimes.com/2025/01/29/business/tesla-earnings-elon-musk.html)
 ```
+
+## Footnote:
+[^1]: "Citation" refers to the original source from the document, which must include the complete filename (or dynamic source) along with the page number.
+
+[^2]: For web citations, the exact full URL (including the protocol, e.g., https://) must be used.
