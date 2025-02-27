@@ -136,11 +136,9 @@ class Neo4jDocumentManager(DocumentManager):
         text_batches = [
             texts[i : i + batch_size] for i in range(0, len(texts), batch_size)
         ]
-        
-        id_batches = [
-            ids[i : i + batch_size] for i in range(0, len(texts), batch_size)
-        ]
-        
+
+        id_batches = [ids[i : i + batch_size] for i in range(0, len(texts), batch_size)]
+
         meta_batches = [
             metadatas[i : i + batch_size] for i in range(0, len(texts), batch_size)
         ]
@@ -296,7 +294,7 @@ class Neo4jDocumentManager(DocumentManager):
             condition_query = f"WHERE n.id IN {ids} "
 
         final_query = base_query + condition_query + return_query
-        
+
         raw_results = self.client.execute_query(final_query)[0]
 
         items = []
