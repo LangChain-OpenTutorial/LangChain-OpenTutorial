@@ -7,6 +7,7 @@ from hashlib import md5
 import os, time, uuid
 import contextlib
 import psycopg
+import sqlalchemy
 from sqlalchemy import SQLColumnExpression, cast, create_engine, delete, func, select
 from sqlalchemy.dialects.postgresql import JSON, JSONB, JSONPATH, UUID, insert
 from sqlalchemy.engine import Connection, Engine
@@ -43,6 +44,7 @@ from typing import (
 
 Base = declarative_base()
 
+
 def _create_vector_extension(conn: Connection) -> None:
     statement = sqlalchemy.text(
         "SELECT pg_advisory_xact_lock(1573678846307946496);"
@@ -50,6 +52,7 @@ def _create_vector_extension(conn: Connection) -> None:
     )
     conn.execute(statement)
     conn.commit()
+
 
 def _get_embedding_collection_store(vector_dimension: Optional[int] = None) -> Any:
     global _classes
@@ -84,7 +87,7 @@ def _get_embedding_collection_store(vector_dimension: Optional[int] = None) -> A
                 .filter(typing_cast(sqlalchemy.Column, cls.name) == name)
                 .first()
             )
-        
+
         @classmethod
         def get_or_create(
             cls,
@@ -142,27 +145,46 @@ def _get_embedding_collection_store(vector_dimension: Optional[int] = None) -> A
 
     return _classes
 
+
 class pgVectorIndexManager:
-    def __init__(self, connection_str=None, host=None, port=None, username=None, 
-                 user=None, password=None, passwd=None, dbname=None, db=None,
-                 collection_name=None, create_extension=True, dimension=None,
-                 pre_delete_collection = False):
+    def __init__(
+        self,
+        connection_str=None,
+        host=None,
+        port=None,
+        username=None,
+        user=None,
+        password=None,
+        passwd=None,
+        dbname=None,
+        db=None,
+        collection_name=None,
+        create_extension=True,
+        dimension=None,
+        pre_delete_collection=False,
+    ):
         if connection_str is not None:
             self.connection_str = connection_str
         else:
             assert host is not None, "host is missing"
             assert port is not None, "port is missing"
-            assert username is not None or user is not None, "username(or user) is missing"
-            assert password is not None or passwd is not None, "password(or passwd) is missing"
+            assert (
+                username is not None or user is not None
+            ), "username(or user) is missing"
+            assert (
+                password is not None or passwd is not None
+            ), "password(or passwd) is missing"
             assert dbname is not None or db is not None, "dbname(or db) is missing"
-            
+
             self.host = host
             self.port = port
             self.userName = username if username is not None else user
             self.passWord = password if password is not None else passwd
             self.dbName = dbname if dbname is not None else db
 
-            self.connection_str = "postgresql+psycopg://{userName}:{passWord}@{host}:{port}/{dbName}"
+            self.connection_str = (
+                "postgresql+psycopg://{userName}:{passWord}@{host}:{port}/{dbName}"
+            )
 
         self._engine = create_engine(url=self.connection_str, **{})
         self.collection_name = collection_name
@@ -177,7 +199,9 @@ class pgVectorIndexManager:
         if self.create_extension:
             self.create_vector_extension()
 
-        EmbeddingStore, CollectionStore = _get_embedding_collection_store(self.dimension)
+        EmbeddingStore, CollectionStore = _get_embedding_collection_store(
+            self.dimension
+        )
 
         self.CollectionStore = CollectionStore
         self.EmbeddingStore = EmbeddingStore
