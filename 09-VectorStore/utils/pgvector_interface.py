@@ -1,4 +1,4 @@
-from .vectordbinterface import DocumentManager
+from vectordbinterface import DocumentManager
 from langchain_core.documents import Document
 from typing import List, Union, Dict, Any, Optional, Iterable
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -25,8 +25,10 @@ from typing import (
 DISTANCE = {
     "cosine": "<=>",
     "l2": "<->",
-    "l1": '<+>',
+    "l1": "<+>",
 }
+
+
 class pgVectorIndexManager:
     def __init__(
         self,
@@ -37,13 +39,11 @@ class pgVectorIndexManager:
         password=None,
         passwd=None,
         dbname=None,
-        db=None
+        db=None,
     ):
         assert host is not None, "host is missing"
         assert port is not None, "port is missing"
-        assert (
-            username is not None or user is not None
-        ), "username(or user) is missing"
+        assert username is not None or user is not None, "username(or user) is missing"
         assert (
             password is not None or passwd is not None
         ), "password(or passwd) is missing"
@@ -56,7 +56,13 @@ class pgVectorIndexManager:
         self.dbName = dbname if dbname is not None else db
 
     def _connect(self):
-        return psycopg2.connect(database=self.dbName, user=self.userName, password=self.passWord, port=self.port, host=self.host)
+        return psycopg2.connect(
+            database=self.dbName,
+            user=self.userName,
+            password=self.passWord,
+            port=self.port,
+            host=self.host,
+        )
 
     def list_indexes(self):
         query = """
@@ -65,12 +71,12 @@ class pgVectorIndexManager:
         WHERE table_schema = 'public'
         AND table_type = 'BASE TABLE';
         """
-        
+
         try:
             with self._connect() as conn:
                 cur = conn.cursor()
                 cur.execute(query)
-                
+
         except Exception as e:
             msg = f"List collection failed due to {type(e)} {str(e)}"
         else:
@@ -90,13 +96,15 @@ class pgVectorIndexManager:
                 conn.commit()
         except Exception as e:
             flag = False
-            msg = f"Delete collection {collection_name} failed due to {type(e)} {str(e)}"
+            msg = (
+                f"Delete collection {collection_name} failed due to {type(e)} {str(e)}"
+            )
         else:
             flag = True
             msg = f"Deleted collection {collection_name} successfully."
         finally:
             conn.close()
-            print(msg)            
+            print(msg)
             return flag
 
     def _check_extension(self):
@@ -111,7 +119,7 @@ class pgVectorIndexManager:
         finally:
             conn.close()
 
-        if 'vector' not in extensions:
+        if "vector" not in extensions:
             try:
                 with self._connect() as conn:
                     cur = conn.cursor()
@@ -119,15 +127,27 @@ class pgVectorIndexManager:
                     conn.commit()
             finally:
                 conn.close()
-            
+
     def get_index(self, collection_name, embedding):
-        connection_info = {"host": self.host, "port": self.port, "user": self.userName, "password": self.passWord, "dbname": self.dbName}
-        return pgVectorDocumentManager(connection_info=connection_info, collection_name=collection_name, embedding=embedding)
+        connection_info = {
+            "host": self.host,
+            "port": self.port,
+            "user": self.userName,
+            "password": self.passWord,
+            "dbname": self.dbName,
+        }
+        return pgVectorDocumentManager(
+            connection_info=connection_info,
+            collection_name=collection_name,
+            embedding=embedding,
+        )
 
     def create_index(self, collection_name, dimension=None, embedding=None):
         self._check_extension()
 
-        assert embedding is not None or dimension is not None, "One of embedding or dimension must be provided"
+        assert (
+            embedding is not None or dimension is not None
+        ), "One of embedding or dimension must be provided"
 
         if dimension is None:
             dimension = len(embedding.embed_query("foo"))
@@ -138,14 +158,16 @@ class pgVectorIndexManager:
             f"embedding vector({dimension}) NOT NULL,"
             "metadata jsonb NULL, "
             "doc_id text NOT NULL UNIQUE)"
-            )
+        )
         try:
             with self._connect() as conn:
                 cur = conn.cursor()
                 cur.execute(query)
                 conn.commit()
         except Exception as e:
-            msg = f"Create collection {collection_name} failed due to {type(e)} {str(e)}"
+            msg = (
+                f"Create collection {collection_name} failed due to {type(e)} {str(e)}"
+            )
             flag = False
         else:
             msg = f"Created collection {collection_name} successfully"
@@ -155,8 +177,9 @@ class pgVectorIndexManager:
             conn.close()
             return flag
 
+
 class pgVectorDocumentManager(DocumentManager):
-    def __init__(self, connection_info, collection_name, embedding, distance='cosine'):
+    def __init__(self, connection_info, collection_name, embedding, distance="cosine"):
         self.collection_name = collection_name
         self.connection_info = connection_info
         self.embedding = embedding
@@ -169,14 +192,11 @@ class pgVectorDocumentManager(DocumentManager):
         embedded = self.embedding.embed_documents(texts)
         return embedded
 
-    def upsert(
-        self,
-        texts,
-        metadatas=None,
-        ids=None,
-        **kwargs):
+    def upsert(self, texts, metadatas=None, ids=None, **kwargs):
         if ids is not None:
-            assert len(ids) == len(texts), "The length of ids and texts must be the same."
+            assert len(ids) == len(
+                texts
+            ), "The length of ids and texts must be the same."
 
         elif ids is None:
             ids = [md5(text.lower().encode("utf-8")).hexdigest() for text in texts]
@@ -184,7 +204,15 @@ class pgVectorDocumentManager(DocumentManager):
         embeds = self._embed_doc(texts)
 
         params = [
-            (json.dumps(embed), json.dumps(metadata) if metadata else "", doc_id, json.dumps(metadata) if metadata else "") for embed, metadata, doc_id, metadata in zip(embeds, metadatas, ids, metadatas)
+            (
+                json.dumps(embed),
+                json.dumps(metadata) if metadata else "",
+                doc_id,
+                json.dumps(metadata) if metadata else "",
+            )
+            for embed, metadata, doc_id, metadata in zip(
+                embeds, metadatas, ids, metadatas
+            )
         ]
 
         query = (
@@ -194,7 +222,6 @@ class pgVectorDocumentManager(DocumentManager):
             "ON CONFLICT(doc_id) "
             "DO UPDATE "
             "SET metadata=%s"
-
         )
 
         try:
@@ -212,7 +239,9 @@ class pgVectorDocumentManager(DocumentManager):
             conn.close()
             return ids
 
-    def upsert_parallel(self, texts, metadatas, ids, batch_size=32, workers=10, **kwargs):
+    def upsert_parallel(
+        self, texts, metadatas, ids, batch_size=32, workers=10, **kwargs
+    ):
         if ids is not None:
             assert len(ids) == len(texts), "Size of documents and ids must be the same"
 
@@ -250,7 +279,7 @@ class pgVectorDocumentManager(DocumentManager):
 
         return results
 
-    def search(self, query, k=10, distance='cosine', **kwargs):
+    def search(self, query, k=10, distance="cosine", **kwargs):
         self.distance = distance.lower()
         embeded_query = json.dumps(self.embedding.embed_query(query))
         search_query = (
@@ -260,24 +289,37 @@ class pgVectorDocumentManager(DocumentManager):
         try:
             with self._connect() as conn:
                 cur = conn.cursor()
-                cur.execute(search_query, (embeded_query,embeded_query))
+                cur.execute(search_query, (embeded_query, embeded_query))
         except Exception as e:
             print(f"Search failed due to {type(e)} {str(e)}")
             conn.rollback()
         else:
             _result = cur.fetchall()
-            result = list()
-
-            for _r in _result:
-                result.append(
-                    {"doc_id":_r[0], "metadata": _r[1], "score": _r[2]}
-                )
+            result = [
+                {"doc_id": _r[0], "metadata": _r[1], "score": _r[2]} for _r in _result
+            ]
         finally:
             conn.close()
             return result
 
     def delete(self, ids=None, filters=None, **kwargs):
-        pass
+        if ids is not None:
+            format_str = ",".join(["%s"] * len(ids))
+            query = f"DELETE FROM {self.collection_name} WHERE doc_id IN (%s)"
+
+        try:
+            with self._connect() as conn:
+                cur = conn.cursor()
+                cur.execute(query % format_str, ids)
+        except Exception as e:
+            msg = f"Delete failed due to {type(e)} {str(e)}"
+            conn.rollback()
+        else:
+            msg = "Delete by id successful"
+            conn.commit()
+        finally:
+            print(msg)
+            conn.close()
 
     def scroll(self):
         pass
