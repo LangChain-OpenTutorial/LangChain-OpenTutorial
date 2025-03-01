@@ -28,6 +28,26 @@ DISTANCE = {
     "l1": "<+>",
 }
 
+COMPARISION_OPERATORS = {
+    "$eq": "==",
+    "$ne": "!=",
+    "$lt": "<",
+    "$lte": "<=",
+    "$gt": ">",
+    "$gte": ">=",
+}
+
+OPERATORS = {
+    "$in" : "IN",
+    "$nin": "NOT IN",
+    "$between": "BETWEEN",
+    "$exists": "EXISTS",
+    "$like": "LIKE",
+    "$ilike": "IN LIKE",
+    "$and": "AND", 
+    "$or": "OR", 
+    "$not": "NOT"
+}
 
 class pgVectorIndexManager:
     def __init__(
@@ -302,15 +322,60 @@ class pgVectorDocumentManager(DocumentManager):
             conn.close()
             return result
 
+    def _type_cast(self, keys):
+        tmps = []
+        for key in keys:
+            tmps.append( "jsonb_typeof(cmetadata -> %s)")
+
+        query = "SELECT " + ','.join(tmps) + f" FROM {self.collection_name} LIMIT 1"
+        print(query)
+        params = keys
+        try:
+            with self._connect() as conn:
+                cur = conn.cursor()
+                cur.execute(query, tuple(params))
+        except Exception as e:
+            print(f"Detect type failed due to {type(e)} {str(e)}")
+            conn.rollback()
+        else:
+            types = [d for d in cur.fetchall()[0]]
+        finally:
+            conn.close()
+            return {k:t for k, t in zip(keys, types)}
+        
+
     def delete(self, ids=None, filters=None, **kwargs):
+        """
+        filters = {"meta_key": {"operator_type": "operator", "value": "values"}}
+        """
+        
+        assert not(ids is not None and filters is not None), "Provide only one of ids or filters, not both"
+        
         if ids is not None:
             format_str = ",".join(["%s"] * len(ids))
             query = f"DELETE FROM {self.collection_name} WHERE doc_id IN (%s)"
+            params = ids
+
+        elif filters is not None:
+            query = f"DELETE FROM {self.collection_name} WHERE "
+            filter_tmp = []
+            format_len = 0
+            types = self._type_cast(list(filters.keys()))
+            params = []
+            for k, v in filters.items():
+                print(k, v)
+                tmp_str = f"CAST(cmetadata->'{k}' AS {types[k]}) {OPERATORS[v['operator_type']]} (%s)"
+                filter_tmp.append(tmp_str)
+                format_len += len(v['value'])
+                params.extend(v['value'])
+            filter_query = ' AND '.join(filter_tmp)
+            format_str = ",".join(["%s"]*format_len)
+            query += filter_query
 
         try:
             with self._connect() as conn:
                 cur = conn.cursor()
-                cur.execute(query % format_str, ids)
+                cur.execute(query % format_str, params)
         except Exception as e:
             msg = f"Delete failed due to {type(e)} {str(e)}"
             conn.rollback()
