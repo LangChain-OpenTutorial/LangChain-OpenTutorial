@@ -4,7 +4,7 @@ from typing import List, Union, Dict, Any, Optional, Iterable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm.auto import tqdm
 from hashlib import md5
-import os, time, uuid, json
+import os, time, uuid, json, enum
 import contextlib
 
 import sqlalchemy, psycopg2
@@ -52,18 +52,39 @@ from typing import (
     Union,
 )
 
-TYPE_CAST = {
-    "number": "numeric",
-    "string": "text",
-}
+# TYPE_CAST = {
+#     "number": "numeric",
+#     "string": "text",
+# }
 
-DISTANCE = {
-    "cosine": "<=>",
-    "l2": "<->",
-    "l1": "<+>",
-}
+# DISTANCE = {
+#     "cosine": "<=>",
+#     "l2": "<->",
+#     "l1": "<+>",
+# }
 
-COMPARISION_OPERATORS = {
+# COMPARISION_OPERATORS = {
+#     "$eq": "==",
+#     "$ne": "!=",
+#     "$lt": "<",
+#     "$lte": "<=",
+#     "$gt": ">",
+#     "$gte": ">=",
+# }
+
+# OPERATORS = {
+#     "$in": "IN",
+#     "$nin": "NOT IN",
+#     "$between": "BETWEEN",
+#     "$exists": "EXISTS",
+#     "$like": "LIKE",
+#     "$ilike": "IN LIKE",
+#     "$and": "AND",
+#     "$or": "OR",
+#     "$not": "NOT",
+# }
+
+COMPARISONS_TO_NATIVE = {
     "$eq": "==",
     "$ne": "!=",
     "$lt": "<",
@@ -72,21 +93,46 @@ COMPARISION_OPERATORS = {
     "$gte": ">=",
 }
 
-OPERATORS = {
-    "$in": "IN",
-    "$nin": "NOT IN",
-    "$between": "BETWEEN",
-    "$exists": "EXISTS",
-    "$like": "LIKE",
-    "$ilike": "IN LIKE",
-    "$and": "AND",
-    "$or": "OR",
-    "$not": "NOT",
+SPECIAL_CASED_OPERATORS = {
+    "$in",
+    "$nin",
+    "$between",
+    "$exists",
 }
 
+TEXT_OPERATORS = {
+    "$like",
+    "$ilike",
+}
+
+LOGICAL_OPERATORS = {"$and", "$or", "$not"}
+
+SUPPORTED_OPERATORS = (
+    set(COMPARISONS_TO_NATIVE)
+    .union(TEXT_OPERATORS)
+    .union(LOGICAL_OPERATORS)
+    .union(SPECIAL_CASED_OPERATORS)
+)
+
 Base = declarative_base()
+_classes: Any = None
+
+
+class DistanceStrategy(str, enum.Enum):
+    """Enumerator of the Distance strategies."""
+
+    EUCLIDEAN = "l2"
+    COSINE = "cosine"
+    MAX_INNER_PRODUCT = "inner"
+
+
+DEFAULT_DISTANCE_STRATEGY = DistanceStrategy.COSINE
+
 
 def _get_embedding_collection_store(vector_dimension: Optional[int] = None) -> Any:
+    global _classes
+    if _classes is not None:
+        return _classes
 
     class CollectionStore(Base):
         """Collection store."""
@@ -169,8 +215,8 @@ def _get_embedding_collection_store(vector_dimension: Optional[int] = None) -> A
         )
 
     _classes = (EmbeddingStore, CollectionStore)
-
     return _classes
+
 
 class pgVectorIndexManager:
     def __init__(
@@ -197,8 +243,8 @@ class pgVectorIndexManager:
         self.userName = username if username is not None else user
         self.passWord = password if password is not None else passwd
         self.dbName = dbname if dbname is not None else db
-        connection = f"postgresql+psycopg://{self.userName}:{self.passWord}@{self.host}:{self.port}/{self.dbName}"
-        self._engine = create_engine(url=connection, **({}))
+        self.connection_str = f"postgresql+psycopg://{self.userName}:{self.passWord}@{self.host}:{self.port}/{self.dbName}"
+        self._engine = create_engine(url=self.connection_str, **({}))
         self.session_maker: scoped_session
         self.session_maker = scoped_session(sessionmaker(bind=self._engine))
         self.collection_metadata = None
@@ -298,7 +344,9 @@ class pgVectorIndexManager:
             self.dimension = len(embedding.embed_query("foo"))
 
         self._check_extension()
-        EmbeddingStore, CollectionStore = _get_embedding_collection_store(self.dimension)
+        EmbeddingStore, CollectionStore = _get_embedding_collection_store(
+            self.dimension
+        )
 
         self.CollectionStore = CollectionStore
         self.EmbeddingStore = EmbeddingStore
@@ -309,46 +357,64 @@ class pgVectorIndexManager:
                 )
                 session.commit()
         except Exception as e:
-            print(f"Creating new collection {self.collection_name} failed due to {type(e)} {str(e)}")
+            print(
+                f"Creating new collection {self.collection_name} failed due to {type(e)} {str(e)}"
+            )
         else:
-            return self.CollectionStore
-        
-    def get_index(self, collection_name, embedding):
-        self.embedding = embedding
-        EmbeddingStore, CollectionStore = _get_embedding_collection_store()
-        self.collection_name = collection_name
-        self.CollectionStore = CollectionStore
-        try:
-            with self._make_sync_session() as session:
-                self.CollectionStore.get_or_create(
-                    session, self.collection_name, cmetadata=None
-                )
-                session.commit()
-        except Exception as e:
-            print(f"Creating new collection {self.collection_name} failed due to {type(e)} {str(e)}")
-        else:
-            return self.CollectionStore
+            return pgVectorDocumentManager(
+                embedding=embedding,
+                connection_info=self.connection_str,
+                collection_name=collection_name,
+            )
 
+    def get_index(self, embedding, collection_name):
+        return pgVectorDocumentManager(
+            embedding=embedding,
+            connection_info=self.connection_str,
+            collection_name=collection_name,
+        )
 
 
 class pgVectorDocumentManager(DocumentManager):
-    def __init__(self, embedding, connection_info=None, collection_name=None, distance="cosine"):
-        self.connection_info = connection_info
-        self._engine = create_engine(url=self._make_conn_string(), **({}))
+    def __init__(
+        self, embedding, connection_info=None, collection_name=None, distance="cosine"
+    ):
+        if isinstance(connection_info, str):
+            self.connection_info = connection_info
+        elif isinstance(connection_info, dict):
+            self.connection_info = self._make_conn_string(connection_info)
+        self._engine = create_engine(url=self.connection_info, **({}))
         self.session_maker: scoped_session
         self.session_maker = scoped_session(sessionmaker(bind=self._engine))
         self.collection_metadata = None
         self.collection_name = collection_name
-        EmbeddingStore, CollectionStore = _get_embedding_collection_store()
+        self.EmbeddingStore, self.CollectionStore = _get_embedding_collection_store()
+        with self._make_sync_session() as session:
+            self.CollectionStore.get_by_name(session, self.collection_name)
         self.embedding = embedding
         self.distance = distance.lower()
+        self._distance_strategy = DEFAULT_DISTANCE_STRATEGY
 
-    def _make_conn_string(self):
-        self.userName = self.connection_info.get('user', 'langchain')
-        self.passWord = self.connection_info.get('password', 'langchain')
-        self.host = self.connection_info.get('host', 'localhost')
-        self.port = self.connection_info.get('port', 6024)
-        self.dbName = self.connection_info.get('dbname', 'langchain')
+    @property
+    def distance_strategy(self) -> Any:
+        if self._distance_strategy == DistanceStrategy.EUCLIDEAN:
+            return self.EmbeddingStore.embedding.l2_distance
+        elif self._distance_strategy == DistanceStrategy.COSINE:
+            return self.EmbeddingStore.embedding.cosine_distance
+        elif self._distance_strategy == DistanceStrategy.MAX_INNER_PRODUCT:
+            return self.EmbeddingStore.embedding.max_inner_product
+        else:
+            raise ValueError(
+                f"Got unexpected value for distance: {self._distance_strategy}. "
+                f"Should be one of {', '.join([ds.value for ds in DistanceStrategy])}."
+            )
+
+    def _make_conn_string(self, connection_info):
+        self.userName = connection_info.get("user", "langchain")
+        self.passWord = connection_info.get("password", "langchain")
+        self.host = connection_info.get("host", "localhost")
+        self.port = connection_info.get("port", 6024)
+        self.dbName = connection_info.get("dbname", "langchain")
         connection_str = f"postgresql+psycopg://{self.userName}:{self.passWord}@{self.host}:{self.port}/{self.dbName}"
         return connection_str
 
@@ -370,41 +436,38 @@ class pgVectorDocumentManager(DocumentManager):
 
         embeds = self._embed_doc(texts)
 
-        params = [
-            (
-                json.dumps(embed),
-                json.dumps(metadata) if metadata else "",
-                doc_id,
-                json.dumps(metadata) if metadata else "",
-            )
-            for embed, metadata, doc_id, metadata in zip(
-                embeds, metadatas, ids, metadatas
-            )
-        ]
+        with self._make_sync_session() as session:
+            collection = self.CollectionStore.get_by_name(session, self.collection_name)
+            collection_id = collection.uuid
+            try:
+                data = [
+                    {
+                        "id": doc_id,
+                        "collection_id": collection_id,
+                        "embedding": embed,
+                        "document": text,
+                        "cmetadata": metadata,
+                    }
+                    for embed, text, metadata, doc_id in zip(
+                        embeds, texts, metadatas, ids
+                    )
+                ]
 
-        query = (
-            f"INSERT INTO {self.collection_name} "
-            "(embedding, metadata, doc_id) "
-            "VALUES (%s,%s,%s) "
-            "ON CONFLICT(doc_id) "
-            "DO UPDATE "
-            "SET metadata=%s"
-        )
-
-        try:
-            with self._connect() as conn:
-                cur = conn.cursor()
-                cur.executemany(query, params)
-        except Exception as e:
-            msg = f"Error occured during upsert documents due to {type(e)} {str(e)}"
-            conn.rollback()
-        else:
-            conn.commit()
-            msg = f"Upsert successful"
-        finally:
-            print(msg)
-            conn.close()
-            return ids
+                stmt = insert(self.EmbeddingStore).values(data)
+                on_conflict_stmt = stmt.on_conflict_do_update(
+                    index_elements=["id"],
+                    set_={
+                        "embedding": stmt.excluded.embedding,
+                        "document": stmt.excluded.document,
+                        "cmetadata": stmt.excluded.cmetadata,
+                    },
+                )
+                session.execute(on_conflict_stmt)
+                session.commit()
+            except Exception as e:
+                print(f"Upsert failed due to {type(e)} {str(e)}")
+            finally:
+                return ids
 
     def upsert_parallel(
         self, texts, metadatas, ids, batch_size=32, workers=10, **kwargs
@@ -446,49 +509,273 @@ class pgVectorDocumentManager(DocumentManager):
 
         return results
 
-    def search(self, query, k=10, distance="cosine", **kwargs):
+    def search(self, query, k=10, distance="cosine", filter=None, **kwargs):
         self.distance = distance.lower()
-        embeded_query = json.dumps(self.embedding.embed_query(query))
-        search_query = (
-            f"SELECT doc_id, metadata, 1-(embedding {DISTANCE[self.distance]} %s) FROM {self.collection_name} "
-            f"ORDER BY embedding {DISTANCE[self.distance]} %s;"
-        )
-        try:
-            with self._connect() as conn:
-                cur = conn.cursor()
-                cur.execute(search_query, (embeded_query, embeded_query))
-        except Exception as e:
-            print(f"Search failed due to {type(e)} {str(e)}")
-            conn.rollback()
-        else:
-            _result = cur.fetchall()
-            result = [
-                {"doc_id": _r[0], "metadata": _r[1], "score": _r[2]} for _r in _result
-            ]
-        finally:
-            conn.close()
-            return result
+        embeded_query = self.embedding.embed_query(query)
+        return self.__query_collection(embeded_query, k, filter)
 
-    def _type_cast(self, keys):
-        tmps = []
-        for key in keys:
-            tmps.append("jsonb_typeof(cmetadata -> %s)")
+    def _create_filter_clause(self, filters: Any) -> Any:
+        """Convert LangChain IR filter representation to matching SQLAlchemy clauses.
 
-        query = "SELECT " + ",".join(tmps) + f" FROM {self.collection_name} LIMIT 1"
-        print(query)
-        params = keys
-        try:
-            with self._connect() as conn:
-                cur = conn.cursor()
-                cur.execute(query, tuple(params))
-        except Exception as e:
-            print(f"Detect type failed due to {type(e)} {str(e)}")
-            conn.rollback()
+        At the top level, we still don't know if we're working with a field
+        or an operator for the keys. After we've determined that we can
+        call the appropriate logic to handle filter creation.
+
+        Args:
+            filters: Dictionary of filters to apply to the query.
+
+        Returns:
+            SQLAlchemy clause to apply to the query.
+        """
+        if isinstance(filters, dict):
+            if len(filters) == 1:
+                # The only operators allowed at the top level are $AND, $OR, and $NOT
+                # First check if an operator or a field
+                key, value = list(filters.items())[0]
+                if key.startswith("$"):
+                    # Then it's an operator
+                    if key.lower() not in ["$and", "$or", "$not"]:
+                        raise ValueError(
+                            f"Invalid filter condition. Expected $and, $or or $not "
+                            f"but got: {key}"
+                        )
+                else:
+                    # Then it's a field
+                    return self._handle_field_filter(key, filters[key])
+
+                if key.lower() == "$and":
+                    if not isinstance(value, list):
+                        raise ValueError(
+                            f"Expected a list, but got {type(value)} for value: {value}"
+                        )
+                    and_ = [self._create_filter_clause(el) for el in value]
+                    if len(and_) > 1:
+                        return sqlalchemy.and_(*and_)
+                    elif len(and_) == 1:
+                        return and_[0]
+                    else:
+                        raise ValueError(
+                            "Invalid filter condition. Expected a dictionary "
+                            "but got an empty dictionary"
+                        )
+                elif key.lower() == "$or":
+                    if not isinstance(value, list):
+                        raise ValueError(
+                            f"Expected a list, but got {type(value)} for value: {value}"
+                        )
+                    or_ = [self._create_filter_clause(el) for el in value]
+                    if len(or_) > 1:
+                        return sqlalchemy.or_(*or_)
+                    elif len(or_) == 1:
+                        return or_[0]
+                    else:
+                        raise ValueError(
+                            "Invalid filter condition. Expected a dictionary "
+                            "but got an empty dictionary"
+                        )
+                elif key.lower() == "$not":
+                    if isinstance(value, list):
+                        not_conditions = [
+                            self._create_filter_clause(item) for item in value
+                        ]
+                        not_ = sqlalchemy.and_(
+                            *[
+                                sqlalchemy.not_(condition)
+                                for condition in not_conditions
+                            ]
+                        )
+                        return not_
+                    elif isinstance(value, dict):
+                        not_ = self._create_filter_clause(value)
+                        return sqlalchemy.not_(not_)
+                    else:
+                        raise ValueError(
+                            f"Invalid filter condition. Expected a dictionary "
+                            f"or a list but got: {type(value)}"
+                        )
+                else:
+                    raise ValueError(
+                        f"Invalid filter condition. Expected $and, $or or $not "
+                        f"but got: {key}"
+                    )
+            elif len(filters) > 1:
+                # Then all keys have to be fields (they cannot be operators)
+                for key in filters.keys():
+                    if key.startswith("$"):
+                        raise ValueError(
+                            f"Invalid filter condition. Expected a field but got: {key}"
+                        )
+                # These should all be fields and combined using an $and operator
+                and_ = [self._handle_field_filter(k, v) for k, v in filters.items()]
+                if len(and_) > 1:
+                    return sqlalchemy.and_(*and_)
+                elif len(and_) == 1:
+                    return and_[0]
+                else:
+                    raise ValueError(
+                        "Invalid filter condition. Expected a dictionary "
+                        "but got an empty dictionary"
+                    )
+            else:
+                raise ValueError("Got an empty dictionary for filters.")
         else:
-            types = [d for d in cur.fetchall()[0]]
-        finally:
-            conn.close()
-            return {k: t for k, t in zip(keys, types)}
+            raise ValueError(
+                f"Invalid type: Expected a dictionary but got type: {type(filters)}"
+            )
+
+    def _handle_field_filter(
+        self,
+        field: str,
+        value: Any,
+    ) -> SQLColumnExpression:
+        """Create a filter for a specific field.
+
+        Args:
+            field: name of field
+            value: value to filter
+                If provided as is then this will be an equality filter
+                If provided as a dictionary then this will be a filter, the key
+                will be the operator and the value will be the value to filter by
+
+        Returns:
+            sqlalchemy expression
+        """
+        if not isinstance(field, str):
+            raise ValueError(
+                f"field should be a string but got: {type(field)} with value: {field}"
+            )
+
+        if field.startswith("$"):
+            raise ValueError(
+                f"Invalid filter condition. Expected a field but got an operator: "
+                f"{field}"
+            )
+
+        # Allow [a-zA-Z0-9_], disallow $ for now until we support escape characters
+        if not field.isidentifier():
+            raise ValueError(
+                f"Invalid field name: {field}. Expected a valid identifier."
+            )
+
+        if isinstance(value, dict):
+            # This is a filter specification
+            if len(value) != 1:
+                raise ValueError(
+                    "Invalid filter condition. Expected a value which "
+                    "is a dictionary with a single key that corresponds to an operator "
+                    f"but got a dictionary with {len(value)} keys. The first few "
+                    f"keys are: {list(value.keys())[:3]}"
+                )
+            operator, filter_value = list(value.items())[0]
+            # Verify that that operator is an operator
+            if operator not in SUPPORTED_OPERATORS:
+                raise ValueError(
+                    f"Invalid operator: {operator}. "
+                    f"Expected one of {SUPPORTED_OPERATORS}"
+                )
+        else:  # Then we assume an equality operator
+            operator = "$eq"
+            filter_value = value
+
+        if operator in COMPARISONS_TO_NATIVE:
+            # Then we implement an equality filter
+            # native is trusted input
+            native = COMPARISONS_TO_NATIVE[operator]
+            return func.jsonb_path_match(
+                self.EmbeddingStore.cmetadata,
+                cast(f"$.{field} {native} $value", JSONPATH),
+                cast({"value": filter_value}, JSONB),
+            )
+        elif operator == "$between":
+            # Use AND with two comparisons
+            low, high = filter_value
+
+            lower_bound = func.jsonb_path_match(
+                self.EmbeddingStore.cmetadata,
+                cast(f"$.{field} >= $value", JSONPATH),
+                cast({"value": low}, JSONB),
+            )
+            upper_bound = func.jsonb_path_match(
+                self.EmbeddingStore.cmetadata,
+                cast(f"$.{field} <= $value", JSONPATH),
+                cast({"value": high}, JSONB),
+            )
+            return sqlalchemy.and_(lower_bound, upper_bound)
+        elif operator in {"$in", "$nin", "$like", "$ilike"}:
+            # We'll do force coercion to text
+            if operator in {"$in", "$nin"}:
+                for val in filter_value:
+                    if not isinstance(val, (str, int, float)):
+                        raise NotImplementedError(
+                            f"Unsupported type: {type(val)} for value: {val}"
+                        )
+
+                    if isinstance(val, bool):  # b/c bool is an instance of int
+                        raise NotImplementedError(
+                            f"Unsupported type: {type(val)} for value: {val}"
+                        )
+
+            queried_field = self.EmbeddingStore.cmetadata[field].astext
+
+            if operator in {"$in"}:
+                return queried_field.in_([str(val) for val in filter_value])
+            elif operator in {"$nin"}:
+                return ~queried_field.in_([str(val) for val in filter_value])
+            elif operator in {"$like"}:
+                return queried_field.like(filter_value)
+            elif operator in {"$ilike"}:
+                return queried_field.ilike(filter_value)
+            else:
+                raise NotImplementedError()
+        elif operator == "$exists":
+            if not isinstance(filter_value, bool):
+                raise ValueError(
+                    "Expected a boolean value for $exists "
+                    f"operator, but got: {filter_value}"
+                )
+            condition = func.jsonb_exists(
+                self.EmbeddingStore.cmetadata,
+                field,
+            )
+            return condition if filter_value else ~condition
+        else:
+            raise NotImplementedError()
+
+    def __query_collection(
+        self,
+        embedding: List[float],
+        k: int = 4,
+        filter: Optional[Dict[str, str]] = None,
+    ) -> Sequence[Any]:
+        """Query the collection."""
+        with self._make_sync_session() as session:  # type: ignore[arg-type]
+            collection = self.CollectionStore.get_by_name(
+                session, name=self.collection_name
+            )
+            if not collection:
+                raise ValueError("Collection not found")
+
+            filter_by = [self.EmbeddingStore.collection_id == collection.uuid]
+            if filter:
+                filter_clauses = self._create_filter_clause(filter)
+                if filter_clauses is not None:
+                    filter_by.append(filter_clauses)
+
+            results: List[Any] = (
+                session.query(
+                    self.EmbeddingStore,
+                    self.distance_strategy(embedding).label("distance"),
+                )
+                .filter(*filter_by)
+                .order_by(sqlalchemy.asc("distance"))
+                .join(
+                    self.CollectionStore,
+                    self.EmbeddingStore.collection_id == self.CollectionStore.uuid,
+                )
+                .limit(k)
+                .all()
+            )
+        return results
 
     @contextlib.contextmanager
     def _make_sync_session(self) -> Generator[Session, None, None]:
@@ -496,49 +783,52 @@ class pgVectorDocumentManager(DocumentManager):
         with self.session_maker() as session:
             yield typing_cast(Session, session)
 
-    def delete(self, ids=None, filters=None, **kwargs):
-        """
-        filters = {"meta_key": {"operator_type": "operator", "value": "values"}}
-        """
+    # def delete(self, ids=None, filters=None, **kwargs):
+    #     """
+    #     filters = {"meta_key": {"operator_type": "operator", "value": "values"}}
+    #     """
 
-        assert not (
-            ids is not None and filters is not None
-        ), "Provide only one of ids or filters, not both"
+    #     assert not (
+    #         ids is not None and filters is not None
+    #     ), "Provide only one of ids or filters, not both"
 
-        if ids is not None:
-            format_str = ",".join(["%s"] * len(ids))
-            query = f"DELETE FROM {self.collection_name} WHERE doc_id IN (%s)"
-            params = ids
+    #     if ids is not None:
+    #         format_str = ",".join(["%s"] * len(ids))
+    #         query = f"DELETE FROM {self.collection_name} WHERE doc_id IN (%s)"
+    #         params = ids
 
-        elif filters is not None:
-            query = f"DELETE FROM {self.collection_name} WHERE "
-            filter_tmp = []
-            format_len = 0
-            types = self._type_cast(list(filters.keys()))
-            params = []
-            for k, v in filters.items():
-                tmp_str = f"CAST(cmetadata->'{k}' AS {TYPE_CAST[types[k]]}) {OPERATORS[v['operator_type']]} (%s)"
-                filter_tmp.append(tmp_str)
-                format_len += len(v["value"])
-                params.extend(v["value"])
-            filter_query = " AND ".join(filter_tmp)
-            format_str = ",".join(["%s"] * format_len)
-            query += filter_query
-            print(query)
+    #     elif filters is not None:
+    #         query = f"DELETE FROM {self.collection_name} WHERE "
+    #         filter_tmp = []
+    #         format_len = 0
+    #         types = self._type_cast(list(filters.keys()))
+    #         params = []
+    #         for k, v in filters.items():
+    #             tmp_str = f"CAST(cmetadata->'{k}' AS {TYPE_CAST[types[k]]}) {OPERATORS[v['operator_type']]} (%s)"
+    #             filter_tmp.append(tmp_str)
+    #             format_len += len(v["value"])
+    #             params.extend(v["value"])
+    #         filter_query = " AND ".join(filter_tmp)
+    #         format_str = ",".join(["%s"] * format_len)
+    #         query += filter_query
+    #         print(query)
 
-        try:
-            with self._connect() as conn:
-                cur = conn.cursor()
-                cur.execute(query % format_str, params)
-        except Exception as e:
-            msg = f"Delete failed due to {type(e)} {str(e)}"
-            conn.rollback()
-        else:
-            msg = "Delete by id successful"
-            conn.commit()
-        finally:
-            print(msg)
-            conn.close()
+    #     try:
+    #         with self._connect() as conn:
+    #             cur = conn.cursor()
+    #             cur.execute(query % format_str, params)
+    #     except Exception as e:
+    #         msg = f"Delete failed due to {type(e)} {str(e)}"
+    #         conn.rollback()
+    #     else:
+    #         msg = "Delete by id successful"
+    #         conn.commit()
+    #     finally:
+    #         print(msg)
+    #         conn.close()
 
     def scroll(self):
+        pass
+
+    def delete(self):
         pass
