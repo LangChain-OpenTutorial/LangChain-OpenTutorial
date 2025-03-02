@@ -339,8 +339,7 @@ class pgVectorDocumentManager(DocumentManager):
         self.session_maker = scoped_session(sessionmaker(bind=self._engine))
         self.collection_metadata = None
         self.collection_name = collection_name
-        _, CollectionStore = _get_embedding_collection_store()
-        self.collection_store = self._get_collection()
+        EmbeddingStore, CollectionStore = _get_embedding_collection_store()
         self.embedding = embedding
         self.distance = distance.lower()
 
@@ -352,75 +351,6 @@ class pgVectorDocumentManager(DocumentManager):
         self.dbName = self.connection_info.get('dbname', 'langchain')
         connection_str = f"postgresql+psycopg://{self.userName}:{self.passWord}@{self.host}:{self.port}/{self.dbName}"
         return connection_str
-
-    def _get_dimension(self):
-        try:
-            with self._connect() as conn:
-                cur = conn.cursor()
-                get_id = """
-                SELECT uuid FROM langchain_pg_collection
-                WHERE name = %s
-                """
-                params = (self.collection_name,)
-                cur.execute(get_id, params)
-                _id = cur.fetchall()
-                print(_id)
-                _id = _id[0]
-                get_dim = """
-                SELECT embedding FROM langchain_pg_embedding
-                WHERE collection_id = %s LIMIT 1
-                """
-                cur.execute(get_dim, _id)
-                data = json.loads(cur.fetchall()[0][0])
-        except Exception as e:
-            print(type(e), str(e))
-            
-        finally:
-            conn.close()
-            return data
-
-            
-            
-
-    def _get_collection(self):
-        try:
-            with self._make_sync_session() as session:
-                self.collection_store.get_or_create(
-                    session, self.collection_name, cmetadata=self.collection_metadata
-                )
-                session.commit()
-        except Exception as e:
-            print(f"Creating new collection {self.collection_name} failed due to {type(e)} {str(e)}")
-        else:
-            return self.CollectionStore
-
-        class EmbeddingStore(Base):
-            """Embedding store."""
-
-            __tablename__ = f"{self.collection_name}"
-
-            id = sqlalchemy.Column(
-                sqlalchemy.String,
-                nullable=True,
-                primary_key=True,
-                index=True,
-                unique=True,
-            )
-
-            embedding: Vector = sqlalchemy.Column(Vector(_get_dimension()))
-            document = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-            cmetadata = sqlalchemy.Column(JSONB, nullable=True)
-
-            __table_args__ = (
-                sqlalchemy.Index(
-                    "ix_cmetadata_gin",
-                    "cmetadata",
-                    postgresql_using="gin",
-                    postgresql_ops={"cmetadata": "jsonb_path_ops"},
-                ),
-            )
-
-        return EmbeddingStore
 
     def _connect(self):
         return psycopg2.connect(**self.connection_info)
