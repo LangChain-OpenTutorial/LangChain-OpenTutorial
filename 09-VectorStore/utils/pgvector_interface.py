@@ -5,8 +5,38 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm.auto import tqdm
 from hashlib import md5
 import os, time, uuid, json
+import contextlib
 
-import psycopg2
+import sqlalchemy, psycopg2
+from sqlalchemy import (
+    SQLColumnExpression,
+    cast,
+    create_engine,
+    delete,
+    func,
+    select,
+)
+from sqlalchemy.dialects.postgresql import JSON, JSONB, JSONPATH, UUID, insert
+from sqlalchemy.engine import Connection, Engine
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
+from sqlalchemy.orm import (
+    Session,
+    declarative_base,
+    relationship,
+    scoped_session,
+    sessionmaker,
+)
+from typing import (
+    cast as typing_cast,
+)
+
+from pgvector.sqlalchemy import Vector
+
 from typing import (
     Any,
     AsyncGenerator,
@@ -21,6 +51,11 @@ from typing import (
     Type,
     Union,
 )
+
+TYPE_CAST = {
+    "number": "numeric",
+    "string": "text",
+}
 
 DISTANCE = {
     "cosine": "<=>",
@@ -38,16 +73,19 @@ COMPARISION_OPERATORS = {
 }
 
 OPERATORS = {
-    "$in" : "IN",
+    "$in": "IN",
     "$nin": "NOT IN",
     "$between": "BETWEEN",
     "$exists": "EXISTS",
     "$like": "LIKE",
     "$ilike": "IN LIKE",
-    "$and": "AND", 
-    "$or": "OR", 
-    "$not": "NOT"
+    "$and": "AND",
+    "$or": "OR",
+    "$not": "NOT",
 }
+
+BASE = declarative_base()
+
 
 class pgVectorIndexManager:
     def __init__(
@@ -74,6 +112,10 @@ class pgVectorIndexManager:
         self.userName = username if username is not None else user
         self.passWord = password if password is not None else passwd
         self.dbName = dbname if dbname is not None else db
+        connection = f"postgresql+psycopg://{self.userName}:{self.passWord}@{self.host}:{self.port}/{self.dbName}"
+        self._engine = create_engine(url=connection, **({}))
+        self.session_maker: scoped_session
+        self.session_maker = scoped_session(sessionmaker(bind=self._engine))
 
     def _connect(self):
         return psycopg2.connect(
@@ -171,6 +213,32 @@ class pgVectorIndexManager:
 
         if dimension is None:
             dimension = len(embedding.embed_query("foo"))
+
+        class EmbeddingStore(BASE):
+            """Embedding store."""
+
+            __tablename__ = "langchain_pg_embedding"
+
+            id = sqlalchemy.Column(
+                sqlalchemy.String,
+                nullable=True,
+                primary_key=True,
+                index=True,
+                unique=True,
+            )
+
+            embedding: Vector = sqlalchemy.Column(Vector(dimension))
+            document = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+            metadata = sqlalchemy.Column(JSONB, nullable=True)
+
+            __table_args__ = (
+                sqlalchemy.Index(
+                    "ix_cmetadata_gin",
+                    "metadata",
+                    postgresql_using="gin",
+                    postgresql_ops={"metadata": "jsonb_path_ops"},
+                ),
+            )
 
         query = (
             f"CREATE TABLE {collection_name} "
@@ -325,9 +393,9 @@ class pgVectorDocumentManager(DocumentManager):
     def _type_cast(self, keys):
         tmps = []
         for key in keys:
-            tmps.append( "jsonb_typeof(cmetadata -> %s)")
+            tmps.append("jsonb_typeof(cmetadata -> %s)")
 
-        query = "SELECT " + ','.join(tmps) + f" FROM {self.collection_name} LIMIT 1"
+        query = "SELECT " + ",".join(tmps) + f" FROM {self.collection_name} LIMIT 1"
         print(query)
         params = keys
         try:
@@ -341,16 +409,28 @@ class pgVectorDocumentManager(DocumentManager):
             types = [d for d in cur.fetchall()[0]]
         finally:
             conn.close()
-            return {k:t for k, t in zip(keys, types)}
-        
+            return {k: t for k, t in zip(keys, types)}
+
+    @contextlib.contextmanager
+    def _make_sync_session(self) -> Generator[Session, None, None]:
+        """Make an async session."""
+        if self.async_mode:
+            raise ValueError(
+                "Attempting to use a sync method in when async mode is turned on. "
+                "Please use the corresponding async method instead."
+            )
+        with self.session_maker() as session:
+            yield typing_cast(Session, session)
 
     def delete(self, ids=None, filters=None, **kwargs):
         """
         filters = {"meta_key": {"operator_type": "operator", "value": "values"}}
         """
-        
-        assert not(ids is not None and filters is not None), "Provide only one of ids or filters, not both"
-        
+
+        assert not (
+            ids is not None and filters is not None
+        ), "Provide only one of ids or filters, not both"
+
         if ids is not None:
             format_str = ",".join(["%s"] * len(ids))
             query = f"DELETE FROM {self.collection_name} WHERE doc_id IN (%s)"
@@ -363,14 +443,14 @@ class pgVectorDocumentManager(DocumentManager):
             types = self._type_cast(list(filters.keys()))
             params = []
             for k, v in filters.items():
-                print(k, v)
-                tmp_str = f"CAST(cmetadata->'{k}' AS {types[k]}) {OPERATORS[v['operator_type']]} (%s)"
+                tmp_str = f"CAST(cmetadata->'{k}' AS {TYPE_CAST[types[k]]}) {OPERATORS[v['operator_type']]} (%s)"
                 filter_tmp.append(tmp_str)
-                format_len += len(v['value'])
-                params.extend(v['value'])
-            filter_query = ' AND '.join(filter_tmp)
-            format_str = ",".join(["%s"]*format_len)
+                format_len += len(v["value"])
+                params.extend(v["value"])
+            filter_query = " AND ".join(filter_tmp)
+            format_str = ",".join(["%s"] * format_len)
             query += filter_query
+            print(query)
 
         try:
             with self._connect() as conn:
