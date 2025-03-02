@@ -391,7 +391,7 @@ class pgVectorDocumentManager(DocumentManager):
         self.EmbeddingStore, self.CollectionStore = _get_embedding_collection_store()
         with self._make_sync_session() as session:
             self.CollectionStore.get_by_name(session, self.collection_name)
-        self.embedding = embedding
+        self.embeddings = embedding
         self.distance = distance.lower()
         self._distance_strategy = DEFAULT_DISTANCE_STRATEGY
 
@@ -422,7 +422,7 @@ class pgVectorDocumentManager(DocumentManager):
         return psycopg2.connect(**self.connection_info)
 
     def _embed_doc(self, texts) -> List[float]:
-        embedded = self.embedding.embed_documents(texts)
+        embedded = self.embeddings.embed_documents(texts)
         return embedded
 
     def upsert(self, texts, metadatas=None, ids=None, **kwargs):
@@ -511,8 +511,20 @@ class pgVectorDocumentManager(DocumentManager):
 
     def search(self, query, k=10, distance="cosine", filter=None, **kwargs):
         self.distance = distance.lower()
-        embeded_query = self.embedding.embed_query(query)
-        return self.__query_collection(embeded_query, k, filter)
+        embeded_query = self.embeddings.embed_query(query)
+        results = self.__query_collection(embeded_query, k, filter)
+        docs = [
+            (
+                Document(
+                    id=str(result.EmbeddingStore.id),
+                    page_content=result.EmbeddingStore.document,
+                    metadata=result.EmbeddingStore.cmetadata,
+                ),
+                result.distance if self.embeddings is not None else None,
+            )
+            for result in results
+        ]
+        return docs
 
     def _create_filter_clause(self, filters: Any) -> Any:
         """Convert LangChain IR filter representation to matching SQLAlchemy clauses.
