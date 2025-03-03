@@ -1,4 +1,4 @@
-from vectordbinterface import DocumentManager
+from .vectordbinterface import DocumentManager
 from langchain_core.documents import Document
 from typing import List, Union, Dict, Any, Optional, Iterable
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -18,12 +18,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSON, JSONB, JSONPATH, UUID, insert
 from sqlalchemy.engine import Connection, Engine
-from sqlalchemy.ext.asyncio import (
-    AsyncEngine,
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
-)
+
 from sqlalchemy.orm import (
     Session,
     declarative_base,
@@ -39,7 +34,6 @@ from pgvector.sqlalchemy import Vector
 
 from typing import (
     Any,
-    AsyncGenerator,
     Callable,
     Dict,
     Generator,
@@ -51,38 +45,6 @@ from typing import (
     Type,
     Union,
 )
-
-# TYPE_CAST = {
-#     "number": "numeric",
-#     "string": "text",
-# }
-
-# DISTANCE = {
-#     "cosine": "<=>",
-#     "l2": "<->",
-#     "l1": "<+>",
-# }
-
-# COMPARISION_OPERATORS = {
-#     "$eq": "==",
-#     "$ne": "!=",
-#     "$lt": "<",
-#     "$lte": "<=",
-#     "$gt": ">",
-#     "$gte": ">=",
-# }
-
-# OPERATORS = {
-#     "$in": "IN",
-#     "$nin": "NOT IN",
-#     "$between": "BETWEEN",
-#     "$exists": "EXISTS",
-#     "$like": "LIKE",
-#     "$ilike": "IN LIKE",
-#     "$and": "AND",
-#     "$or": "OR",
-#     "$not": "NOT",
-# }
 
 COMPARISONS_TO_NATIVE = {
     "$eq": "==",
@@ -221,6 +183,7 @@ def _get_embedding_collection_store(vector_dimension: Optional[int] = None) -> A
 class pgVectorIndexManager:
     def __init__(
         self,
+        connection=None,
         host=None,
         port=None,
         username=None,
@@ -230,104 +193,105 @@ class pgVectorIndexManager:
         dbname=None,
         db=None,
     ):
-        assert host is not None, "host is missing"
-        assert port is not None, "port is missing"
-        assert username is not None or user is not None, "username(or user) is missing"
-        assert (
-            password is not None or passwd is not None
-        ), "password(or passwd) is missing"
-        assert dbname is not None or db is not None, "dbname(or db) is missing"
+        if connection is not None:
+            self.connection_str = connection
 
-        self.host = host
-        self.port = port
-        self.userName = username if username is not None else user
-        self.passWord = password if password is not None else passwd
-        self.dbName = dbname if dbname is not None else db
-        self.connection_str = f"postgresql+psycopg://{self.userName}:{self.passWord}@{self.host}:{self.port}/{self.dbName}"
+        else:
+            assert host is not None, "host is missing"
+            assert port is not None, "port is missing"
+            assert username is not None or user is not None, "username(or user) is missing"
+            assert (
+                password is not None or passwd is not None
+            ), "password(or passwd) is missing"
+            assert dbname is not None or db is not None, "dbname(or db) is missing"
+        
+            self.host = host
+            self.port = port
+            self.userName = username if username is not None else user
+            self.passWord = password if password is not None else passwd
+            self.dbName = dbname if dbname is not None else db
+            self.connection_str = f"postgresql+psycopg://{self.userName}:{self.passWord}@{self.host}:{self.port}/{self.dbName}"
+        
         self._engine = create_engine(url=self.connection_str, **({}))
         self.session_maker: scoped_session
         self.session_maker = scoped_session(sessionmaker(bind=self._engine))
         self.collection_metadata = None
+        
+        EmbeddingStore, CollectionStore = _get_embedding_collection_store()
+        self.CollectionStore = CollectionStore
+        self.EmbeddingStore = EmbeddingStore
+        with self._make_sync_session() as session:
+            Base.metadata.create_all(session.get_bind())
+            session.commit()
 
-    # def create_collection(self) -> None:
-    #     with self._make_sync_session() as session:
-    #         self.CollectionStore.get_or_create(
-    #             session, self.collection_name, cmetadata=self.collection_metadata
-    #         )
-    #         session.commit()
 
     def _connect(self):
-        return psycopg2.connect(
-            database=self.dbName,
-            user=self.userName,
-            password=self.passWord,
-            port=self.port,
-            host=self.host,
-        )
+        return self._engine.connect()
 
     def list_indexes(self):
         query = """
-        SELECT table_name 
-        FROM information_schema.tables 
-        WHERE table_schema = 'public'
-        AND table_type = 'BASE TABLE';
+        SELECT name FROM langchain_pg_collection;
         """
 
         try:
             with self._connect() as conn:
-                cur = conn.cursor()
-                cur.execute(query)
+                exe = conn.execute(sqlalchemy.text(query))
 
         except Exception as e:
             msg = f"List collection failed due to {type(e)} {str(e)}"
         else:
-            collections = cur.fetchall()
+            collections = exe.fetchall()
             msg = ""
         finally:
             conn.close()
-            print(msg)
-            return collections
+            if msg:
+                print(msg)
+            return [col[0] for col in collections]
 
     def delete_index(self, collection_name):
-        query = f"DROP TABLE {collection_name};"
         try:
-            with self._connect() as conn:
-                cur = conn.cursor()
-                cur.execute(query)
-                conn.commit()
+            with self._make_sync_session() as session:
+                collection = self.CollectionStore.get_by_name(session, collection_name)
+                
+                if collection is None:
+                    print(f"Collection {collection_name} does not exist")
+                    return True
+                
+                stmt = delete(self.EmbeddingStore)
+                filter_by = [self.EmbeddingStore.collection_id == collection.uuid]
+                stmt = stmt.filter(*filter_by)
+
+                session.execute(stmt)
+                session.commit()
+        
         except Exception as e:
-            flag = False
-            msg = (
-                f"Delete collection {collection_name} failed due to {type(e)} {str(e)}"
-            )
+            print(f"Deleting data from langchain_pg_embedding failed due to {type(e)} {str(e)}")
+            return False
         else:
-            flag = True
-            msg = f"Deleted collection {collection_name} successfully."
-        finally:
-            conn.close()
-            print(msg)
-            return flag
+            try:
+                with self._connect() as conn:
+                    query  = sqlalchemy.text(f"DELETE FROM langchain_pg_collection WHERE name = '{collection_name}'")
+                    conn.execute(query)
+                    conn.commit()
+            except Exception as e:
+                print(f"Delete collection information row failed due to {type(e)} {str(e)}")
+            else:
+                return True
+
+            
+        
 
     def _check_extension(self):
         query = "SELECT * FROM pg_extension;"
         create_ext_query = "CREATE EXTENSION vector;"
 
-        try:
-            with self._connect() as conn:
-                cur = conn.cursor()
-                cur.execute(query)
-                extensions = str(cur.fetchall())
-        finally:
-            conn.close()
+        with self._engine.connect() as conn:
+            stmt = sqlalchemy.text(query)
+            extensions = str(conn.execute(stmt).fetchall())
 
-        if "vector" not in extensions:
-            try:
-                with self._connect() as conn:
-                    cur = conn.cursor()
-                    cur.execute(create_ext_query)
-                    conn.commit()
-            finally:
-                conn.close()
+            if "vector" not in extensions:
+                conn.execute(sqlalchemy.text(create_ext_query))
+                conn.commit()
 
     @contextlib.contextmanager
     def _make_sync_session(self) -> Generator[Session, None, None]:
@@ -360,6 +324,7 @@ class pgVectorIndexManager:
             print(
                 f"Creating new collection {self.collection_name} failed due to {type(e)} {str(e)}"
             )
+            return False
         else:
             return pgVectorDocumentManager(
                 embedding=embedding,
@@ -513,17 +478,24 @@ class pgVectorDocumentManager(DocumentManager):
         self.distance = distance.lower()
         embeded_query = self.embeddings.embed_query(query)
         results = self.__query_collection(embeded_query, k, filter)
+        
+        if distance ==  'cosine':
+            self._distance_strategy = DistanceStrategy.COSINE
+        elif distance == 'inner':
+            self._distance_strategy = DistanceStrategy.MAX_INNER_PRODUCT
+        elif distance == 'l2':
+            self._distance_strategy = DistanceStrategy.EUCLIDEAN
+
         docs = [
-            (
-                Document(
-                    id=str(result.EmbeddingStore.id),
-                    page_content=result.EmbeddingStore.document,
-                    metadata=result.EmbeddingStore.cmetadata,
-                ),
-                result.distance if self.embeddings is not None else None,
-            )
+            {
+                "content": result.EmbeddingStore.document,
+                "metadata": result.EmbeddingStore.cmetadata,
+                "embedding": result.EmbeddingStore.embedding if kwargs.get('include_embedding', False)==True else None,
+                "score": result.distance if distance == 'l2' else 1-result.distance
+            }
             for result in results
         ]
+        
         return docs
 
     def _create_filter_clause(self, filters: Any) -> Any:
@@ -787,6 +759,7 @@ class pgVectorDocumentManager(DocumentManager):
                 .limit(k)
                 .all()
             )
+
         return results
 
     @contextlib.contextmanager
@@ -795,52 +768,70 @@ class pgVectorDocumentManager(DocumentManager):
         with self.session_maker() as session:
             yield typing_cast(Session, session)
 
-    # def delete(self, ids=None, filters=None, **kwargs):
-    #     """
-    #     filters = {"meta_key": {"operator_type": "operator", "value": "values"}}
-    #     """
+    def delete(self, ids=None, filter=None, **kwargs):
+        try:
+            with self._make_sync_session() as session:  # type: ignore[arg-type]
+                collection = self.CollectionStore.get_by_name(
+                    session, name=self.collection_name
+                )
+                if not collection:
+                    raise ValueError("Collection not found")
+                stmt = delete(self.EmbeddingStore)
+                if ids is not None:
+                    stmt = stmt.where(self.EmbeddingStore.id.in_(ids))
+                    session.execute(stmt)
 
-    #     assert not (
-    #         ids is not None and filters is not None
-    #     ), "Provide only one of ids or filters, not both"
+                elif filter:
+                    filter_by = [self.EmbeddingStore.collection_id == collection.uuid]
+                    filter_clauses = self._create_filter_clause(filter)
+                    if filter_clauses is not None:
+                        filter_by.append(filter_clauses)
+                    stmt = stmt.where(filter_clauses)
+                    session.execute(stmt)
+                session.commit()
+        except Exception as e:
+            msg = (f"Delete failed due to {type(e)} {str(e)}")
+            return False
+        else:
+            msg = "Delete done successfully"
+            return True
+        finally:
+            print(msg)
 
-    #     if ids is not None:
-    #         format_str = ",".join(["%s"] * len(ids))
-    #         query = f"DELETE FROM {self.collection_name} WHERE doc_id IN (%s)"
-    #         params = ids
 
-    #     elif filters is not None:
-    #         query = f"DELETE FROM {self.collection_name} WHERE "
-    #         filter_tmp = []
-    #         format_len = 0
-    #         types = self._type_cast(list(filters.keys()))
-    #         params = []
-    #         for k, v in filters.items():
-    #             tmp_str = f"CAST(cmetadata->'{k}' AS {TYPE_CAST[types[k]]}) {OPERATORS[v['operator_type']]} (%s)"
-    #             filter_tmp.append(tmp_str)
-    #             format_len += len(v["value"])
-    #             params.extend(v["value"])
-    #         filter_query = " AND ".join(filter_tmp)
-    #         format_str = ",".join(["%s"] * format_len)
-    #         query += filter_query
-    #         print(query)
+    def scroll(self, ids=None, filter=None, k=10, **kwargs):
+        with self._make_sync_session() as session:  # type: ignore[arg-type]
+            collection = self.CollectionStore.get_by_name(
+                session, name=self.collection_name
+            )
+            if not collection:
+                raise ValueError("Collection not found")
 
-    #     try:
-    #         with self._connect() as conn:
-    #             cur = conn.cursor()
-    #             cur.execute(query % format_str, params)
-    #     except Exception as e:
-    #         msg = f"Delete failed due to {type(e)} {str(e)}"
-    #         conn.rollback()
-    #     else:
-    #         msg = "Delete by id successful"
-    #         conn.commit()
-    #     finally:
-    #         print(msg)
-    #         conn.close()
+            filter_by = [self.EmbeddingStore.collection_id == collection.uuid]
+            if ids:
+                filter_by.append(self.EmbeddingStore.id.in_(ids))
 
-    def scroll(self):
-        pass
+            elif filter:
+                filter_clauses = self._create_filter_clause(filter)
+                if filter_clauses is not None:
+                    filter_by.append(filter_clauses)
 
-    def delete(self):
-        pass
+            results: List[Any] = (
+                session.query(
+                    self.EmbeddingStore,
+                )
+                .filter(*filter_by)
+                .limit(k)
+                .all()
+            )
+
+        docs = [
+            {
+                "content": result.document,
+                "metadata": result.cmetadata,
+                "embedding": result.embedding if kwargs.get('include_embedding', False)==True else None,
+            }
+            for result in results
+        ]
+
+        return docs
