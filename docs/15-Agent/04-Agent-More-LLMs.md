@@ -28,10 +28,11 @@ pre {
 
 
 ## Overview
-It is not limited to `OpenAI` models but also supports implementations from diverse LLM providers such as `Anthropic`, `Google Gemini`, `Together.ai`, `Ollama`, and `Mistral`. This allows developers to leverage the unique characteristics and strengths of each model to create agents optimized for the specific requirements of their applications.
+LangChain is not limited to `OpenAI` models. It also supports implementations from diverse LLM providers such as `Anthropic`, `Google Gemini`, `Together.ai`, `Ollama`, and `Mistral`. This flexibility allows developers to leverage the unique characteristics and strengths of each model to create agents optimized specific requirements for their applications.
 
-Key Topics
-In this chapter, we will delve into the process of creating and executing tool-calling agents using various `LLMs`. The key topics covered include:
+**Key Topics**
+
+In this chapter, we will delve into the process of creating and executing tool-calling agents using various `LLMs`. Here are the key topics covered, we'll explore:
 
 - Tool Selection: How agents choose the most suitable tools for specific tasks.
 - `LLM` Integration: Integrating `LLMs` from `OpenAI` and other providers into LangChain to enable agent functionality.
@@ -52,10 +53,10 @@ Now, let’s explore how to maximize productivity using LangChain’s flexible a
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
 - [List of LLMs Supporting Tool Calling](#list-of-llms-supporting-tool-calling)
-- [Using Multiple LLM Integrations with LangChain](#using-multiple-llm-integrations-with-langchain)
-- [Define the tool](#define-the-tool)
-- [Generate Prompts for Agents](#generate-prompts-for-agents)
-- [Generate an AgentExecutor, run it and review the results](#generate-an-agentexecutor-run-it-and-review-the-results)
+- [Working with Multiple LLM Integrations in LangChain](#working-with-multiple-llm-integrations-in-langchain)
+- [Creating tools](#creating-tools)
+- [Generating Prompts for Agents](#generating-prompts-for-agents)
+- [Generating an AgentExecutor, run it and review the results](#generating-an-agentexecutor-run-it-and-review-the-results)
 
 ### References
 
@@ -83,10 +84,18 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 %pip install -qU feedparser
 ```
 
+<pre class="custom">WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+    I0000 00:00:1737867095.902142  824462 fork_posix.cc:77] Other threads are currently calling into gRPC, skipping fork() handlers
+    I0000 00:00:1737867098.495320  824462 fork_posix.cc:77] Other threads are currently calling into gRPC, skipping fork() handlers
+    I0000 00:00:1737867101.236374  824462 fork_posix.cc:77] Other threads are currently calling into gRPC, skipping fork() handlers
+</pre>
+
 ```python
-# Set environment variables
+from dotenv import load_dotenv
 from langchain_opentutorial import set_env
 
+# Attempt to load environment variables from a .env file; if unsuccessful, set them manually.
+#if not load_dotenv():
 set_env(
     {
         "OPENAI_API_KEY": "",
@@ -124,40 +133,45 @@ package.install(
 )
 ```
 
+<pre class="custom">I0000 00:00:1737867103.792724  824462 fork_posix.cc:77] Other threads are currently calling into gRPC, skipping fork() handlers
+</pre>
+
 
 ## List of LLMs Supporting Tool Calling
 
-To proceed with the hands-on tutorial, the following setup steps are required
+Before we proceed with the hands-on tutorial, you'll need to complete the following setup steps for each LLM you want to use:
 
-1. Issue API keys for each `LLM` call.
+1. Obtain an API Kye: Follow the provided link to requiest an API key for each `LLM` call.
 2. Add the issued key to the `.env` file.
 
 
 **Anthropic**
 
 - [Anthropic API Key Issuance](https://console.anthropic.com/settings/keys)
-- Add the issued key to the `.env` file as `ANTHROPIC_API_KEY`.
+- Add the issued key `ANTHROPIC_API_KEY` to `.env` file.
 
 
 **Gemini**
 
 - [Gemini API Key Issuance](https://aistudio.google.com/app/apikey?hl=ko)
-- Add the issued key to the `.env` file as `GOOGLE_API_KEY`.
+- Add the issued key `GOOGLE_API_KEY` to `.env` file.
 
 
 **Ollama**
 - [List of Ollama Tool Calling Supported Models](https://ollama.com/search?c=tools)
-- Instead of issuing an API Key, [Ollama installation](https://ollama.com) is required to proceed with the ollama tutorial.
-- We will use [lama3.1 Model](https://ollama.com/library/llama3.1) for This Tutorial for this tutorial.
-- After installing Ollama, run the following commands in the terminal to download the models `ollama pull llama3.1` and `ollama pull qwen2.5`.
+- Ollama uses a different approach. Instead of API keys, you'll need to install Ollama itself. Follow the instructions here to install Ollama: [Ollama installation](https://ollama.com)
+- This tutorial will use the [lama3.1 model](https://ollama.com/library/llama3.1)
+- After installing Ollama, you can download it using the following commands: `ollama pull llama3.1`
+- You can also download the `qwen2.5` model using the following command: `ollama pull qwen2.5`
 
 
 **Together AI**
 - [Together API Key Issuance](https://api.together.ai/)
-- Add the issued key to the `.env` file as `TOGETHER_API_KEY`.
+- Add the issued key `TOGETHER_API_KEY` to `.env` file.
 
-## Using Multiple LLM Integrations with LangChain
-This walks you through integrating and configuring various `LLMs` using LangChain, allowing you to experiment with different models from providers like `OpenAI`, `Anthropic`, `Google`, and others.
+
+## Working with Multiple LLM Integrations in LangChain
+This section guides you through integrating and configuring various `LLMs` in LangChain, allowing you to do experiments with different models from providers like `OpenAI`, `Anthropic`, `Google`, and others.
 
 ```python
 from langchain_anthropic import ChatAnthropic
@@ -191,22 +205,21 @@ qwen = ChatOllama(
 )
 ```
 
-## Define the tool
+## Creating tools
 
-Before defining the tool, we will build some functions to collect and fetch news from Website for keyword that user input.
+Before creating tools, we will build some functions to fetch news from websites based on user's input keywords.
 
- `_fetch_news` funtion gets news from given url and return the result as a list of dictionaries.
- * `Args:` url (str) is a url for fetching news. k (int) is a number of news to fetch.(default: 3)
- * `Return:` List[Dict[str, str]] is a list of dictionaries that contains news title and link.
+`_fetch_news(url: str, k: int = 3) -> List[Dict[str, str]]`: This funtion takes a URL as input and retrieves news articles from that source. The function returns a list of dictionaries.
+ * Args: `url: str` is for fetching news articles. The `k: int = 3` (default: 3) is a number of news to fetch.
+ * Return: `List[Dict[str, str]]` is a list of dictionaries that contains news title and link.
 
+`_collect_news(news_list: List[Dict[str, str]] -> List[Dict[str, str]]`: This function return a sorted list of the same news items.
+ * Args: `news_list: List[Dict[str, str]]` is a list of dictionaries that contains news information.
+ * Return: `List[Dict[str, str]]` is a list of dictionaries containing the URL and the full contents.
 
- `_collect_news` return a sorted list of news items.
- * `Args:` news_list (List[Dict[str, str]]) is a list of dictionaries that contains news information.
- * `Return:` List[Dict[str, str]] is a list of dictionaries that contains url and contents.
-
-`search_by_keyword` funtion searches news using keyword and return the result as a list of dictionaries.
- * `Args:` keyword (str) is a keyword to search. k (int) is a number of news to fetch.(default: 3)
- * `Return:` List[Dict[str, str]] is a list of dictionaries that contains url and contents.
+`search_by_keyword(keyword: str, k: int = 3) -> List[Dict[str, str]]`: This funtion is the main entry point for searching news. It accepts a keyword and returns a list of dictionaries.
+ * Args: `keyword: str` is a keyword to search. `k: int = 3`(default: 3) is a number of news to fetch.
+ * Return: `List[Dict[str, str]]` is a list of dictionaries that contains the URL and contents.
 
 
 ```python
@@ -248,13 +261,14 @@ class GoogleNews:
             return self._collect_news(news_list)
 ```
 
-Fetch News for keyword that user input from Google News Website.
+This set of functions enables a tool that can fetch relevant news from Google News Website based on user-provided input keywords.
+
+Let's create tools.
 
 ```python
 from langchain.tools import tool
 from typing import List, Dict
 
-# Define the tool
 @tool
 def search_news(query: str) -> List[Dict[str, str]]:
     """Search Google News by input keyword"""
@@ -270,19 +284,19 @@ print(f"Tool Description: {search_news.description}")
 </pre>
 
 
-Define Tools
+
 
 ```python
 tools = [search_news]
 ```
 
-## Generate Prompts for Agents
-Prompt is a text that describes the task the model will perform.(Input the tool name and role)
+## Generating Prompts for Agents
+A prompt is text that describes the task the model will perform whose input is the tool name and its role.
 
 
-- `chat_history` : A variable that stores previous conversation history (can be omitted if multi-turn support is not required).
-- `agent_scratchpad` : A variable for temporary storage used by the agent.
-- `input` : The user's input.
+- `chat_history`: A variable that stores previous conversation history (can be omitted if multi-turn support is not required).
+- `agent_scratchpad`: A variable for temporary storage used by the agent.
+- `input`: The user's input.
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate
@@ -301,7 +315,7 @@ prompt = ChatPromptTemplate.from_messages(
 )
 ```
 
-Generate an `Agent` based on an `LLM` (Large Language Model)
+Let's generate agents per each `LLM` basis.
 
 ```python
 gpt_agent = create_tool_calling_agent(gpt, tools, prompt)
@@ -312,8 +326,9 @@ ollama_agent = create_tool_calling_agent(ollama, tools, prompt)
 qwen_agent = create_tool_calling_agent(qwen, tools, prompt)
 ```
 
-## Generate an AgentExecutor, run it and review the results
+## Generating an AgentExecutor
 
+Now, let's import `AgentExecutor`, run agents, and review the outputs.
 
 ```python
 from langchain.agents import AgentExecutor
@@ -339,30 +354,28 @@ print(result["output"])
     Invoking: `search_news` with `{'query': 'AI Investment'}`
     
     
-    [{'url': 'https://news.google.com/rss/articles/CBMikgFBVV95cUxOakdlR2ltVnh5WjRsa0UzaUJ1YkVpR1Z0Z0tpVWRKbXJ4RkZpVkdKTHJGcUxMblpsUDA4UVk5engxWktDY2J1UG1YQzVTQm9fcnp1d0hyV083YVZkejZUVXJMem9tZ1ZWUzllNDNpUXBfSElhU01sQm9RUW1jZE9vZGlpZEVDZ1lnU2hnS192V0Y3dw?oc=5', 'content': 'The Best AI Stocks to Invest $500 in This Year - The Motley Fool'}, {'url': 'https://news.google.com/rss/articles/CBMiswFBVV95cUxQTGZVQnZlaFBBUVpCTVVqQzhvM3AyNzR5QXRIbUczM1FZQzMwTmpIZUxIelB2TUlyeGxGTVhmMFJFa3V4MXA0TklYZEpLcXZDVlNoQmI4RWZibkFka0JudTREZ2s2VlduTUp3OExkcjA3Z01tX0hCS0JuQkpoUlp6Nm1IRnByR2FnZEtlcUNDZFdKUWtKZGR5aTZYWEp5SnNEZ19nUi1zN1RhTFdxUFNESk5RMA?oc=5', 'content': 'Health AI investments are off to a roaring start in 2025 - STAT'}, {'url': 'https://news.google.com/rss/articles/CBMijAFBVV95cUxQZ0FnbS1MOWJYeFhtWE1FSGNrQjgwZ3hqbnpLNXpnOEpaR192LW5FV1NVOTBQUUlNVEhTRHlfd3VoRnJFRkl6M0pndWJwemlMUFdPa25PRWt6LWh1Uk4ta2RVQV9lb0Vjb2ZGVlNJWXQxVlNtWF9uTEFmZnFlemxfT2Z3bEYzcnJkRl9CNQ?oc=5', 'content': 'Microsoft’s Stock Revival Hinges on Showing Growth From AI Binge - Yahoo Finance'}, {'url': 'https://news.google.com/rss/articles/CBMiqwFBVV95cUxNWE0wMHdXSDN3aTlMal9aTGpkaUdkOEVmRHhxajFWRXJiOVNweXV0M2RHSWFyWDdwSWYwSmp5UVlva1hFTFRyOXRZY050X25JbWlDcDgtTHlya1Zha2EtMGlvVFEwcmEzblUtLUZhby1uMks1eDlCdGY4ZkV0dm5ES1BYTlM3cXhYeG8wTDd6NlZNWDFrNm9fNkp0bHJkRm1IRXRzbXNwRW5CZTg?oc=5', 'content': 'Palantir in Talks to Invest in Drone Startup at $5 Billion Valuation - The Information'}, {'url': 'https://news.google.com/rss/articles/CBMiiAFBVV95cUxNWjFlOHRHa3N3TVpadWlSTjlKeFNaX3g3MVhyMzlHNzNMbXEzb2tlNV9fRXUwUTFVWWxYZm9NVFhoMlFYdkExS1FEVEVXdWdlNHR5NFJTMkFNcVR2TkxBTjR2UzBTeG9XUGhLd2RFa1VPMUNsOHBiWWtQWWsxRkVKNmd3cXd3MDBs?oc=5', 'content': 'Best AI Stocks to Invest in Now - Morningstar'}]Here are some of the latest news about AI investment:
+    [{'url': 'https://news.google.com/rss/articles/CBMiqwFBVV95cUxOcU9jRHlEdXlNQnc1RmxFc3B5S2tqZmNSbjY0LVc3d3RSODlLUnpfcGc1T2RhcVJncC1oVUNFQ0xFbF8tNlZXQkRWSS1iVGJsc281OTlGRjEyLTAyaDg3dE5hV1o0TkJjVWxOWnZwb0JzLXZqcXpKUklJclVYMTE4dk9iQ0xyd0ZHOEtuSWVTWFNvN0VFZFpVWGRaaDN2MmxuZnRCLWJaSnJtNGs?oc=5', 'content': 'A $500bn investment plan says a lot about Trump’s AI priorities - The Economist'}, {'url': 'https://news.google.com/rss/articles/CBMihwFBVV95cUxQSDduczRjNDJkMFQwQk05aXMzQ21EY2hqZkxEdlpEZ1plX3NxalpGaEpwckdQM0tQa2ZqbkJGMkxReFFzeDFnRzY4U3dKMmdTUm1xeXpod1VoN1YzTzA4VDlHQVhzeXgxLTc3UjczVlMzdGhQWHZsMG5RdGZjY2pJRDBaUF9pWmc?oc=5', 'content': 'Tech titans bicker over $500bn AI investment announced by Trump - The Guardian'}, {'url': 'https://news.google.com/rss/articles/CBMilAFBVV95cUxOeGExNlIteFo5R09vclNhcHVKbjlnY010TGxmVWhsOW1LcWJidzFpSDNWUzNPbUlpM0l1bGd2a1FjRnFlMHBnbC1iR1FWVEU2dFRRczdpU3NYR0J1Y1lXNzNHeHgzMWxnSklPUTB6dTAzYzBDdDVfT3JyVnZkdVUydmg2c3RHWFI5MFFjNEl4cDVsZW5T?oc=5', 'content': 'Meta to invest up to $65 billion this year to power AI goals, Zuckerberg says - USA TODAY'}, {'url': 'https://news.google.com/rss/articles/CBMiugFBVV95cUxQSDc5RFFWN204N3J3X3lEdUF0RXVWOW1FNk9KVVZBNFQ4RndZTzVybFhURFVWVFRGLWJ1VGVsUGtTXzhLZVdRQ21CQ1VHUFoyWkhSZUJ6cFU4bUQ1dUlWX1p1c05TVkdnWk83UmJ6amQwbzlQTlNVSHl0alJfZmRKSTVJNUVfdmliSmo3anQ3cXlGUjdZUEwyY25pOGxmU3luRG5heVlsWHo0SDJBTWxGT3hjM0JhQ05xS0E?oc=5', 'content': 'Trump’s AI Push: Understanding The $500 Billion Stargate Initiative - Forbes'}, {'url': 'https://news.google.com/rss/articles/CBMingFBVV95cUxPRkhzc0UwM2l4N0pXSDFibkFvTnhOeVppSC15aTRRNW02VzhoWEhpVHp3d3gtb1p5NXNZLUd4TDJudjRSNFlnOE9BZUJtUm14UUlsMF9FNTBaZE1pNnZiaUxwdUI4RHBWS3FXMVFlVGxGQjJSbHRlcVNjV3pMWjRsQkhFV0FiWXNsRDVzOTBuTmZwUmJFcGE5QXIza3JVZw?oc=5', 'content': "'What Is Great For The Country Isn't Always What's Optimal For Your Companies': Sam Altman Lashes Out At Elon Musk Amid Stargate Squabble - Investor's Business Daily"}]Here are some of the latest news about AI investment:
     
-    * The Best AI Stocks to Invest $500 in This Year - The Motley Fool
-    * Health AI investments are off to a roaring start in 2025 - STAT
-    * Microsoft’s Stock Revival Hinges on Showing Growth From AI Binge - Yahoo Finance
-    * Palantir in Talks to Invest in Drone Startup at $5 Billion Valuation - The Information
-    * Best AI Stocks to Invest in Now - Morningstar
+    * A $500bn investment plan says a lot about Trump’s AI priorities - The Economist
+    * Tech titans bicker over $500bn AI investment announced by Trump - The Guardian
+    * Meta to invest up to $65 billion this year to power AI goals, Zuckerberg says - USA TODAY
+    * Trump’s AI Push: Understanding The $500 Billion Stargate Initiative - Forbes
+    * 'What Is Great For The Country Isn't Always What's Optimal For Your Companies': Sam Altman Lashes Out At Elon Musk Amid Stargate Squabble - Investor's Business Daily
     
     
     > Finished chain.
     Results of Agent Execution:
     Here are some of the latest news about AI investment:
     
-    * The Best AI Stocks to Invest $500 in This Year - The Motley Fool
-    * Health AI investments are off to a roaring start in 2025 - STAT
-    * Microsoft’s Stock Revival Hinges on Showing Growth From AI Binge - Yahoo Finance
-    * Palantir in Talks to Invest in Drone Startup at $5 Billion Valuation - The Information
-    * Best AI Stocks to Invest in Now - Morningstar
+    * A $500bn investment plan says a lot about Trump’s AI priorities - The Economist
+    * Tech titans bicker over $500bn AI investment announced by Trump - The Guardian
+    * Meta to invest up to $65 billion this year to power AI goals, Zuckerberg says - USA TODAY
+    * Trump’s AI Push: Understanding The $500 Billion Stargate Initiative - Forbes
+    * 'What Is Great For The Country Isn't Always What's Optimal For Your Companies': Sam Altman Lashes Out At Elon Musk Amid Stargate Squabble - Investor's Business Daily
     
 </pre>
 
-Run the agent using various `LLMs` (Large Language Models).
-
-The following is a function that generates and runs an Agent using the provided `LLM` and outputs the results.
+The following function generates and runs an `agent` using the provided `LLM` and outputs the results.
 
 ```python
 def execute_agent(llm, tools, input_text, label):
@@ -396,24 +409,21 @@ execute_agent(gpt, tools, query, "gpt")
 ```
 
 <pre class="custom">Results from [gpt] 
-    🌟 **AI Investment News Update** 🌟
+    🌟 **AI Investment News Update!** 🌟
     
-    🚀 **The Best AI Stocks to Invest $500 in This Year** 📈  
-    Check out the latest insights from The Motley Fool on which AI stocks are worth your investment! [Read more](https://news.google.com/rss/articles/CBMikgFBVV95cUxOakdlR2ltVnh5WjRsa0UzaUJ1YkVpR1Z0Z0tpVWRKbXJ4RkZpVkdKTHJGcUxMblpsUDA4UVk5engxWktDY2J1UG1YQzVTQm9fcnp1d0hyV083YVZkejZUVXJMem9tZ1ZWUzllNDNpUXBfSElhU01sQm9RUW1jZE9vZGlpZEVDZ1lnU2hnS192V0Y3dw?oc=5)
+    🚀 Big moves in the AI world! Here’s what you need to know:
     
-    💡 **Health AI investments are off to a roaring start in 2025** 🏥  
-    Discover how health tech is booming with AI investments this year! [Read full article](https://news.google.com/rss/articles/CBMiswFBVV95cUxQTGZVQnZlaFBBUVpCTVVqQzhvM3AyNzR5QXRIbUczM1FZQzMwTmpIZUxIelB2TUlyeGxGTVhmMFJFa3V4MXA0TklYZEpLcXZDVlNoQmI4RWZibkFka0JudTREZ2s2VlduTUp3OExkcjA3Z01tX0hCS0JuQkpoUlp6Nm1IRnByR2FnZEtlcUNDZFdKUWtKZGR5aTZYWEp5SnNEZ19nUi1zN1RhTFdxUFNESk5RMA?oc=5)
+    1️⃣ **Trump’s $500bn AI Investment Plan** - A massive financial commitment that's shaping the future of AI! 💰🔍 [Read more](https://news.google.com/rss/articles/CBMiqwFBVV95cUxOcU9jRHlEdXlNQnc1RmxFc3B5S2tqZmNSbjY0LVc3d3RSODlLUnpfcGc1T2RhcVJncC1oVUNFQ0xFbF8tNlZXQkRWSS1iVGJsc281OTlGRjEyLTAyaDg3dE5hV1o0TkJjVWxOWnZwb0JzLXZqcXpKUklJclVYMTE4dk9iQ0xyd0ZHOEtuSWVTWFNvN0VFZFpVWGRaaDN2MmxuZnRCLWJaSnJtNGs?oc=5)
     
-    📊 **Microsoft’s Stock Revival Hinges on Showing Growth From AI Binge** 💻  
-    Learn how Microsoft plans to leverage AI for its stock revival! [More info here](https://news.google.com/rss/articles/CBMijAFBVV95cUxQZ0FnbS1MOWJYeFhtWE1FSGNrQjgwZ3hqbnpLNXpnOEpaR192LW5FV1NVOTBQUUlNVEhTRHlfd3VoRnJFRkl6M0pndWJwemlMUFdPa25PRWt6LWh1Uk4ta2RVQV9lb0Vjb2ZGVlNJWXQxVlNtWF9uTEFmZnFlemxfT2Z3bEYzcnJkRl9CNQ?oc=5)
+    2️⃣ **Tech Titans Clash** - The tech giants are bickering over the $500 billion investment announced by Trump! Who will come out on top? 🤔💥 [Check it out](https://news.google.com/rss/articles/CBMihwFBVV95cUxQSDduczRjNDJkMFQwQk05aXMzQ21EY2hqZkxEdlpEZ1plX3NxalpGaEpwckdQM0tQa2ZqbkJGMkxReFFzeDFnRzY4U3dKMmdTUm1xeXpod1VoN1YzTzA4VDlHQVhzeXgxLTc3UjczVlMzdGhQWHZsMG5RdGZjY2pJRDBaUF9pWmc?oc=5)
     
-    🛩️ **Palantir in Talks to Invest in Drone Startup at $5 Billion Valuation** 🚁  
-    Exciting developments in the drone industry as Palantir eyes a significant investment! [Read more](https://news.google.com/rss/articles/CBMiqwFBVV95cUxNWE0wMHdXSDN3aTlMal9aTGpkaUdkOEVmRHhxajFWRXJiOVNweXV0M2RHSWFyWDdwSWYwSmp5UVlva1hFTFRyOXRZY050X25JbWlDcDgtTHlya1Zha2EtMGlvVFEwcmEzblUtLUZhby1uMks1eDlCdGY4ZkV0dm5ES1BYTlM3cXhYeG8wTDd6NlZNWDFrNm9fNkp0bHJkRm1IRXRzbXNwRW5CZTg?oc=5)
+    3️⃣ **Meta's Bold Move** - Zuckerberg announces a staggering $65 billion investment this year to supercharge AI initiatives! 🔥🌐 [Learn more](https://news.google.com/rss/articles/CBMilAFBVV95cUxOeGExNlIteFo5R09vclNhcHVKbjlnY010TGxmVWhsOW1LcWJidzFpSDNWUzNPbUlpM0l1bGd2a1FjRnFlMHBnbC1iR1FWVEU2dFRRczdpU3NYR0J1Y1lXNzNHeHgzMWxnSklPUTB6dTAzYzBDdDVfT3JyVnZkdVUydmg2c3RHWFI5MFFjNEl4cDVsZW5T?oc=5)
     
-    📊 **Best AI Stocks to Invest in Now** 💸  
-    Find out which AI stocks are making waves right now! [Read more](https://news.google.com/rss/articles/CBMiiAFBVV95cUxNWjFlOHRHa3N3TVpadWlSTjlKeFNaX3g3MVhyMzlHNzNMbXEzb2tlNV9fRXUwUTFVWWxYZm9NVFhoMlFYdkExS1FEVEVXdWdlNHR5NFJTMkFNcVR2TkxBTjR2UzBTeG9XUGhLd2RFa1VPMUNsOHBiWWtQWWsxRkVKNmd3cXd3MDBs?oc=5)
+    4️⃣ **Understanding the Stargate Initiative** - Dive into Trump’s ambitious $500 billion Stargate Initiative and its implications for AI! ✨🚀 [Discover here](https://news.google.com/rss/articles/CBMiugFBVV95cUxQSDc5RFFWN204N3J3X3lEdUF0RXVWOW1FNk9KVVZBNFQ4RndZTzVybFhURFVWVFRGLWJ1VGVsUGtTXzhLZVdRQ21CQ1VHUFoyWkhSZUJ6cFU4bUQ1dUlWX1p1c05TVkdnWk83UmJ6amQwbzlQTlNVSHl0alJfZmRKSTVJNUVfdmliSmo3anQ3cXlGUjdZUEwyY25pOGxmU3luRG5heVlsWHo0SDJBTWxGT3hjM0JhQ05xS0E?oc=5)
     
-    #AIInvestment #StockMarket #TechNews #InvestSmart #FutureOfAI
+    5️⃣ **Altman vs. Musk** - A dramatic exchange between Sam Altman and Elon Musk over the implications of the Stargate Initiative! 🔥💬 [Read the details](https://news.google.com/rss/articles/CBMingFBVV95cUxPRkhzc0UwM2l4N0pXSDFibkFvTnhOeVppSC15aTRRNW02VzhoWEhpVHp3d3gtb1p5NXNZLUd4TDJudjRSNFlnOE9BZUJtUm14UUlsMF9FNTBaZE1pNnZiaUxwdUI4RHBWS3FXMVFlVGxGQjJSbHRlcVNjV3pMWjRsQkhFV0FiWXNsRDVzOTBuTmZwUmJFcGE5QXIza3JVZw?oc=5)
+    
+    Stay tuned for more updates on the world of AI! 🔍✨ #AIInvestment #TechNews #Innovation
 </pre>
 
 ```python
@@ -424,33 +434,34 @@ execute_agent(claude, tools, query, "claude")
 <pre class="custom">Results from [claude] 
     
     
-    Great! Now that I have the latest news about AI investment, I'll create an Instagram post format for you based on this information.
+    Now that I have the search results, I'll create an Instagram post format for you based on the AI investment news:
     
-    📱 Instagram Post: AI Investment Buzz 🚀💰
+    📢 Breaking News: AI Investment Boom! 💰🤖
     
-    🔥 Hot off the press: AI investments are making waves in 2025! 🌊
+    🔥 Hot off the press: The AI world is buzzing with massive investment plans and tech titans are making big moves! Here's what you need to know:
     
-    Here's what's trending in the world of AI stocks and investments:
+    1️⃣ Trump's $500 Billion "Stargate Initiative" 🚀
+    Former President Trump has announced a jaw-dropping $500 billion AI investment plan, sparking debates and setting priorities for the future of AI in the US.
     
-    1. 💼 The Motley Fool suggests the best AI stocks to invest $500 in this year. Smart money moves! 💡
+    2️⃣ Tech Giants Clash 🥊
+    The announcement has ignited a fierce debate among tech leaders. Elon Musk and Sam Altman are at odds over the initiative's impact on their companies vs. the country's interests.
     
-    2. 🏥 Health AI investments are off to a roaring start in 2025. The future of healthcare is here! 🩺
+    3️⃣ Meta's AI Power Play 💪
+    Mark Zuckerberg isn't holding back! Meta plans to invest up to $65 billion this year alone to fuel their AI ambitions. Talk about going all-in! 🎰
     
-    3. 🖥️ Microsoft's stock revival hinges on showing growth from their AI binge. Will their bet pay off? 🤔
+    4️⃣ Global Impact 🌍
+    The Economist weighs in on how Trump's massive AI investment plan could reshape priorities in the AI landscape worldwide.
     
-    4. 🚁 Palantir in talks to invest in a drone startup valued at $5 billion! AI takes flight! ✈️
+    5️⃣ What's Next? 🔮
+    As investments pour in and tech leaders take sides, the AI race is heating up like never before. Will this usher in a new era of innovation or widen the gap between tech giants?
     
-    5. 💎 Morningstar reveals the best AI stocks to invest in now. Time to update your portfolio? 📊
+    💡 What do you think about these massive AI investments? Are they a step in the right direction or cause for concern? Share your thoughts below! 👇
     
-    🗣️ What's your take on these AI investment trends? Are you ready to ride the AI wave? 🏄‍♂️
+    #AIInvestment #TechNews #FutureOfAI #StargatePlan #MetaAI #TechGiants #InnovationRace
     
-    #AIInvestment #TechStocks #FutureOfFinance #InvestInAI #TechTrends2025
+    📸: [Insert an relevant image here, perhaps a futuristic AI concept or a collage of tech leaders mentioned]
     
-    👉 Swipe for more details and let us know your thoughts in the comments below! 💬
-    
-    ---
-    
-    Remember, always do your own research and consult with financial advisors before making investment decisions. Happy investing, tech enthusiasts! 🤖💼
+    Remember to stay informed and think critically about the impact of AI on our future! 🤔💡
 </pre>
 
 ```python
@@ -461,15 +472,18 @@ execute_agent(gemini, tools, query, "gemini")
 <pre class="custom">Results from [gemini] 
     ⚡️ **AI Investment is Booming!** ⚡️
     
-    The world of finance is buzzing with the potential of Artificial Intelligence.  From healthcare to tech giants, AI is attracting serious investment. Here's a quick rundown:
+    The world of tech is buzzing with news about massive investments in Artificial Intelligence.  From Trump's proposed \$500 billion Stargate Initiative to Meta's \$65 billion commitment, the race to dominate the AI landscape is heating up.
     
-    * **Motley Fool** highlights the best AI stocks for investing $500 this year.
-    * **STAT** reports that health AI investments are off to a roaring start in 2025.
-    * **Yahoo Finance** discusses how Microsoft's stock revival hinges on demonstrating growth from its AI investments.
-    * **The Information** reveals Palantir is in talks to invest in a drone startup at a $5 billion valuation.
-    * **Morningstar** shares its picks for the best AI stocks to invest in now.
+    Want to stay ahead of the curve?  Check out these headlines:
     
-    #AI #Investment #Tech #Future #Finance #Stocks #Innovation
+    * **A $500bn investment plan says a lot about Trump’s AI priorities:** [Link to Economist article]
+    * **Tech titans bicker over $500bn AI investment announced by Trump:** [Link to Guardian article]
+    * **Meta to invest up to $65 billion this year to power AI goals, Zuckerberg says:** [Link to USA Today article]
+    * **Trump’s AI Push: Understanding The $500 Billion Stargate Initiative:** [Link to Forbes article]
+    * **'What Is Great For The Country Isn\'t Always What\'s Optimal For Your Companies\': Sam Altman Lashes Out At Elon Musk Amid Stargate Squabble:** [Link to Investor's Business Daily article]
+    
+    
+    #AI #Investment #TechNews #FutureTech #Innovation #StargateInitiative
     
 </pre>
 
@@ -484,7 +498,26 @@ execute_agent(
 ```
 
 <pre class="custom">Results from [llama3.1 70B] 
-    "Hey everyone! Did you know that AI caused layoffs in NY? Employers may have to disclose this information. Additionally, student and teacher AI use continued to climb in the 2023-24 school year. Microsoft has also introduced a new paradigm of materials design with generative AI called MatterGen. Furthermore, Connecticut College has launched an AI initiative called AI@Conn. And if you're looking to invest in AI stocks, here are the top 4 no-brainer AI stocks to buy for 2025. #AI #News #Tech"
+    Here's a possible Instagram post based on the search results:
+    
+    "Hey everyone! 
+    
+    Want to stay up-to-date on the latest AI news? Here are some of the top stories from around the web:
+    
+    * How Chinese AI Startup DeepSeek Made a Model that Rivals OpenAI (via WIRED)
+    * AI can now replicate itself — a milestone that has experts terrified (via Livescience.com)
+    * Meta to Increase Spending to $65 Billion This Year in A.I. Push (via The New York Times)
+    * 2 Artificial Intelligence (AI) Stocks That Could Make You a Millionaire (via The Motley Fool)
+    * Trump Signs Executive Actions Related to Cryptocurrency, AI (via Bloomberg)
+    
+    Stay informed and ahead of the curve with these latest developments in the world of AI! #AI #ArtificialIntelligence #Technology #Innovation"
+    
+     Sources:
+    https://news.google.com/rss/articles/CBMiYkFVX3lxTE9KdENSTTNfNzF1OU0xaXY5U1hhcTJqcmlPYUViZGlNV3E3TVJ6bXVqQW8yWG14TVZWaTVIM0FSV3BxdTAtWjA5U2JpNzRFQ0p5a3FPd1F4a0ZxUWpPQzN1aW5R?oc=5
+    https://news.google.com/rss/articles/CBMiyAFBVV95cUxQcUxGdk5MRFFOT0hoN3RRX1drTmpja2NRYmhwRGZVNUpQRFllcGw0dHlMeDEtSS1SSHgxQ1dSNFV2NWZ5S2gxRmxXVFptWTE0bU9SMHpwenRla1F4NWFlVWY3NVZkZ2xjQmEwc2NBbzMtdU5zdHBmdDBKQ2NaTEhpN3pjNHpqVkJxc18wQzd2TUJCSVR4VjNEcTh2Ti15enpRUGRwSVVsSllRM1JjeGVzLWxERmstVzBnQS1JS1hwbGFOel9aOHJyOQ?oc=5
+    https://news.google.com/rss/articles/CBMidkFVX3lxTE1DOHIyamJTVm95dDVNRGladzF5cVNLYnlBcVJXTTgzXzJULXFWODlNVG5jS0hDazJHdjRVMFd5YWJGSTZ0VU9QOUplSmpoWGxsQm5UUjg1c3hfTnVtUjF4NmZvb09FVDh1RFRzTTZ0QnpDU2MtYUE?oc=5
+    https://news.google.com/rss/articles/CBMimAFBVV95cUxQLTNUNXFiNVdRS2x0MHRvZnJfQ1NCdjdwSExsVzFYYy1meWpCUVMzbXlBYm84d0paRklGUkJIaVdSc1Q0ZGZ3UnBiZk9TTFVQSDUyRmMzZXl4cF9uUTQ1Y281MEF1S2RqaTFUREt1X3ZIYnFmOXprcjFBLV9NdE10dWZUZEROU0ZhaXE0RzUyQndwZnhQWWVDVw?oc=5
+    https://news.google.com/rss/articles/CBMisAFBVV95cUxPWWJCSWhMb0ctdDNxcWY0N3N1RDhDM2VyZ2xIOVRhUGR2MWFnSmNmaVZZNHBVTkowRVNlVXJVNzRmRGhSZUpRY1pKS2VIbk04ZEsxRUM5THJrSDJfdFRKYXpKYi1oTkVKalZ3WVkzU1cyeHQ1ZjJ6NTlBMXhXd2RfeG9OZUc0b3ZBYTJYMEdKZ0U1VWtuWTRyZm9TZnphWEMyR2ZGVTZlTkFkUFNtTEtKZw?oc=5
 </pre>
 
 ```python
@@ -495,14 +528,19 @@ execute_agent(ollama, tools, query, "llama3.1(Ollama)")
 <pre class="custom">Results from [llama3.1(Ollama)] 
     "Breaking News!
     
-    Investing in AI is on the rise! Here are some top picks:
+    The future of AI is looking bright! 
     
-     Microsoft's stock revival hinges on showing growth from AI binge (Yahoo Finance)
-     Health AI investments are off to a roaring start in 2025 (STAT)
-     Palantir in talks to invest in drone startup at $5 billion valuation (The Information)
-     Best AI stocks to invest $500 in this year (The Motley Fool)
+    Did you know that a $500 billion investment plan has been announced by Trump, prioritizing AI development? This massive investment aims to propel the US ahead in the global AI race.
     
-    Don't miss out on the opportunity to invest in the future of technology! #AIinvestment #stockmarket #futureoftech"
+    But what does this mean for tech titans like Meta and Google? They're already investing big in AI, with plans to spend up to $65 billion this year!
+    
+    And it's not just about the money - it's also about the vision. Trump's Stargate initiative aims to make the US a leader in AI innovation.
+    
+    But not everyone is on board. Elon Musk and Sam Altman are at odds over the plan, with some questioning its feasibility.
+    
+    Stay tuned for more updates on this exciting development!
+    
+    #AI #Investment #FutureOfTech"
 </pre>
 
 ```python
@@ -511,32 +549,17 @@ execute_agent(qwen, tools, query, "qwen2.5(Ollama)")
 ```
 
 <pre class="custom">Results from [qwen2.5(Ollama)] 
-    🌟 [IG Post] 🌟
+    🌟 [AI Investment News] 🌟
     
-    🚀 *AI Investment Update* 🚀
+    A $500 billion investment plan says a lot about Trump’s AI priorities. #AI #Investment #TechNews 
     
-    Here's the latest buzz in the world of artificial intelligence and investments! Dive into these must-read articles:
+    ✨ Tech titans bicker over the $500 billion AI investment announced by Trump, as per The Guardian. #AIInvestment #TechTitans
     
-    1. **The Best AI Stocks to Invest $500 in This Year** - The Motley Fool
-       - Read about which companies are leading the pack in this rapidly evolving sector.
-       
-    2. **Health AI Investments Are Off to a Roaring Start in 2025** - STAT
-       - Discover how AI is transforming healthcare and driving growth in the health industry.
+    🚀 Meta is planning to invest up to $65 billion this year to power its AI goals, according to USA TODAY. #Meta #AI #BusinessNews
     
-    3. **Microsoft’s Stock Revival Hinges on Showing Growth From AI Binge** - Yahoo Finance
-       - Explore Microsoft's ambitious plans as they integrate AI into their business strategy.
+    💡 Understanding the $500 billion Stargate initiative: Trump’s push for AI, as explained by Forbes. #StargateInitiative #AIInvestment
     
-    4. **Palantir in Talks to Invest in Drone Startup at $5 Billion Valuation** - The Information
-       - Keep an eye on new partnerships and investments that could shape the future of technology.
+    📣 Sam Altman of Y Combinator lashes out at Elon Musk amid the Stargate squabble. Investor's Business Daily shares his thoughts on this tech controversy. #SamAltman #ElonMusk #TechControversy
     
-    5. **Best AI Stocks to Invest in Now** - Morningstar
-       - Get tips from experts on picking the right stocks for your portfolio.
-    
-    💡 *Stay ahead of the curve with these insights!*
-    
-    #AI #Investment #TechTrends
-    
-    ---
-    
-    *Let us know which article you found most interesting!*
+    💡 These are some interesting insights and updates in AI investment news! Stay tuned for more developments. #AIUpdate #TechnologyTrends
 </pre>
