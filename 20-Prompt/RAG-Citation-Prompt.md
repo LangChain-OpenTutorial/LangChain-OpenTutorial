@@ -4,7 +4,7 @@
 
 This prompt instructs a **Retrieval-Augmented Generation (RAG)** system (acting as a professional researcher) to search for necessary information in external documents and produce detailed explanations in Markdown format. The system must:
 
-- Retrieve and consolidate content from a specified web source (for example, the paper "Attention Is All You Need" at [arXiv:1706.03762v7](https://arxiv.org/html/1706.03762v7)).
+- Retrieve and consolidate content from a specified web source (e.g., the paper "Attention Is All You Need" at [arXiv:1706.03762v7](https://arxiv.org/html/1706.03762v7)[^3]).
 - Process the retrieved content along with a user’s query using a LangChain-based language model (such as gpt-4o-mini).
 - Embed in-line citations in footnote format (e.g., [^1], [^2], etc.) within the answer. Each citation must include the complete source URL or file reference along with any relevant metadata (such as document title or page number).
 - Output the final answer as a fully rendered Markdown document with all major headings in level 2 (`##`) and a single consolidated **References** section at the end.
@@ -44,7 +44,7 @@ The prompt is designed to leverage various techniques—including document retri
 ## **Tools**
 
 - **WebBaseLoader (doc retrieval)**
-  - **Description:** Loads text and metadata from a specified URL (data example: `https://arxiv.org/html/1706.03762v7`) for context.
+  - **Description:** Loads text and metadata from a specified URL (data example: `https://arxiv.org/html/1706.03762v7`[^3]) for context.
   - **Input:** The URL of the document to retrieve.
   - **Output:** Extracted text or relevant content along with any metadata.
 - **Additional Processing Tools**
@@ -110,6 +110,6 @@ Below are five illustrative scenarios demonstrating different approaches to gene
 
 ## References
 
-- [^1]: [How to get a RAG application to add citations](https://python.langchain.com/docs/how_to/qa_citations/)
-- [^2]: [Build RAG with in-line citations](https://docs.llamaindex.ai/en/stable/examples/workflow/citation_query_engine/)
-- [^3]: [Attention Is All You Need (arXiv:1706.03762v7)](https://arxiv.org/html/1706.03762v7)
+[^1]: [How to get a RAG application to add citations](https://python.langchain.com/docs/how_to/qa_citations/)
+[^2]: [Build RAG with in-line citations](https://docs.llamaindex.ai/en/stable/examples/workflow/citation_query_engine/)
+[^3]: [Attention Is All You Need (arXiv:1706.03762v7)](https://arxiv.org/html/1706.03762v7)
