@@ -99,30 +99,34 @@ We don’t have much info about the people in the test, and we don’t know how 
 But we must follow the basic rules to keep everything fair and safe.
 
 **Example Output (Optimized Prompt):**  
-ROLE/PERSPECTIVE: You are a research consultant designing a fair and safe pilot study on a new health supplement’s effect on stress levels among office workers.
+ROLE/PERSPECTIVE:
+You are a research consultant designing a fair, safe, and flexible pilot study. The objective is to evaluate a new health supplement’s potential to reduce stress among office workers under varying resource conditions.
 
-CONTEXT AND CONSTRAINTS:  
-• Limited information about participants, unknown budget, uncertain sample size.  
-• Need to ensure fairness, safety, and ethical compliance.  
-• Must propose methods adaptable to varying resources.
+CONTEXT AND CONSTRAINTS:
+* Participants, budget, and timeline are not fixed; adapt the method to different levels of available resources.
+* Ethical standards must be upheld, including informed consent, data privacy, and minimal risk to participants.
+* Ensure measurable outcomes and feasibility under both low and moderate resource scenarios.
 
-LOGICAL REASONING INSTRUCTIONS:  
-• Draft a clear test procedure outline, from recruitment to data collection and analysis.  
-• Justify each step with a rationale based on ethical standards (e.g., voluntary participation, informed consent).  
-• Account for budget and participant uncertainty by suggesting flexible group sizes and minimal resource requirements.
+LOGICAL REASONING INSTRUCTIONS:
+* Outline a clear test procedure from participant recruitment to data collection and analysis.
+* Provide rationale for each step, ensuring fairness (random assignment) and safety (monitoring adverse effects).
+* Plan for resource variability: propose alternative approaches for small budgets or small sample sizes, as well as more robust methods if resources allow.
+* Include next-step considerations once initial results are obtained, such as extended follow-up or scaling up the study.
 
-EVIDENCE-BASED REQUIREMENT:  
-• Summaries of relevant literature or established guidelines for study design (where applicable).  
-• Clear explanation for relying on small-scale test methods and any assumptions made.
+EVIDENCE-BASED REQUIREMENT:
+* Cite or reference standard stress measurement tools (e.g., Perceived Stress Scale, PSS-10) or recognized guidelines.
+* Explain assumptions about participant variability and budget impact on the study’s scope.
+* Support safety and ethical choices with basic regulatory or institutional guidelines (where applicable).
 
-CONCISE AND STRUCTURED ANSWER:  
-• Define the goal: Assess if the supplement reduces stress among office workers.  
-• Outline the approach:  
-  1. Recruit volunteer office workers.  
-  2. Randomly assign to supplement group or control group (placebo or no supplement).  
-  3. Measure stress levels (questionnaires or simple metrics) pre- and post-intervention over a set period.  
-  4. Collect data on safety (any adverse reactions) and feasibility (participation rates).  
-  5. Compare results between groups to see if stress metrics differ significantly.  
-• Ensure ethical compliance (informed consent, data privacy).  
-• Prepare to adjust sample size or budget by selecting easy-to-use, cost-effective measures.  
-• Summarize anticipated outcomes, noting limitations from the small scale and minimal data.  
+CONCISE AND STRUCTURED ANSWER:
+* Goal: Determine if the new supplement reduces perceived stress levels in office workers.
+* Proposed Approach:
+1. Recruit volunteer office workers, screening for health conditions if possible.
+2. Randomly assign participants to either the supplement group or a placebo/control group.
+3. Administer a validated stress assessment (e.g., PSS-10) before and after a set intervention period.
+4. Collect safety data (any side effects), noting ethical compliance (consent forms, confidentiality).
+5. If resources are minimal, prioritize short assessments and simple data collection. If resources are adequate, consider additional measures like physiological stress markers (e.g., heart rate variability).
+6. Compare pre- and post-intervention stress scores to see if the supplement group shows a meaningful reduction versus control.
+7. Plan next steps: potential follow-up, expanded sample, or additional stress measures if preliminary results are promising.
+* Adapt to changing resources by focusing on flexible recruitment strategies and low-cost data collection tools.
+* Emphasize transparent reporting of methods, outcomes, and limitations for scientific validity and ethical compliance.
