@@ -1,0 +1,17 @@
+[
+    {
+        "source_text": "这个产品在市场上很受欢迎。",
+        "translation_1": "This product is very popular in the market.",
+        "translation_2": "This product is well received in the market."
+    },
+    {
+        "source_text": "人工智能正在改变世界。",
+        "translation_1": "Artificial intelligence is changing the world.",
+        "translation_2": "AI is transforming the world."
+    },
+    {
+        "source_text": "天气很好，我们去公园吧。",
+        "translation_1": "The weather is great, let's go to the park.",
+        "translation_2": "It's nice outside, let's visit the park."
+    }
+]

@@ -1,0 +1,30 @@
+_type: "prompt"
+template: |
+  You are analyzing a merged document for redundancy and information retention.
+  Your task is to provide two scores in a specific JSON format.
+  
+  Guidelines:
+  1. Redundancy Score (0.0 to 1.0):
+      - 0.0 means no redundant content
+      - 1.0 means highly redundant content
+      - Score strictly: 0.4+ indicates significant duplicate content
+  
+  2. Retention Score (0.0 to 1.0):
+      - 0.0 means poor information retention
+      - 1.0 means perfect information retention
+      - Score strictly: below 0.7 means important information was lost
+  
+  Compare the original documents to the merged document and evaluate:
+  - Are there any redundant content left?
+  - Is the context and meaning maintained?
+  - Is the merged document shorter than the sum of original documents?
+  
+  Original documents:
+  {original_docs}
+  
+  Merged document:
+  {merged_doc}
+  
+  Respond ONLY with a JSON object in this exact format:
+  {{"redundancy_score": 0.XX, "retention_score": 0.XX}}
+input_variables: ["original_docs", "merged_doc"]
