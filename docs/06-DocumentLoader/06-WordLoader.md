@@ -31,7 +31,7 @@ pre {
 This tutorial covers two methods for loading `Microsoft Word` documents into a document format that can be used in RAG. 
 
 
-We will demonstrate the usage of `Docx2txtLoader` and `UnstructuredWordDocumentLoader`, exploring their functionalities to process and load .docx files effectively. 
+We will demonstrate the usage of `Docx2txtLoader` and `UnstructuredWordDocumentLoader` , exploring their functionalities to process and load `.docx` files effectively. 
 
 
 Additionally, we provide a comparison to help users choose the appropriate loader for their requirements.
@@ -40,7 +40,7 @@ Additionally, we provide a comparison to help users choose the appropriate loade
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Comparison of DOCX Loading Methods](#Comparison-of-DOCX-Loading-Methods)
+- [Comparison of docx Loading Methods](#Comparison-of-DOCX-Loading-Methods)
 - [Docx2txtLoader](#Docx2txtLoader)
 - [UnstructuredWordDocumentLoader](#UnstructuredWordDocumentLoader)
 
@@ -86,13 +86,13 @@ package.install(
 
 ## Docx2txtLoader
 
-**Used Library**: A lightweight Python module such as `docx2txt` for text extraction.
+**Used Library** : A lightweight Python module such as `docx2txt` for text extraction.
 
-**Key Features**:
+**Key Features** :
 - Extracts text from `.docx` files quickly and simply.
 - Suitable for efficient and straightforward tasks.
 
-**Use Case**:
+**Use Case** :
 - When you need to quickly retrieve text data from `.docx` files.
 
 ```python
@@ -487,14 +487,14 @@ print(docs[0])
 
 ## UnstructuredWordDocumentLoader
 
-**Used Library**: A comprehensive document analysis library called `unstructured`.
+**Used Library** : A comprehensive document analysis library called `unstructured` .
 
-**Key Features**:
+**Key Features** :
 - Capable of understanding the structure of a document, such as titles and body, and separating them into distinct elements.
 - Allows hierarchical representation and detailed processing of documents.
 - Extracts meaningful information from unstructured data and transforms it into structured formats.
 
-**Use Case**:
+**Use Case** :
 - When you need to extract text while preserving the document's structure, formatting, and metadata.
 - Suitable for handling complex document structures or converting unstructured data into structured formats.
 
@@ -846,7 +846,7 @@ print(docs[1].page_content)
 
 ### Efficient Document Loader Configuration with Various Parameter Combinations
 
-By combining various parameters, you can configure a document loader that fits your specific needs efficiently. Adjusting settings such as `mode`, `strategy`, and `include_page_breaks` allows for tailored handling of different document structures and processing requirements.
+By combining various parameters, you can configure a document loader that fits your specific needs efficiently. Adjusting settings such as `mode` , `strategy` , and `include_page_breaks` allows for tailored handling of different document structures and processing requirements.
 
 
 ```python

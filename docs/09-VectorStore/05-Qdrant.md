@@ -33,7 +33,7 @@ This notebook demonstrates how to utilize the features related to the `Qdrant` v
 
 [`Qdrant`](https://python.langchain.com/docs/integrations/vectorstores/qdrant/) is an open-source vector similarity search engine designed to store, search, and manage high-dimensional vectors with additional payloads. It offers a production-ready service with a user-friendly API, suitable for applications such as semantic search, recommendation systems, and more.
 
-Qdrant's architecture is optimized for efficient vector similarity searches, employing advanced indexing techniques like Hierarchical Navigable Small World (HNSW) graphs to enable fast and scalable retrieval of relevant data.
+**Qdrant's architecture** is optimized for efficient vector similarity searches, employing advanced indexing techniques like **Hierarchical Navigable Small World (HNSW)** graphs to enable fast and scalable retrieval of relevant data.
 
 
 ### Table of Contents
@@ -43,8 +43,20 @@ Qdrant's architecture is optimized for efficient vector similarity searches, emp
 - [Credentials](#credentials)
 - [Installation](#installation)
 - [Initialization](#initialization)
-- [Manage VectorStore](#manage-vectorstore)
-- [Query VectorStore](#query-vectorstore)
+- [Manage Vector Store](#manage-vector-store)
+  - [Create a Collection](#create-a-collection)
+  - [List Collections](#list-collections)
+  - [Delete a Collection](#delete-a-collection)
+  - [Add Items to the Vector Store](#add-items-to-the-vector-store)
+  - [Delete Items from the Vector Store](#delete-items-from-the-vector-store)
+  - [Upsert Items to Vector Store (Parallel)](#upsert-items-to-vector-store-parallel)
+- [Query Vector Store](#query-vector-store)
+  - [Query Directly](#query-directly)
+  - [Similarity Search with Score](#similarity-search-with-score)
+  - [Query by Turning into Retriever](#query-by-turning-into-retriever)
+  - [Search with Filtering](#search-with-filtering)
+  - [Delete with Filtering](#delete-with-filtering)
+  - [Filtering and Updating Records](#filtering-and-updating-records)
 
 ### References
 
@@ -86,6 +98,11 @@ package.install(
 )
 ```
 
+<pre class="custom">
+    [notice] A new release of pip is available: 24.3.1 -> 25.0.1
+    [notice] To update, run: pip install --upgrade pip
+</pre>
+
 ```python
 # Set environment variables
 from langchain_opentutorial import set_env
@@ -123,31 +140,31 @@ load_dotenv(override=True)
 
 
 
-## Credentials
+## **Credentials**
 
 Create a new account or sign in to your existing one, and generate an API key for use in this notebook.
 
 1. **Log in to Qdrant Cloud** : Go to the [Qdrant Cloud](https://cloud.qdrant.io) website and log in using your email, Google account, or GitHub account.
 
-2. **Create a Cluster** : After logging in, navigate to the `"Clusters"` section and click the `"Create"` button. Choose your desired configurations and region, then click `"Create"` to start building your cluster. Once the cluster is created, an API key will be generated for you.
+2. **Create a Cluster** : After logging in, navigate to the **"Clusters"** section and click the **"Create"** button. Choose your desired configurations and region, then click **"Create"** to start building your cluster. Once the cluster is created, an API key will be generated for you.
 
 3. **Retrieve and Store Your API Key** : When your cluster is created, you will receive an API key. Ensure you save this key in a secure location, as you will need it later. If you lose it, you will have to generate a new one.
 
-4. **Manage API Keys** : To create additional API keys or manage existing ones, go to the `"Access Management"` section in the Qdrant Cloud dashboard and select `"Qdrant Cloud API Keys"` Here, you can create new keys or delete existing ones.
+4. **Manage API Keys** : To create additional API keys or manage existing ones, go to the **"Access Management"** section in the Qdrant Cloud dashboard and select *"Qdrant Cloud API Keys"* Here, you can create new keys or delete existing ones.
 
 ```
 QDRANT_API_KEY="YOUR_QDRANT_API_KEY"
 ```
 
-## Installation
+## **Installation**
 
-There are several main options for initializing and using the Qdrant vector store:
+There are several main options for initializing and using the **Qdrant** vector store:
 
 - **Local Mode** : This mode doesn't require a separate server.
     - **In-memory storage** (data is not persisted)
     - **On-disk storage** (data is saved to your local machine)
-- **Docker Deployments** : You can run Qdrant using Docker.
-- **Qdrant Cloud** : Use Qdrant as a managed cloud service.
+- **Docker Deployments** : You can run **Qdrant** using **Docker**.
+- **Qdrant Cloud** : Use **Qdrant** as a managed cloud service.
 
 For detailed instructions, see the [installation instructions](https://qdrant.tech/documentation/guides/installation/).
 
@@ -156,99 +173,85 @@ For detailed instructions, see the [installation instructions](https://qdrant.te
 For simple tests or quick experiments, you might choose to store data directly in memory. This means the data is automatically removed when your client terminates, typically at the end of your script or notebook session.
 
 ```python
-from langchain_qdrant import QdrantVectorStore
-from qdrant_client import QdrantClient
-from qdrant_client.http.models import Distance, VectorParams
+from utils.qdrant import QdrantDocumentManager
 from langchain_openai import OpenAIEmbeddings
 
-# Step 1: Initialize embeddings
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-
-# Step 2: Initialize Qdrant client
-client = QdrantClient(":memory:")
-
-# Step 3: Create a Qdrant collection
+# Define the collection name for storing documents
 collection_name = "demo_collection"
-client.create_collection(
-    collection_name=collection_name,
-    vectors_config=VectorParams(size=3072, distance=Distance.COSINE),
-)
 
-# Step 4: Initialize QdrantVectorStore
-vector_store = QdrantVectorStore(
-    client=client,
+# Initialize the embedding model with a specific OpenAI model
+embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+
+# Create an instance of QdrantDocumentManager with in-memory storage
+db = QdrantDocumentManager(
+    location=":memory:",  # Use in-memory database for temporary storage
     collection_name=collection_name,
-    embedding=embeddings,
+    embedding=embedding,
 )
 ```
+
+<pre class="custom">Collection 'demo_collection' does not exist or force recreate is enabled. Creating new collection...
+    Collection 'demo_collection' created successfully with configuration: {'vectors_config': VectorParams(size=3072, distance=<Distance.COSINE: 'Cosine'>, hnsw_config=None, quantization_config=None, on_disk=None, datatype=None, multivector_config=None)}
+</pre>
 
 ### On-Disk Storage
 
-With on-disk storage, you can store your vectors directly on your hard drive without requiring a Qdrant server. This ensures that your data persists even when you restart the program.
+With **on-disk storage**, you can store your vectors directly on your hard drive without requiring a **Qdrant server**. This ensures that your data persists even when you restart the program.
 
 ```python
-from langchain_qdrant import QdrantVectorStore
-from qdrant_client import QdrantClient
-from qdrant_client.http.models import Distance, VectorParams
+from utils.qdrant import QdrantDocumentManager
 from langchain_openai import OpenAIEmbeddings
 
-# Step 1: Initialize embeddings
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-
-# Step 2: Initialize Qdrant client
+# Define the path for Qdrant storage
 qdrant_path = "./qdrant_memory"
-client = QdrantClient(path=qdrant_path)
 
-# Step 3: Create a Qdrant collection
+# Define the collection name for storing documents
 collection_name = "demo_collection"
-client.create_collection(
-    collection_name=collection_name,
-    vectors_config=VectorParams(size=3072, distance=Distance.COSINE),
-)
 
-# Step 4: Initialize QdrantVectorStore
-vector_store = QdrantVectorStore(
-    client=client,
+# Initialize the embedding model with a specific OpenAI model
+embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+
+# Create an instance of QdrantDocumentManager with specified storage path
+db = QdrantDocumentManager(
+    path=qdrant_path,  # Specify the path for Qdrant storage
     collection_name=collection_name,
-    embedding=embeddings,
+    embedding=embedding,
 )
 ```
 
+<pre class="custom">Collection 'demo_collection' does not exist or force recreate is enabled. Creating new collection...
+    Collection 'demo_collection' created successfully with configuration: {'vectors_config': VectorParams(size=3072, distance=<Distance.COSINE: 'Cosine'>, hnsw_config=None, quantization_config=None, on_disk=None, datatype=None, multivector_config=None)}
+</pre>
+
 ### Docker Deployments
 
-You can deploy `Qdrant` in a production environment using [Docker](https://qdrant.tech/documentation/guides/installation/#docker) and [Docker Compose](https://qdrant.tech/documentation/guides/installation/#docker-compose). Refer to the Docker and Docker Compose setup instructions in the development section for detailed information.
+You can deploy `Qdrant` in a **production environment** using [`Docker`](https://qdrant.tech/documentation/guides/installation/#docker) and [`Docker Compose`](https://qdrant.tech/documentation/guides/installation/#docker-compose). Refer to the `Docker` and `Docker Compose` setup instructions in the development section for detailed information.
 
 ```python
-from langchain_qdrant import QdrantVectorStore
-from qdrant_client import QdrantClient
-from qdrant_client.http.models import Distance, VectorParams
+from utils.qdrant import QdrantDocumentManager
 from langchain_openai import OpenAIEmbeddings
 
-# Step 1: Initialize embeddings
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-
-# Step 2: Initialize Qdrant client
+# Define the URL for Qdrant server
 url = "http://localhost:6333"
-client = QdrantClient(url=url)
 
-# Step 3: Create a Qdrant collection
+# Define the collection name for storing documents
 collection_name = "demo_collection"
-client.create_collection(
-    collection_name=collection_name,
-    vectors_config=VectorParams(size=3072, distance=Distance.COSINE),
-)
 
-# Step 4: Initialize QdrantVectorStore
-vector_store = QdrantVectorStore(
-    client=client,
+# Initialize the embedding model with a specific OpenAI model
+embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+
+# Create an instance of QdrantDocumentManager with specified storage path
+db = QdrantDocumentManager(
+    url=url,  # Specify the path for Qdrant storage
     collection_name=collection_name,
-    embedding=embeddings,
+    embedding=embedding,
 )
 ```
 
 ### Qdrant Cloud
 
-For a production environment, you can use [Qdrant Cloud](https://cloud.qdrant.io/). It offers fully managed `Qdrant` databases with features such as horizontal and vertical scaling, one-click setup and upgrades, monitoring, logging, backups, and disaster recovery. For more information, refer to the [Qdrant Cloud documentation](https://qdrant.tech/documentation/cloud/).
+For a **production environment**, you can use [**Qdrant Cloud**](https://cloud.qdrant.io/). It offers fully managed `Qdrant` databases with features such as **horizontal and vertical scaling**, **one-click setup and upgrades**, **monitoring**, **logging**, **backups**, and **disaster recovery**. For more information, refer to the [**Qdrant Cloud documentation**](https://qdrant.tech/documentation/cloud/).
+
 
 ```python
 import getpass
@@ -257,162 +260,117 @@ import os
 # Fetch the Qdrant server URL from environment variables or prompt for input
 if not os.getenv("QDRANT_URL"):
     os.environ["QDRANT_URL"] = getpass.getpass("Enter your Qdrant Cloud URL key: ")
-url = os.environ.get("QDRANT_URL")
+QDRANT_URL = os.environ.get("QDRANT_URL")
 
 # Fetch the Qdrant API key from environment variables or prompt for input
 if not os.getenv("QDRANT_API_KEY"):
     os.environ["QDRANT_API_KEY"] = getpass.getpass("Enter your Qdrant API key: ")
-api_key = os.environ.get("QDRANT_API_KEY")
+QDRANT_API_KEY = os.environ.get("QDRANT_API_KEY")
 ```
 
 ```python
-from langchain_qdrant import QdrantVectorStore
-from qdrant_client import QdrantClient
-from qdrant_client.http.models import Distance, VectorParams
+from utils.qdrant import QdrantDocumentManager
 from langchain_openai import OpenAIEmbeddings
 
-# Step 1: Initialize embeddings
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-
-# Step 2: Initialize Qdrant client
-client = QdrantClient(
-    url=url,
-    api_key=api_key,
-)
-
-# Step 3: Create a Qdrant collection
+# Define the collection name for storing documents
 collection_name = "demo_collection"
-client.create_collection(
-    collection_name=collection_name,
-    vectors_config=VectorParams(size=3072, distance=Distance.COSINE),
-)
 
-# Step 4: Initialize QdrantVectorStore
-vector_store = QdrantVectorStore(
-    client=client,
+# Initialize the embedding model with a specific OpenAI model
+embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+
+# Create an instance of QdrantDocumentManager with specified storage path
+db = QdrantDocumentManager(
+    url=QDRANT_URL,
+    api_key=QDRANT_API_KEY,
     collection_name=collection_name,
-    embedding=embeddings,
+    embedding=embedding,
 )
 ```
 
 ## Initialization
 
-Once you've established your vector store, you'll likely need to manage the collections within it. Here are some common operations you can perform:
+Once you've established your **vector store**, you'll likely need to manage the **collections** within it. Here are some common operations you can perform:
 
-- Create a collection
-- List collections
-- Delete a collection
-- Use an existing collection
+- **Create a collection**
+- **List collections**
+- **Delete a collection**
+
+To proceed with the tutorial, we will use **Qdrant Cloud** for the next steps. This approach ensures that your data is securely stored in the cloud, allowing for seamless access, comprehensive testing, and experimentation across different environments.
 
 ### Create a Collection
 
-To create a new collection in your Qdrant instance, you can use the `QdrantClient` class from the `qdrant-client` library.
+The `QdrantDocumentManager` class allows you to create a new **collection** in `Qdrant`. It can automatically create a collection if it doesn't exist or if you want to **recreate** it. You can specify configurations for **dense** and **sparse vectors** to meet different search needs. Use the `_ensure_collection_exists` method for **automatic creation** or call `create_collection` directly when needed.
 
 ```python
-from qdrant_client import QdrantClient
-from qdrant_client.http.models import VectorParams, Distance
+from utils.qdrant import QdrantDocumentManager
+from langchain_openai import OpenAIEmbeddings
+from qdrant_client.http.models import Distance
 
-# Step 1: Define collection name
-collection_name = "my_new_collection"
+# Define the collection name for storing documents
+collection_name = "test_collection"
 
-# Initialize the Qdrant client
-client = QdrantClient(
-    url=url,
-    api_key=api_key,
-)
+# Initialize the embedding model with a specific OpenAI model
+embedding = OpenAIEmbeddings(model="text-embedding-3-large")
 
-# Create a new collection in Qdrant
-client.create_collection(
+# Create an instance of QdrantDocumentManager with specified storage path
+db = QdrantDocumentManager(
+    url=QDRANT_URL,
+    api_key=QDRANT_API_KEY,
     collection_name=collection_name,
-    vectors_config=VectorParams(size=3072, distance=Distance.COSINE),
+    embedding=embedding,
+    metric=Distance.COSINE,
 )
-
-# Print confirmation
-print(f"Collection '{collection_name}' created successfully.")
 ```
 
-<pre class="custom">Collection 'my_new_collection' created successfully.
+<pre class="custom">Collection 'test_collection' does not exist or force recreate is enabled. Creating new collection...
+    Collection 'test_collection' created successfully with configuration: {'vectors_config': VectorParams(size=3072, distance=<Distance.COSINE: 'Cosine'>, hnsw_config=None, quantization_config=None, on_disk=None, datatype=None, multivector_config=None)}
 </pre>
 
 ### List Collections
 
-To list all existing collections in your Qdrant instance, you can use the `QdrantClient` class from the `qdrant-client` library.
+The `QdrantDocumentManager` class lets you list all **collections** in your `Qdrant` instance using the `get_collections` method. This retrieves and displays the **names** of all existing collections.
+
 
 ```python
-from qdrant_client import QdrantClient
+# Retrieve the list of collections from the Qdrant client
+collections = db.client.get_collections()
 
-# Initialize the Qdrant client
-client = QdrantClient(
-    url=url,
-    api_key=api_key,
-)
-
-# Retrieve and print collection names
-collections_response = client.get_collections()
-for collection in collections_response.collections:
+# Iterate over each collection and print its details
+for collection in collections.collections:
     print(f"Collection Name: {collection.name}")
 ```
 
-<pre class="custom">Collection Name: my_new_collection
+<pre class="custom">Collection Name: test_collection
+    Collection Name: sparse_collection
+    Collection Name: dense_collection
+    Collection Name: insta_image_search_test
+    Collection Name: insta_image_search
     Collection Name: demo_collection
 </pre>
 
 ### Delete a Collection
 
-To delete a collection in Qdrant using the Python client, you can use the `delete_collection` method of the `QdrantClient` object.
+The `QdrantDocumentManager` class allows you to delete a **collection** using the `delete_collection` method. This method removes the specified collection from your `Qdrant` instance.
 
 ```python
-from qdrant_client import QdrantClient
-
 # Define collection name
-collection_name = "my_new_collection"
-
-# Initialize the Qdrant client
-client = QdrantClient(
-    url=url,
-    api_key=api_key,
-)
+collection_name = "test_collection"
 
 # Delete the collection
-if client.delete_collection(collection_name=collection_name):
+if db.client.delete_collection(collection_name=collection_name):
     print(f"Collection '{collection_name}' has been deleted.")
 ```
 
-<pre class="custom">Collection 'my_new_collection' has been deleted.
+<pre class="custom">Collection 'test_collection' has been deleted.
 </pre>
-
-### Use an Existing Collection
-
-This code snippet demonstrates how to initialize a `QdrantVectorStore` using the `from_existing_collection` method provided by the langchain_qdrant library
-
-```python
-from langchain_qdrant import QdrantVectorStore
-
-collection_name = "demo_collection"
-
-# Initialize QdrantVectorStore using from_existing_collection method
-vector_store = QdrantVectorStore.from_existing_collection(
-    embedding=embeddings,
-    collection_name=collection_name,
-    url=url,
-    api_key=api_key,
-    prefer_grpc=False,
-)
-```
-
-**Direct Initialization** 
-- Offers more control by utilizing an existing `QdrantClient` instance, making it suitable for complex applications that require customized client configurations.
-
-**from_existing_collection Method** 
-- Provides a simplified and concise way to connect to an existing collection, ideal for quick setups or simpler applications.
 
 ## Manage VectorStore
 
-After you've created your vector store, you can interact with it by adding or deleting items. Here are some common operations:
+After you've created your **vector store**, you can interact with it by **adding** or **deleting** items. Here are some common operations:
 
 ### Add Items to the Vector Store
 
-With `Qdrant`, you can add items to your vector store using the `add_documents` function. If you add a document with an ID that already exists, the existing document will be updated with the new data. This process is called `upsert`.
+The `QdrantDocumentManager` class lets you add items to your **vector store** using the `upsert` method. This method **updates** existing documents with new data if their IDs already exist.
 
 ```python
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -427,269 +385,227 @@ documents = loader.load()
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=600, chunk_overlap=100, length_function=len
 )
+
 split_docs = text_splitter.split_documents(documents)
 
 # Generate unique IDs for documents
-uuids = [str(uuid4()) for _ in split_docs]
-
-# Add documents to the vector store
-vector_store.add_documents(
-    documents=split_docs,
-    ids=uuids,
-    batch_size=10,
-)
-print(
-    f"Uploaded {len(split_docs)} documents to Qdrant collection 'little_prince_collection'"
-)
+uuids = [str(uuid4()) for _ in split_docs[:30]]
+page_contents = [doc.page_content for doc in split_docs[:30]]
+metadatas = [doc.metadata for doc in split_docs[:30]]
 ```
 
-<pre class="custom">Uploaded 222 documents to Qdrant collection 'little_prince_collection'
-</pre>
+```python
+from utils.qdrant import QdrantDocumentManager
+from langchain_openai import OpenAIEmbeddings
+
+# Define the collection name for storing documents
+collection_name = "demo_collection"
+
+# Initialize the embedding model with a specific OpenAI model
+embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+
+# Create an instance of QdrantDocumentManager with specified storage path
+db = QdrantDocumentManager(
+    url=QDRANT_URL,
+    api_key=QDRANT_API_KEY,
+    collection_name=collection_name,
+    embedding=embedding,
+)
+
+db.upsert(texts=page_contents, metadatas=metadatas, ids=uuids)
+```
+
+
+
+
+<pre class="custom">['22417c4f-bf11-4e92-978a-6c436dec39ca',
+     '28f56a01-34af-46ae-aeb4-ea6e0fcacb62',
+     'c6d06501-9595-4272-80b5-f0747cb145fc',
+     'b4b901bf-6e83-4658-b5e9-a1d5a80c767d',
+     '21b1b98d-0707-4128-a0bd-78c94db6cbf3',
+     'c49b5d7c-c330-4d59-9097-25c3c52510b9',
+     '36ddc677-4fa9-47ee-b2e0-284bdb9062a1',
+     '32fde659-84c6-4679-b4df-d4b1d11e645f',
+     'caf0b611-4a38-4a94-84a9-c3a98ac0b2a1',
+     '0e655834-9a6c-48a8-8a3b-5d5e2b1d6c2c',
+     '493aaa5c-b89d-429b-a425-57f20f3564ed',
+     '6f7f0755-d226-4aec-a714-a53d7a705e51',
+     '8b68a39b-f990-4ce1-9fbd-675f5103d3ff',
+     '73ef217b-9114-48a4-a447-0deb916b3d5a',
+     '63b99932-4e84-4cb2-a5ef-1d83fdbc4e6a',
+     '45fd3628-ca2f-439d-97ba-cc34da564f36',
+     '876f59dd-a9ae-4af7-84e8-5d8fe78cf7d3',
+     '5aa82f42-534f-447f-94b5-9ed4f3571091',
+     'eb69cc2a-8899-4d9e-ad8f-adebea281ff0',
+     '1defc340-16b4-4ee0-94de-0dabc23e5d07',
+     '368d5f90-75d2-406c-8dd2-c7d8736b6944',
+     '842812f6-ee9f-43ae-8f6d-53015a5e57af',
+     '61031399-09ed-4c88-bc93-1018b942df71',
+     'a6ac25f2-2dd5-445f-95dd-6a4d9fc4081c',
+     '08215031-2393-4d0c-82a2-53a6a90d169f',
+     'f41de48c-1e7d-4036-a75e-a10ac579081d',
+     'a2d6b6d1-5bbc-4f17-9b95-c917021614f0',
+     '3603a2e7-6021-46c9-8f4c-d53056849c1a',
+     'e1fb95a1-7c1c-4aed-a628-b39e0907b744',
+     '2a42fbb6-9450-4d86-a5f8-65f333c10d4c']</pre>
+
+
 
 ### Delete Items from the Vector Store
 
-To remove items from your vector store, use the `delete` function. You can specify the items to delete using either IDs or filters.
+The `QdrantDocumentManager` class allows you to delete items from your **vector store** using the `delete` method. You can specify items to delete by providing **IDs** or **filters**.
+
 
 ```python
-# Retrieve the last point ID from the list of UUIDs
-point_id = uuids[-1]
+delete_ids = [uuids[0]]
 
-# Delete the vector point by its point_id
-vector_store.delete(ids=[point_id])
-
-# Print confirmation of deletion
-print(f"Vector point with ID {point_id} has been deleted.")
+db.delete(ids=delete_ids)
 ```
 
-<pre class="custom">Vector point with ID c824af22-779a-4294-8c7b-6bc9de1ee9ce has been deleted.
-</pre>
+### Upsert Items to Vector Store (Parallel)
 
-### Update items from vector store
-
-To update items in your vector store, use the `set_payload` function. This function allows you to modify the content or metadata of existing item
+The `QdrantDocumentManager` class supports **parallel upserts** using the `upsert_parallel` method. This efficiently **adds** or **updates** multiple items with unique **IDs**, **data**, and **metadata**.
 
 ```python
-def retrieve_point_payload(vector_store, point_id):
-    """
-    Retrieve the payload of a point from the Qdrant collection using its ID.
+# Generate unique IDs for documents
+uuids = [str(uuid4()) for _ in split_docs[30:60]]
+page_contents = [doc.page_content for doc in split_docs[30:60]]
+metadatas = [doc.metadata for doc in split_docs[30:60]]
 
-    Args:
-        vector_store (QdrantVectorStore): The vector store instance connected to the Qdrant collection.
-        point_id (str): The unique identifier of the point to retrieve.
-
-    Returns:
-        dict: The payload of the retrieved point.
-
-    Raises:
-        ValueError: If the point with the specified ID is not found in the collection.
-    """
-    # Retrieve the vector point using the client
-    response = vector_store.client.retrieve(
-        collection_name=vector_store.collection_name,
-        ids=[point_id],
-    )
-
-    # Check if the response is empty
-    if not response:
-        raise ValueError(f"Point ID {point_id} not found in the collection.")
-
-    # Extract the payload from the retrieved point
-    point = response[0]
-    payload = point.payload
-    print(f"Payload for point ID {point_id}: \n{payload}\n")
-
-    return payload
+db.upsert_parallel(
+    texts=page_contents,
+    metadatas=metadatas,
+    ids=uuids,
+    batch_size=32,
+    workers=10,
+)
 ```
 
-```python
-point_id = uuids[0]
-
-# Retrieve the payload for the specified point ID
-payload = retrieve_point_payload(vector_store, point_id)
-```
-
-<pre class="custom">Payload for point ID 13d90d2d-2988-4c33-9b55-8449c8525200: 
-    {'page_content': 'The Little Prince\nWritten By Antoine de Saiot-Exupery (1900〜1944)', 'metadata': {'source': './data/the_little_prince.txt'}}
-    
-</pre>
-
-```python
-def update_point_payload(vector_store, point_id, new_payload):
-    """
-    Update the payload of a specific point in a Qdrant collection.
-
-    Args:
-        vector_store (QdrantVectorStore): The vector store instance connected to the Qdrant collection.
-        point_id (str): The unique identifier of the point to update.
-        new_payload (dict): A dictionary containing the new payload data to set for the point.
-
-    Returns:
-        None
-
-    Raises:
-        Exception: If the update operation fails.
-    """
-    try:
-        # Update the payload for the specified point
-        vector_store.client.set_payload(
-            collection_name=vector_store.collection_name,
-            payload=new_payload,
-            points=[point_id],
-        )
-        print(f"Successfully updated payload for point ID {point_id}.")
-    except Exception as e:
-        print(f"Failed to update payload for point ID {point_id}: {e}")
-        raise
-```
-
-```python
-point_id = uuids[0]
-new_payload = {"page_content": "The Little Prince (1943)"}
-
-# Update the point's payload
-update_point_payload(vector_store, point_id, new_payload)
-```
-
-<pre class="custom">Successfully updated payload for point ID 13d90d2d-2988-4c33-9b55-8449c8525200.
-</pre>
-
-### Upsert items to vector store (parallel)
-
-Use the `set_payload` function in parallel to efficiently add or update multiple items in the vector store using unique IDs, data, and metadata.
-
-```python
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import List, Dict, Tuple
 
 
-def update_payloads_parallel(
-    vector_store, updates: List[Tuple[str, Dict]], num_workers: int
-):
-    """
-    Update the payloads of multiple points in a Qdrant collection in parallel.
 
-    Args:
-        updates (List[Tuple[str, Dict]]): A list of tuples containing point IDs and their corresponding new payloads.
-        num_workers (int): Number of worker threads to use for parallel execution.
+<pre class="custom">['286d99ae-019b-41ed-962a-c1a26bf41c4a',
+     'e17ce584-3576-45bb-8d82-36cfdd4c89d1',
+     'aed142fa-a13a-421f-9e60-ab1af13a8b15',
+     '14337336-edb2-4ea1-880c-2f4613f1f999',
+     '91d47b16-4a1f-4f1f-ba07-78f9b2db06d8',
+     '6b58d2d9-1a4b-4e03-97fd-d584d502b606',
+     'e7b6f4b5-27e0-4787-a74c-b8d17a7038ea',
+     '01579e1a-9935-443d-a7a5-b9ffdd1e07f9',
+     '4d516f16-09cf-4b7e-8d65-455eced738e7',
+     '7fd284a3-5f10-407f-a8fe-44a923263748',
+     '55fae9b6-046a-4f09-9cf0-08568efde43c',
+     'b4386ade-1590-41fa-94e7-cc34d4f4c9da',
+     'd27d8f98-349a-4c45-9f82-31e983edfa8c',
+     '20537c5d-80d1-4d72-8507-73fd21e3f11a',
+     'ae418ede-69f6-4703-9d9d-2e31d59441b2',
+     '975d663d-f825-446d-9824-7997058ca24a',
+     'c8086e33-6345-4403-a98c-a4cd46375cd1',
+     'ec887b4f-eecf-4325-8117-293e6fd8dfd6',
+     'c5fa1381-e30d-47d8-aad3-d46cc8520953',
+     '1b20e891-e44f-4640-ab24-03d692627265',
+     '0d37a3dd-329f-4901-a828-71a704f7a35e',
+     '170420dc-b02c-42f3-a36d-c56973784fb7',
+     'f11893c3-20c5-43e4-9c0f-905d91c7a668',
+     '37327ff1-7f17-43b0-89ca-65ab69c14df6',
+     '92a4e2ec-7418-4241-a1e3-3bf2668a9fd6',
+     'ea018faa-293f-4329-b8ae-92dc3fcdd909',
+     '09c78d94-0b4c-41cc-b530-7504f3d62dc4',
+     '907ad8d0-427d-4f29-b801-aea90a6a86aa',
+     '86508b0c-4ff7-422f-b13e-1443e47ef5d3',
+     'b12e4c37-50a1-4257-80ae-de372a4a77ce']</pre>
 
-    Returns:
-        None
-    """
-    # Create a ThreadPoolExecutor
-    with ThreadPoolExecutor(max_workers=num_workers) as executor:
-        # Submit update tasks to the executor
-        future_to_point_id = {
-            executor.submit(
-                update_point_payload, vector_store, point_id, new_payload
-            ): point_id
-            for point_id, new_payload in updates
-        }
 
-        # Process completed futures
-        for future in as_completed(future_to_point_id):
-            point_id = future_to_point_id[future]
-            try:
-                future.result()
-            except Exception as e:
-                print(f"Error updating point ID {point_id}: {e}")
-```
-
-```python
-payload = retrieve_point_payload(vector_store, uuids[2])
-```
-
-<pre class="custom">Payload for point ID c0c2356a-5010-4bd6-aaee-990d0ab6fb48: 
-    {'page_content': 'Born in 1900 in Lyons, France, young Antoine was filled with a passion for adventure. When he failed an entrance exam for the Naval Academy, his interest in aviation took hold. He joined the French Army Air Force in 1921 where he first learned to fly a plane. Five years later, he would leave the military in order to begin flying air mail between remote settlements in the Sahara desert.', 'metadata': {'source': './data/the_little_prince.txt'}}
-    
-</pre>
-
-```python
-# Update example
-updates = [
-    (
-        uuids[1],
-        {
-            "page_content": "Antoine de Saint-Exupéry's passion for aviation not only fueled remarkable stories but also reflected the enduring allure of flight, inspiring technological advancements and daring feats that captivated the world over the past century."
-        },
-    ),
-    (
-        uuids[2],
-        {
-            "page_content": "Antoine de Saint-Exupéry, born in 1900 in Lyons, France, had an adventurous spirit from a young age. After failing the Naval Academy entrance exam, his fascination with aviation began to take flight. In 1921, he joined the French Army Air Force and learned to pilot an aircraft. By 1926, he left the military to embark on a career as an airmail pilot, delivering letters to isolated communities in the vast Sahara desert"
-        },
-    ),
-    # Add more (point_id, new_payload) tuples as needed
-]
-
-# Update payloads in parallel
-num_workers = 4
-update_payloads_parallel(vector_store, updates, num_workers)
-```
-
-<pre class="custom">Successfully updated payload for point ID e72f942f-8f24-4855-b99e-41fa11e467fc.
-    Successfully updated payload for point ID c0c2356a-5010-4bd6-aaee-990d0ab6fb48.
-</pre>
 
 ## Query VectorStore
 
-Once your vector store has been created and the relevant documents have been added you will most likely wish to query it during the running of your chain or agent.
+Once your **vector store** has been created and the relevant **documents** have been added, you will most likely wish to **query** it during the running of your `chain` or `agent`.
 
-### Query directly
+### Query Directly
 
-The most straightforward use case for the `Qdrant` vector store is performing similarity searches. Internally, your query is converted into a vector embedding, which is then used to identify similar documents within the `Qdrant` collection.
+The `QdrantDocumentManager` class allows direct **querying** using the `search` method. It performs **similarity searches** by converting queries into **vector embeddings** to find similar **documents**.
+
 
 ```python
 query = "What is the significance of the rose in The Little Prince?"
 
-# Perform similarity search in the vector store
-results = vector_store.similarity_search(
+response = db.search(
     query=query,
-    k=1,
+    k=3,
 )
 
-for res in results:
-    print(f"* {res.page_content[:200]}\n [{res.metadata}]\n\n")
+for res in response:
+    payload = res["payload"]
+    print(f"* {payload['page_content'][:200]}\n [{payload['metadata']}]\n\n")
 ```
 
-<pre class="custom">* "Go and look again at the roses. You will understand now that yours is unique in all the world. Then come back to say goodbye to me, and I will make you a present of a secret." 
-    The little prince went
-     [{'source': './data/the_little_prince.txt', '_id': '634892c2-9fc9-4bb5-9310-531149d1ade1', '_collection_name': 'demo_collection'}]
+<pre class="custom">* for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
+     [{'source': './data/the_little_prince.txt'}]
+    
+    
+    * for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
+     [{'source': './data/the_little_prince.txt'}]
+    
+    
+    * for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
+     [{'source': './data/the_little_prince.txt'}]
     
     
 </pre>
 
-### Similarity search with score
+### Similarity Search with Score
 
-You can also search with score:
+The `QdrantDocumentManager` class enables **similarity searches** with **scores** using the `search` method. This provides a **relevance score** for each **document** found.
+
 
 ```python
+# Define the query to search in the database
 query = "What is the significance of the rose in The Little Prince?"
 
-results = vector_store.similarity_search_with_score(
-    query=query,
-    k=1,
-)
-for doc, score in results:
-    print(f"* [SIM={score:3f}] {doc.page_content[:200]}\n [{doc.metadata}]\n\n")
+# Perform the search with the specified query and number of results
+response = db.search(query=query, k=3)
+
+for res in response:
+    payload = res["payload"]
+    score = res["score"]
+    print(
+        f"* [SIM={score:.3f}] {payload['page_content'][:200]}\n [{payload['metadata']}]\n\n"
+    )
 ```
 
-<pre class="custom">* [SIM=0.584994] "Go and look again at the roses. You will understand now that yours is unique in all the world. Then come back to say goodbye to me, and I will make you a present of a secret." 
-    The little prince went
-     [{'source': './data/the_little_prince.txt', '_id': '634892c2-9fc9-4bb5-9310-531149d1ade1', '_collection_name': 'demo_collection'}]
+<pre class="custom">* [SIM=0.527] for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
+     [{'source': './data/the_little_prince.txt'}]
+    
+    
+    * [SIM=0.527] for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
+     [{'source': './data/the_little_prince.txt'}]
+    
+    
+    * [SIM=0.527] for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
+     [{'source': './data/the_little_prince.txt'}]
     
     
 </pre>
 
-### Query by turning into retreiver
+### Query by Turning into Retriever
 
-You can also transform the vector store into a `retriever` for easier usage in your workflows or chains.
+The `QdrantDocumentManager` class can transform the **vector store** into a `retriever`. This allows for easier **integration** into **workflows** or **chains**.
+
 
 ```python
+from langchain_qdrant import QdrantVectorStore
+
+# Initialize QdrantVectorStore with the client, collection name, and embedding
+vector_store = QdrantVectorStore(
+    client=db.client, collection_name=db.collection_name, embedding=db.embedding
+)
+
 query = "What is the significance of the rose in The Little Prince?"
 
+# Transform the vector store into a retriever with specific search parameters
 retriever = vector_store.as_retriever(
     search_type="similarity_score_threshold",
-    search_kwargs={"k": 1, "score_threshold": 0.5},
+    search_kwargs={"k": 3, "score_threshold": 0.3},
 )
 
 results = retriever.invoke(query)
@@ -698,193 +614,163 @@ for res in results:
     print(f"* {res.page_content[:200]}\n [{res.metadata}]\n\n")
 ```
 
-<pre class="custom">* "Go and look again at the roses. You will understand now that yours is unique in all the world. Then come back to say goodbye to me, and I will make you a present of a secret." 
-    The little prince went
-     [{'source': './data/the_little_prince.txt', '_id': '634892c2-9fc9-4bb5-9310-531149d1ade1', '_collection_name': 'demo_collection'}]
+<pre class="custom">* for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
+     [{'source': './data/the_little_prince.txt', '_id': 'c49b5d7c-c330-4d59-9097-25c3c52510b9', '_collection_name': 'demo_collection'}]
+    
+    
+    * for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
+     [{'source': './data/the_little_prince.txt', '_id': '9567e6cf-2f89-4c3b-8a41-7167770fbcd3', '_collection_name': 'demo_collection'}]
+    
+    
+    * for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
+     [{'source': './data/the_little_prince.txt', '_id': 'e2a0d06a-9ccd-4e9e-8d4a-4e1292b6ccef', '_collection_name': 'demo_collection'}]
     
     
 </pre>
 
 ### Search with Filtering
 
-This code demonstrates how to search for and retrieve records from a Qdrant vector database based on specific metadata field values.
+The `QdrantDocumentManager` class allows **searching with filters** to retrieve records based on specific **metadata values**. This is done using the `scroll` method with a defined **filter query**.
 
 ```python
-from qdrant_client.http.models import Filter, FieldCondition, MatchValue, MatchText
+from qdrant_client import models
 
-
-def filter_and_retrieve_records(vector_store, filter_condition):
-    """
-    Retrieve records from a Qdrant vector store based on a given filter condition.
-
-    Args:
-        vector_store (QdrantVectorStore): The vector store instance connected to the Qdrant collection.
-        filter_condition (Filter): The filter condition to apply for retrieving records.
-
-    Returns:
-        list: A list of records matching the filter condition.
-    """
-    all_records = []
-    next_page_offset = None
-
-    while True:
-        response, next_page_offset = vector_store.client.scroll(
-            collection_name=vector_store.collection_name,
-            scroll_filter=filter_condition,
-            limit=10,
-            offset=next_page_offset,
-            with_payload=True,
-        )
-        all_records.extend(response)
-        if next_page_offset is None:
-            break
-
-    return all_records
-```
-
-```python
-filter_condition = Filter(
+# Define a filter query to match documents containing the text "Chapter" in the page content
+filter_query = models.Filter(
     must=[
-        FieldCondition(
-            key="page_content",  # Ensure this key matches your payload structure
-            match=MatchText(text="Academy"),  # Use MatchValue for exact matches
-            # key="metadata.source",
-            # match=MatchValue(value="./data/the_little_prince.txt")
-        )
+        models.FieldCondition(
+            key="page_content",
+            match=models.MatchText(text="Chapter"),
+        ),
     ]
 )
 
-# Retrieve records based on the filter condition
-records = filter_and_retrieve_records(vector_store, filter_condition)
-
-# Print the retrieved records
-for record in records[:1]:
-    print(f"ID: {record.id}\nPayload: {record.payload}\n")
+# Retrieve records from the collection that match the filter query
+db.scroll(
+    scroll_filter=filter_query,
+    k=10,
+)
 ```
 
-<pre class="custom">ID: c0c2356a-5010-4bd6-aaee-990d0ab6fb48
-    Payload: {'page_content': 'Antoine de Saint-Exupéry, born in 1900 in Lyons, France, had an adventurous spirit from a young age. After failing the Naval Academy entrance exam, his fascination with aviation began to take flight. In 1921, he joined the French Army Air Force and learned to pilot an aircraft. By 1926, he left the military to embark on a career as an airmail pilot, delivering letters to isolated communities in the vast Sahara desert', 'metadata': {'source': './data/the_little_prince.txt'}}
-    
-</pre>
+
+
+
+<pre class="custom">[Record(id='09c78d94-0b4c-41cc-b530-7504f3d62dc4', payload={'page_content': '[ Chapter 7 ]\n- the narrator learns about the secret of the little prince‘s life \nOn the fifth day-- again, as always, it was thanks to the sheep-- the secret of the little prince‘s life was revealed to me. Abruptly, without anything to lead up to it, and as if the question had been born of long and silent meditation on his problem, he demanded: \n"A sheep-- if it eats little bushes, does it eat flowers, too?"\n"A sheep," I answered, "eats anything it finds in its reach."\n"Even flowers that have thorns?"\n"Yes, even flowers that have thorns." \n"Then the thorns-- what use are they?"', 'metadata': {'source': './data/the_little_prince.txt'}}, vector=None, shard_key=None, order_value=None),
+     Record(id='0e655834-9a6c-48a8-8a3b-5d5e2b1d6c2c', payload={'page_content': '[ Chapter 1 ]\n- we are introduced to the narrator, a pilot, and his ideas about grown-ups\nOnce when I was six years old I saw a magnificent picture in a book, called True Stories from Nature, about the primeval forest. It was a picture of a boa constrictor in the act of swallowing an animal. Here is a copy of the drawing. \n(picture)\nIn the book it said: "Boa constrictors swallow their prey whole, without chewing it. After that they are not able to move, and they sleep through the six months that they need for digestion."', 'metadata': {'source': './data/the_little_prince.txt'}}, vector=None, shard_key=None, order_value=None),
+     Record(id='286d99ae-019b-41ed-962a-c1a26bf41c4a', payload={'page_content': '[ Chapter 4 ]\n- the narrator speculates as to which asteroid from which the little prince came\u3000\u3000\nI had thus learned a second fact of great importance: this was that the planet the little prince came from was scarcely any larger than a house!', 'metadata': {'source': './data/the_little_prince.txt'}}, vector=None, shard_key=None, order_value=None),
+     Record(id='45fd3628-ca2f-439d-97ba-cc34da564f36', payload={'page_content': '[ Chapter 2 ]\n- the narrator crashes in the desert and makes the acquaintance of the little prince\nSo I lived my life alone, without anyone that I could really talk to, until I had an accident with my plane in the Desert of Sahara, six years ago. Something was broken in my engine. And as I had with me neither a mechanic nor any passengers, I set myself to attempt the difficult repairs all alone. It was a question of life or death for me: I had scarcely enough drinking water to last a week.', 'metadata': {'source': './data/the_little_prince.txt'}}, vector=None, shard_key=None, order_value=None),
+     Record(id='d27d8f98-349a-4c45-9f82-31e983edfa8c', payload={'page_content': '[ Chapter 5 ]\n- we are warned as to the dangers of the baobabs\nAs each day passed I would learn, in our talk, something about the little prince‘s planet, his departure from it, his journey. The information would come very slowly, as it might chance to fall from his thoughts. It was in this way that I heard, on the third day, about the catastrophe of the baobabs.\nThis time, once more, I had the sheep to thank for it. For the little prince asked me abruptly-- as if seized by a grave doubt-- "It is true, isn‘t it, that sheep eat little bushes?" \n"Yes, that is true." \n"Ah! I am glad!"', 'metadata': {'source': './data/the_little_prince.txt'}}, vector=None, shard_key=None, order_value=None),
+     Record(id='f11893c3-20c5-43e4-9c0f-905d91c7a668', payload={'page_content': '[ Chapter 6 ]\n- the little prince and the narrator talk about sunsets\nOh, little prince! Bit by bit I came to understand the secrets of your sad little life... For a long time you had found your only entertainment in the quiet pleasure of looking at the sunset. I learned that new detail on the morning of the fourth day, when you said to me: \n"I am very fond of sunsets. Come, let us go look at a sunset now." \n"But we must wait," I said. \n"Wait? For what?" \n"For the sunset. We must wait until it is time."', 'metadata': {'source': './data/the_little_prince.txt'}}, vector=None, shard_key=None, order_value=None),
+     Record(id='f41de48c-1e7d-4036-a75e-a10ac579081d', payload={'page_content': '[ Chapter 3 ]\n- the narrator learns more about from where the little prince came\nIt took me a long time to learn where he came from. The little prince, who asked me so many questions, never seemed to hear the ones I asked him. It was from words dropped by chance that, little by little, everything was revealed to me. \nThe first time he saw my airplane, for instance (I shall not draw my airplane; that would be much too complicated for me), he asked me: \n"What is that object?"\n"That is not an object. It flies. It is an airplane. It is my airplane."', 'metadata': {'source': './data/the_little_prince.txt'}}, vector=None, shard_key=None, order_value=None)]</pre>
+
+
 
 ### Delete with Filtering
 
-This code demonstrates how to delete records from a Qdrant vector database based on specific metadata field values.
+The `QdrantDocumentManager` class allows you to **delete records** using **filters** based on specific **metadata values**. This is achieved with the `delete` method and a **filter query**.
 
 ```python
-from qdrant_client.http.models import Filter, FieldCondition, MatchValue
+from qdrant_client.http.models import Filter, FieldCondition, MatchText
 
-# Define the filter condition
-filter_condition = Filter(
+# Define a filter query to match documents containing the text "Chapter" in the page content
+filter_query = models.Filter(
     must=[
-        FieldCondition(
-            key="page_content",  # Ensure this key matches your payload structure
-            match=MatchText(text="Academy"),  # Use MatchValue for exact matches
-        )
+        models.FieldCondition(
+            key="page_content",
+            match=models.MatchText(text="Chapter"),
+        ),
     ]
 )
 
-# Perform the delete operation
-client.delete(
-    collection_name=vector_store.collection_name,
-    points_selector=filter_condition,
-    wait=True,
-)
-
-print("Delete operation completed.")
+# Delete records from the collection that match the filter query
+db.client.delete(collection_name=db.collection_name, points_selector=filter_query)
 ```
 
-<pre class="custom">Delete operation completed.
-</pre>
+
+
+
+<pre class="custom">UpdateResult(operation_id=31, status=<UpdateStatus.COMPLETED: 'completed'>)</pre>
+
+
 
 ### Filtering and Updating Records
 
-This code demonstrates how to retrieve and display records from a Qdrant collection based on a specific metadata field value.
+The `QdrantDocumentManager` class supports **filtering and updating records** based on specific **metadata values**. This is done by **retrieving records** with **filters** and **updating** them as needed.
+
 
 ```python
-# Define the filter condition
-filter_condition = Filter(
+from qdrant_client import models
+
+# Define a filter query to match documents with a specific metadata source
+filter_query = models.Filter(
     must=[
-        FieldCondition(
-            key="page_content",  # Ensure this key matches your payload structure
-            match=MatchText(text="Chapter"),  # Use MatchValue for exact matches
-        )
+        models.FieldCondition(
+            key="metadata.source",
+            match=models.MatchValue(value="./data/the_little_prince.txt"),
+        ),
     ]
 )
-# Retrieve matching records using the existing function
-matching_points = filter_and_retrieve_records(vector_store, filter_condition)
 
-# Prepare updates for matching points
-for point in matching_points:
-    updated_payload = point.payload.copy()
+# Retrieve records matching the filter query, including their vectors
+response = db.scroll(scroll_filter=filter_query, k=10, with_vectors=True)
+new_source = "the_little_prince.txt"
 
-    # Update the page_content field by replacing "Chapter" with "Chapter -"
-    updated_payload["page_content"] = updated_payload["page_content"].replace(
-        "Chapter", "Chapter -"
+# Update the point IDs and set new metadata for the records
+for point in response:  # response[0] returns a list of points
+    payload = point.payload
+
+    # Check if metadata exists in the payload
+    if "metadata" in payload:
+        payload["metadata"]["source"] = new_source
+    else:
+        payload["metadata"] = {
+            "source": new_source
+        }  # Add new metadata if it doesn't exist
+
+    # Update the point with new metadata
+    db.client.upsert(
+        collection_name=db.collection_name,
+        points=[
+            models.PointStruct(
+                id=point.id,
+                payload=payload,
+                vector=point.vector,
+            )
+        ],
     )
-
-    # Update the payload using the existing function
-    update_point_payload(vector_store, point.id, updated_payload)
-
-print("Update operation completed.")
 ```
-
-<pre class="custom">Successfully updated payload for point ID 071cae6b-5dc8-40ab-aac2-aff8796bff7f.
-    Successfully updated payload for point ID 09628d96-3ec1-4914-b849-1e90dbe4dbc0.
-    Successfully updated payload for point ID 0fe36061-9a47-4499-a5b5-bba74d7370a5.
-    Successfully updated payload for point ID 12325628-09db-4526-8429-31b99c04e0ec.
-    Successfully updated payload for point ID 19533ec1-ea7b-4e83-9a37-a71c3bc489f2.
-    Successfully updated payload for point ID 2416e48f-8520-4d2e-9492-c7f0ae19fbd8.
-    Successfully updated payload for point ID 29dd8cd9-5450-4ab3-8c39-e8eb56e7fee8.
-    Successfully updated payload for point ID 325dd5af-0fc4-42f6-ad55-bb498c496b2a.
-    Successfully updated payload for point ID 32dd484e-6413-4074-81d0-7233337469ef.
-    Successfully updated payload for point ID 48f42368-c969-4fcb-91d3-770cd966294f.
-    Successfully updated payload for point ID 48fd93c4-3e61-4e77-af86-d633535db061.
-    Successfully updated payload for point ID 591594ef-76ab-4aca-803b-0dfe09ffd0e4.
-    Successfully updated payload for point ID 5a0504c6-56f4-4667-8c98-2f31f136640a.
-    Successfully updated payload for point ID 7a7ed2a6-b3b4-4d8a-9dd7-6687602b5b68.
-    Successfully updated payload for point ID 7ed0d4c8-42be-4afb-9dc2-ab33d7d5f62e.
-    Successfully updated payload for point ID 8efd04f0-3abc-4e10-92b5-d577451a135d.
-    Successfully updated payload for point ID a3b96045-6c99-4541-b8f6-4cc291e35581.
-    Successfully updated payload for point ID a64f34f6-b44b-4694-b357-cdec17ecd644.
-    Successfully updated payload for point ID aa0519a6-80de-4e20-9757-811dc4fbaca7.
-    Successfully updated payload for point ID c5a26ed3-4d5d-4325-b193-7fed809d2665.
-    Successfully updated payload for point ID cb314628-bb64-4472-8cc8-ebacfab47262.
-    Successfully updated payload for point ID d6bb59e4-9a20-4e6e-8591-235600b5165b.
-    Successfully updated payload for point ID e46ed917-dc43-431e-aa1e-f1d28e25ff25.
-    Successfully updated payload for point ID eda5363f-bb0a-4259-9c60-9bc50e46fc2a.
-    Successfully updated payload for point ID fa6e2b4f-f698-4773-81fa-557b4073464d.
-    Successfully updated payload for point ID fd58693b-fc06-40a0-aab8-638c6dfe9f2f.
-    Successfully updated payload for point ID ffeb408c-ef72-4963-b5d3-d7035c788566.
-    Update operation completed.
-</pre>
 
 ### Similarity Search Options
 
-When using `QdrantVectorStore`, you have three options for performing similarity searches. You can select the desired search mode using the retrieval_mode parameter when you set up the class. The available modes are:
+When using `QdrantVectorStore`, you have three options for performing **similarity searches**. You can select the desired search mode using the `retrieval_mode` parameter when you set up the class. The available modes are:
 
-- Dense Vector Search (Default)
-- Sparse Vector Search
-- Hybrid Search
+- **Dense Vector Search** (Default)
+- **Sparse Vector Search**
+- **Hybrid Search**
 
 ### Dense Vector Search
 
-To perform a search using only dense vectors:
+To perform a search using only **dense vectors**:
 
-The `retrieval_mode` parameter must be set to `RetrievalMode.DENSE`. This is also the default setting.
-You need to provide a [dense embeddings](https://python.langchain.com/docs/integrations/text_embedding/) value through the embedding parameter.
+- The `retrieval_mode` parameter must be set to `RetrievalMode.DENSE`. This is also the **default setting**.
+- You need to provide a [dense embeddings](https://python.langchain.com/docs/integrations/text_embedding/) value through the `embedding` parameter.
+
 
 ```python
 from langchain_qdrant import RetrievalMode
+from langchain_openai import OpenAIEmbeddings
 
 query = "What is the significance of the rose in The Little Prince?"
 
-# Initialize QdrantVectorStore
+# Initialize the embedding model with a specific OpenAI model
+embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+
+# Initialize QdrantVectorStore with documents, embeddings, and configuration
 vector_store = QdrantVectorStore.from_documents(
-    documents=split_docs,
-    embedding=embeddings,
-    url=url,
-    api_key=api_key,
+    documents=split_docs[:50],
+    embedding=embedding,
+    url=QDRANT_URL,
+    api_key=QDRANT_API_KEY,
     collection_name="dense_collection",
     retrieval_mode=RetrievalMode.DENSE,
     batch_size=10,
@@ -893,46 +779,60 @@ vector_store = QdrantVectorStore.from_documents(
 # Perform similarity search in the vector store
 results = vector_store.similarity_search(
     query=query,
-    k=1,
+    k=3,
 )
 
 for res in results:
     print(f"* {res.page_content[:200]}\n [{res.metadata}]\n\n")
 ```
 
-<pre class="custom">* "Go and look again at the roses. You will understand now that yours is unique in all the world. Then come back to say goodbye to me, and I will make you a present of a secret." 
-    The little prince went
-     [{'source': './data/the_little_prince.txt', '_id': 'b024fac2-620e-4102-bf55-a53becd3d174', '_collection_name': 'dense_collection'}]
+<pre class="custom">* for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
+     [{'source': './data/the_little_prince.txt', '_id': '3cc041d5-2700-498f-8114-85f3c96e26b9', '_collection_name': 'dense_collection'}]
+    
+    
+    * for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
+     [{'source': './data/the_little_prince.txt', '_id': '24d766ea-3383-40e5-bd0e-051d51de88a3', '_collection_name': 'dense_collection'}]
+    
+    
+    * Indeed, as I learned, there were on the planet where the little prince lived-- as on all planets-- good plants and bad plants. In consequence, there were good seeds from good plants, and bad seeds fro
+     [{'source': './data/the_little_prince.txt', '_id': 'd25ba992-e54d-4e8a-9572-438c78d0288b', '_collection_name': 'dense_collection'}]
     
     
 </pre>
 
 ### Sparse Vector Search
 
-To search with only sparse vectors,
+To search with only **sparse vectors**:
 
-The `retrieval_mode` parameter should be set to `RetrievalMode.SPARSE` .
-An implementation of the [SparseEmbeddings](https://github.com/langchain-ai/langchain/blob/master/libs/partners/qdrant/langchain_qdrant/sparse_embeddings.py) interface using any sparse embeddings provider has to be provided as value to the `sparse_embedding` parameter.
-The `langchain-qdrant` package provides a FastEmbed based implementation out of the box.
+- The `retrieval_mode` parameter should be set to `RetrievalMode.SPARSE`.
+- An implementation of the [SparseEmbeddings](https://github.com/langchain-ai/langchain/blob/master/libs/partners/qdrant/langchain_qdrant/sparse_embeddings.py) interface using any **sparse embeddings provider** has to be provided as a value to the `sparse_embedding` parameter.
+- The `langchain-qdrant` package provides a **FastEmbed** based implementation out of the box.
 
-To use it, install the [FastEmbed](https://github.com/qdrant/fastembed) package.
+To use it, install the [FastEmbed](https://github.com/qdrant/fastembed) package:
 
+```bash
 pip install fastembed
+```
 
 ```python
 from langchain_qdrant import FastEmbedSparse, RetrievalMode
-
-sparse_embeddings = FastEmbedSparse(model_name="Qdrant/bm25")
+from langchain_qdrant import RetrievalMode
+from langchain_openai import OpenAIEmbeddings
 
 query = "What is the significance of the rose in The Little Prince?"
 
-# Initialize QdrantVectorStore
+# Initialize the embedding model with a specific OpenAI model
+embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+# Initialize sparse embeddings using FastEmbedSparse
+sparse_embeddings = FastEmbedSparse(model_name="Qdrant/bm25")
+
+# Initialize QdrantVectorStore with documents, embeddings, and configuration
 vector_store = QdrantVectorStore.from_documents(
     documents=split_docs,
-    embedding=embeddings,
+    embedding=embedding,
     sparse_embedding=sparse_embeddings,
-    url=url,
-    api_key=api_key,
+    url=QDRANT_URL,
+    api_key=QDRANT_API_KEY,
     collection_name="sparse_collection",
     retrieval_mode=RetrievalMode.SPARSE,
     batch_size=10,
@@ -941,7 +841,7 @@ vector_store = QdrantVectorStore.from_documents(
 # Perform similarity search in the vector store
 results = vector_store.similarity_search(
     query=query,
-    k=1,
+    k=3,
 )
 
 for res in results:
@@ -951,36 +851,52 @@ for res in results:
 <pre class="custom">* [ Chapter 20 ]
     - the little prince discovers a garden of roses
     But it happened that after walking for a long time through sand, and rocks, and snow, the little prince at last came upon a road. And all
-     [{'source': './data/the_little_prince.txt', '_id': '9b772687-0981-4e0b-acc6-a13b76746665', '_collection_name': 'sparse_collection'}]
+     [{'source': './data/the_little_prince.txt', '_id': '30d70339-4233-427b-b839-208c7618ae82', '_collection_name': 'sparse_collection'}]
+    
+    
+    * [ Chapter 20 ]
+    - the little prince discovers a garden of roses
+    But it happened that after walking for a long time through sand, and rocks, and snow, the little prince at last came upon a road. And all
+     [{'source': './data/the_little_prince.txt', '_id': '45ad1b0e-45cd-46f0-b6cd-d8e2b19ea8fa', '_collection_name': 'sparse_collection'}]
+    
+    
+    * And he went back to meet the fox. 
+    "Goodbye," he said. 
+    "Goodbye," said the fox. "And now here is my secret, a very simple secret: It is only with the heart that one can see rightly; what is essential
+     [{'source': './data/the_little_prince.txt', '_id': 'ab098119-c45f-4e33-b105-a6c6e01a918b', '_collection_name': 'sparse_collection'}]
     
     
 </pre>
 
 ### Hybrid Vector Search
-To perform a hybrid search using dense and sparse vectors with score fusion,
 
-- The `retrieval_mode` parameter should be set to `RetrievalMode.HYBRID` .
-- A [ `dense embeddings` ](https://python.langchain.com/docs/integrations/text_embedding/) value should be provided to the `embedding` parameter.
-- An implementation of the [ `SparseEmbeddings` ](https://github.com/langchain-ai/langchain/blob/master/libs/partners/qdrant/langchain_qdrant/sparse_embeddings.py) interface using any sparse embeddings provider has to be provided as value to the `sparse_embedding` parameter.
+To perform a **hybrid search** using **dense** and **sparse vectors** with **score fusion**:
 
-Note that if you've added documents with the `HYBRID` mode, you can switch to any retrieval mode when searching. Since both the dense and sparse vectors are available in the collection.
+- The `retrieval_mode` parameter should be set to `RetrievalMode.HYBRID`.
+- A [`dense embeddings`](https://python.langchain.com/docs/integrations/text_embedding/) value should be provided to the `embedding` parameter.
+- An implementation of the [`SparseEmbeddings`](https://github.com/langchain-ai/langchain/blob/master/libs/partners/qdrant/langchain_qdrant/sparse_embeddings.py) interface using any **sparse embeddings provider** has to be provided as a value to the `sparse_embedding` parameter.
+
+**Note**: If you've added documents with the `HYBRID` mode, you can switch to any **retrieval mode** when searching, since both the **dense** and **sparse vectors** are available in the **collection**.
 
 ```python
 from langchain_qdrant import FastEmbedSparse, RetrievalMode
+from langchain_qdrant import RetrievalMode
 from langchain_openai import OpenAIEmbeddings
 
 query = "What is the significance of the rose in The Little Prince?"
 
+# Initialize the embedding model with a specific OpenAI model
 embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+# Initialize sparse embeddings using FastEmbedSparse
 sparse_embeddings = FastEmbedSparse(model_name="Qdrant/bm25")
 
-# Initialize QdrantVectorStore
+# Initialize QdrantVectorStore with documents, embeddings, and configuration
 vector_store = QdrantVectorStore.from_documents(
     documents=split_docs,
     embedding=embedding,
     sparse_embedding=sparse_embeddings,
-    url=url,
-    api_key=api_key,
+    url=QDRANT_URL,
+    api_key=QDRANT_API_KEY,
     collection_name="hybrid_collection",
     retrieval_mode=RetrievalMode.HYBRID,
     batch_size=10,
@@ -989,21 +905,27 @@ vector_store = QdrantVectorStore.from_documents(
 # Perform similarity search in the vector store
 results = vector_store.similarity_search(
     query=query,
-    k=1,
+    k=3,
 )
 
 for res in results:
     print(f"* {res.page_content[:200]}\n [{res.metadata}]\n\n")
 ```
 
-<pre class="custom">* [ Chapter 20 ]
+<pre class="custom">* "Go and look again at the roses. You will understand now that yours is unique in all the world. Then come back to say goodbye to me, and I will make you a present of a secret." 
+    The little prince went
+     [{'source': './data/the_little_prince.txt', '_id': '447a916c-d8a9-46f2-b035-d0ac4c7ea901', '_collection_name': 'hybrid_collection'}]
+    
+    
+    * [ Chapter 20 ]
     - the little prince discovers a garden of roses
     But it happened that after walking for a long time through sand, and rocks, and snow, the little prince at last came upon a road. And all
-     [{'source': './data/the_little_prince.txt', '_id': '6540d214-84f2-4505-b2f1-7aa937f7e2d0', '_collection_name': 'hybrid_collection'}]
+     [{'source': './data/the_little_prince.txt', '_id': '894a9222-ef0c-4e28-b736-8a334cbdc83b', '_collection_name': 'hybrid_collection'}]
+    
+    
+    * [ Chapter 8 ]
+    - the rose arrives at the little prince‘s planet
+     [{'source': './data/the_little_prince.txt', '_id': 'a3729fa0-b734-4316-ad18-83ea16263a2f', '_collection_name': 'hybrid_collection'}]
     
     
 </pre>
-
-```python
-
-```

@@ -110,7 +110,7 @@ package.install(
 ```
 
 <pre class="custom">
-    [notice] A new release of pip is available: 24.2 -> 24.3.1
+    [notice] A new release of pip is available: 24.2 -> 25.0
     [notice] To update, run: pip install --upgrade pip
 </pre>
 
@@ -191,32 +191,22 @@ WEAVIATE_URL="YOUR_WEAVIATE_CLUSTER_URL"
 
 ```python
 import os
-import weaviate
-from weaviate.classes.init import Auth
+from langchain_openai import OpenAIEmbeddings
+from utils.weaviate_vectordb import WeaviateDB
 
 weaviate_url = os.environ.get("WEAVIATE_URL")
 weaviate_api_key = os.environ.get("WEAVIATE_API_KEY")
+openai_api_key = os.environ.get("OPENAI_API_KEY")
 
-client = weaviate.connect_to_weaviate_cloud(
-    cluster_url=weaviate_url,
-    auth_credentials=Auth.api_key(weaviate_api_key),
-    headers={"X-Openai-Api-Key": os.environ.get("OPENAI_API_KEY")},
-)
+embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+weaviate_db = WeaviateDB(url=weaviate_url, api_key=weaviate_api_key, openai_api_key=openai_api_key, embeddings=embeddings)
+client = weaviate_db.connect()
 
 print(client.is_ready())
 ```
 
 <pre class="custom">True
 </pre>
-
-```python
-## api key Lookup
-def get_api_key():
-    return weaviate_api_key
-
-
-print(get_api_key())
-```
 
 ## What is Weaviate?
 
@@ -228,20 +218,20 @@ Weaviate is a powerful open-source vector database that revolutionizes how we st
 - Weaviate has a [GraphQL-API](./api/graphql/index.md) to access your data easily.
 - Weaviate is fast (check our [open source benchmarks](./benchmarks/index.md)).
 
-> 💡 **Key Feature**: Weaviate achieves millisecond-level query performance, making it suitable for production environments.
+> 💡 **Key Feature** : Weaviate achieves millisecond-level query performance, making it suitable for production environments.
 
 ## Why Use Weaviate?
 
 Weaviate stands out for several reasons:
 
-1. **Versatility**: Supports multiple media types (text, images, etc.)
-2. **Advanced Features**:
+1. **Versatility** : Supports multiple media types (text, images, etc.)
+2. **Advanced Features** :
    - Semantic Search
    - Question-Answer Extraction
    - Classification
    - Custom ML Model Integration
-3. **Production-Ready**: Built in Go for high performance and scalability
-4. **Developer-Friendly**: Multiple access methods through GraphQL, REST, and various client libraries
+3. **Production-Ready** : Built in Go for high performance and scalability
+4. **Developer-Friendly** : Multiple access methods through GraphQL, REST, and various client libraries
 
 
 ## Initialization
@@ -252,12 +242,12 @@ Before initializing our vector store, let's connect to a Weaviate collection. If
 The `create_collection` function establishes a new collection in Weaviate, configuring it with specified properties and vector settings. This foundational operation requires six key parameters:
 
 **Required Parameters:**
-- `client`: Weaviate client instance for database connection
-- `collection_name`: Unique identifier for your collection
-- `description`: Detailed description of the collection's purpose
-- `properties`: List of property definitions for data schema
-- `vectorizer`: Configuration for vector embedding generation
-- `metric`: Distance metric for similarity calculations
+- `client` : Weaviate client instance for database connection
+- `collection_name` : Unique identifier for your collection
+- `description` : Detailed description of the collection's purpose
+- `properties` : List of property definitions for data schema
+- `vectorizer` : Configuration for vector embedding generation
+- `metric` : Distance metric for similarity calculations
 
 **Advanced Configuration Options:**
 - For custom distance metrics: Utilize the `VectorDistances` class
@@ -275,55 +265,11 @@ create_collection(client, "Documents", "Document storage", properties, vectorize
 
 > **Note:** Choose your distance metric and vectorizer carefully as they significantly impact search performance and accuracy.
 
-```python
-from weaviate.classes.config import Property, DataType, Configure, VectorDistances
-from typing import List
-
-
-def create_collection(
-    client: weaviate.Client,
-    collection_name: str,
-    description: str,
-    properties: List[Property],
-    vectorizer: Configure.Vectorizer,
-    metric: str = "cosine",
-) -> None:
-    """
-    Creates a new index (collection) in Weaviate with the specified properties.
-
-    :param client: Weaviate client instance
-    :param collection_name: Name of the index (collection) (e.g., "BookChunk")
-    :param description: Description of the index (e.g., "A collection for storing book chunks")
-    :param properties: List of properties, where each property is a dictionary with keys:
-        - name (str): Name of the property
-        - dataType (list[str]): Data types for the property (e.g., ["text"], ["int"])
-        - description (str): Description of the property
-    :param vectorizer: Vectorizer configuration created using Configure.Vectorizer
-                       (e.g., Configure.Vectorizer.text2vec_openai())
-    :return: None
-    """
-    distance_metric = getattr(VectorDistances, metric.upper(), None)
-
-    # Set vector_index_config to hnsw
-    vector_index_config = Configure.VectorIndex.hnsw(distance_metric=distance_metric)
-
-    # Create the collection in Weaviate
-    try:
-        client.collections.create(
-            name=collection_name,
-            description=description,
-            properties=properties,
-            vectorizer_config=vectorizer,
-            vector_index_config=vector_index_config,
-        )
-        print(f"Collection '{collection_name}' created successfully.")
-    except Exception as e:
-        print(f"Failed to create collection '{collection_name}': {e}")
-```
-
 Now let's use the `create_collection` function to create the collection we'll use in this tutorial.
 
 ```python
+from weaviate.classes.config import Property, DataType, Configure
+
 collection_name = "BookChunk"  # change if desired
 description = "A chunk of a book's content"
 vectorizer = Configure.Vectorizer.text2vec_openai(
@@ -350,41 +296,12 @@ properties = [
     ),
 ]
 
-create_collection(client, collection_name, description, properties, vectorizer, metric)
+weaviate_db.create_collection(
+    client, collection_name, description, properties, vectorizer, metric
+)
 ```
 
 <pre class="custom">Collection 'BookChunk' created successfully.
-</pre>
-
-### Delete Collection
-
-Managing collections in Weaviate includes the ability to remove them when they're no longer needed. The `delete_collection` function provides a straightforward way to remove collections from your Weaviate instance.
-
-**Function Signature:**
-- `client`: Weaviate client instance for database connection
-- `collection_name`: Name of the collection to be deleted
-
-**Advanced Operations:**
-For batch operations or managing multiple collections, you can use the `delete_all_collections()` function, which removes all collections from your Weaviate instance.
-
-> **Important:** Collection deletion is permanent and cannot be undone. Always ensure you have appropriate backups before deleting collections in production environments.
-
-```python
-def delete_collection(client, collection_name):
-    client.collections.delete(collection_name)
-    print(f"Deleted index: {collection_name}")
-
-
-def delete_all_collections():
-    client.collections.delete_all()
-    print("Deleted all collections")
-
-
-# delete_all_collections()    # if you want to delete all collections, uncomment this line
-delete_collection(client, collection_name)
-```
-
-<pre class="custom">Deleted index: BookChunk
 </pre>
 
 ### List Collections
@@ -401,47 +318,10 @@ Lists all collections in Weaviate, providing a comprehensive view of your databa
 
 
 ```python
-def list_collections():
-    """
-    Lists all collections (indexes) in the Weaviate database, including their properties.
-    """
-    # Retrieve all collection configurations
-    collections = client.collections.list_all()
-
-    # Check if there are any collections
-    if collections:
-        print("Collections (indexes) in the Weaviate schema:")
-        for name, config in collections.items():
-            print(f"- Collection name: {name}")
-            print(
-                f"  Description: {config.description if config.description else 'No description available'}"
-            )
-            print(f"  Properties:")
-            for prop in config.properties:
-                print(f"    - Name: {prop.name}, Type: {prop.data_type}")
-            print()
-    else:
-        print("No collections found in the schema.")
-
-
-list_collections()
+weaviate_db.list_collections(client)
 ```
 
 <pre class="custom">Collections (indexes) in the Weaviate schema:
-    - Collection name: LangChain_4c510d6dc12d46069d5b6a74a742c4ff
-      Description: No description available
-      Properties:
-        - Name: text, Type: DataType.TEXT
-        - Name: order, Type: DataType.NUMBER
-        - Name: source, Type: DataType.TEXT
-        - Name: author, Type: DataType.TEXT
-        - Name: title, Type: DataType.TEXT
-    
-    - Collection name: LangChain_25ab58a0f16d476a8d261bd4a11245be
-      Description: No description available
-      Properties:
-        - Name: text, Type: DataType.TEXT
-    
     - Collection name: BookChunk
       Description: A chunk of a book's content
       Properties:
@@ -451,60 +331,10 @@ list_collections()
         - Name: author, Type: DataType.TEXT
         - Name: source, Type: DataType.TEXT
     
-    - Collection name: LangChain_e63c8e8a49cc4915995dae2fcdf1aef1
-      Description: No description available
-      Properties:
-        - Name: text, Type: DataType.TEXT
-        - Name: order, Type: DataType.NUMBER
-        - Name: source, Type: DataType.TEXT
-        - Name: author, Type: DataType.TEXT
-        - Name: title, Type: DataType.TEXT
-    
-    - Collection name: LangChain_a6190f02a2f64ff4aca85e3c24f8e8cb
-      Description: No description available
-      Properties:
-        - Name: text, Type: DataType.TEXT
-    
-    - Collection name: LangChain_be71f63889d74d09b2ade15d384ec210
-      Description: No description available
-      Properties:
-        - Name: text, Type: DataType.TEXT
-        - Name: source, Type: DataType.TEXT
-        - Name: author, Type: DataType.TEXT
-        - Name: title, Type: DataType.TEXT
-        - Name: order, Type: DataType.NUMBER
-    
-    - Collection name: LangChain_bd62d989508f479a8ab02fcc3190010e
-      Description: No description available
-      Properties:
-        - Name: text, Type: DataType.TEXT
-        - Name: order, Type: DataType.NUMBER
-        - Name: source, Type: DataType.TEXT
-        - Name: author, Type: DataType.TEXT
-        - Name: title, Type: DataType.TEXT
-    
-    - Collection name: LangChain_0a18b4c9d03f4f3d8ab2e7a6258d9a2c
-      Description: No description available
-      Properties:
-        - Name: text, Type: DataType.TEXT
-        - Name: order, Type: DataType.NUMBER
-        - Name: source, Type: DataType.TEXT
-        - Name: author, Type: DataType.TEXT
-        - Name: title, Type: DataType.TEXT
-    
-    - Collection name: LangChain_7ead0866ef9f4e3eb559142c74f79446
-      Description: No description available
-      Properties:
-        - Name: text, Type: DataType.TEXT
-    
 </pre>
 
 ```python
-def lookup_collection(collection_name: str):
-    return client.collections.get(collection_name)
-
-
-print(lookup_collection(collection_name))
+print(weaviate_db.lookup_collection(collection_name))
 ```
 
 <pre class="custom"><weaviate.Collection config={
@@ -668,7 +498,7 @@ Before storing documents in Weaviate, it's essential to preprocess them into man
 
 ```python
 # This is a long document we can split up.
-with open("./data/the_little_prince.txt") as f:
+with open("./data/the_little_prince.txt",encoding='utf-8') as f:
     raw_text = f.read()
 ```
 
@@ -677,18 +507,18 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 text_splitter = RecursiveCharacterTextSplitter(
     # Set a really small chunk size, just to show.
-    chunk_size=200,
-    chunk_overlap=30,
+    chunk_size=300,
+    chunk_overlap=40,
     length_function=len,
     is_separator_regex=False,
 )
 
 split_docs = text_splitter.create_documents([raw_text])
 
-print(split_docs[:20])
+print(split_docs[:5])
 ```
 
-<pre class="custom">[Document(metadata={}, page_content='The Little Prince\nWritten By Antoine de Saiot-Exupery (1900〜1944)'), Document(metadata={}, page_content='[ Antoine de Saiot-Exupery ]'), Document(metadata={}, page_content='Over the past century, the thrill of flying has inspired some to perform remarkable feats of daring. For others, their desire to soar into the skies led to dramatic leaps in technology. For Antoine'), Document(metadata={}, page_content='in technology. For Antoine de Saint-Exupéry, his love of aviation inspired stories, which have touched the hearts of millions around the world.'), Document(metadata={}, page_content='Born in 1900 in Lyons, France, young Antoine was filled with a passion for adventure. When he failed an entrance exam for the Naval Academy, his interest in aviation took hold. He joined the French'), Document(metadata={}, page_content='hold. He joined the French Army Air Force in 1921 where he first learned to fly a plane. Five years later, he would leave the military in order to begin flying air mail between remote settlements in'), Document(metadata={}, page_content='between remote settlements in the Sahara desert.'), Document(metadata={}, page_content="For Saint-Exupéry, it was a grand adventure - one with dangers lurking at every corner. Flying his open cockpit biplane, Saint-Exupéry had to fight the desert's swirling sandstorms. Worse, still, he"), Document(metadata={}, page_content="sandstorms. Worse, still, he ran the risk of being shot at by unfriendly tribesmen below. Saint-Exupéry couldn't have been more thrilled. Soaring across the Sahara inspired him to spend his nights"), Document(metadata={}, page_content='him to spend his nights writing about his love affair with flying.'), Document(metadata={}, page_content='When World War II broke out, Saint-Exupéry rejoined the French Air Force. After Nazi troops overtook France in 1940, Saint-Exupéry fled to the United States. He had hoped to join the U. S. war effort'), Document(metadata={}, page_content='to join the U. S. war effort as a fighter pilot, but was dismissed because of his age. To console himself, he drew upon his experiences over the Saharan desert to write and illustrate what would'), Document(metadata={}, page_content='and illustrate what would become his most famous book, The Little Prince (1943). Mystical and enchanting, this small book has fascinated both children and adults for decades. In the book, a pilot is'), Document(metadata={}, page_content='In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little prince'), Document(metadata={}, page_content='the book, the little prince discovers the true meaning of life. At the end of his conversation with the Little Prince, the aviator manages to fix his plane and both he and the little prince continue'), Document(metadata={}, page_content='the little prince continue on their journeys'), Document(metadata={}, page_content='Shortly after completing the book, Saint-Exupéry finally got his wish. He returned to North Africa to fly a warplane for his country. On July 31, 1944, Saint-Exupéry took off on a mission. Sadly, he'), Document(metadata={}, page_content='off on a mission. Sadly, he was never heard from again.'), Document(metadata={}, page_content='[ TO LEON WERTH ]'), Document(metadata={}, page_content='I ask the indulgence of the children who may read this book for dedicating it to a grown-up. I have a serious reason: he is the best friend I have in the world. I have another reason: this grown-up')]
+<pre class="custom">[Document(metadata={}, page_content='The Little Prince\nWritten By Antoine de Saiot-Exupery (1900〜1944)'), Document(metadata={}, page_content='[ Antoine de Saiot-Exupery ]'), Document(metadata={}, page_content='Over the past century, the thrill of flying has inspired some to perform remarkable feats of daring. For others, their desire to soar into the skies led to dramatic leaps in technology. For Antoine de Saint-Exupéry, his love of aviation inspired stories, which have touched the hearts of millions'), Document(metadata={}, page_content='have touched the hearts of millions around the world.'), Document(metadata={}, page_content='Born in 1900 in Lyons, France, young Antoine was filled with a passion for adventure. When he failed an entrance exam for the Naval Academy, his interest in aviation took hold. He joined the French Army Air Force in 1921 where he first learned to fly a plane. Five years later, he would leave the')]
 </pre>
 
 ### Document Preprocessing Function
@@ -696,8 +526,8 @@ print(split_docs[:20])
 The `preprocess_documents` function transforms pre-split documents into a format suitable for Weaviate storage. This utility function handles both document content and metadata, ensuring proper organization of your data.
 
 **Function Parameters:**
-- `split_docs`: List of LangChain Document objects containing page content and metadata
-- `metadata`: Optional dictionary of additional metadata to include with each chunk
+- `split_docs` : List of LangChain Document objects containing page content and metadata
+- `metadata` : Optional dictionary of additional metadata to include with each chunk
 
 **Processing Steps:**
 - Iterates through Document objects
@@ -724,7 +554,8 @@ def preprocess_documents(
              {'properties': {'text': ..., 'order': ..., ...metadata}}
     """
     processed_chunks = []
-
+    texts = []
+    metadatas = []
     # Iterate over Document objects
     for idx, doc in enumerate(split_docs, start=1):
         # Extract text from page_content and include metadata
@@ -737,8 +568,10 @@ def preprocess_documents(
 
         # Format for Weaviate
         processed_chunks.append(chunk_data)
+        texts.append(doc.page_content)
+        metadatas.append(metadata)
 
-    return processed_chunks
+    return processed_chunks, texts, metadatas
 
 
 metadata = {
@@ -747,9 +580,9 @@ metadata = {
     "source": "Original Text",
 }
 
-processed_chunks = preprocess_documents(split_docs, metadata=metadata)
+processed_chunks, texts, metadatas = preprocess_documents(split_docs, metadata=metadata)
 
-processed_chunks[:10]
+processed_chunks[:5]
 ```
 
 
@@ -765,43 +598,18 @@ processed_chunks[:10]
       'title': 'The Little Prince',
       'author': 'Antoine de Saint-Exupéry',
       'source': 'Original Text'},
-     {'text': 'Over the past century, the thrill of flying has inspired some to perform remarkable feats of daring. For others, their desire to soar into the skies led to dramatic leaps in technology. For Antoine',
+     {'text': 'Over the past century, the thrill of flying has inspired some to perform remarkable feats of daring. For others, their desire to soar into the skies led to dramatic leaps in technology. For Antoine de Saint-Exupéry, his love of aviation inspired stories, which have touched the hearts of millions',
       'order': 3,
       'title': 'The Little Prince',
       'author': 'Antoine de Saint-Exupéry',
       'source': 'Original Text'},
-     {'text': 'in technology. For Antoine de Saint-Exupéry, his love of aviation inspired stories, which have touched the hearts of millions around the world.',
+     {'text': 'have touched the hearts of millions around the world.',
       'order': 4,
       'title': 'The Little Prince',
       'author': 'Antoine de Saint-Exupéry',
       'source': 'Original Text'},
-     {'text': 'Born in 1900 in Lyons, France, young Antoine was filled with a passion for adventure. When he failed an entrance exam for the Naval Academy, his interest in aviation took hold. He joined the French',
+     {'text': 'Born in 1900 in Lyons, France, young Antoine was filled with a passion for adventure. When he failed an entrance exam for the Naval Academy, his interest in aviation took hold. He joined the French Army Air Force in 1921 where he first learned to fly a plane. Five years later, he would leave the',
       'order': 5,
-      'title': 'The Little Prince',
-      'author': 'Antoine de Saint-Exupéry',
-      'source': 'Original Text'},
-     {'text': 'hold. He joined the French Army Air Force in 1921 where he first learned to fly a plane. Five years later, he would leave the military in order to begin flying air mail between remote settlements in',
-      'order': 6,
-      'title': 'The Little Prince',
-      'author': 'Antoine de Saint-Exupéry',
-      'source': 'Original Text'},
-     {'text': 'between remote settlements in the Sahara desert.',
-      'order': 7,
-      'title': 'The Little Prince',
-      'author': 'Antoine de Saint-Exupéry',
-      'source': 'Original Text'},
-     {'text': "For Saint-Exupéry, it was a grand adventure - one with dangers lurking at every corner. Flying his open cockpit biplane, Saint-Exupéry had to fight the desert's swirling sandstorms. Worse, still, he",
-      'order': 8,
-      'title': 'The Little Prince',
-      'author': 'Antoine de Saint-Exupéry',
-      'source': 'Original Text'},
-     {'text': "sandstorms. Worse, still, he ran the risk of being shot at by unfriendly tribesmen below. Saint-Exupéry couldn't have been more thrilled. Soaring across the Sahara inspired him to spend his nights",
-      'order': 9,
-      'title': 'The Little Prince',
-      'author': 'Antoine de Saint-Exupéry',
-      'source': 'Original Text'},
-     {'text': 'him to spend his nights writing about his love affair with flying.',
-      'order': 10,
       'title': 'The Little Prince',
       'author': 'Antoine de Saint-Exupéry',
       'source': 'Original Text'}]</pre>
@@ -815,14 +623,16 @@ Once you have created your vector store, we can interact with it by adding and d
 
 Weaviate provides flexible methods for adding documents to your vector store. This section explores two efficient approaches: standard insertion and parallel batch processing, each optimized for different use cases.
 
-#### Standard Insertion
+**Standard Insertion**
+
 Best for smaller datasets or when processing order is important:
 - Sequential document processing
 - Automatic UUID generation
 - Built-in duplicate handling
 - Real-time progress tracking
 
-#### Parallel Batch Processing
+**Parallel Batch Processing**
+
 Optimized for large-scale document ingestion:
 - Multi-threaded processing
 - Configurable batch sizes
@@ -830,12 +640,14 @@ Optimized for large-scale document ingestion:
 - Enhanced throughput
 
 **Configuration Options:**
-- `batch_size`: Control memory usage and processing chunks
-- `max_workers`: Adjust concurrent processing threads
-- `unique_key`: Define document identification field
-- `show_progress`: Monitor ingestion progress
+
+- `batch_size` : Control memory usage and processing chunks
+- `max_workers` : Adjust concurrent processing threads
+- `unique_key` : Define document identification field
+- `show_progress` : Monitor ingestion progress
 
 **Performance Tips:**
+
 - For datasets < 1000 documents: Use standard insertion
 - For datasets > 1000 documents: Consider parallel processing
 - Monitor memory usage when increasing batch size
@@ -844,110 +656,28 @@ Optimized for large-scale document ingestion:
 > **Best Practice:** Choose your ingestion method based on dataset size and system resources. Start with conservative batch sizes and gradually optimize based on performance metrics.
 
 ```python
-from langchain_weaviate import WeaviateVectorStore
-from langchain_openai import OpenAIEmbeddings
+from weaviate.util import generate_uuid5
 
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+def generate_ids(collection_name: str, unique_values: List[str]):
+  ids = []
 
-vector_store = WeaviateVectorStore(
-    client=client, index_name=collection_name, embedding=embeddings, text_key="text"
-)
+  for unique_value in unique_values:
+    ids.append(generate_uuid5(collection_name, unique_value))
+  return ids
+
+ids = generate_ids(collection_name, [str(processed_chunk["order"]) for processed_chunk in processed_chunks])
 ```
 
 ```python
-from weaviate.util import generate_uuid5
 import time
 
-
-def upsert_documents(
-    vector_store: WeaviateVectorStore,
-    docs: List[Dict],
-    unique_key: str = "order",
-    batch_size: int = 100,
-    show_progress: bool = True,
-) -> List[str]:
-    """
-    Upserts documents into the WeaviateVectorStore.
-    """
-    # Prepare Document objects and IDs
-    documents = []
-    ids = []
-
-    for doc in docs:
-        unique_value = str(doc[unique_key])
-        doc_id = generate_uuid5(vector_store._index_name, unique_value)
-
-        documents.append(
-            Document(
-                page_content=doc["text"],
-                metadata={k: v for k, v in doc.items() if k != "text"},
-            )
-        )
-        ids.append(doc_id)
-
-    # Generate embeddings
-    texts = [doc.page_content for doc in documents]
-    metadatas = [doc.metadata for doc in documents]
-    embeddings = vector_store.embeddings.embed_documents(texts)
-
-    # Get the collection
-    collection = vector_store._client.collections.get(vector_store._index_name)
-    successful_ids = []
-
-    try:
-        for i in range(0, len(texts), batch_size):
-            batch_texts = texts[i : i + batch_size]
-            batch_embeddings = embeddings[i : i + batch_size]
-            batch_ids = ids[i : i + batch_size]
-            batch_metadatas = metadatas[i : i + batch_size] if metadatas else None
-
-            for j, text in enumerate(batch_texts):
-                properties = {"text": text}
-                if batch_metadatas:
-                    properties.update(batch_metadatas[j])
-
-                try:
-                    # First, check if the object exists
-                    exists = collection.data.exists(uuid=batch_ids[j])
-
-                    if exists:
-                        # If the object exists, update it
-                        collection.data.replace(
-                            uuid=batch_ids[j],
-                            properties=properties,
-                            vector=batch_embeddings[j],
-                        )
-                    else:
-                        # If the object does not exist, insert it
-                        collection.data.insert(
-                            uuid=batch_ids[j],
-                            properties=properties,
-                            vector=batch_embeddings[j],
-                        )
-                    successful_ids.append(batch_ids[j])
-
-                except Exception as e:
-                    print(f"Error processing document (ID: {batch_ids[j]}): {e}")
-                    continue
-
-            if show_progress:
-                print(
-                    f"Processed batch {i//batch_size + 1}/{(len(texts)-1)//batch_size + 1}"
-                )
-
-    except Exception as e:
-        print(f"Error during batch processing: {e}")
-
-    return successful_ids
-
-
 start_time = time.time()
-
 # Example usage
-results = upsert_documents(
-    vector_store=vector_store,
-    docs=processed_chunks,
-    unique_key="order",
+results = weaviate_db.upsert(
+    texts=texts,
+    metadatas=metadatas,
+    ids=ids,
+    collection_name=collection_name,
     batch_size=100,
     show_progress=True,
 )
@@ -958,99 +688,29 @@ print(f"Number of successfully processed documents: {len(results)}")
 print(f"Total elapsed time: {end_time - start_time:.2f} seconds")
 ```
 
-<pre class="custom">Processed batch 1/7
-    Processed batch 2/7
-    Processed batch 3/7
-    Processed batch 4/7
-    Processed batch 5/7
-    Processed batch 6/7
-    Processed batch 7/7
+<pre class="custom">문서 처리 중 오류 발생 (ID: 8e5d8d25-c745-5628-91cc-72f035859618): Object was not added! Unexpected status code: 503, with response body: None.
+    Processed batch 1/5
+    Processed batch 2/5
+    Processed batch 3/5
+    Processed batch 4/5
+    Processed batch 5/5
     
     Processing complete
-    Number of successfully processed documents: 698
-    Total elapsed time: 316.36 seconds
+    Number of successfully processed documents: 457
+    Total elapsed time: 214.33 seconds
 </pre>
 
 ```python
-from typing import List, Dict, Optional
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from tqdm import tqdm
 import time
 
-
-def upsert_documents_parallel(
-    vector_store: WeaviateVectorStore,
-    docs: List[Dict],
-    unique_key: str = "order",
-    batch_size: int = 100,
-    max_workers: Optional[int] = 4,
-    show_progress: bool = True,
-) -> List[str]:
-    """
-    Upserts documents in parallel to WeaviateVectorStore.
-
-    Args:
-        vector_store: WeaviateVectorStore instance
-        docs: List of documents to upsert
-        unique_key: Key to use as the unique identifier
-        batch_size: Size of each batch
-        max_workers: Maximum number of workers
-        show_progress: Whether to show progress
-    Returns:
-        List[str]: List of IDs of successfully processed documents
-    """
-
-    # Divide data into batches
-    def create_batches(data: List, size: int) -> List[List]:
-        return [data[i : i + size] for i in range(0, len(data), size)]
-
-    batched_docs = create_batches(docs, batch_size)
-
-    def process_batch(batch: List[Dict]) -> List[str]:
-        try:
-            return upsert_documents(
-                vector_store=vector_store,
-                docs=batch,
-                unique_key=unique_key,
-                batch_size=len(batch),
-                show_progress=False,  # Do not show progress for individual batches
-            )
-        except Exception as e:
-            print(f"Error processing batch: {e}")
-            return []
-
-    successful_ids = []
-
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {
-            executor.submit(process_batch, batch): i
-            for i, batch in enumerate(batched_docs)
-        }
-
-        if show_progress:
-            with tqdm(total=len(batched_docs), desc="Processing batches") as pbar:
-                for future in as_completed(futures):
-                    batch_result = future.result()
-                    successful_ids.extend(batch_result)
-                    pbar.update(1)
-        else:
-            for future in as_completed(futures):
-                batch_result = future.result()
-                successful_ids.extend(batch_result)
-
-    return successful_ids
-
-
-# Example usage
 start_time = time.time()
 
-results = upsert_documents_parallel(
-    vector_store=vector_store,
-    docs=processed_chunks,
-    unique_key="order",
-    batch_size=100,  # Set batch size
-    max_workers=4,  # Set maximum number of workers
-    show_progress=True,
+results = weaviate_db.upsert_parallel(
+    texts=texts,
+    metadatas=metadatas,
+    ids=ids,
+    collection_name=collection_name,
+    text_key="text",
 )
 
 end_time = time.time()
@@ -1059,698 +719,80 @@ print(f"Number of successfully processed documents: {len(results)}")
 print(f"Total elapsed time: {end_time - start_time:.2f} seconds")
 ```
 
-<pre class="custom">Processing batches: 100%|██████████| 7/7 [01:31<00:00, 13.02s/it]</pre>
-
-    
+<pre class="custom">
     Processing complete
-    Number of successfully processed documents: 698
-    Total elapsed time: 94.17 seconds
-    
+    Number of successfully processed documents: 458
+    Total elapsed time: 8.07 seconds
+</pre>
 
-    
-    
+### Search items from Weaviate
 
-```python
-from langchain_weaviate import WeaviateVectorStore
-from langchain.chains.qa_with_sources.retrieval import RetrievalQAWithSourcesChain
-from langchain_core.retrievers import BaseRetriever
-from langchain_core.language_models import BaseChatModel
-from weaviate.collections.classes.filters import Filter
-from typing import Any, List, Dict, Optional, Union, Tuple
-from langchain_core.documents import Document
-from weaviate.collections.classes.filters import Filter
-
-
-class WeaviateSearch:
-    def __init__(self, vector_store: WeaviateVectorStore):
-        """
-        Initialize Weaviate search class
-        """
-        self.vector_store = vector_store
-        self.collection = vector_store._client.collections.get(vector_store._index_name)
-        self.text_key = vector_store._text_key
-
-    def _format_filter(self, filter_query: Filter) -> str:
-        """
-        Converts a Filter object to a readable string.
-
-        Args:
-            filter_query: Weaviate Filter object
-
-        Returns:
-            str: Filter description string
-        """
-        if not filter_query:
-            return "No filter"
-
-        try:
-            # Converts the internal structure of the Filter object to a string
-            if hasattr(filter_query, "filters"):  # Composite filter (AND/OR)
-                operator = "AND" if filter_query.operator == "And" else "OR"
-                filter_strs = []
-                for f in filter_query.filters:
-                    if hasattr(f, "value"):  # Single filter
-                        filter_strs.append(
-                            f"({f.target} {f.operator.lower()} {f.value})"
-                        )
-                return f" {operator} ".join(filter_strs)
-            elif hasattr(filter_query, "value"):  # Single filter
-                return f"{filter_query.target} {filter_query.operator.lower()} {filter_query.value}"
-            else:
-                return str(filter_query)
-        except Exception:
-            return "Complex filter"
-
-    def similarity_search(
-        self,
-        query: str,
-        filter_query: Optional[Filter] = None,
-        k: int = 3,
-        **kwargs: Any,
-    ):
-        """
-        Perform basic similarity search
-        """
-        documents = self.vector_store.similarity_search(
-            query, k=k, filters=filter_query, **kwargs
-        )
-        return documents
-
-    def similarity_search_with_score(
-        self,
-        query: str,
-        filter_query: Optional[Filter] = None,
-        k: int = 3,
-        **kwargs: Any,
-    ):
-        """
-        Perform similarity search with score
-        """
-        documents_and_scores = self.vector_store.similarity_search_with_score(
-            query, k=k, filters=filter_query, **kwargs
-        )
-        return documents_and_scores
-
-    def mmr_search(
-        self,
-        query: str,
-        filter_query: Optional[Filter] = None,
-        k: int = 3,
-        fetch_k: int = 10,
-        **kwargs: Any,
-    ):
-        """
-        Perform MMR algorithm-based diverse search
-        """
-        documents = self.vector_store.max_marginal_relevance_search(
-            query=query, k=k, fetch_k=fetch_k, filters=filter_query, **kwargs
-        )
-        return documents
-
-    def hybrid_search(
-        self,
-        query: str,
-        filter_query: Optional[Filter] = None,
-        alpha: float = 0.5,
-        limit: int = 3,
-        **kwargs: Any,
-    ) -> List[Document]:
-        """
-        Hybrid search (keyword + vector search)
-
-        Args:
-            query: Text to search
-            filter_dict: Filter condition dictionary
-            alpha: Weight for keyword and vector search (0: keyword only, 1: vector only)
-            limit: Number of documents to return
-            return_score: Whether to return similarity score
-
-        Returns:
-            List of Documents hybrid search results
-        """
-        embedding_vector = self.vector_store.embeddings.embed_query(query)
-        results = self.collection.query.hybrid(
-            query=query,
-            vector=embedding_vector,
-            alpha=alpha,
-            limit=limit,
-            filters=filter_query,
-            **kwargs,
-        )
-
-        documents = []
-        for obj in results.objects:
-            metadata = {
-                key: value
-                for key, value in obj.properties.items()
-                if key != self.text_key
-            }
-            metadata["uuid"] = str(obj.uuid)
-
-            if hasattr(obj.metadata, "score"):
-                metadata["score"] = obj.metadata.score
-
-            doc = Document(
-                page_content=obj.properties.get(self.text_key, str(obj.properties)),
-                metadata=metadata,
-            )
-
-            documents.append(doc)
-
-        return documents
-
-    def semantic_search(
-        self,
-        query: str,
-        filter_query: Optional[Filter] = None,
-        limit: int = 3,
-        **kwargs: Any,
-    ) -> List[Dict]:
-        """
-        Semantic search (vector-based)
-        """
-        results = self.collection.query.near_text(
-            query=query, limit=limit, filters=filter_query, **kwargs
-        )
-
-        documents = []
-        for obj in results.objects:
-            metadata = {
-                key: value
-                for key, value in obj.properties.items()
-                if key != self.text_key
-            }
-            metadata["uuid"] = str(obj.uuid)
-            documents.append(
-                Document(
-                    page_content=obj.properties.get(self.text_key, str(obj.properties)),
-                    metadata=metadata,
-                )
-            )
-
-        return documents
-
-    def keyword_search(
-        self,
-        query: str,
-        filter_query: Optional[Filter] = None,
-        limit: int = 3,
-        **kwargs: Any,
-    ) -> List[Dict]:
-        """
-        Keyword-based search (BM25)
-        """
-        results = self.collection.query.bm25(
-            query=query, limit=limit, filters=filter_query, **kwargs
-        )
-
-        documents = []
-        for obj in results.objects:
-            metadata = {
-                key: value
-                for key, value in obj.properties.items()
-                if key != self.text_key
-            }
-            metadata["uuid"] = str(obj.uuid)
-            documents.append(
-                Document(
-                    page_content=obj.properties.get(self.text_key, str(obj.properties)),
-                    metadata=metadata,
-                )
-            )
-
-        return documents
-
-    def create_qa_chain(
-        self,
-        llm: BaseChatModel = None,
-        chain_type: str = "stuff",
-        retriever: BaseRetriever = None,
-        **kwargs: Any,
-    ):
-        """
-        Create search-QA chain
-        """
-        qa_chain = RetrievalQAWithSourcesChain.from_chain_type(
-            llm=llm,
-            chain_type=chain_type,
-            retriever=retriever,
-            **kwargs,
-        )
-        return qa_chain
-
-    def print_results(
-        self,
-        results: Union[List[Document], List[Tuple[Document, float]]],
-        search_type: str,
-        filter_query: Optional[Filter] = None,
-    ) -> None:
-        """
-        Print search results in a readable format
-
-        Args:
-            results: List of Document or (Document, score) tuples
-            search_type: Search type (e.g., "Hybrid", "Semantic" etc.)
-            filter_dict: Applied filter information
-        """
-        print(f"\n=== {search_type.upper()} SEARCH RESULTS ===")
-        if filter_query:
-            print(f"Filter: {self._format_filter(filter_query)}")
-
-        for i, result in enumerate(results, 1):
-            print(f"\nResult {i}:")
-
-            # Separate Document object and score
-            if isinstance(result, tuple):
-                doc, score = result
-                print(f"Score: {score:.4f}")
-            else:
-                doc = result
-
-            # Print content
-            print(f"Content: {doc.page_content}")
-
-            # Print metadata
-            if doc.metadata:
-                print("\nMetadata:")
-                for key, value in doc.metadata.items():
-                    if (
-                        key != "score" and key != "uuid"
-                    ):  # Exclude already printed information
-                        print(f"  {key}: {value}")
-
-            print("-" * 50)
-
-    def print_search_comparison(
-        self,
-        query: str,
-        filter_query: Optional[Filter] = None,
-        limit: int = 5,
-        alpha: float = 0.5,
-        fetch_k: int = 10,
-        **kwargs: Any,
-    ) -> None:
-        """
-        Print comparison of all search methods' results
-
-        Args:
-            query: Search query
-            filter_dict: Filter condition
-            limit: Number of results
-            alpha: Weight for hybrid search (0: keyword only, 1: vector only)
-            fetch_k: Number of candidate documents for MMR search
-            **kwargs: Additional search parameters
-        """
-        search_methods = [
-            # 1. Basic similarity search
-            {
-                "name": "Similarity Search",
-                "method": self.similarity_search,
-                "params": {"k": limit},
-            },
-            # 2. Similarity search with score
-            {
-                "name": "Similarity Search with Score",
-                "method": self.similarity_search_with_score,
-                "params": {"k": limit},
-            },
-            # 3. MMR search
-            {
-                "name": "MMR Search",
-                "method": self.mmr_search,
-                "params": {"k": limit, "fetch_k": fetch_k},
-            },
-            # 4. Hybrid search
-            {
-                "name": "Hybrid Search",
-                "method": self.hybrid_search,
-                "params": {"limit": limit, "alpha": alpha},
-            },
-            # 5. Semantic search
-            {
-                "name": "Semantic Search",
-                "method": self.semantic_search,
-                "params": {"limit": limit},
-            },
-            # 6. Keyword search
-            {
-                "name": "Keyword Search",
-                "method": self.keyword_search,
-                "params": {"limit": limit},
-            },
-        ]
-
-        print("\n=== SEARCH METHODS COMPARISON ===")
-        print(f"Query: {query}")
-        if filter_query:
-            print(f"Filter: {self._format_filter(filter_query)}")
-        print("=" * 50)
-
-        for search_config in search_methods:
-            try:
-                method_params = {
-                    **search_config["params"],
-                    "query": query,
-                    "filter_query": filter_query,
-                    **kwargs,
-                }
-
-                results = search_config["method"](**method_params)
-
-                print(f"\n>>> {search_config['name'].upper()} <<<")
-                self.print_results(results, search_config["name"], filter_query)
-
-            except Exception as e:
-                print(f"\nError in {search_config['name']}: {str(e)}")
-
-            print("\n" + "=" * 50)
-```
+You can search items from `weaviate` by filter
 
 ```python
-searcher = WeaviateSearch(vector_store)
-
-filter_query = Filter.by_property("author").equal("Antoine de Saint-Exupéry")
-
-searcher.print_search_comparison(
+weaviate_db.search(
     query="What is the little prince about?",
-    filter_query=filter_query,
-    limit=3,
-    alpha=0.5,  # keyword/vector weight for hybrid search
-    fetch_k=10,  # number of candidate documents for MMR search
+    filters={"author": "Antoine de Saint-Exupéry"},
+    k=2,
+    collection_name=collection_name,
+    show_progress=True,
 )
 ```
 
-<pre class="custom">
-    === SEARCH METHODS COMPARISON ===
-    Query: What is the little prince about?
-    Filter: author equal Antoine de Saint-Exupéry
-    ==================================================
-    
-    >>> SIMILARITY SEARCH <<<
-    
-    === SIMILARITY SEARCH SEARCH RESULTS ===
-    Filter: author equal Antoine de Saint-Exupéry
-    
-    Result 1:
-    Content: In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little prince
-    
-    Metadata:
-      title: The Little Prince
-      author: Antoine de Saint-Exupéry
-      source: Original Text
-      order: 14
-    --------------------------------------------------
-    
-    Result 2:
-    Content: and illustrate what would become his most famous book, The Little Prince (1943). Mystical and enchanting, this small book has fascinated both children and adults for decades. In the book, a pilot is
-    
-    Metadata:
-      title: The Little Prince
-      order: 13
-      source: Original Text
-      author: Antoine de Saint-Exupéry
-    --------------------------------------------------
-    
-    Result 3:
-    Content: The Little Prince
-    Written By Antoine de Saiot-Exupery (1900〜1944)
-    
-    Metadata:
-      title: The Little Prince
-      author: Antoine de Saint-Exupéry
-      source: Original Text
-      order: 1
-    --------------------------------------------------
-    
-    ==================================================
-    
-    >>> SIMILARITY SEARCH WITH SCORE <<<
-    
-    === SIMILARITY SEARCH WITH SCORE SEARCH RESULTS ===
-    Filter: author equal Antoine de Saint-Exupéry
-    
-    Result 1:
-    Score: 0.7000
-    Content: In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little prince
-    
-    Metadata:
-      title: The Little Prince
-      order: 14
-      source: Original Text
-      author: Antoine de Saint-Exupéry
-    --------------------------------------------------
-    
-    Result 2:
-    Score: 0.6264
-    Content: and illustrate what would become his most famous book, The Little Prince (1943). Mystical and enchanting, this small book has fascinated both children and adults for decades. In the book, a pilot is
-    
-    Metadata:
-      title: The Little Prince
-      order: 13
-      source: Original Text
-      author: Antoine de Saint-Exupéry
-    --------------------------------------------------
-    
-    Result 3:
-    Score: 0.6003
-    Content: The Little Prince
-    Written By Antoine de Saiot-Exupery (1900〜1944)
-    
-    Metadata:
-      title: The Little Prince
-      author: Antoine de Saint-Exupéry
-      source: Original Text
-      order: 1
-    --------------------------------------------------
-    
-    ==================================================
-    
-    >>> MMR SEARCH <<<
-    
-    === MMR SEARCH SEARCH RESULTS ===
-    Filter: author equal Antoine de Saint-Exupéry
-    
-    Result 1:
-    Content: In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little prince
-    
-    Metadata:
-      title: The Little Prince
-      order: 14
-      source: Original Text
-      author: Antoine de Saint-Exupéry
-    --------------------------------------------------
-    
-    Result 2:
-    Content: The Little Prince
-    Written By Antoine de Saiot-Exupery (1900〜1944)
-    
-    Metadata:
-      title: The Little Prince
-      author: Antoine de Saint-Exupéry
-      source: Original Text
-      order: 1
-    --------------------------------------------------
-    
-    Result 3:
-    Content: And that is how I made the acquaintance of the little prince.
-    
-    Metadata:
-      title: The Little Prince
-      author: Antoine de Saint-Exupéry
-      source: Original Text
-      order: 78
-    --------------------------------------------------
-    
-    ==================================================
-    
-    >>> HYBRID SEARCH <<<
-    
-    === HYBRID SEARCH SEARCH RESULTS ===
-    Filter: author equal Antoine de Saint-Exupéry
-    
-    Result 1:
-    Content: [ Chapter 7 ]
-    - the narrator learns about the secret of the little prince‘s life
-    
-    Metadata:
-      title: The Little Prince
-      order: 174
-      source: Original Text
-      author: Antoine de Saint-Exupéry
-    --------------------------------------------------
-    
-    Result 2:
-    Content: [ Chapter 3 ]
-    - the narrator learns more about from where the little prince came
-    
-    Metadata:
-      title: The Little Prince
-      order: 79
-      source: Original Text
-      author: Antoine de Saint-Exupéry
-    --------------------------------------------------
-    
-    Result 3:
-    Content: In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little prince
-    
-    Metadata:
-      title: The Little Prince
-      order: 14
-      source: Original Text
-      author: Antoine de Saint-Exupéry
-    --------------------------------------------------
-    
-    ==================================================
-    
-    >>> SEMANTIC SEARCH <<<
-    
-    === SEMANTIC SEARCH SEARCH RESULTS ===
-    Filter: author equal Antoine de Saint-Exupéry
-    
-    Result 1:
-    Content: In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little prince
-    
-    Metadata:
-      title: The Little Prince
-      order: 14
-      source: Original Text
-      author: Antoine de Saint-Exupéry
-    --------------------------------------------------
-    
-    Result 2:
-    Content: and illustrate what would become his most famous book, The Little Prince (1943). Mystical and enchanting, this small book has fascinated both children and adults for decades. In the book, a pilot is
-    
-    Metadata:
-      title: The Little Prince
-      order: 13
-      source: Original Text
-      author: Antoine de Saint-Exupéry
-    --------------------------------------------------
-    
-    Result 3:
-    Content: The Little Prince
-    Written By Antoine de Saiot-Exupery (1900〜1944)
-    
-    Metadata:
-      title: The Little Prince
-      order: 1
-      source: Original Text
-      author: Antoine de Saint-Exupéry
-    --------------------------------------------------
-    
-    ==================================================
-    
-    >>> KEYWORD SEARCH <<<
-    
-    === KEYWORD SEARCH SEARCH RESULTS ===
-    Filter: author equal Antoine de Saint-Exupéry
-    
-    Result 1:
-    Content: "Hum! Hum!" replied the king; and before saying anything else he consulted a bulky almanac. "Hum! Hum! That will be about-- about-- that will be this evening about twenty minutes to eight. And you
-    
-    Metadata:
-      title: The Little Prince
-      order: 291
-      source: Original Text
-      author: Antoine de Saint-Exupéry
-    --------------------------------------------------
-    
-    Result 2:
-    Content: have made a new friend, they never ask you any questions about essential matters. They never say to you, "What does his voice sound like? What games does he love best? Does he collect butterflies?"
-    
-    Metadata:
-      title: The Little Prince
-      order: 110
-      source: Original Text
-      author: Antoine de Saint-Exupéry
-    --------------------------------------------------
-    
-    Result 3:
-    Content: figures do they think they have learned anything about him.
-    
-    Metadata:
-      title: The Little Prince
-      order: 112
-      source: Original Text
-      author: Antoine de Saint-Exupéry
-    --------------------------------------------------
-    
-    ==================================================
-</pre>
 
-### Delete items from vector store
 
-You can delete items from vector store by filter
+
+<pre class="custom">[Document(metadata={'title': 'The Little Prince', 'author': 'Antoine de Saint-Exupéry', 'source': 'Original Text', 'order': 9, 'uuid': 'c78af9d2-00b1-5637-9904-f925cb8e2107'}, page_content='To console himself, he drew upon his experiences over the Saharan desert to write and illustrate what would become his most famous book, The Little Prince (1943). Mystical and enchanting, this small book has fascinated both children and adults for decades. In the book, a pilot is stranded in the'),
+     Document(metadata={'title': 'The Little Prince', 'order': 10, 'source': 'Original Text', 'author': 'Antoine de Saint-Exupéry', 'uuid': '00d8fa75-c17d-5d21-8820-0175c0d461d1'}, page_content='In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little prince discovers the true meaning of life. At the end of his conversation with the Little Prince, the aviator')]</pre>
+
+
+
+### Delete items from Weaviate
+
+You can delete items from `weaviate` by filter
 
 First, let's search for documents that contain the text `Hum! Hum!` in the `text` property.
 
 ```python
-filter_query = Filter.by_property("text").equal("Hum! Hum!")
-
-searcher.keyword_search(
+weaviate_db.keyword_search(
     query="Hum! Hum!",
-    filter_query=filter_query,
-    limit=3,
+    filters={"author": "Antoine de Saint-Exupéry"},
+    k=2,
+    collection_name=collection_name,
+    show_progress=True,
 )
 ```
 
 
 
 
-<pre class="custom">[Document(metadata={'title': 'The Little Prince', 'order': 291, 'source': 'Original Text', 'author': 'Antoine de Saint-Exupéry', 'uuid': '16ddf535-a610-510c-b597-1fd3ce13360f'}, page_content='"Hum! Hum!" replied the king; and before saying anything else he consulted a bulky almanac. "Hum! Hum! That will be about-- about-- that will be this evening about twenty minutes to eight. And you'),
-     Document(metadata={'title': 'The Little Prince', 'order': 269, 'source': 'Original Text', 'author': 'Antoine de Saint-Exupéry', 'uuid': 'a4c46e83-a491-5c1a-be06-e6635dfa58e5'}, page_content='"That frightens me... I cannot, any more..." murmured the little prince, now completely abashed.\n"Hum! Hum!" replied the king. "Then I-- I order you sometimes to yawn and sometimes to--"'),
-     Document(metadata={'title': 'The Little Prince', 'order': 301, 'source': 'Original Text', 'author': 'Antoine de Saint-Exupéry', 'uuid': 'a8ff68c1-db62-51f6-a03b-5e12aceda12f'}, page_content='"Hum! Hum!" said the king. "I have good reason to believe that somewhere on my planet there is an old rat. I hear him at night. You can judge this old rat. From time to time you will condemn him to')]</pre>
+<pre class="custom">[Document(metadata={'title': 'The Little Prince', 'order': 199, 'source': 'Original Text', 'author': 'Antoine de Saint-Exupéry', 'uuid': 'bef162c8-9707-5016-b1b4-3fe66a35f32b'}, page_content='"Hum! Hum!" replied the king; and before saying anything else he consulted a bulky almanac. "Hum! Hum! That will be about-- about-- that will be this evening about twenty minutes to eight. And you will see how well I am obeyed."'),
+     Document(metadata={'title': 'The Little Prince', 'order': 185, 'source': 'Original Text', 'author': 'Antoine de Saint-Exupéry', 'uuid': 'dd0f094c-35e4-5fbd-b24c-8a638b06cb77'}, page_content='"Hum! Hum!" replied the king. "Then I-- I order you sometimes to yawn and sometimes to--"\nHe sputtered a little, and seemed vexed.')]</pre>
 
 
 
 Now let's delete the document with the filter applied.
 
 ```python
-from weaviate.collections.classes.filters import Filter
-
-
-def delete_by_filter(collection_name: str, filter_query: Filter) -> int:
-    try:
-        # Retrieve the collection
-        collection = client.collections.get(collection_name)
-
-        # Check the number of documents that match the filter before deletion
-        query_result = collection.query.fetch_objects(
-            filters=filter_query,
-        )
-        initial_count = len(query_result.objects)
-
-        # Delete documents that match the filter condition
-        collection.data.delete_many(where=filter_query)
-
-        print(f"Number of documents deleted: {initial_count}")
-        return initial_count
-
-    except Exception as e:
-        print(f"Error occurred during deletion: {e}")
-        raise
-
-
-delete_by_filter(collection_name=collection_name, filter_query=filter_query)
+weaviate_db.delete(collection_name=collection_name, ids=None, filters={"author": "Antoine de Saint-Exupéry"})
 ```
 
-<pre class="custom">Number of documents deleted: 3
-</pre>
 
 
 
-
-    3
+<pre class="custom">True</pre>
 
 
 
 Let's verify that the document was deleted properly.
 
 ```python
-searcher.keyword_search(
+weaviate_db.keyword_search(
     query="Hum! Hum!",
-    filter_query=filter_query,
-    limit=3,
+    filters={"author": "Antoine de Saint-Exupéry"},
+    k=2,
+    collection_name=collection_name,
+    show_progress=True,
 )
 ```
 
@@ -1761,7 +803,7 @@ searcher.keyword_search(
 
 
 
-Great job, now let's dive into Similarity Search with a simple example.
+Great job, now let's dive into Similarity Search with Langchain Vector Store.
 
 ----
 
@@ -1773,38 +815,40 @@ Weaviate allows you to find objects that are semantically similar to your query.
 
 Before we can perform similarity searches, we need to populate our Weaviate instance with data. We'll start by loading and chunking a text file into manageable pieces.
 
-> 💡 **Tip**: Breaking down large texts into smaller chunks helps optimize vector search performance and relevance.
+> 💡 **Tip** : Breaking down large texts into smaller chunks helps optimize vector search performance and relevance.
 
 ```python
 from langchain_openai import OpenAIEmbeddings
 from langchain_weaviate.vectorstores import WeaviateVectorStore
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-# This is a long document we can split up.
-with open("./data/the_little_prince.txt") as f:
-    raw_text = f.read()
-
-text_splitter = RecursiveCharacterTextSplitter(
-    # Set a really small chunk size, just to show.
-    chunk_size=200,
-    chunk_overlap=30,
-    length_function=len,
-    is_separator_regex=False,
-)
-
-split_docs = text_splitter.create_documents([raw_text])
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
 
 vector_store = WeaviateVectorStore(
     client=client, index_name=collection_name, embedding=embeddings, text_key="text"
 )
+
+vector_store.add_documents(split_docs[:5])
 ```
+
+
+
+
+<pre class="custom">['6b892c6d-7f7c-4687-a6de-b27029724070',
+     '45107ac6-4dfe-4cd5-a020-9ccc208aa012',
+     '25503fea-c128-49d5-9e1d-a0ef6c5529f9',
+     '64410acb-3f7e-4762-a656-1e0f661f9f7d',
+     '28abbe7e-56d0-48a0-962b-ad06b0c9b14f']</pre>
+
+
 
 ### Step 2: Perform the search
 
 We can now perform a similarity search. This will return the most similar documents to the query text, based on the embeddings stored in Weaviate and an equivalent embedding generated from the query text.
 
 ```python
+from utils.weaviate_vectordb import WeaviateSearch
+
 query = "What is the little prince about?"
 searcher = WeaviateSearch(vector_store)
 docs = searcher.similarity_search(query, k=1)
@@ -1816,12 +860,13 @@ for i, doc in enumerate(docs):
 
 <pre class="custom">
     Document 1:
-    In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little prince
+    The Little Prince
+    Written By Antoine de Saiot-Exupery (1900〜1944)
 </pre>
 
 You can also add filters, which will either include or exclude results based on the filter conditions. (See [more filter examples](https://weaviate.io/developers/weaviate/search/filters).)
 
-It is also possible to provide `k`, which is the upper limit of the number of results to return.
+It is also possible to provide `k` , which is the upper limit of the number of results to return.
 
 ```python
 from weaviate.classes.query import Filter
@@ -1838,7 +883,7 @@ searcher.similarity_search(
 
 
 
-<pre class="custom">[Document(metadata={'title': 'The Little Prince', 'order': 14, 'source': 'Original Text', 'author': 'Antoine de Saint-Exupéry'}, page_content='In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little prince')]</pre>
+<pre class="custom">[]</pre>
 
 
 
@@ -1854,14 +899,12 @@ for doc in docs:
     print(f"{doc[1]:.3f}", ":", doc[0].page_content)
 ```
 
-<pre class="custom">0.700 : In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little prince
-    0.627 : and illustrate what would become his most famous book, The Little Prince (1943). Mystical and enchanting, this small book has fascinated both children and adults for decades. In the book, a pilot is
-    0.600 : The Little Prince
+<pre class="custom">1.000 : The Little Prince
     Written By Antoine de Saiot-Exupery (1900〜1944)
-    0.525 : [ Chapter 7 ]
-    - the narrator learns about the secret of the little prince‘s life
-    0.519 : [ Chapter 3 ]
-    - the narrator learns more about from where the little prince came
+    0.391 : [ Antoine de Saiot-Exupery ]
+    0.333 : Over the past century, the thrill of flying has inspired some to perform remarkable feats of daring. For others, their desire to soar into the skies led to dramatic leaps in technology. For Antoine de Saint-Exupéry, his love of aviation inspired stories, which have touched the hearts of millions
+    0.164 : Born in 1900 in Lyons, France, young Antoine was filled with a passion for adventure. When he failed an entrance exam for the Naval Academy, his interest in aviation took hold. He joined the French Army Air Force in 1921 where he first learned to fly a plane. Five years later, he would leave the
+    0.000 : have touched the hearts of millions around the world.
 </pre>
 
 ## Search mechanism
@@ -1880,7 +923,7 @@ docs[0]
 
 
 
-<pre class="custom">Document(metadata={'title': 'The Little Prince', 'order': 110, 'source': 'Original Text', 'author': 'Antoine de Saint-Exupéry'}, page_content='have made a new friend, they never ask you any questions about essential matters. They never say to you, "What does his voice sound like? What games does he love best? Does he collect butterflies?"')</pre>
+<pre class="custom">Document(metadata={'title': None, 'author': None, 'source': None, 'order': None}, page_content='The Little Prince\nWritten By Antoine de Saiot-Exupery (1900〜1944)')</pre>
 
 
 
@@ -1905,7 +948,7 @@ vector_store_with_tenant = WeaviateVectorStore.from_documents(
 )
 ```
 
-<pre class="custom">2025-Jan-19 09:14 PM - langchain_weaviate.vectorstores - INFO - Tenant tenant1 does not exist in index LangChain_866945876dc24c83bb0247ce4324bdbd. Creating tenant.
+<pre class="custom">2025-Feb-08 12:03 AM - langchain_weaviate.vectorstores - INFO - Tenant tenant1 does not exist in index LangChain_faa4f5a05fab42fba487b3487000b232. Creating tenant.
 </pre>
 
 ```python
@@ -1917,10 +960,8 @@ for doc in results:
     print(doc.page_content)
 ```
 
-<pre class="custom">"Yes?" said the little prince, who did not understand what the conceited man was talking about. 
-    "Clap your hands, one against the other," the conceited man now directed him.
-    have made a new friend, they never ask you any questions about essential matters. They never say to you, "What does his voice sound like? What games does he love best? Does he collect butterflies?"
-    figures do they think they have learned anything about him.
+<pre class="custom">The Little Prince
+    Written By Antoine de Saiot-Exupery (1900〜1944)
 </pre>
 
 ```python
@@ -1929,7 +970,7 @@ vector_store_with_tenant = WeaviateVectorStore.from_documents(
 )
 ```
 
-<pre class="custom">2025-Jan-19 09:14 PM - langchain_weaviate.vectorstores - INFO - Tenant tenant1 does not exist in index LangChain_c07a19db3f994319935be1ccdeb957c0. Creating tenant.
+<pre class="custom">2025-Feb-08 12:03 AM - langchain_weaviate.vectorstores - INFO - Tenant tenant1 does not exist in index LangChain_c255d8854e9146c28d3698df6bb51d46. Creating tenant.
 </pre>
 
 And when performing queries, provide the `tenant` parameter also.
@@ -1941,9 +982,7 @@ vector_store_with_tenant.similarity_search(query, tenant="tenant1")
 
 
 
-<pre class="custom">[Document(metadata={'title': 'The Little Prince', 'order': 313.0, 'source': 'Original Text', 'author': 'Antoine de Saint-Exupéry'}, page_content='"Yes?" said the little prince, who did not understand what the conceited man was talking about. \n"Clap your hands, one against the other," the conceited man now directed him.'),
-     Document(metadata={'title': 'The Little Prince', 'order': 110.0, 'source': 'Original Text', 'author': 'Antoine de Saint-Exupéry'}, page_content='have made a new friend, they never ask you any questions about essential matters. They never say to you, "What does his voice sound like? What games does he love best? Does he collect butterflies?"'),
-     Document(metadata={'title': 'The Little Prince', 'order': 112.0, 'source': 'Original Text', 'author': 'Antoine de Saint-Exupéry'}, page_content='figures do they think they have learned anything about him.')]</pre>
+<pre class="custom">[Document(metadata={'title': None, 'author': None, 'source': None, 'order': None}, page_content='The Little Prince\nWritten By Antoine de Saiot-Exupery (1900〜1944)')]</pre>
 
 
 
@@ -1953,124 +992,43 @@ Weaviate can also be used as a retriever
 
 ### Maximal marginal relevance search (MMR)
 
-In addition to using similaritysearch  in the retriever object, you can also use `mmr`.
+In addition to using similaritysearch  in the retriever object, you can also use `mmr`
 
 ```python
 retriever = vector_store.as_retriever(search_type="mmr")
 retriever.invoke(query)[0]
 ```
 
-
-
-
-<pre class="custom">Document(metadata={'title': 'The Little Prince', 'author': 'Antoine de Saint-Exupéry', 'source': 'Original Text', 'order': 14}, page_content='In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little prince')</pre>
-
-
-
-## Use with LangChain
-
-A known limitation of large language models (LLMs) is that their training data can be outdated, or not include the specific domain knowledge that you require.
-
-Take a look at the example below:
-
-```python
-from langchain_openai import ChatOpenAI
-
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-result = llm.invoke(query)
-print(result.content)
-```
-
-<pre class="custom">"The Little Prince" is a novella written by Antoine de Saint-Exupéry, first published in 1943. The story is narrated by a pilot who crashes in the Sahara Desert and meets a young boy who appears to be a prince. The little prince hails from a small asteroid called B-612 and shares his adventures and experiences as he travels from one planet to another.
-    
-    Throughout the story, the little prince encounters various inhabitants of different planets, each representing different aspects of human nature and society, such as a king, a vain man, a drunkard, a businessman, a geographer, and a fox. These encounters serve as allegories for adult behaviors and societal norms, often highlighting themes of loneliness, love, friendship, and the loss of innocence.
-    
-    One of the central messages of the book is the importance of seeing with the heart rather than just the eyes, emphasizing that true understanding and connection come from emotional and spiritual insight rather than superficial appearances. The story also explores themes of childhood, imagination, and the essence of what it means to be human.
-    
-    Ultimately, "The Little Prince" is a poignant reflection on the nature of relationships, the value of love, and the wisdom that can be found in simplicity and innocence. It has resonated with readers of all ages and is considered a classic of world literature.
+<pre class="custom">Failed to multipart ingest runs: langsmith.utils.LangSmithRateLimitError: Rate limit exceeded for https://api.smith.langchain.com/runs/multipart. HTTPError('429 Client Error: Too Many Requests for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Monthly unique traces usage limit exceeded"}')trace=10200441-130b-4dc2-94d8-0c74fcfa107c,id=10200441-130b-4dc2-94d8-0c74fcfa107c
 </pre>
 
-Vector stores complement LLMs by providing a way to store and retrieve relevant information. This allow you to combine the strengths of LLMs and vector stores, by using LLM's reasoning and linguistic capabilities with vector stores' ability to retrieve relevant information.
-
-Two well-known applications for combining LLMs and vector stores are:
-- Question answering
-- Retrieval-augmented generation (RAG)
-
-### Question Answering with Sources
-
-Question answering in langchain can be enhanced by the use of vector stores. Let's see how this can be done.
-
-This section uses the `RetrievalQAWithSourcesChain`, which does the lookup of the documents from an Index. 
-
-We can construct the chain, with the retriever specified:
-
-```python
-searcher = WeaviateSearch(vector_store)
-
-chain = searcher.create_qa_chain(
-    llm=llm, retriever=vector_store.as_retriever(), chain_type="stuff"
-)
-```
-
-```python
-chain.invoke(
-    {"question": query},
-    return_only_outputs=True,
-)
-```
 
 
 
-
-<pre class="custom">{'answer': 'The Little Prince is about a pilot who is stranded in the Sahara Desert and encounters a tiny prince from another world. The prince is traveling the universe to understand life. The story is mystical and enchanting, captivating both children and adults for decades.\n\n',
-     'sources': 'Original Text'}</pre>
+    Document(metadata={'title': None, 'author': None, 'source': None, 'order': None}, page_content='The Little Prince\nWritten By Antoine de Saiot-Exupery (1900〜1944)')
 
 
 
-### Retrieval-Augmented Generation
+    Failed to multipart ingest runs: langsmith.utils.LangSmithRateLimitError: Rate limit exceeded for https://api.smith.langchain.com/runs/multipart. HTTPError('429 Client Error: Too Many Requests for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Monthly unique traces usage limit exceeded"}')trace=10200441-130b-4dc2-94d8-0c74fcfa107c,id=10200441-130b-4dc2-94d8-0c74fcfa107c
+    
 
-Another very popular application of combining LLMs and vector stores is retrieval-augmented generation (RAG). This is a technique that uses a retriever to find relevant information from a vector store, and then uses an LLM to provide an output based on the retrieved data and a prompt.
+### Delete Collection
 
-We begin with a similar setup:
+Managing collections in Weaviate includes the ability to remove them when they're no longer needed. The `delete_collection` function provides a straightforward way to remove collections from your Weaviate instance.
 
-We need to construct a template for the RAG model so that the retrieved information will be populated in the template.
+**Function Signature:**
+- `client` : Weaviate client instance for database connection
+- `collection_name` : Name of the collection to be deleted
+
+**Advanced Operations:**
+For batch operations or managing multiple collections, you can use the `delete_all_collections()` function, which removes all collections from your Weaviate instance.
+
+> **Important:** Collection deletion is permanent and cannot be undone. Always ensure you have appropriate backups before deleting collections in production environments.
 
 ```python
-from langchain_core.prompts import ChatPromptTemplate
-
-template = """You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.
-Question: {question}
-Context: {context}
-Answer:
-"""
-prompt = ChatPromptTemplate.from_template(template)
-
-print(prompt)
+# weaviate_db.delete_all_collections(client)    # if you want to delete all collections, uncomment this line
+weaviate_db.delete_collection(client, collection_name)
 ```
 
-<pre class="custom">input_variables=['context', 'question'] input_types={} partial_variables={} messages=[HumanMessagePromptTemplate(prompt=PromptTemplate(input_variables=['context', 'question'], input_types={}, partial_variables={}, template="You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.\nQuestion: {question}\nContext: {context}\nAnswer:\n"), additional_kwargs={})]
+<pre class="custom">Deleted index: BookChunk
 </pre>
-
-```python
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough
-from langchain_openai import ChatOpenAI
-
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-
-rag_chain = (
-    {"context": retriever, "question": RunnablePassthrough()}
-    | prompt
-    | llm
-    | StrOutputParser()
-)
-
-rag_chain.invoke(query)
-```
-
-
-
-
-<pre class="custom">'"The Little Prince" is about a pilot who, while stranded in the Sahara, meets a young prince from another world who is exploring the universe to understand life. The story contrasts the prince\'s innocent perspective with the often misguided views of adults. It explores themes of love, loss, and the importance of seeing beyond the surface.'</pre>
-
-

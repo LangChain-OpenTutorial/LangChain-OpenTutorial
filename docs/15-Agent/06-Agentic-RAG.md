@@ -45,7 +45,7 @@ This tutorial demonstrates how to build a document retrieval system using `FAISS
 
 - [LangChain Docs - Build an Agent with AgentExecutor (Legacy)](https://python.langchain.com/docs/how_to/agent_executor/)
 - [LangChain Docs - How to use a vectorstore as a retriever](https://python.langchain.com/docs/how_to/vectorstore_retriever/)
-- [LangCHain Docs - How to add chat history](https://python.langchain.com/docs/how_to/qa_chat_history_how_to/)
+- [LangChain Docs - How to add chat history](https://python.langchain.com/docs/how_to/qa_chat_history_how_to/)
 - [Tavily](https://tavily.com/)
 ----
 
@@ -55,7 +55,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 **[Note]**
 - `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -83,7 +83,7 @@ package.install(
 
 To use `Tavily Search`, you'll need to obtain an API key.
 
-Click [here](https://app.tavily.com/sign-in) to sign up on the `Tavily` website and get your `Tavily Search` API key.
+Click [here](https://app.tavily.com/sign-in) to sign up on the `Tavily` website and get your `Tavily Search API` key.
 
 ```python
 # Set environment variables
@@ -156,8 +156,7 @@ For this tutorial, we'll work with a sample document from the academic text "*An
 - Authors:
     - Christoph Bartneck (University of Canterbury)
     - Christoph Lütge (Technical University of Munich)
-- Link: https://www.researchgate.net/publication/343611353_What_Is_AI
-- File: What_Is_AI.pdf
+- File: [What_is_AI.pdf](https://www.researchgate.net/publication/343611353_What_Is_AI)
 
 To begin, please place the PDF file in your data directory.
 
@@ -348,7 +347,7 @@ process_response(response)
 ```python
 # Example 3: New session with different topic (Session 2)
 response = agent_with_chat_history.stream(
-    {"input": "What can you tell me about Stroing and Weak AI from the PDF document?"},
+    {"input": "What can you tell me about Strong and Weak AI from the PDF document?"},
     config={"configurable": {"session_id": "tutorial_session_2"}},
 )
 process_response(response)
@@ -389,7 +388,3 @@ process_response(response)
     
     This table summarizes the key differences between Weak and Strong AI as discussed in the PDF document.
 </pre>
-
-```python
-
-```

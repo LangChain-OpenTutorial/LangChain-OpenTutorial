@@ -29,11 +29,11 @@ pre {
 
 ## Overview
 
-This tutorial covers the functionality of repeating the agent's execution process or receiving user input to decide whether to proceed during intermediate steps. 
+This tutorial expands on methods for controlling agent execution, including how to manage repetitions of the agent's execution process and incorporate receiving user input to determine whether to proceed during intermediate steps.
 
-The feature of asking the user whether to continue during the agent's execution process is called human-in-the-loop . 
+A process, known as "human-in-the-loop", enables you to repeat agent steps or prompt the user for input whether to continue during the agent's execution process or not.
 
-The `iter()` method creates an iterator that allows you to step through the agent's execution process step-by-step.
+The `iter()` method creates an iterator that allows you this step-by-step control during the agent's execution process.
 
 
 ### Table of Contents
@@ -43,9 +43,7 @@ The `iter()` method creates an iterator that allows you to step through the agen
 - [AgentExecutor](#agentexecutor)
 
 
-
 ### References
-
 
 - [LangChain ChatOpenAI API reference](https://python.langchain.com/api_reference/openai/chat_models/langchain_openai.chat_models.base.ChatOpenAI.html)
 - [LangChain AgentExecutor API reference](https://python.langchain.com/api_reference/langchain/agents/langchain.agents.agent.AgentExecutor.html)
@@ -79,7 +77,6 @@ Load sample text and output the content.
 ```python
 # Install required packages
 from langchain_opentutorial import package
-
 
 package.install(
     [
@@ -132,6 +129,14 @@ load_dotenv(override=True)
 
 
 
+In the previous tutorial, we leveraged LangChain's agent components:
+
+- Agent: The core component responsible for decision-making.
+- Tools: The collection of functionalities that the agent can use.
+- AgentExecutor: The component that manages the execution of the agent.
+
+This time, we will create an iterator that processes the execution steps by accepting user input during the intermediate stages.
+
 First, define the tool.
 
 ```python
@@ -145,7 +150,7 @@ def add_function(a: float, b: float) -> float:
     return a + b
 ```
 
-Next, define an agent that performs addition calculations using `add_function`.
+Next, define an agent that uses `add_function` for additional calculations.
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -186,10 +191,11 @@ agent_executor = AgentExecutor(
 
 ## AgentExecutor
 
-This method creates an iterator (`AgentExecutorIterator` ) that allows you to step through the agent's execution process.
+The `iter()` method creates an iterator (`AgentExecutorIterator`) object.
 
 **Function Description**
-The `iter()` method returns an `AgentExecutorIterator` object that provides sequential access to each step the agent takes until reaching the final output.
+- It allows you to step through the agent's execution process.
+- It provides sequential access to each execution step the agent takes until it reaches the final output.
 
 **Key Features**
 - **Step-by-step execution access** : Enables you to examine the agent's execution process step-by-step.
@@ -197,23 +203,23 @@ The `iter()` method returns an `AgentExecutorIterator` object that provides sequ
 
 **Flow Overview**
 
-To perform the addition calculation for `"114.5 + 121.2 + 34.2 + 110.1"`, the steps are executed as follows:
+Let's consider the addition calculation `\"114.5 + 121.2 + 34.2 + 110.1\"` as an example. The steps in this calculation would be executed as follows:
 
 1. 114.5 + 121.2 = 235.7
 2. 235.7 + 34.2 = 269.9
 3. 269.9 + 110.1 = 380.0
 
-You can observe each step in this calculation process.
+Using the `iter()` method, you can observe each step in these calculation steps individually.
 
-During this process, the system displays the intermediate calculation results to the user and asks if they want to continue. (**Human-in-the-loop**)
+During this execution, the system can be configured to display intermediate calculation results to the user and prompt them to confirm whether they want to continue the process. (**Human-in-the-loop**)
 
-If the user inputs anything other than 'y', the iteration stops.
+If the user provides any input other than 'y', the iteration will halt.
 
-In practice, while calculating 114.5 + 121.2 = 235.7, 34.2 + 110.1 = 144.3 is also calculated simultaneously.
+In practice, some calculations might be performed in parallel. For example, while 114.5 + 121.2 = 235.7 is being calculated, 34.2 + 110.1 = 144.3 might also be computed.
 
-Then, the result of 235.7 + 144.3 = 380.0 is calculated as the second step.
+Then, the final result (235.7 + 144.3 = 380.0) would then be calculated in a subsequent step.
 
-This process can be observed when `verbose=True` is set in the `AgentExecutor`.
+This process can be observed by setting `verbose=True` when creating the `AgentExecutor`.
 
 
 

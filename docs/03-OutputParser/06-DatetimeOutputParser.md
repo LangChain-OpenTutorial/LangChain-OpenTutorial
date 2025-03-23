@@ -39,7 +39,7 @@ This tutorial demonstrates how to use the `DatetimeOutputParser` to:
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Using the Datetime Output Parser](#using-the-datetime-output-parser)
+- [Using the DatetimeOutputParser](#using-the-datetimeoutputparser)
 - [Using DatetimeOutputParser in astream](#using-datetimeoutputparser-in-astream)
 
 
@@ -95,7 +95,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in .env file and load it.
+You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
 
 [Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
 
@@ -112,10 +112,10 @@ load_dotenv(override=True)
 
 
 
-## Using the Datetime Output Parser
+## Using the `DatetimeOutputParser`
 If you need to generate output in the form of a date or time, the `DatetimeOutputParser` from LangChain simplifies the process.
 
-The `format` of the `DatetimeOutputParser` can be specified by referring to the table below.
+The **format of the `DatetimeOutputParser`** can be specified by referring to the table below.
 | Format Code | Description           | Example              |
 |--------------|-----------------------|----------------------|
 | %Y           | 4-digit year          | 2024                 |
@@ -210,7 +210,7 @@ output.strftime(date_format)
 
 
 
-## Using DatetimeOutputParser in astream
+## Using `DatetimeOutputParser` in `astream`
 Refer to the [user-defined generator](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/09-Generator.ipynb) to create a generator function.
 
 Let's create a simple example that converts `astream` output to `datetime` objects using a generator function.

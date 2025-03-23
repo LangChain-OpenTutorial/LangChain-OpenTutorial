@@ -28,13 +28,13 @@ pre {
 
 ## Overview
 
-This document provides a comprehensive guide to building and evaluating RAG systems using `LangChain` tools. It demonstrates how to define RAG performance testing functions, and utilize summary evaluators for relevance assessment. By leveraging models like `GPT-4o-mini` and `Ollama` , you can evaluate the relevance of generated answers and questions effectively.
+This document provides a comprehensive guide to building and evaluating RAG systems using ```LangChain``` tools. It demonstrates how to define RAG performance testing functions and utilize summary evaluators for relevance assessment. By leveraging models like ```GPT-4o-mini``` and ```Ollama``` , you can evaluate the relevance of generated answers and questions effectively.
 
 ### Table of Contents
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Defining a function for rag performance testing](#defining-a-function-for-rag-performance-testing)
+- [Defining a function for RAG performance testing](#defining-a-function-for-rag-performance-testing)
 - [Summary evaluator for relevance assessment](#summary-evaluator-for-relevance-assessment)
 
 ### References
@@ -134,7 +134,7 @@ def ask_question_with_llm(llm):
     return _ask_question
 ```
 
-We’ll create functions using `GPT-4o-mini` and `Ollama model` to answer questions.
+We’ll create functions using ```GPT-4o-mini``` and ```Ollama model``` to answer questions.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -144,11 +144,11 @@ gpt_chain = ask_question_with_llm(ChatOpenAI(model="gpt-4o-mini", temperature=0)
 ollama_chain = ask_question_with_llm(ChatOllama(model="llama3.2:1b"))
 ```
 
-The `OpenAIRelevanceGrader` evaluates whether the **question** , **context** , and **answer** are relevant.
-- `target="retrieval-question"` : Evaluates the relevance of the **question** to the **context** .
-- `target="retrieval-answer"` : Evaluates the relevance of the **answer** to the **context** .
+The ```OpenAIRelevanceGrader``` evaluates the relevance of the **question** , **context** , and **answer** .
+- ```target="retrieval-question"``` : Evaluates the relevance of the **question** to the **context** .
+- ```target="retrieval-answer"``` : Evaluates the relevance of the **answer** to the **context** .
 
-We first need to define OpenAIRelevanceGrader.
+We first need to define ```OpenAIRelevanceGrader```.
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate
@@ -356,7 +356,7 @@ class GroundednessChecker:
         return chain
 ```
 
-Then, set `retrieval-question grader` and `retriever-answer grader`.
+Then, set ```retrieval-question grader``` and ```retriever-answer grader```.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -415,9 +415,9 @@ ra_grader.invoke(
 
 Certain metrics can only be defined at the experiment level rather than for individual runs of an experiment.
 
-For example, you may want to **calculate the evaluation score of a classifier across all runs** initiated from a dataset.
+For example, you may need to **compute the evaluation score of a classifier across all runs** derived from a dataset.
 
-This is referred to as `summary_evaluators`.
+This is referred to as ```summary_evaluators```.
 
 These evaluators take lists of Runs and Examples instead of single instances.
 

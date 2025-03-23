@@ -102,7 +102,7 @@ if not load_dotenv():
 ## Backtesting with LangSmith
 Backtesting involves assessing new versions of your application using historical data and comparing the new outputs to the original ones.
 
-Compared to evaluations using pre-production datasets, backtesting offers a clearer indication of whether the new version of your application is an improvement over the current deployment.
+Compared to evaluations using pre-production datasets, backtesting provides a clearer assessment of whether the new version of your application is an improvement over the current deployment
 
 Here are the basic steps for backtesting:
 

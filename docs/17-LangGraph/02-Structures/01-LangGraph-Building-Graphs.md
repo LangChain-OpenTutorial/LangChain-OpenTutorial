@@ -116,13 +116,13 @@ load_dotenv(override=True)
 ```
 
 ## Steps for Defining a Graph  
-To define a graph with `LangGraph`, you need to define `State`, `Node`, and `Graph`, and then compile them.  
+To define a graph with `LangGraph`, you need to define **State** , **Node** , and **Graph** , and then compile them.  
 
 If necessary, you can flexibly adjust the graph flow by adding conditional edges to nodes using `add_conditional_edges()`.
 
 ### Define State  
 
-`State` defines the shared state between the nodes in the graph.  
+**State** defines the shared state between the nodes in the graph.  
 
 It uses the `TypedDict` format and adds metadata to type hints using `Annotated` to provide detailed information.
 
@@ -144,7 +144,7 @@ class GraphState(TypedDict):
 ### Define Node  
 Define the nodes that process each step.  
 
-These are usually implemented as Python functions, with `State` as both input and output.
+These are usually implemented as Python functions, with **State** as both input and output.
 
 ```python
 def retrieve(state: GraphState) -> GraphState:
@@ -233,9 +233,9 @@ def decision(state: GraphState) -> GraphState:
 ```
 
 ### Define Graph  
-Connect nodes with `Edge`.  
+Connect nodes with **Edge** .  
 
-Using conditional edges, you can determine the next `Node` to execute based on the current `State`.
+Using conditional edges, you can determine the next **Node** to execute based on the current **State** . 
 
 ```python
 from IPython.display import Image, display
@@ -293,7 +293,7 @@ The execution flow is as follows:
 
 - A conditional edge is added to the `Aggregation_results` node.
 - The `GPT_relevance_check` node checks the relevance of the output from the `GPT_request` node.  
-- Based on the result of the relevance check, the `Aggregation_results` node decides whether to `re_search` or `exit` using the `State` information.
+- Based on the result of the relevance check, the `Aggregation_results` node decides whether to `re_search` or `exit` using the **State** information.
 
 ```python
 # Import StateGraph and END from langgraph.graph.

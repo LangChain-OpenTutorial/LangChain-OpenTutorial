@@ -56,6 +56,15 @@ To effectively manage LangChain objects, you can serialize and deserialize them 
 - [Serialization with pickle](#serialization-with-pickle)
 - [Is Every Runnable Serializable?](#is-every-runnable-serializable?)
 
+### References
+
+- [How to save and load LangChain objects](https://python.langchain.com/docs/how_to/serialization/)
+- [dumpd](https://python.langchain.com/api_reference/core/load/langchain_core.load.dump.dumpd.html)
+- [dumps](https://python.langchain.com/api_reference/core/load/langchain_core.load.dump.dumps.html)
+- [load](https://python.langchain.com/api_reference/core/load/langchain_core.load.load.load.html)
+- [loads](https://python.langchain.com/api_reference/core/load/langchain_core.load.load.loads.html)
+- [pickle - Python object serialization](https://docs.python.org/3/library/pickle.html)
+
 ---
 
 
@@ -139,10 +148,10 @@ prompt = PromptTemplate.from_template(
 chain = prompt | llm
 ```
 
-## Dumps and Loads
+## `Dumps` and `Loads`
 
-- dumps : LangChain object into a JSON-formatted string
-- loads : JSON-formatted string into a LangChain object
+- `dumps` : LangChain object into a JSON-formatted string
+- `loads` : JSON-formatted string into a LangChain object
 
 
 ```python
@@ -238,10 +247,10 @@ print(deserialized_response_composed.content)
     South Korea, located on the Korean Peninsula, is a vibrant democracy known for its advanced technology, rich culture, and K-pop music. It's a global leader in innovation and economic development.
 </pre>
 
-## Dumpd and Load
+## `Dumpd` and `Load`
 
-- dumpd : LangChain object into a dictionary
-- load : dictionary into a LangChain object
+- `dumpd` : LangChain object into a dictionary
+- `load` : dictionary into a LangChain object
 
 
 ```python
@@ -308,11 +317,11 @@ print(deserialized_response_composed.content)
     South Korea, located on the Korean Peninsula, is known for its vibrant culture, advanced technology, and economic strength. Major cities include Seoul and Busan. It has a rich history and a strong global presence.
 </pre>
 
-## Serialization with pickle
+## Serialization with `pickle`
 
 The `pickle` module in Python is used for serializing and deserializing Python object structures, also known as _pickling_ and _unpickling_. Serialization involves converting a Python object hierarchy into a byte stream, while deserialization reconstructs the object hierarchy from the byte stream.
 
-https://docs.python.org/3/library/pickle.html
+[`pickle` - Python object serialization for more details](https://docs.python.org/3/library/pickle.html)
 
 ### Key Functions
 

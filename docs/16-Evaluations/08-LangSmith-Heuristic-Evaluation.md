@@ -37,7 +37,7 @@ The main components covered include:
 
 1. For work tokenization, tokenization is performed using NLTK's main token function.
 
-2. Perform a heuristic evaluation based on Rouge, BLEU, METOR, and SemScore.
+2. Perform a heuristic evaluation based on Rouge, BLEU, METEOR, and SemScore.
 
     - ROUGE : Used to evaluate the quality of automatic summaries and machine translations.
     - BLEU : Mainly used for machine translation evaluation. Measures how similar the generated text is to the reference text.
@@ -50,7 +50,7 @@ This guide is designed to help developers and researchers implement and understa
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Heuristic Evaluation Based on Rouge, BLEU, METOR, SemScore](#heuristic-evaluation-based-on-rouge-bleu-metor-semscore)
+- [Heuristic Evaluation Based on Rouge, BLEU, METEOR, SemScore](#heuristic-evaluation-based-on-rouge-bleu-meteor-semscore)
 - [Function Definition for RAG Performance Testing](#function-definition-for-rag-performance-testing)
 - [Word Tokenization Using NLTK](#word-tokenization-using-nltk)
 - [ROUGE (Recall-Oriented Understudy for Gisting Evaluation) Score](#rouge-recall-oriented-understudy-for-gisting-evaluation-score)
@@ -132,7 +132,7 @@ load_dotenv(override=True)
 
 
 
-## Heuristic Evaluation Based on Rouge, BLEU, METOR, SemScore
+## Heuristic Evaluation Based on Rouge, BLEU, METEOR, SemScore
 
 Heuristic evaluation is a reasoning method that can be used quickly and easily when perfect rational judgment is not possible due to insufficient time or information.
 

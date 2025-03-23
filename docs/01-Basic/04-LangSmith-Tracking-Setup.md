@@ -112,8 +112,7 @@ load_dotenv(override=True)
 
 In Description, enter a description that makes sense to you and click the Create API Key button.
 
-![create-api-key](./assets/03-langsmith-tracking-setup-05.png
-)
+![create-api-key](./img/03-langsmith-tracking-setup-05.png)
 
 
 Copy the generated key and proceed to the next step.
@@ -124,7 +123,7 @@ Copy the generated key and proceed to the next step.
 
 
 
-### Setting the LangSmith key in .env
+### Setting the LangSmith key in `.env`
 
 
 First, enter the key you received from LangSmith and your project information in the .env file.

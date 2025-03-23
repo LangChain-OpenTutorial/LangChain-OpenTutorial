@@ -19,7 +19,7 @@ pre {
 
 # JsonOutputParser
 
-- Author: [Jaehun Choi](https://github.com/ash-hun)
+- Author: [Ash-hun](https://github.com/ash-hun)
 - Design: 
 - Peer Review : [Jeongeun Lim](https://www.linkedin.com/in/jeongeun-lim-808978188/), [brian604](https://github.com/brian604)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
@@ -28,15 +28,14 @@ pre {
 
 ## Overview
 
-This tutorial covers the implementation of the `JsonOutputParser`.
-`JsonOutputParser` is a tool that allows users to specify the desired JSON schema. It is designed to enable a Large Language Model (LLM) to query data and return results in JSON format that adheres to the specified schema.
+This tutorial covers the implementation of the ```JsonOutputParser```.
+```JsonOutputParser``` is a tool that allows users to specify the desired JSON schema. It is designed to enable an LLM(Large Language Model) to query data and return results in JSON format that adheres to the specified schema.
 To ensure that the LLM processes data accurately and efficiently, generating JSON in the desired format, the model must have sufficient capacity (e.g., intelligence). For instance, the llama-70B model has a larger capacity compared to the llama-8B model, making it more suitable for handling complex data.
 
 **[Note]**
 
 **JSON (JavaScript Object Notation)** is a lightweight data interchange format used for storing and structuring data. It plays a crucial role in web development and is widely used for communication between servers and clients. JSON is based on text that is easy to read and simple for machines to parse and generate.
 
-Basic Structure of JSON  
 JSON data consists of key-value pairs. Here, the "key" is a string, and the "value" can be various data types. JSON has two primary structures:
 
 - Object: A collection of key-value pairs enclosed in curly braces { }. Each key is associated with its value using a colon ( : ), and multiple key-value pairs are separated by commas ( , ).  
@@ -72,8 +71,8 @@ JSON data consists of key-value pairs. Here, the "key" is a string, and the "val
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -114,8 +113,8 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY`in `.env` file and load it.  
-**[Note]** This is not necessary if your've already set `OPENAI_API_KEY` in previous steps.
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it.  
+**[Note]** This is not necessary if your've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -130,16 +129,15 @@ load_dotenv(override=True)
 
 
 
-## Using JsonOutputParser with Pydantic  
+## Using ```JsonOutputParser``` with ```Pydantic```
 
-If you need to generate output in JSON format, you can easily implement it using LangChain's `JsonOutputParser`. There are 2 ways to generate output in JSON format: 
+If you need to generate output in JSON format, you can easily implement it using LangChain's ```JsonOutputParser```. There are 2 ways to generate output in JSON format: 
 
-- Use `Pydantic`
-- Don't use `Pydantic`
+- Using ```Pydantic```
+- Not using ```Pydantic```
 
-Follow the steps below to implement it.
+Follow the steps below to implement it:
 
-### Importing Required Modules
 Start by importing the necessary modules.
 
 ```python
@@ -163,7 +161,7 @@ class Topic(BaseModel):
     hashtags: str = Field(description="Keywords in hashtag format (at least 2)")
 ```
 
-Set up the parser using `JsonOutputParser` and inject instructions into the prompt template.
+Set up the parser using ```JsonOutputParser``` and inject instructions into the prompt template.
 
 ```python
 # Write your question
@@ -228,9 +226,11 @@ answer
 
 
 
-## Using JsonOutputParser Without Pydantic  
+## Using ```JsonOutputParser``` without ```Pydantic```
 
-You can generate output in JSON format without `Pydantic`. Follow the steps below to implement it :
+You can generate output in JSON format without ```Pydantic```. 
+
+Follow the steps below to implement it:
 
 ```python
 # Write your question

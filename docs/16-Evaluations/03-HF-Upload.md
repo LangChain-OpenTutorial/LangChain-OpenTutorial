@@ -62,6 +62,11 @@ Once you have your API key, set it as the value for the variable `HUGGINGFACEHUB
 %pip install langchain-opentutorial
 ```
 
+<pre class="custom">
+    [notice] A new release of pip is available: 24.3.1 -> 25.0.1
+    [notice] To update, run: python.exe -m pip install --upgrade pip
+</pre>
+
 ```python
 # Install required packages
 from langchain_opentutorial import package
@@ -111,7 +116,7 @@ load_dotenv(override=True)
 
 
 ## Upload Generated Dataset
-Import the pandas library for data upload
+Import the **pandas library** for data upload
 
 ```python
 import pandas as pd
@@ -190,7 +195,7 @@ df.head()
 
 
 ## Upload to HuggingFace Dataset
-Convert a Pandas DataFrame to a Hugging Face Dataset and proceed with the upload.
+Convert a **Pandas DataFrame(`df`)** to a Hugging Face Dataset and proceed with the upload.
 
 ```python
 from datasets import Dataset
@@ -232,9 +237,8 @@ dataset.push_to_hub(
 <pre class="custom">Pushing dataset shards to the dataset hub:   0%|          | 0/1 [00:00<?, ?it/s]</pre>
 
 
-
-    Creating parquet from Arrow format:   0%|          | 0/1 [00:00<?, ?ba/s]
-
+    No files have been modified since last commit. Skipping to prevent empty commit.
+    
 
 [Note] The Dataset Viewer may take some time to display.
 

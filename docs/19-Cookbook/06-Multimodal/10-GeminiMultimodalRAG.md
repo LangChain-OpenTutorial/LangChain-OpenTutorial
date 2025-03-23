@@ -29,20 +29,21 @@ pre {
 This tutorial demonstrates how to build a Multimodal RAG (Retrieval-Augmented Generation) system using LangChain. The system processes both text and images from documents, creating a unified knowledge base for question-answering.
 
 Key features include:
-- Text content extraction to markdown using pymupdf4llm
-- Image content extraction using Upstage Document AI API
+- Text content extraction to markdown using `pymupdf4llm`
+- Image content extraction using `Upstage Document AI API`
 - Text and image content merging by page
-- RAG implementation using OpenAI embeddings and GPT-4o
-- Langgraph based RAG pipeline
+- RAG implementation using `OpenAI embeddings` and `GPT-4o`
+- `Langgraph` based RAG pipeline
 
-![Multimodal RAG Architecture](assets/Multimodal%20RAG%20Architecture.png)
+![Multimodal RAG Architecture](./img/10-GeminiMultimodalRAG-Architecture.png)
 
 ### Table of Contents
 
-- [Environment Setup](#environment-setup)
-- [Text Processing](#extract-and-preprocess-text-contents-from-pdf-using-pymupdf4llm)
-- [Image Processing](#layout-parsing-to-extract-image-from-pdf-using-upstage-document-parse-api)
-- [Multimodal RAG graph Implementation](#building-a-rag-pipeline-with-langgraph)
+- [Overview](#overview)
+- [Environment Setup](#environment_setup)
+- [Extract and preprocess Text contents from PDF using PyMuPDF4LLM](#extract-and-preprocess-text-contents-from-pdf-using-pymupdf4llm)
+- [Layout parsing to extract image from PDF using Upstage Document Parse API](#layout-parsing-to-extract-image-from-pdf-using-upstage-document-parse-api)
+- [Building a RAG Pipeline with LangGraph](#building-a-rag-pipeline-with-langgraph)
 
 ### References
 
@@ -50,6 +51,7 @@ Key features include:
 - [Upstage Document AI](https://www.upstage.ai/blog/en/let-llms-read-your-documents-with-speed-and-accuracy)
 - [Gemini in Langchain](https://python.langchain.com/docs/integrations/chat/google_generative_ai/)
 - [Multimodal input in Langchain](https://python.langchain.com/docs/how_to/multimodal_inputs/)
+---
 
 ## Environment Setup
 
@@ -113,10 +115,10 @@ load_dotenv(override=True)
 
 
 
-## Extract and preprocess Text contents from PDF using PyMuPDF4LLM
-### PyMuPDF4LLM
+## Extract and preprocess Text contents from PDF using `PyMuPDF4LLM`
+### `PyMuPDF4LLM`
 
-PyMuPDF4LLM is a Python package designed to facilitate the extraction of PDF content into formats suitable for Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG) environments. It supports Markdown extraction and LlamaIndex document output, making it a valuable tool for developing document-based AI applications.
+`PyMuPDF4LLM` is a Python package designed to facilitate the extraction of PDF content into formats suitable for Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG) environments. It supports Markdown extraction and LlamaIndex document output, making it a valuable tool for developing document-based AI applications.
 
 ### Key Features
 
@@ -168,56 +170,10 @@ md_text = pymupdf4llm.to_markdown(
 </pre>
 
 ```python
-md_text[0]
+print(md_text[0]['text'])
 ```
 
-
-
-
-<pre class="custom">{'metadata': {'format': 'PDF 1.4',
-      'title': '',
-      'author': '',
-      'subject': '',
-      'keywords': '',
-      'creator': 'Adobe InDesign 19.5 (Macintosh)',
-      'producer': 'Adobe PDF Library 17.0',
-      'creationDate': "D:20241115111150-06'00'",
-      'modDate': "D:20241115111159-06'00'",
-      'trapped': '',
-      'encryption': None,
-      'file_path': 'data/BCG-ai-maturity-matrix-nov-2024.pdf',
-      'page_count': 23,
-      'page': 1},
-     'toc_items': [],
-     'tables': [],
-     'images': [{'number': 0,
-       'bbox': Rect(0.0, 50.0, 595.2760009765625, 791.8900146484375),
-       'transform': (597.5172729492188,
-        0.0,
-        -0.0,
-        844.1083374023438,
-        -1.0398268699645996,
-        -1.1094970703125),
-       'width': 2789,
-       'height': 3940,
-       'colorspace': 3,
-       'cs-name': 'ICCBased(RGB,Adobe RGB (1998))',
-       'xres': 96,
-       'yres': 96,
-       'bpc': 8,
-       'size': 3307487}],
-     'graphics': [],
-     'text': '## The AI Maturity Matrix \n\n###### Which Economies Are Ready for AI?\n\nNovember 2024\nBy Christian Schwaerzler, Miguel Carrasco, Christopher Daniel,\nBrooke Bollyky, Yoshihisa Niwa, Aparna Bharadwaj, Akram Awad,\nRichard Sargeant, Sanjay Nawandhar, and Svetlana Kostikova\n\n\n-----\n\n',
-     'words': []}</pre>
-
-
-
-```python
-for i, j in enumerate(md_text[:3]):
-    print(f"page {i+1}: {j['text'][:500]}")
-```
-
-<pre class="custom">page 1: ## The AI Maturity Matrix 
+<pre class="custom">## The AI Maturity Matrix 
     
     ###### Which Economies Are Ready for AI?
     
@@ -230,48 +186,43 @@ for i, j in enumerate(md_text[:3]):
     -----
     
     
-    page 2: ### Contents
+</pre>
+
+```python
+for page, text in enumerate(md_text[:3]):
+    print(f"📄 **Page {page+1}**\n{'='*20}")
+    print(f"{text['text'][:100]}...")
+```
+
+<pre class="custom">📄 **Page 1**
+    ====================
+    ## The AI Maturity Matrix 
+    
+    ###### Which Economies Are Ready for AI?
+    
+    November 2024
+    By Christian Sch...
+    📄 **Page 2**
+    ====================
+    ### Contents
     
     #### 03 Introduction
     
      04 Key Findings
     
      05 The Relationship Between
-     Exposure and Readiness
-    
-     10 The Archetypes of AI Adoption
-    
-     15 Strategic Next Steps
-    
-     17 Methodology
-    
-     21 About the Authors
-    
-    
-    -----
-    
-    
-    page 3: ### Introduction
+     Exposure and Re...
+    📄 **Page 3**
+    ====================
+    ### Introduction
     
     iews vary on how much AI is changing the world
-    today, but one thing is clear: the technology is on
-    course to shape the future of economic development.
-    
-    # V
-    
-    Business leaders expect large impacts on operations and
-    value creation in the 3-to-10-year timeframe, and world­
-    wide spending on artificial intelligence will more than
-    double to $632 billion by 2028.[1] The long-term, expansive
-    scale of this growth makes AI an economic priority in every
-    region across the globe.
-    
-    This growt
+    today, but one thing is clear: the ...
 </pre>
 
-## Layout parsing to extract image from PDF using Upstage Document Parse API
+## Layout parsing to extract image from PDF using `Upstage Document Parse API`
 
-The Upstage Document Parse API is a robust AI model that converts various document formats, including PDFs and images, into HTML by detecting layout elements such as paragraphs, tables, and images. This facilitates the integration of document content into applications requiring structured data.
+The `Upstage Document Parse API` is a robust AI model that converts various document formats, including PDFs and images, into HTML by detecting layout elements such as paragraphs, tables, and images. This facilitates the integration of document content into applications requiring structured data.
 
 **Key Features:**
 
@@ -286,8 +237,8 @@ The Upstage Document Parse API is a robust AI model that converts various docume
 Source: [Upstage Official Website](https://www.upstage.ai/blog/en/let-llms-read-your-documents-with-speed-and-accuracy)
 
 
-### UpstageDocumentParseLoader in LangChain
-The UpstageDocumentParseLoader is a component of the langchain_upstage package that integrates Upstage's Document Parser API into the LangChain framework. It enables seamless loading and parsing of documents within LangChain applications. 
+### `UpstageDocumentParseLoader` in LangChain
+The `UpstageDocumentParseLoader` is a component of the langchain_upstage package that integrates `Upstage's Document Parser API` into the LangChain framework. It enables seamless loading and parsing of documents within LangChain applications. 
 
 
 ```python
@@ -313,7 +264,7 @@ len(docs)
 
 
 
-<pre class="custom">25</pre>
+<pre class="custom">26</pre>
 
 
 
@@ -375,7 +326,7 @@ display(Image(data=img_data))  # Display the image
     
 
 
-This process generates multimodal descriptions of images detected on each page using the Gemini 1.5 Flash 8B API. These descriptions are combined with the previously extracted text to create a complete embedding, enabling a RAG pipeline capable of understanding images as well.
+This process generates multimodal descriptions of images detected on each page using the `Gemini 1.5 Flash 8B API`. These descriptions are combined with the previously extracted text to create a complete embedding, enabling a RAG pipeline capable of understanding images as well.
 
 ```python
 from langchain_core.messages import HumanMessage
@@ -435,361 +386,62 @@ def create_image_descriptions(docs):
                 new_documents.append(new_doc)
     
     return new_documents
-```
 
-```python
 # Generate image description documents from existing documents
 image_description_docs = create_image_descriptions(docs)
+```
 
+<pre class="custom">Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"error":"Forbidden"}\n')
+</pre>
+
+```python
 # Check the results
-for doc in image_description_docs:
-    print(f"Page: {doc.metadata['page']}")
+for doc in image_description_docs[:4]:
+    print(f"📄 **Page {doc.metadata['page']}**\n{'='*20}")
     print(f"Description: {doc.page_content}")
     print("---")
 ```
 
-<pre class="custom">Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-</pre>
-
-    Page: 3
+<pre class="custom">📄 **Page 3**
+    ====================
     Description: <---image--->
     ---
-    Page: 4
+    📄 **Page 4**
+    ====================
     Description: - **Al emergents:** Algeria, Angola, Ecuador, Ethiopia, Iraq, Nigeria, Venezuela
     - **Exposed practitioners:** Bahrain, Bulgaria, Cyprus, Czechia, Greece, Hungary, Kuwait, Malta
     - **Gradual practitioners:** Argentina, Chile, Colombia, Dominican Republic, Egypt, Iran, Kenya, Latvia, Lithuania, Mexico, Morocco, Oman, Pakistan, Peru, Philippines, Qatar, Romania, Slovakia, South Africa, Thailand, Ukraine
     - **Steady contenders:** Australia, Austria, Belgium, Denmark, Estonia, Finland, France, Germany, Hong Kong, Ireland, Israel, Italy, Japan, Luxembourg, Malaysia, Netherlands, Norway, Portugal, South Korea, Spain, Sweden, Switzerland, Taiwan
     - **Rising contenders:** Brazil, India, Indonesia, New Zealand, Poland, Saudi Arabia, Türkiye, UAE, Vietnam
     - **Al pioneers:** Canada, Mainland China, Singapore, UK, US
-    - **Exposure:** Low, High
-    - **Readiness:** Bottom 10%, Top 10%
+    - **Exposure:**  Values are represented by colored segments, with labels "Low" and "High" on the vertical axis and "Bottom 10%" and "Top 10%" on the horizontal axis.
+    - **Readiness:**  Labeled on the horizontal axis.
     ---
-    Page: 5
+    📄 **Page 5**
+    ====================
     Description: <---image--->
     ---
-    Page: 6
+    📄 **Page 6**
+    ====================
     Description: <---image--->
     ---
-    Page: 7
-    Description: | Sector | Survey of business leaders | Publicly listed companies | Job vacancies on LinkedIn | GenAI-sourced insights |
-    |---|---|---|---|---|
-    | Information and communication |  |  |  |  |
-    | High-tech goods |  |  |  |  |
-    | Retail and wholesale |  |  |  |  |
-    | Financial services |  |  |  |  |
-    | Public services |  |  |  |  |
-    | Motor vehicles and parts |  |  |  |  |
-    | Business services |  |  |  |  |
-    | Accommodation and catering |  |  |  |  |
-    | Machinery and equipment |  |  |  |  |
-    | Transport and storage services |  |  |  |  |
-    | Oil and gas, coke, and refined petroleum |  |  |  |  |
-    | Utilities |  |  |  |  |
-    | Pharmaceuticals |  |  |  |  |
-    | Arts, recreation, union, and personal services |  |  |  |  |
-    | Textiles, leather, and clothing |  |  |  |  |
-    | Mining |  |  |  |  |
-    | Metals |  |  |  |  |
-    | Food, beverages, and tobacco |  |  |  |  |
-    | Other transport equipment |  |  |  |  |
-    | Nonmetallic minerals |  |  |  |  |
-    | Chemical, rubber, plastics |  |  |  |  |
-    | Construction |  |  |  |  |
-    | Other miscellaneous |  |  |  |  |
-    | Agriculture, forestry, and fishery |  |  |  |  |
-    | Furniture manufacturing |  |  |  |  |
-    | Paper and wood products (without furniture) |  |  |  |  |
-    
-    ---
-    Page: 9
-    Description: A
-    Ambition
-    * Existence of AI strategy
-    * Existence of specialized AI government agency/ministry
-    
-    S
-    Skills
-    * Concentration of AI-related specialists
-    * Pool of AI-related specialists
-    * Total public contributions in GitHub by top 1,000 users
-    * Kaggle Grandmasters
-    * Number of Python package downloads per 1,000 people
-    
-    P
-    Policy and regulation
-    * Regulatory quality
-    * Governance effectiveness
-    * Governance of data
-    * Economic freedom index
-    * AI and democratic values index
-    
-    I
-    Investment
-    * Value of AI unicorns
-    * Mcap of IT-related and tech-related companies/GDP
-    * Value of trade in ICT services (per capita)
-    * Value of trade in ICT goods (per capita)
-    * VC availability
-    * Funding of AI companies
-    * Computer software spending
-    
-    R
-    Research and innovation
-    * Research papers published on AI
-    * AI-related patents
-    * Top-ranked universities in data science and AI fields
-    * Number of AI startups
-    
-    E
-    Ecosystem
-    * Fixed broadband internet traffic per capita
-    * Electricity prices
-    * Telecommunication infrastructure index
-    * Average download speed
-    * Online service index
-    * Performance of economy-wide statistical systems
-    ---
-    Page: 9
-    Description: | Country | Total ASPIRE | Ambition | Skills | Policy and regulation | Investment | Research and innovation | Ecosystem |
-    |---|---|---|---|---|---|---|---|
-    | Canada | 68 | 10 | 17 | 8 | 8 | 8 | 19 |
-    | Mainland China |  |  |  |  |  |  |  |
-    | Singapore |  |  |  |  |  |  |  |
-    | United Kingdom |  |  |  |  |  |  |  |
-    | United States |  |  |  |  |  |  |  |
-    | Australia |  |  |  |  |  |  |  |
-    | Finland |  |  |  |  |  |  |  |
-    | France |  |  |  |  |  |  |  |
-    | Japan |  | 58 | 10 | 8 | 6 | 4 | 16 |
-    | Netherlands |  |  |  |  |  |  |  |
-    | South Korea |  |  |  |  |  |  |  |
-    | Sweden |  |  |  |  |  |  |  |
-    | Germany |  |  |  |  |  |  |  |
-    | India |  |  |  |  |  |  |  |
-    | Ireland |  |  |  |  |  |  |  |
-    | Spain |  |  |  |  |  |  |  |
-    | Taiwan |  |  |  |  |  |  |  |
-    | UAE |  |  |  |  |  |  |  |
-    | Austria |  |  |  |  |  |  |  |
-    | Belgium |  |  |  |  |  |  |  |
-    | Brazil |  |  |  |  |  |  |  |
-    | Denmark |  |  |  |  |  |  |  |
-    | Estonia |  |  |  |  |  |  |  |
-    | Hong Kong |  |  |  |  |  |  |  |
-    | Indonesia |  |  |  |  |  |  |  |
-    | Italy |  |  |  |  |  |  |  |
-    | Malaysia |  |  |  |  |  |  |  |
-    | New Zealand |  |  |  |  |  |  |  |
-    | Norway |  |  |  |  |  |  |  |
-    | Poland |  |  |  |  |  |  |  |
-    | Portugal |  |  |  |  |  |  |  |
-    | Saudi Arabia |  |  |  |  |  |  |  |
-    | Switzerland |  |  |  |  |  |  |  |
-    | Türkiye |  |  |  |  |  |  |  |
-    | Luxembourg |  |  |  |  |  |  |  |
-    | Malta |  |  |  |  |  |  |  |
-    | Vietnam |  |  |  |  |  |  |  |
-    | Argentina |  |  |  |  |  |  |  |
-    | Chile |  |  |  |  |  |  |  |
-    | Colombia |  |  |  |  |  |  |  |
-    | Mexico |  |  |  |  |  |  |  |
-    | Pakistan |  |  |  |  |  |  |  |
-    | Cyprus |  |  |  |  |  |  |  |
-    | Czechia |  |  |  |  |  |  |  |
-    | Peru |  |  |  |  |  |  |  |
-    | Qatar |  |  |  |  |  |  |  |
-    | Egypt |  |  |  |  |  |  |  |
-    | Greece |  |  |  |  |  |  |  |
-    | Romania |  |  |  |  |  |  |  |
-    | South Africa |  |  |  |  |  |  |  |
-    | Hungary |  |  |  |  |  |  |  |
-    | Thailand |  |  |  |  |  |  |  |
-    | Latvia |  |  |  |  |  |  |  |
-    | Lithuania |  |  |  |  |  |  |  |
-    | Ukraine |  |  |  |  |  |  |  |
-    | Bahrain |  |  |  |  |  |  |  |
-    | Kuwait |  |  |  |  |  |  |  |
-    | Bulgaria |  |  |  |  |  |  |  |
-    | Morocco |  |  |  |  |  |  |  |
-    | Dominican Republic |  |  |  |  |  |  |  |
-    | Oman |  |  |  |  |  |  |  |
-    | Philippines |  |  |  |  |  |  |  |
-    | Iran |  |  |  |  |  |  |  |
-    | Slovakia |  |  |  |  |  |  |  |
-    | Kenya |  |  |  |  |  |  |  |
-    | Algeria |  |  |  |  |  |  |  |
-    | Angola |  |  |  |  |  |  |  |
-    | Iraq |  |  |  |  |  |  |  |
-    | Nigeria |  |  |  |  |  |  |  |
-    | Ecuador |  |  |  |  |  |  |  |
-    | Venezuela |  |  |  |  |  |  |  |
-    | Ethiopia |  |  |  |  |  |  |  |
-    |Minimum for dimension| 20 | 4 | 4 | 3 | 1 | 1 | 6 |
-    |Maximum for dimension |  |  |  |  |  |  |  |
-    
-    
-    **(Note):**  Some cells are blank because the corresponding data was not present in the image.  The data is presented as it appears in the chart, so the rows and columns are not perfectly aligned.
-    ---
-    Page: 10
-    Description: <---image--->
-    ---
-    Page: 11
-    Description: - **EXPOSURE:** Low, High
-    - **READINESS:** Bottom 10%, Top 10%
-    - **Categories:**
-        - Al emergents
-        - Exposed practitioners
-        - Steady contenders
-        - Al pioneers
-        - Gradual practitioners
-        - Rising contenders
-    
-    - **Descriptions:**
-        - **Al emergents:** Economies with extremely low readiness and different levels of exposure to Al.
-        - **Exposed practitioners:** Economies with relatively high exposure to Al and insufficient levels of readiness.
-        - **Steady contenders:** Economies with relatively high exposure to Al and sufficient levels of readiness for its adoption.
-        - **Al pioneers:** Economies able to meet high levels of exposure with extremely high readiness.
-        - **Gradual practitioners:** Economies with relatively low exposure to Al and low readiness for its adoption.
-        - **Rising contenders:** Economies with relatively low exposure to Al despite high readiness for its adoption.
-    ---
-    Page: 12
-    Description: Large, tall structure resembling a tree with a green, intricate framework.  The framework is composed of numerous interconnected, light-green/teal colored branches/supports.  The structure is extensively decorated with numerous small, multicolored lights/decorations that appear as strands or clusters.  Visible are portions of other buildings/structures in the background.  The overall impression is of a large Christmas tree or similar festive display at night.
-    ---
-    Page: 15
-    Description: <---image--->
-    ---
-    Page: 16
-    Description: A
-    Ambition
-    Enable AI adoption through a national AI strategy and a dedicated entity to oversee implementation.
-    
-    S
-    Skills
-    Provide basic AI training and digital programs to modernize the workforce.
-    
-    P
-    Policy and regulation
-    Enhance government effectiveness to build a foundation for AI.
-    
-    I
-    Investment
-    Boost investments in R&D, university programs, workshops, and engage the private sector.
-    
-    R
-    Research and innovation
-    Establish research centers in AI and work to ensure industry collaboration.
-    
-    E
-    Ecosystem
-    Ensure basic digital infrastructure (e.g., high-speed internet) to enable AI adoption.
-    
-    Al emergents
-    Enable AI adoption through a national AI strategy and a dedicated entity to oversee implementation.
-    Provide basic AI training and digital programs to modernize the workforce.
-    Enhance government effectiveness to build a foundation for AI.
-    Boost investments in R&D, university programs, workshops, and engage the private sector.
-    Establish research centers in AI and work to ensure industry collaboration.
-    Ensure basic digital infrastructure (e.g., high-speed internet) to enable AI adoption.
-    
-    Al contenders
-    Actively oversee AI adoption, with a focus on addressing lagging topics.
-    Attract and retain AI talent pool (software developers, engineers) and focus on big data and advanced trainings in AI.
-    Focus on AI ethics and flexible rules for experimentation.
-    Boost investment in high-performance computing and data centers, and attract FDI in AI.
-    Create test beds for developers and startups.
-    Promote AI solutions and new technologies for strategic sectors.
-    
-    Al pioneers
-    Support leading AI industry(ies) across the tech value chain.
-    Enhance cross-cutting AI expertise and sector specialization among AI specialists.
-    Ensure centralized oversight and more flexible rules on open data.
-    Provide tailored support for national AI champions, unicorns, and startups.
-    Focus on applied research and ensure cross-industry sharing.
-    Enhance cross-cutting AI application and support advanced tech infrastructure.
-    ---
-    Page: 18
-    Description: | INDICATOR | DIMENSION | SOURCE(S) | DESCRIPTION | WEIGHT |
-    |---|---|---|---|---|
-    | Existence of Al strategy | Ambition | Government websites | 100, if Al strategy exists; 0 if not | 5.0% |
-    | Existence of specialized Al government agency/ ministry | Ambition | Government websites | 100 if Al entity exists; 0 if not | 5.0% |
-    | Concentration of Al-related specialists | Skills | LinkedIn; World Bank | Number of LinkedIn accounts with Al-filtered skills per 1,000 people | 3.0% |
-    | Pool of Al-related specialists | Skills | LinkedIn | Number of LinkedIn accounts with Al-filtered skills | 8.0% |
-    | Total public contributions in GitHub by top 1,000 users | Skills | GitHub | Public contributions from top 1,000 users per economy | 3.0% |
-    | Kaggle Grandmasters | Skills | Kaggle | Number of grandmasters in Al competitions | 8.0% |
-    | Number of Python package downloads per 1,000 people | Skills | Python.org community | Number of scikit-learn downloads per 1,000 people | 3.0% |
-    | Regulatory quality | Policy and regulation | World Bank | Government ability to create sound policies | 2.0% |
-    | Governance effectiveness | Policy and regulation | World Bank | Quality of public services and civil service | 2.0% |
-    | Governance of data | Policy and regulation | Global Data Barometer | Quality of data management frameworks and security | 2.0% |
-    | Economic freedom index | Policy and regulation | The Heritage Foundation | Composite index based on four pillars-rule of law, government size, regulatory efficiency, and open markets | 2.0% |
-    | Al and democratic values index | Policy and regulation | Center for Al and Digital Policy | The extent of how well Al development aligns with democratic values | 2.0% |
-    
-    ---
-    Page: 19
-    Description: | INDICATOR | DIMENSION | SOURCE(S) | DESCRIPTION | WEIGHT |
-    |---|---|---|---|---|
-    | Value of Al unicorns | Investment | CB Insights, Global Unicorn Club with applied filter for "enterprise tech" | Total value of Al companies exceeding $1 billion valuation | 3.0% |
-    | Mcap of IT-related and tech-related companies/GDP | Investment | S&P Capital IQ | Market capitalization of companies in the IT and tech sectors as a proportion of an economy's gross domestic product (GDP) | 3.0% |
-    | Value of trade in ICT services (per capita) | Investment | UN Trade & Development (UNCTAD) | Value of information and communication technology services traded (imported and exported) per capita | 1.5% |
-    | Value of trade in ICT goods (per capita) | Investment | UNCTAD | Value of ICT goods traded (imported and exported) per capita | 1.5% |
-    | VC availability | Investment | Pitchbook | Total funding in $ billions provided by VCs | 1.5% |
-    | Funding of Al companies | Investment | Pitchbook | Total funding in $ billions provided to Al companies | 3.0% |
-    | Computer software spending | Investment | World Intellectual Property Organization | Economy-wide investment in software relative to its economic output | 1.5% |
-    | Research papers published on Al | Research and innovation | Scimago Journal & Country Rank | Composite index: 0.5* papers + 0.25 h index + 0.25 citations | 2.5% |
-    | Al-related patents | Research and innovation | WIPO | Number of patents filed that are specifically related to Al | 5.0% |
-    | Top-ranked universities in data science and Al fields | Research and innovation | QS World University Rankings | Number of universities in an economy that are ranked among the top institutions in these fields by QS | 2.5% |
-    | Number of Al startups | Research and innovation | Artificial Intelligence Index Report 2024, Stanford University Human-Centered Artificial Intelligence | Number of Al startups in an economy | 5.0% |
-    | Number of data centers | Ecosystem | Cloudscene data | Number of different data centers in an economy | 4.0% |
-    | Public cloud spend per employee | Ecosystem | Statista | Average expenditure on public cloud services per employee | 4.0% |
-    | Adoption of emerging technologies by companies | Ecosystem | Network Readiness Index, Portulans Institute and the University of Oxford | Extent to which companies in an economy adopt and integrate emerging technologies | 4.0% |
-    | Accessible supercomputer capacity by economy | Ecosystem | Manual assessment of accessibility based on top 500 supercomputers | Composite score that assesses the accessibility of processing cores of the top 500 supercomputers | 1.0% |
-    
-    ---
-    Page: 20
-    Description: | INDICATOR | DIMENSION | SOURCE(S) | DESCRIPTION | WEIGHT |
-    |---|---|---|---|---|
-    | Fixed broadband internet traffic per capita | Ecosystem | DataHub | Average data transferred per person | 4.0% |
-    | Electricity prices | Ecosystem | World Population Review | Price of electricity per kilowatt-hour | 1.0% |
-    | Telecommunication infrastructure index | Ecosystem | World Bank GovTech Maturity Index 2022 | Availability and quality of telecom infrastructure | 1.0% |
-    | Average download speed | Ecosystem | Speedtest Global Index (for fixed broadband) | Internet download speed in megabits per second | 4.0% |
-    | Online service index | Ecosystem | United Nations | Government use of digital solutions | 1.0% |
-    | Performance of economy-wide statistical systems | Ecosystem | World Bank | Quality of economy-wide statistical agencies | 1.0% |
-    ---
-    Page: 20
-    Description: | INDICATOR | DIMENSION |
-    |---|---|
-    | Ambition | 10% |
-    | Skills | 25% |
-    | Policy and regulation | 10% |
-    | Investment | 15% |
-    | Research and innovation | 15% |
-    | Ecosystem | 25% |
-    
-    ---
-    
-
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    Failed to multipart ingest runs: langsmith.utils.LangSmithError: Failed to POST https://api.smith.langchain.com/runs/multipart in LangSmith API. HTTPError('403 Client Error: Forbidden for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Forbidden"}')
-    
+</pre>
 
 ```python
 from langchain_core.documents import Document
@@ -839,7 +491,7 @@ merged_documents = merge_text_and_images(md_text, image_description_docs)
 ```
 
 ```python
-print(merged_documents[3].page_content)
+print(merged_documents[3].page_content[:500])
 ```
 
 <pre class="custom">###### y g
@@ -860,113 +512,12 @@ print(merged_documents[3].page_content)
     
     **Several economies with high**
     **AI readiness are just behind the**
-    **pace of AI pioneers. While this**
-    group of AI contenders includes
-    established economies, it also
-    features emerging ones like India,
-    Saudi Arabia, and the UAE that are
-    using policy and targeted investments
-    to adopt AI on an advanced level. As
-    these economies strengthen their
-    innovation capabilities, they will grow
-    more competitive and influential in
-    the AI space.
-    
-    
-    **Most economies in the study are**
-    **not ready for AI disruption. More**
-    **than 70% score below the halfway**
-    **mark in categories like ecosystem**
-    **participation, skills, and R&D.**
-    Policymakers must act now to adjust
-    to a world of AI and boost resiliency,
-    productivity, jobs, modernization, and
-    competitiveness.
-    
-    
-    ###### Distribution of Economies Across the Archetypes of AI Adoption
-    
-    AI contenders
-    
-    **Steady contenders**
-    
-                                                       - Australia                                                   - Japan
-    
-    AI practitioners                      - Austria                      - Luxembourg
-    
-                                                - Belgium                                            - Malaysia
-    
-                                            - Denmark                                         - Netherlands
-    
-                                                     - Estonia                                                 - Norway
-    
-                                                    - Finland                                                 - Portugal
-    
-    **Exposed practitioners**                  - France                  - South Korea
-    
-                           - Bahrain                        - Greece                        - Germany                        - Spain
-    
-                            - Bulgaria                         - Hungary                         - Hong Kong                         - Sweden
-    
-                           - Cyprus                        - Kuwait                        - Ireland                        - Switzerland
-    
-    **AI emergents**     - Czechia     - Malta     - Israel     - Taiwan
-    
-                                                               - Italy
-    
-          - Algeria      - Iraq
-    
-         - Angola      - Nigeria
-    
-         - Ecuador      - Venezuela **Gradual practitioners** **Rising contenders**
-    
-          - Ethiopia
-    
-                           - Argentina                        - Morocco                        - Brazil                        - Saudi Arabia
-    
-                              - Chile                           - Oman                           - India                           - Türkiye
-    
-                          - Colombia                      - Pakistan                      - Indonesia                      - UAE
-    
-                          - Dominican                      - Peru                      - New Zealand                      - Vietnam
-    Republic                      - Philippines                      - Poland
-    
-                            - Egypt                        - Romania
-    
-                               - Iran                           - Qatar
-    
-                          - Kenya                       - Slovakia
-    
-                             - Latvia                          - South Africa
-    
-                            - Lithuania                         - Thailand
-    
-                          - Mexico                       - Ukraine
-    
-    Bottom 10% **READINESS**
-    
-    **Sources: BCG Center for Public Economics; BCG analysis.**
-    
-    **Note: Within each archetype, economies appear in alphabetical order.**
-    
-    
-    -----
-    
-    
-    
-    - **Al emergents:** Algeria, Angola, Ecuador, Ethiopia, Iraq, Nigeria, Venezuela
-    - **Exposed practitioners:** Bahrain, Bulgaria, Cyprus, Czechia, Greece, Hungary, Kuwait, Malta
-    - **Gradual practitioners:** Argentina, Chile, Colombia, Dominican Republic, Egypt, Iran, Kenya, Latvia, Lithuania, Mexico, Morocco, Oman, Pakistan, Peru, Philippines, Qatar, Romania, Slovakia, South Africa, Thailand, Ukraine
-    - **Steady contenders:** Australia, Austria, Belgium, Denmark, Estonia, Finland, France, Germany, Hong Kong, Ireland, Israel, Italy, Japan, Luxembourg, Malaysia, Netherlands, Norway, Portugal, South Korea, Spain, Sweden, Switzerland, Taiwan
-    - **Rising contenders:** Brazil, India, Indonesia, New Zealand, Poland, Saudi Arabia, Türkiye, UAE, Vietnam
-    - **Al pioneers:** Canada, Mainland China, Singapore, UK, US
-    - **Exposure:** Low, High
-    - **Readiness:** Bottom 10%, Top 10%
+    **pace 
 </pre>
 
-## Building a RAG Pipeline with LangGraph
+## Building a RAG Pipeline with `LangGraph`
 
-This guide demonstrates how to use LangGraph to build a unified RAG (Retrieval-Augmented Generation) application. By combining retrieval and generation into a single flow, LangGraph offers streamlined execution, deployment, and additional features like persistence and human-in-the-loop approval.
+This guide demonstrates how to use `LangGraph` to build a unified RAG (Retrieval-Augmented Generation) application. By combining retrieval and generation into a single flow, `LangGraph` offers streamlined execution, deployment, and additional features like persistence and human-in-the-loop approval.
 
 ### Key Components
 
@@ -999,6 +550,21 @@ vector_store = Chroma.from_documents(
 ```
 
 ```python
+retrieved_docs = vector_store.similarity_search("Please list AI pioneers")
+retrieved_docs
+```
+
+
+
+
+<pre class="custom">[Document(metadata={'page': 13, 'source': 'data/BCG-ai-maturity-matrix-nov-2024.pdf'}, page_content='### AI pioneers are the vanguards of\n\n AI adoption, building on strong\n\n infrastructures and engaging the\n\n technology in diverse sectors.\n\n\n-----'),
+     Document(metadata={'page': 10, 'source': 'data/BCG-ai-maturity-matrix-nov-2024.pdf'}, page_content='Pioneers will want to amplify their strategies to keep up\ntheir competitive edge. But as competitive as technology\nevolution can be, countries everywhere should come to\xad\ngether to address the emerging ethical questions around\nAI. Pioneers can participate in these important ethical\nefforts in several ways. For one, they are authoring the\nworld’s first AI-specific regulatory codes, which will likely be\nmodels for regulation in other countries. These leaders\nshould also convene nations throughout the world in dis\xad\ncussions around AI ethics. (See sidebar, “How Singapore\nBecame an AI Pioneer.”)\n\n\n-----\n\n\n\n<---image--->'),
+     Document(metadata={'page': 10, 'source': 'data/BCG-ai-maturity-matrix-nov-2024.pdf'}, page_content='### The Archetypes of AI Adoption\n\n\n# T\n\n\nhe combined analysis of AI exposure and\nreadiness reveals six distinct adoption groups.\n(See Exhibit 4.)\n\n\n**AI Pioneers. These are the vanguards of AI adoption,**\nbuilding on strong infrastructures and engaging the tech\xad\nnology in diverse sectors. All pioneers invest greatly in\nR&D, as shown by the many tech companies, startups,\nand unicorns in each of the five countries. Job sectors and\neducation systems are full of highly skilled talent.'),
+     Document(metadata={'page': 16, 'source': 'data/BCG-ai-maturity-matrix-nov-2024.pdf'}, page_content='AI pioneers\nSupport leading AI industry(ies) across the tech value chain.\nEnhance cross-cutting AI expertise and sector specialization among AI specialists.\nEnsure centralized oversight and more flexible rules on open data.\nProvide tailored support for national AI champions, unicorns, and startups.\nFocus on applied research and ensure cross-industry sharing.\nEnhance cross-cutting AI application and support advanced tech infrastructure.')]</pre>
+
+
+
+```python
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.documents import Document
 from langchain_openai import ChatOpenAI
@@ -1027,11 +593,14 @@ class State(TypedDict):
 
 # Define application steps
 def retrieve(state: State):
+    print(f"SEARCHING DOCUMENTS...\n{'='*20}")
     retrieved_docs = vector_store.similarity_search(state["question"])
+    print(f"searched...{retrieved_docs[0].page_content[:100]}\n...\n{'='*20}")
     return {"context": retrieved_docs}
 
 
 def generate(state: State):
+    print(f"GENERATING ANSWER...\n{'='*20}")
     docs_content = "\n\n".join(doc.page_content for doc in state["context"])
     messages = prompt.invoke({"question": state["question"], "context": docs_content})
     response = llm.invoke(messages)
@@ -1045,11 +614,22 @@ graph = graph_builder.compile()
 ```
 
 ```python
-response = graph.invoke({"question": "Please list AI pioneers"})
+response = graph.invoke({"question": "Please list which countries are represented as AI pioneers"})
 print(response["answer"])
 ```
 
-<pre class="custom">The AI pioneers, as mentioned in the context, are Canada, Mainland China, Singapore, the UK, and the US.
+<pre class="custom">SEARCHING DOCUMENTS...
+    ====================
+    searched...###### y g
+    
+    **Out of 73 economies assessed, only**
+    **five—Canada, Mainland China,**
+    **Singapore, the
+    ...
+    ====================
+    GENERATING ANSWER...
+    ====================
+    The countries represented as AI pioneers are Canada, Mainland China, Singapore, the UK, and the US.
 </pre>
 
 As shown in the image below, the answer was correctly predicted.
@@ -1058,11 +638,11 @@ As shown in the image below, the answer was correctly predicted.
 import base64
 from IPython.display import Image, display
 
-display(Image(data="assets/AI_Pioneers.png"))  # Display the image
+display(Image(data="assets/10-GeminiMultimodalRAG-AI_Pioneers.png"))  # Display the image
 ```
 
 
     
-![png](./img/output_31_0.png)
+![png](./img/output_32_0.png)
     
 

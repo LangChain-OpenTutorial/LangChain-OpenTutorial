@@ -28,7 +28,8 @@ pre {
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/langchain-ai/langchain-academy/blob/main/module-4/sub-graph.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
 
 ## Overview
-In this tutorial, when a user's question is received, we will cover the process of restructuring the original question through a Query Rewrite step to enable more effective searching. For this purpose, while using Naive RAG as a foundation, we add supplementary mechanisms through query rewriting and web search. The procedure is as follows.
+
+In this tutorial, we will cover the process of restructuring the original question by incorporating a **Query Rewrite** step. When a user's question is received, it enables more effective searching. While using Naive RAG as a foundation, this process aims for us to add supplementary mechanisms through query rewriting and web search. The procedure is as follows:
 
 1. Perform Naive RAG
 2. Conduct Groundedness Check for Retrieved Documents (Groundedness Check)
@@ -36,9 +37,9 @@ In this tutorial, when a user's question is received, we will cover the process 
 4. (This Tutorial) Query Rewrite 
 
 [Note]
-- As this is an extension of the previous tutorial, there may be overlapping content. For any missing explanations, please refer to the previous tutorial.
+As this builds upon a previous tutorial, there may be overlapping content. For any missing explanations, please refer to the previous tutorial.
 
-    ![image.png](./img/05-langgraph-add-query-rewrite-01.png)
+![image.png](./img/05-langgraph-add-query-rewrite-01.png)
 
 
 
@@ -46,11 +47,11 @@ In this tutorial, when a user's question is received, we will cover the process 
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Creating Basic PDF-based Retrieval Chain](#creating-basic-pdf-based-retrieval-chain)
-- [Defining State](#defining-state)
+- [Creating a Basic PDF-based Retrieval Chain](#creating-a-basic-pdf-based-retrieval-chain)
+- [Defining GraphState](#defining-graphstate)
 - [Defining Nodes](#defining-nodes)
-- [Adding Query Rewrite Node](#adding-query-rewrite-node)
-- [Edges](#edges)
+- [Adding the Query Rewrite Node](#adding-the-query-rewrite-node)
+- [Defining Edges](#defining-edges)
 - [Running Graph](#running-graph)
 
 
@@ -66,6 +67,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 **[Note]**
 - `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+
 - You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
@@ -116,7 +118,7 @@ if not load_dotenv():
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-## Creating Basic PDF-based Retrieval Chain
+## Creating a Basic PDF-based Retrieval Chain
 
 Here, we create a Retrieval Chain based on PDF documents. This is the simplest structure of a Retrieval Chain.
 
@@ -124,7 +126,7 @@ However, in LangGraph, the Retriever and Chain are created separately. This allo
 
 **[Note]**
 
-As this content was covered in the previous tutorial, detailed explanations are omitted.
+Detailed explanations for this step can be found in the previous tutorial.
 
 
 ```python
@@ -138,17 +140,17 @@ pdf_retriever = pdf.retriever
 pdf_chain = pdf.chain
 ```
 
-## Defining State
+## Defining `GraphState`
 
-`State` : Defines the state shared between nodes in the Graph.
+The `GraphState` object defines the shared state between nodes in the Langgraph.
 
-Generally uses the `TypedDict` format to ensure type safety and clear structure in the graph's state management.
+Generally, using a `TypedDict` is to ensure type safety and maintain a clear structure for the graph's state management.
 
-In this case, we'll add relevance check results to the state.
+In this case, we'll add a field for relevance check results to the state.
 
 **[Note]**
 
-Here, we define `question` as a list format to additionally store rewritten queries.
+Here, we define `question` as a list to accomodate the rewritten queries that are additionally stored.
 
 ```python
 from typing import Annotated, TypedDict
@@ -166,12 +168,11 @@ class GraphState(TypedDict):
 
 ## Defining Nodes
 
-`Nodes` : These are nodes that process each step. They are typically implemented as Python functions. Both input and output are state values.
+**Nodes** represent individual processing steps. They are typically implemented as Python functions. Both input and output are `state` values.
 
 **[Note]**
 
-Nodes take a `State` as input, perform defined logic, and return an updated `State`.
-
+Each Node takes a `state` as input, performs its designated logic, and returns an updated `state`.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -262,9 +263,9 @@ def web_search(state: GraphState) -> GraphState:
     return {"context": search_result}
 ```
 
-## Adding Query Rewrite Node
+## Adding the Query Rewrite Node
 
-Rewrites the original questions using a prompt designed for query reformulation.
+The **Query Rewrite Node** rewrites the original questions, using a prompt designed for query reformulation.
 
 ```python
 from langchain_core.prompts import PromptTemplate
@@ -323,7 +324,7 @@ question_rewriter = (
 )
 ```
 
-Use the created `question_rewriter` to rewrite the question.
+This node utilizes a `question_rewriter` function to rewrite the question.
 
 ```python
 # Query Rewriting
@@ -347,9 +348,9 @@ def query_rewrite(state: GraphState) -> GraphState:
     return {"question": question_rewritten}
 ```
 
-## Edges
+## Defining Edges
 
-- `Edges` : Python functions that determine the next `Node` to execute based on the current `State`.
+**Edges** determine the next **Node** to execute based on the current `state`.
 
 There are different types such as regular edges and conditional edges.
 
@@ -396,7 +397,7 @@ memory = MemorySaver()
 app = workflow.compile(checkpointer=memory)
 ```
 
-Visualize the compiled graph structure.
+Let's visualize the compiled graph structure.
 
 ```python
 from langchain_opentutorial.graphs import visualize_graph
@@ -412,12 +413,14 @@ visualize_graph(app)
 
 ## Running Graph
 
-- `config` parameter : passes configuration settings needed for running the graph.
-- `recursion_limit` : Sets the maximum number of recursions when running the graph.
-- `inputs` : Passes the input information required when running the graph.
+- `config` parameter: Passes configuration settings required for running the graph.
 
-If the `relevance_check` of search results fails, it performs web search and provides web search results.
+- `recursion_limit`: Sets a limit on the number of recursions when running the graph.
 
+- `inputs`: Passes the input information required for running the graph.
+
+
+If the `relevance_check` of the initial search results fails, it performs web search and provides web search results.
 
 ```python
 from langchain_core.runnables import RunnableConfig
@@ -514,8 +517,7 @@ except Exception as e:
     Relevance: yes
 </pre>
 
-The evaluator summarized above is as follows.
-
+The evaluator summarized above follows this.
 
 ```python
 # Running graph

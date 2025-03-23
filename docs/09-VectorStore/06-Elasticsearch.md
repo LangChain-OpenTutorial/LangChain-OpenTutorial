@@ -32,17 +32,14 @@ pre {
 - You’ll learn how to set up the environment, prepare data, and explore advanced search features like hybrid and semantic search.
 - By the end, you’ll be equipped to use Elasticsearch for powerful and intuitive search applications.
 
-### Table of Contents  
+### Table of Contents
 
-- [Overview](#overview)  
-- [Environment Setup](#environment-setup)  
-- [Elasticsearch Setup](#elasticsearch-setup)  
-- [Introduction to Elasticsearch](#introduction-to-elasticsearch)  
-- [ElasticsearchManager](#elasticsearchmanager)  
-- [Data Preparation for Tutorial](#data-preparation-for-tutorial)  
-- [Initialization](#initialization)  
-- [DB Handling](#db-handling)  
-- [Advanced Search](#advanced-search)  
+- [Overview](#overview)
+- [Environment Setup](#environment-setup)
+- [Elasticsearch Setup](#elasticsearch-setup)
+- [Introduction to Elasticsearch](#introduction-to-elasticsearch)
+- [Data Preparation for Tutorial](#data-preparation-for-tutorial)
+- [Managing Elasticsearch Connections and Documents](#managing-elasticsearch-connections-and-documents)
 
 ### References
 - [LangChain VectorStore Documentation](https://python.langchain.com/docs/how_to/vectorstores/)
@@ -127,6 +124,11 @@ package.install(
     upgrade=False,
 )
 ```
+
+<pre class="custom">
+    [notice] A new release of pip is available: 24.3.1 -> 25.0
+    [notice] To update, run: pip install --upgrade pip
+</pre>
 
 ```python
 # Set environment variables
@@ -227,410 +229,13 @@ Elasticsearch goes beyond traditional text search engines, offering robust vecto
 
 ---
 
-## ElasticsearchManager
-- `Purpose:` Simplifies interactions with Elasticsearch, allowing easy management of indices and documents through user-friendly methods.
-- `Core Features` 
-	- `Index management:` create, delete, and manage indices.
-	- `Document operations:` upsert, retrieve, search, and delete documents.
-	- `Bulk and parallel operations:` perform upserts in bulk or in parallel for high performance.
-
-### Methods and Parameters
-
-1. `__init__` 
-	- Role: Initializes the ElasticsearchManager instance and connects to the Elasticsearch cluster.
-	- Parameters
-		- `es_url` (str): The URL of the Elasticsearch host (default: "http://localhost:9200").
-		- `api_key` (Optional[str]): The API key for authentication (default: None).
-	- Behavior
-		- Establishes a connection to Elasticsearch.
-		- Tests the connection using ping() and raises a ConnectionError if it fails.
-	- Usage Example
-		>```python
-		>es_manager = ElasticsearchManager(es_url="http://localhost:9200")
-		>```
-
-2. `create_index` 
-	- Role: Creates an Elasticsearch index with optional mappings and settings.
-	- Parameters
-		- `index_name` (str): The name of the index to create.
-		- `mapping` (Optional[Dict]): A dictionary defining the index structure (field types, properties, etc.).
-		- `settings` (Optional[Dict]): A dictionary defining index settings (e.g., number of shards, replicas).
-	- Behavior
-		- Checks if the index exists.
-		- If the index does not exist, creates it using the provided mappings and settings.
-	- Returns: A string message indicating success or failure.
-	- Usage Example
-		>```python
-		>mapping = {"properties": {"name": {"type": "text"}}}
-		>settings = {"number_of_shards": 1}
-		>es_manager.create_index("my_index", mapping=mapping, settings=settings)
-		>```
-
-3. `delete_index` 
-	- Role: Deletes an Elasticsearch index if it exists.
-	- Parameters
-		- `index_name` (str): The name of the index to delete.
-	- Behavior
-		- Checks if the index exists.
-		- Deletes the index if it exists.
-	- Returns: A string message indicating success or failure.
-	- Usage Example
-		>```python
-		>es_manager.delete_index("my_index")
-		```
-
-4. `get_document` 
-	- Role: Retrieves a single document by its ID.
-	- Parameters
-		- `index_name` (str): The name of the index to retrieve the document from.
-		- `document_id` (str): The ID of the document to retrieve.
-	- Behavior
-		- Fetches the document using its ID.
-		- Returns the _source field of the document (its contents).
-	- Returns: The document contents (Dict) if found, otherwise None.
-	- Usage Example
-		>```python
-		>document = es_manager.get_document("my_index", "1")
-		>```
-
-5. `search_documents` 
-	- Role: Searches for documents in an index based on a query.
-	- Parameters
-		- `index_name` (str): The name of the index to search.
-		- `query` (Dict): A query in Elasticsearch DSL format.
-	- Behavior
-		- Executes the query against the specified index.
-		- Returns the _source field of all matching documents.
-	- Returns: A list of matching documents (List[Dict]).
-	- Usage Example
-		>```python
-		>query = {"match": {"name": "John"}}
-		>results = es_manager.search_documents("my_index", query=query)
-		>```
-		
-6. `upsert_document` 
-	- Role: Inserts or updates a document by its ID.
-	- Parameters
-		- `index_name` (str): The index to perform the upsert on.
-		- `document_id` (str): The ID of the document to upsert.
-		- `document` (Dict): The content of the document.
-	- Behavior
-		- Updates the document if it exists or creates it if it does not.
-		- Returns: The Elasticsearch response (Dict).
-	- Usage Example
-		>```python
-		>document = {"name": "Alice", "age": 30}
-		>es_manager.upsert_document("my_index", "1", document)
-		>```
-
-7. `bulk_upsert` 
-	- Role: Performs a bulk upsert operation for multiple documents.
-	- Parameters
-		- `documents` (List[Dict]): A list of documents for the bulk operation.
-			- Each document should specify _index, _id, _op_type, and doc_as_upsert.
-	- Behavior
-		- Uses Elasticsearch’s bulk API to upsert multiple documents in a single request.
-	- Usage Example
-		>```python
-		>docs = [
-		>	{"_index": "my_index", "_id": "1", "_op_type": "update", "doc": {"name": "Alice"}, "doc_as_upsert": True},
-		>	{"_index": "my_index", "_id": "2", "_op_type": "update", "doc": {"name": "Bob"}, "doc_as_upsert": True}
-		>]
-		>es_manager.bulk_upsert(docs)
-		>```
-
-8. `parallel_bulk_upsert` 
-	- Role: Performs a parallelized bulk upsert operation for large datasets.
-	- Parameters
-		- `documents` (List[Dict]): A list of documents for bulk upserts.
-		- `batch_size` (int): Number of documents per batch (default: 100).
-		- `max_workers` (int): Number of threads to use for parallel processing (default: 4).
-	- Behavior
-		- Splits the documents into batches and processes them in parallel using threads.
-	- Usage Example
-		>```python
-		>es_manager.parallel_bulk_upsert(docs, batch_size=50, max_workers=4)
-		>```
-
-9. `delete_document` 
-	- Role: Deletes a single document by its ID.
-	- Parameters
-		- `index_name` (str): The index containing the document.
-		- `document_id` (str): The ID of the document to delete.
-	- Behavior
-		- Deletes the specified document using its ID.
-	- Returns: The Elasticsearch response (Dict).
-	- Usage Example
-		>```python
-		>es_manager.delete_document("my_index", "1")
-		>```
-
-10. `delete_by_query` 
-	- Role: Deletes all documents that match a query.
-	- Parameters
-		- `index_name` (str): The index to delete documents from.
-		- `query` (Dict): The query defining the documents to delete.
-	- Behavior
-		- Uses Elasticsearch’s delete_by_query API to remove documents matching the query.
-	- Returns: The Elasticsearch response (Dict).
-	- Usage Example
-		>```python
-		>delete_query = {"match": {"status": "inactive"}}
-		>es_manager.delete_by_query("my_index", query=delete_query)
-		>```
-
-### Conclusion
-- This class provides a robust and user-friendly interface to manage Elasticsearch operations.
-- It encapsulates common tasks like creating indices, searching for documents, and performing upserts, making it ideal for use in data management pipelines or applications.
-
-```python
-from typing import Optional, Dict, List, Generator
-from elasticsearch import Elasticsearch, helpers
-from concurrent.futures import ThreadPoolExecutor
-
-
-class ElasticsearchManager:
-    def __init__(
-        self, es_url: str = "http://localhost:9200", api_key: Optional[str] = None
-    ) -> None:
-        """
-        Initialize the ElasticsearchManager with a connection to the Elasticsearch instance.
-
-        Parameters:
-            es_url (str): URL of the Elasticsearch host.
-            api_key (Optional[str]): API key for authentication (optional).
-        """
-        # Initialize the Elasticsearch client
-        if api_key:
-            self.es = Elasticsearch(es_url, api_key=api_key, timeout=120, retry_on_timeout=True)
-        else:
-            self.es = Elasticsearch(es_url, timeout=120, retry_on_timeout=True)
-
-        # Test connection
-        if self.es.ping():
-            print("✅ Successfully connected to Elasticsearch!")
-        else:
-            raise ConnectionError("❌ Failed to connect to Elasticsearch.")
-
-    def create_index(
-        self,
-        index_name: str,
-        mapping: Optional[Dict] = None,
-        settings: Optional[Dict] = None,
-    ) -> str:
-        """
-        Create an Elasticsearch index with optional mapping and settings.
-
-        Parameters:
-            index_name (str): Name of the index to create.
-            mapping (Optional[Dict]): Mapping definition for the index.
-            settings (Optional[Dict]): Settings definition for the index.
-
-        Returns:
-            str: Success or warning message.
-        """
-        try:
-            if not self.es.indices.exists(index=index_name):
-                body = {}
-                if mapping:
-                    body["mappings"] = mapping
-                if settings:
-                    body["settings"] = settings
-                self.es.indices.create(index=index_name, body=body)
-                return f"✅ Index '{index_name}' created successfully."
-            else:
-                return f"⚠️ Index '{index_name}' already exists. Skipping creation."
-        except Exception as e:
-            return f"❌ Error creating index '{index_name}': {e}"
-
-    def delete_index(self, index_name: str) -> str:
-        """
-        Delete an Elasticsearch index if it exists.
-
-        Parameters:
-            index_name (str): Name of the index to delete.
-
-        Returns:
-            str: Success or warning message.
-        """
-        try:
-            if self.es.indices.exists(index=index_name):
-                self.es.indices.delete(index=index_name)
-                return f"✅ Index '{index_name}' deleted successfully."
-            else:
-                return f"⚠️ Index '{index_name}' does not exist."
-        except Exception as e:
-            return f"❌ Error deleting index '{index_name}': {e}"
-
-    def get_document(self, index_name: str, document_id: str) -> Optional[Dict]:
-        """
-        Retrieve a single document by its ID.
-
-        Parameters:
-            index_name (str): The index to retrieve the document from.
-            document_id (str): The ID of the document to retrieve.
-
-        Returns:
-            Optional[Dict]: The document's content if found, None otherwise.
-        """
-        try:
-            response = self.es.get(index=index_name, id=document_id)
-            return response["_source"]
-        except Exception as e:
-            print(f"❌ Error retrieving document: {e}")
-            return None
-
-    def search_documents(self, index_name: str, query: Dict) -> List[Dict]:
-        """
-        Search for documents based on a query.
-
-        Parameters:
-            index_name (str): The index to search.
-            query (Dict): The query body for the search.
-
-        Returns:
-            List[Dict]: List of documents that match the query.
-        """
-        try:
-            response = self.es.search(index=index_name, body={"query": query})
-            return [hit["_source"] for hit in response["hits"]["hits"]]
-        except Exception as e:
-            print(f"❌ Error searching documents: {e}")
-            return []
-
-    def upsert_document(
-        self, index_name: str, document_id: str, document: Dict
-    ) -> Dict:
-        """
-        Perform an upsert operation on a single document.
-
-        Parameters:
-            index_name (str): The index to perform the upsert on.
-            document_id (str): The ID of the document.
-            document (Dict): The document content to upsert.
-
-        Returns:
-            Dict: The response from Elasticsearch.
-        """
-        try:
-            response = self.es.update(
-                index=index_name,
-                id=document_id,
-                body={"doc": document, "doc_as_upsert": True},
-            )
-            return response
-        except Exception as e:
-            print(f"❌ Error upserting document: {e}")
-            return {}
-
-    def bulk_upsert(
-        self, index_name: str, documents: List[Dict], timeout: Optional[str] = None
-    ) -> None:
-        """
-        Perform a bulk upsert operation.
-
-        Parameters:
-            index (str): Default index name for the documents.
-            documents (List[Dict]): List of documents for bulk upsert.
-            timeout (Optional[str]): Timeout duration (e.g., '60s', '2m'). If None, the default timeout is used.
-        """
-        try:
-            # Ensure each document includes an `_index` field
-            for doc in documents:
-                if "_index" not in doc:
-                    doc["_index"] = index_name
-
-            # Perform the bulk operation
-            helpers.bulk(self.es, documents, timeout=timeout)
-            print("✅ Bulk upsert completed successfully.")
-        except Exception as e:
-            print(f"❌ Error in bulk upsert: {e}")
-
-    def parallel_bulk_upsert(
-        self,
-        index_name: str,
-        documents: List[Dict],
-        batch_size: int = 100,
-        max_workers: int = 4,
-        timeout: Optional[str] = None,
-    ) -> None:
-        """
-        Perform a parallel bulk upsert operation.
-
-        Parameters:
-            index_name (str): Default index name for documents.
-            documents (List[Dict]): List of documents for bulk upsert.
-            batch_size (int): Number of documents per batch.
-            max_workers (int): Number of parallel threads.
-            timeout (Optional[str]): Timeout duration (e.g., '60s', '2m'). If None, the default timeout is used.
-        """
-
-        def chunk_data(
-            data: List[Dict], chunk_size: int
-        ) -> Generator[List[Dict], None, None]:
-            """Split data into chunks."""
-            for i in range(0, len(data), chunk_size):
-                yield data[i : i + chunk_size]
-
-        # Ensure each document has an `_index` field
-        for doc in documents:
-            if "_index" not in doc:
-                doc["_index"] = index_name
-
-        batches = list(chunk_data(documents, batch_size))
-
-        def bulk_upsert_batch(batch: List[Dict]):
-            helpers.bulk(self.es, batch, timeout=timeout)
-
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            for batch in batches:
-                executor.submit(bulk_upsert_batch, batch)
-
-    def delete_document(self, index_name: str, document_id: str) -> Dict:
-        """
-        Delete a single document by its ID.
-
-        Parameters:
-            index_name (str): The index to delete the document from.
-            document_id (str): The ID of the document to delete.
-
-        Returns:
-            Dict: The response from Elasticsearch.
-        """
-        try:
-            response = self.es.delete(index=index_name, id=document_id)
-            return response
-        except Exception as e:
-            print(f"❌ Error deleting document: {e}")
-            return {}
-
-    def delete_by_query(self, index_name: str, query: Dict) -> Dict:
-        """
-        Delete documents based on a query.
-
-        Parameters:
-            index_name (str): The index to delete documents from.
-            query (Dict): The query body for the delete operation.
-
-        Returns:
-            Dict: The response from Elasticsearch.
-        """
-        try:
-            response = self.es.delete_by_query(
-                index=index_name, body={"query": query}, conflicts="proceed"
-            )
-            return response
-        except Exception as e:
-            print(f"❌ Error deleting documents by query: {e}")
-            return {}
-```
-
 ## Data Preparation for Tutorial
 - Let’s process **The Little Prince** using the `RecursiveCharacterTextSplitter` to create document chunks.
 - Then, we’ll generate embeddings for each text chunk and store the resulting data in a vector database to proceed with a vector database tutorial.
 
 ```python
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+
 
 # Function to read text from a file (Cross-Platform)
 def read_text_file(file_path):
@@ -644,6 +249,7 @@ def read_text_file(file_path):
     except FileNotFoundError:
         raise FileNotFoundError(f"The specified file was not found: {file_path}")
 
+
 # Function to split the text into chunks
 def split_text(raw_text, chunk_size=100, chunk_overlap=20):
     text_splitter = RecursiveCharacterTextSplitter(
@@ -655,6 +261,7 @@ def split_text(raw_text, chunk_size=100, chunk_overlap=20):
     split_docs = text_splitter.create_documents([raw_text])
     return [doc.page_content for doc in split_docs]
 
+
 # Set file path and execute
 file_path = "./data/the_little_prince.txt"
 try:
@@ -662,7 +269,7 @@ try:
     raw_text = read_text_file(file_path)
     # Split the text
     docs = split_text(raw_text)
-    
+
     # Verify output
     print(docs[:2])  # Print the first 5 chunks
     print(f"Total number of chunks: {len(docs)}")
@@ -696,48 +303,17 @@ print(len(embedded_documents[0]))
 
 <pre class="custom">1359
     1024
-    CPU times: user 9.33 s, sys: 3.24 s, total: 12.6 s
-    Wall time: 23.3 s
+    CPU times: user 7.25 s, sys: 3.48 s, total: 10.7 s
+    Wall time: 18.9 s
 </pre>
 
-```python
-from uuid import uuid4
-from typing import List, Tuple, Dict
+## Managing Elasticsearch Connections and Documents
+### ElasticsearchConnectionManager
+- The `ElasticsearchConnectionManager` is a class designed to manage connections to an Elasticsearch instance.
+- It facilitates connecting to the Elasticsearch server and provides functionalities for creating and deleting indices.
 
-
-def prepare_documents_with_ids(
-    docs: List[str], embedded_documents: List[List[float]]
-) -> Tuple[List[Dict], List[str]]:
-    """
-    Prepare a list of documents with unique IDs and their corresponding embeddings.
-
-    Parameters:
-        docs (List[str]): List of document texts.
-        embedded_documents (List[List[float]]): List of embedding vectors corresponding to the documents.
-
-    Returns:
-        Tuple[List[Dict], List[str]]: A tuple containing:
-            - List of document dictionaries with `doc_id`, `text`, and `vector`.
-            - List of unique document IDs (`doc_ids`).
-    """
-    # Generate unique IDs for each document
-    doc_ids = [str(uuid4()) for _ in range(len(docs))]
-
-    # Prepare the document list with IDs, texts, and embeddings
-    documents = [
-        {"doc_id": doc_id, "text": doc, "vector": embedding}
-        for doc, doc_id, embedding in zip(docs, doc_ids, embedded_documents)
-    ]
-
-    return documents, doc_ids
-```
-
-```python
-documents, doc_ids = prepare_documents_with_ids(docs, embedded_documents)
-```
-
-## Initialization
-### Setting Up the Elasticsearch Client
+### Initialization
+**Setting Up the Elasticsearch Client**
 - Begin by creating an Elasticsearch client.
 
 ```python
@@ -753,20 +329,14 @@ if not ES_URL or not ES_API_KEY:
 ```
 
 ```python
-es_manager = ElasticsearchManager(es_url=ES_URL, api_key=ES_API_KEY)
+from utils.elasticsearch import ElasticsearchConnectionManager
 ```
 
-<pre class="custom">✅ Successfully connected to Elasticsearch!
-</pre>
-
-## DB Handling
-### Create index
-- Use the index method to create a new document.
+```python
+index_name = "langchain_tutorial_es"
+```
 
 ```python
-# create index
-index_name = "langchain_tutorial_es"
-
 # vector dimension
 dims = len(embedded_documents[0])
 
@@ -787,258 +357,350 @@ mapping = {
 }
 ```
 
+you'll learn how to generate text embeddings for documents using a Hugging Face model.
+- First, we'll set up a multilingual model with the `HuggingFaceEmbeddings` class and choose the optimal device (mps, cuda, or cpu) for computation.
+- Then, we'll generate embeddings for a list of documents and print the results to ensure everything is working correctly.
+
+The `ElasticsearchConnectionManager` class manages the connection to an Elasticsearch server.
+- This instance uses the server URL, API key, embedding model, and index name to connect to Elasticsearch and initialize the vector store.
+
 ```python
-es_manager.create_index(index_name, mapping=mapping)
+es_connection_manager = ElasticsearchConnectionManager(
+    es_url=ES_URL,
+    api_key=ES_API_KEY,
+    embedding_model=hf_embeddings_e5_instruct,
+    index_name=index_name,
+)
 ```
 
+<pre class="custom">INFO:elastic_transport.transport:HEAD https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/ [status:200 duration:0.701s]
+    INFO:utils.elasticsearch:✅ Successfully connected to Elasticsearch!
+    INFO:elastic_transport.transport:GET https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/ [status:200 duration:0.555s]
+    INFO:utils.elasticsearch:✅ Vector store initialized for index 'langchain_tutorial_es'.
+</pre>
+
+```python
+## create index
+es_connection_manager.create_index(index_name, mapping=mapping)
+```
+
+<pre class="custom">INFO:elastic_transport.transport:HEAD https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es [status:404 duration:0.183s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es [status:200 duration:0.259s]
+</pre>
 
 
 
-<pre class="custom">"✅ Index 'langchain_tutorial_es' created successfully."</pre>
+
+    "✅ Index 'langchain_tutorial_es' created successfully."
 
 
-
-### Delete index
-- You can delete an index as follows
 
 ```python
 ## delete index
-es_manager.delete_index(index_name)
+es_connection_manager.delete_index(index_name)
 ```
 
+<pre class="custom">INFO:elastic_transport.transport:HEAD https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es [status:200 duration:0.180s]
+    INFO:elastic_transport.transport:DELETE https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es [status:200 duration:0.209s]
+</pre>
 
 
 
-<pre class="custom">"✅ Index 'langchain_tutorial_es' deleted successfully."</pre>
+
+    "✅ Index 'langchain_tutorial_es' deleted successfully."
 
 
+
+### ElasticsearchDocumentManager
+- The `ElasticsearchDocumentManager` leverages the `ElasticsearchConnectionManager` to handle document management tasks.
+- This class performs operations such as inserting, deleting, and searching documents, with the capability to enhance performance through parallel processing.
+
+```python
+from utils.elasticsearch import ElasticsearchDocumentManager
+```
+
+```python
+es_document_manager = ElasticsearchDocumentManager(
+    connection_manager=es_connection_manager,
+)
+```
 
 ### Upsert
-- Let’s perform an upsert operation for **a single document.** 
-
-```python
-# Let’s upsert a single document.
-
-es_manager.upsert_document(index_name, doc_ids[0], documents[0])
-```
-
-
-
-
-<pre class="custom">ObjectApiResponse({'_index': 'langchain_tutorial_es', '_id': 'fd9e7626-aac9-4c22-ae8f-2f09486be249', '_version': 1, 'result': 'created', '_shards': {'total': 1, 'successful': 1, 'failed': 0}, '_seq_no': 0, '_primary_term': 1})</pre>
-
-
-
-### Read
-- Retrieve the upserted data using its `doc_id`  
-
-```python
-# get_document
-result = es_manager.get_document(index_name, doc_ids[0])
-print(result["doc_id"])
-print(result["text"])
-```
-
-<pre class="custom">fd9e7626-aac9-4c22-ae8f-2f09486be249
-    The Little Prince
-    Written By Antoine de Saiot-Exupery (1900〜1944)
-</pre>
-
-### Delete
-- Delete using the `doc_id` 
-
-```python
-# delete_document
-es_manager.delete_document(index_name, doc_ids[0])
-```
-
-
-
-
-<pre class="custom">ObjectApiResponse({'_index': 'langchain_tutorial_es', '_id': 'fd9e7626-aac9-4c22-ae8f-2f09486be249', '_version': 2, 'result': 'deleted', '_shards': {'total': 1, 'successful': 1, 'failed': 0}, '_seq_no': 1, '_primary_term': 1})</pre>
-
-
-
-### Bulk Upsert
-- Perform a bulk upsert of documents.
-- In general, **“bulk”** refers to something large in quantity or volume, often handled or processed all at once.
-- For example, “bulk operations” involve managing multiple items simultaneously.
+- The `upsert` method of the `es_document_manager` is used to insert or update documents in the specified Elasticsearch index.
+- It takes the original texts, their corresponding embedded documents, and the index name to efficiently manage the document storage and retrieval process.
 
 ```python
 %%time
 
-es_manager.bulk_upsert(index_name, documents)
-```
-
-<pre class="custom">✅ Bulk upsert completed successfully.
-    CPU times: user 775 ms, sys: 136 ms, total: 912 ms
-    Wall time: 37.4 s
-</pre>
-
-### Parallel Bulk Upsert
-- Perform a bulk upsert of documents in parallel.
-- **“parallel”** refers to tasks or processes happening at the same time or simultaneously, often independently of one another.
-
-```python
-%%time
-
-# parallel_bulk_upsert
-es_manager.parallel_bulk_upsert(index_name, documents, batch_size=100, max_workers=8)
-```
-
-<pre class="custom">CPU times: user 1.01 s, sys: 242 ms, total: 1.25 s
-    Wall time: 26.1 s
-</pre>
-
-- It is evident that parallel_bulk_upsert is **faster.** 
-
-### Read (Document Retrieval)
-- Retrieve documents based on specific values.
-
-```python
-# search_documents
-query = {"match": {"doc_id": doc_ids[0]}}
-results = es_manager.search_documents(index_name, query=query)
-
-print(len(results))
-print(results[0]["doc_id"])
-print(results[0]["text"])
-```
-
-<pre class="custom">2
-    fd9e7626-aac9-4c22-ae8f-2f09486be249
-    The Little Prince
-    Written By Antoine de Saiot-Exupery (1900〜1944)
-</pre>
-
-### Delete
-- Delete documents based on specific values.
-
-```python
-# delete_by_query
-delete_query = {"match": {"doc_id": doc_ids[0]}}
-es_manager.delete_by_query(index_name, query=delete_query)
-```
-
-
-
-
-<pre class="custom">ObjectApiResponse({'took': 255, 'timed_out': False, 'total': 2, 'deleted': 2, 'batches': 1, 'version_conflicts': 0, 'noops': 0, 'retries': {'bulk': 0, 'search': 0}, 'throttled_millis': 0, 'requests_per_second': -1.0, 'throttled_until_millis': 0, 'failures': []})</pre>
-
-
-
-- Delete all documents.
-
-```python
-# delete_by_query
-delete_query = {"match_all": {}}
-es_manager.delete_by_query(index_name, query=delete_query)
-```
-
-
-
-
-<pre class="custom">ObjectApiResponse({'took': 1385, 'timed_out': False, 'total': 2718, 'deleted': 2716, 'batches': 3, 'version_conflicts': 2, 'noops': 0, 'retries': {'bulk': 0, 'search': 0}, 'throttled_millis': 0, 'requests_per_second': -1.0, 'throttled_until_millis': 0, 'failures': []})</pre>
-
-
-
-## Advanced Search
-- **Keyword Search**  
-    - This method matches documents that contain the exact keyword in their text field.
-    - It performs a straightforward text-based search using Elasticsearch's `match` query.
-
-- **Semantic Search**  
-    - Semantic search leverages embeddings to find documents based on their contextual meaning rather than exact text matches.
-    - It uses a pre-trained model (`hf_embeddings_e5_instruct`) to encode both the query and the documents into vector representations and retrieves the most similar results.
-
-- **Hybrid Search**  
-    - Hybrid search combines both keyword search and semantic search to provide more comprehensive results.
-    - It uses a filtering mechanism to ensure documents meet specific keyword criteria while scoring and ranking results based on their semantic similarity to the query.  
-
-
-```python
-%%time
-
-# parallel_bulk_upsert
-es_manager.parallel_bulk_upsert(index_name, documents, batch_size=100, max_workers=8)
-```
-
-<pre class="custom">CPU times: user 863 ms, sys: 195 ms, total: 1.06 s
-    Wall time: 21.9 s
-</pre>
-
-```python
-# keyword search
-
-keyword = "fox"
-
-query = {"match": {"text": keyword}}
-results = es_manager.search_documents(index_name, query=query)
-
-for idx_, result in enumerate(results):
-    if idx_ < 3:
-        print(idx_, " :", result["text"])
-```
-
-<pre class="custom">0  : "I am a fox," said the fox.
-    1  : "Good morning," said the fox.
-    2  : "Ah," said the fox, "I shall cry."
-</pre>
-
-```python
-from langchain_elasticsearch import ElasticsearchStore
-
-# Initialize ElasticsearchStore
-vector_store = ElasticsearchStore(
-    index_name=index_name,  # Elasticsearch index name
-    embedding=hf_embeddings_e5_instruct,  # Object responsible for text embeddings
-    es_url=ES_URL,  # Elasticsearch host URL
-    es_api_key=ES_API_KEY,  # Elasticsearch API key for authentication
+es_document_manager.upsert(
+    texts=docs,
+    embedded_documents=embedded_documents,
+    index_name=index_name,
 )
 ```
 
-```python
-# Execute Semantic Search
-search_query = "Who are the Little Prince’s friends?"
-results = vector_store.similarity_search(search_query, k=3)
-
-print("🔍 Question: ", search_query)
-print("🤖 Semantic Search Results:")
-for result in results:
-    print(f"- {result.page_content}")
-```
-
-<pre class="custom">🔍 Question:  Who are the Little Prince’s friends?
-    🤖 Semantic Search Results:
-    - "Who are you?" said the little prince.
-    - "Then what?" asked the little prince.
-    - And the little prince asked himself:
+<pre class="custom">INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:5.399s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:5.555s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:3.942s]
+    INFO:utils.elasticsearch:✅ Bulk upsert completed successfully.
 </pre>
 
+    CPU times: user 591 ms, sys: 63 ms, total: 654 ms
+    Wall time: 15.5 s
+    
+
 ```python
-# hybrid search with score
+es_document_manager.delete(index_name=index_name)
+```
+
+<pre class="custom">INFO:elastic_transport.transport:POST https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_delete_by_query?conflicts=proceed [status:200 duration:0.354s]
+</pre>
+
+### Upsert_parallel
+- The `upsert_parallel` method of the `es_document_manager` facilitates the parallel insertion or updating of documents in the specified Elasticsearch index.
+- It processes the documents in batches of 100, utilizing up to 8 workers to enhance performance and efficiency in managing large datasets.
+
+```python
+%%time
+
+es_document_manager.upsert_parallel(
+    index_name=index_name,
+    texts=docs,
+    embedded_documents=embedded_documents,
+    batch_size=100,
+    max_workers=8,
+)
+```
+
+<pre class="custom">INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:1.347s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:2.582s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:2.753s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:2.850s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:1.600s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:1.479s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:1.462s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:1.869s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:2.609s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:1.347s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:1.676s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:0.888s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:1.851s]
+    INFO:elastic_transport.transport:PUT https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/_bulk [status:200 duration:1.626s]
+</pre>
+
+    CPU times: user 656 ms, sys: 45.4 ms, total: 702 ms
+    Wall time: 7.21 s
+    
+
+- It is evident that parallel_upsert is **faster.** 
+
+### Search
+- The code performs a search query, "Who are the Little Prince’s friends?", using the `es_document_manager` to retrieve relevant documents from the specified Elasticsearch index.
+- By default ( `use_similarity=False` ), it uses the **BM25** algorithm, which is a bag-of-words retrieval function that ranks documents based on the query terms' appearances, regardless of their semantic meaning.
+- It fetches the top 10 results, then prints the query and each result in a formatted manner for easy review.
+
+```python
+search_query = "Who are the Little Prince’s friends?"
+
+results = es_document_manager.search(index_name=index_name, query=search_query, k=10)
+
+print("================================================")
+print("🔍 Question: ", search_query)
+print("================================================")
+for idx_, result in enumerate(results):
+    print(idx_, " :", result)
+```
+
+<pre class="custom">INFO:elastic_transport.transport:POST https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_search [status:200 duration:0.735s]
+</pre>
+
+    ================================================
+    🔍 Question:  Who are the Little Prince’s friends?
+    ================================================
+    0  : "Who are you?" said the little prince.
+    1  : "Who are you--Who are you--Who are you?" answered the echo.
+    2  : people. For some, who are travelers, the stars are guides. For others they are no more than little
+    3  : people. For some, who are travelers, the stars are guides. For others they are no more than little
+    4  : (picture)
+    "Who are you?" asked the little prince, and added, "You are very pretty to look at."
+    5  : no more than little lights in the sky. For others, who are scholars, they are problems . For my
+    6  : no more than little lights in the sky. For others, who are scholars, they are problems . For my
+    7  : "Who are you?" he demanded, thunderstruck. 
+    "We are roses," the roses said.
+    8  : "No," said the little prince. "I am looking for friends. What does that mean-- ‘tame‘?"
+    9  : "Just that," said the fox. "To me, you are still nothing more than a little boy who is just like a
+    
+
+Retrieves the top 10 relevant documents using similarity-based matching(cosine similarity).
+
+```python
+search_query = "Who are the Little Prince’s friends?"
+results = es_document_manager.search(query=search_query, k=10, use_similarity=True)
+
+print("================================================")
+print("🔍 Question: ", search_query)
+print("================================================")
+for idx_, result in enumerate(results):
+    print(idx_, " :", result)
+```
+
+<pre class="custom">INFO:elastic_transport.transport:POST https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_search?_source_includes=metadata,text [status:200 duration:0.377s]
+    INFO:utils.elasticsearch:✅ Found 10 similar documents.
+</pre>
+
+    ================================================
+    🔍 Question:  Who are the Little Prince’s friends?
+    ================================================
+    0  : "Who are you?" said the little prince.
+    1  : "Then what?" asked the little prince.
+    2  : And the little prince asked himself:
+    3  : "Why is that?" asked the little prince.
+    4  : "What do you do here?" the little prince asked.
+    5  : [ Chapter 13 ]
+    - the little prince visits the businessman
+    6  : But the little prince was wondering... The planet was tiny. Over what could this king really rule?
+    7  : "Where are the men?" the little prince asked, politely.
+    8  : "No," said the little prince. "I am looking for friends. What does that mean-- ‘tame‘?"
+    9  : But the little prince added:
+    
+
+This code performs a search for the query "Who are the Little Prince’s friends?" while also filtering results based on the **keyword "friend,"** retrieving the top 10 relevant documents and printing their content alongside additional information.
+
+```python
 search_query = "Who are the Little Prince’s friends?"
 keyword = "friend"
-
-
-results = vector_store.similarity_search_with_score(
-    query=search_query,
-    k=1,
-    filter=[{"term": {"text": keyword}}],
+results = es_document_manager.search(
+    query=search_query, k=10, use_similarity=True, keyword=keyword
 )
 
-print("🔍 search_query: ", search_query)
-print("🔍 keyword: ", keyword)
-
-for doc, score in results:
-    print(f"* [SIM={score:3f}] {doc.page_content}")
+print("================================================")
+print("🔍 Question: ", search_query)
+print("================================================")
+for idx_, contents in enumerate(results):
+    print(idx_, " :", contents[0].page_content, contents[1])
 ```
 
-<pre class="custom">🔍 search_query:  Who are the Little Prince’s friends?
-    🔍 keyword:  friend
-    * [SIM=0.927641] "My friend the fox--" the little prince said to me.
+<pre class="custom">INFO:elastic_transport.transport:POST https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_search?_source_includes=metadata,text [status:200 duration:0.248s]
+    INFO:utils.elasticsearch:✅ Hybrid search completed. Found 10 results.
 </pre>
 
-- **It is evident that conducting a Hybrid Search significantly enhances search performance.**  
+    ================================================
+    🔍 Question:  Who are the Little Prince’s friends?
+    ================================================
+    0  : "My friend the fox--" the little prince said to me. 0.9277072
+    1  : any more. If you want a friend, tame me..." 0.91347504
+    2  : a grown-up. I have a serious reason: he is the best friend I have in the world. I have another 0.905076
+    3  : My friend broke into another peal of laughter: "But where do you think he would go?" 0.90468454
+    4  : He was only a fox like a hundred thousand other foxes. But I have made him my friend, and now he is 0.9021255
+    5  : that you have known me. You will always be my friend. You will want to laugh with me. And you will 0.89545083
+    6  : a friend. And if I forget him, I may become like the grown-ups who are no longer interested in 0.8951793
+    7  : that you have known me. You will always be my friend. You will want to laugh with me. And you will 0.8949666
+    8  : "That man is the only one of them all whom I could have made my friend. But his planet is indeed 0.8948114
+    9  : to seek, in other days, merely by pulling up his chair; and he wanted to help his friend. 0.8929472
+    
 
 - This approach ensures that the search results are both contextually meaningful and aligned with the specified keyword constraint, making it especially useful in scenarios where both precision and context matter.
+
+### Read
+- This code retrieves the IDs of all documents stored in the specified Elasticsearch index using the `get_documents_ids` method of the `es_document_manager`, and then prints the list of these document IDs for review.
+
+```python
+ids = es_document_manager.get_documents_ids(index_name)
+print(ids[:10])
+```
+
+<pre class="custom">INFO:elastic_transport.transport:POST https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_search [status:200 duration:0.468s]
+</pre>
+
+    ['mfqx9ZQBuaU-CwHIDaXY', 'mvqx9ZQBuaU-CwHIDaXY', 'm_qx9ZQBuaU-CwHIDaXY', 'nPqx9ZQBuaU-CwHIDaXY', 'nfqx9ZQBuaU-CwHIDaXY', 'nvqx9ZQBuaU-CwHIDaXY', 'n_qx9ZQBuaU-CwHIDaXY', 'oPqx9ZQBuaU-CwHIDaXY', 'ofqx9ZQBuaU-CwHIDaXY', 'ovqx9ZQBuaU-CwHIDaXY']
+    
+
+This code fetches documents from the specified Elasticsearch index using a list of document IDs, specifically retrieving the first 10 IDs.
+
+It then prints each document's ID along with its corresponding text for easy reference.
+
+```python
+responses = es_document_manager.get_documents_by_ids(index_name, ids[:10])
+
+for response in responses:
+    print(response["doc_id"], ": ", response["text"])
+```
+
+<pre class="custom">INFO:elastic_transport.transport:POST https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_search [status:200 duration:0.377s]
+</pre>
+
+    fb6a7033-465e-4a39-8577-5797fcc67c20 :  "What does this mean?" I demanded. "Why are you talking with snakes?"
+    e549da15-6a9c-4589-9645-5263d9aa2615 :  I had loosened the golden muffler that he always wore. I had moistened his temples, and had given
+    4c6a0aa2-a626-4a59-838d-989f07cff105 :  and had given him some water to drink. And now I did not dare ask him any more questions. He looked
+    101c6f61-3bc8-4036-b0b8-e9a36119970f :  He looked at me very gravely, and put his arms around my neck. I felt his heart beating like the
+    075b3e39-80c1-434e-b632-96b586c32f6b :  beating like the heart of a dying bird, shot with someone‘s rifle...
+    d451662f-52dc-41cf-b8e9-2cc81a6f7138 :  "I am glad that you have found what was the matter with your engine," he said. "Now you can go back
+    9ee4c5fa-68f1-4292-9d95-362834edc807 :  you can go back home--"
+    dcdd7bc6-214e-454a-a8b3-a5e0acb19a1c :  "How do you know about that?"
+    7468cc42-01aa-425d-acd0-0abf8fe50f0b :  I was just coming to tell him that my work had been successful, beyond anything that I had dared to
+    7b3b9425-eca8-44b4-a6d5-d741d0100b0a :  that I had dared to hope. He made no answer to my question, but he added:
+    
+
+### Delete
+- This code deletes documents from the specified Elasticsearch index using a list of document IDs, specifically retrieving the first 10 IDs. It then prints each document's ID along with its corresponding text for easy reference.
+
+```python
+es_document_manager.delete(index_name=index_name, ids=ids[:10])
+```
+
+<pre class="custom">INFO:elastic_transport.transport:DELETE https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_doc/mfqx9ZQBuaU-CwHIDaXY [status:200 duration:0.190s]
+    INFO:elastic_transport.transport:DELETE https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_doc/mvqx9ZQBuaU-CwHIDaXY [status:200 duration:0.189s]
+    INFO:elastic_transport.transport:DELETE https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_doc/m_qx9ZQBuaU-CwHIDaXY [status:200 duration:0.194s]
+    INFO:elastic_transport.transport:DELETE https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_doc/nPqx9ZQBuaU-CwHIDaXY [status:200 duration:0.204s]
+    INFO:elastic_transport.transport:DELETE https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_doc/nfqx9ZQBuaU-CwHIDaXY [status:200 duration:0.188s]
+    INFO:elastic_transport.transport:DELETE https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_doc/nvqx9ZQBuaU-CwHIDaXY [status:200 duration:0.189s]
+    INFO:elastic_transport.transport:DELETE https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_doc/n_qx9ZQBuaU-CwHIDaXY [status:200 duration:0.185s]
+    INFO:elastic_transport.transport:DELETE https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_doc/oPqx9ZQBuaU-CwHIDaXY [status:200 duration:0.188s]
+    INFO:elastic_transport.transport:DELETE https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_doc/ofqx9ZQBuaU-CwHIDaXY [status:200 duration:0.187s]
+    INFO:elastic_transport.transport:DELETE https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_doc/ovqx9ZQBuaU-CwHIDaXY [status:200 duration:0.188s]
+</pre>
+
+```python
+# Delete all documents
+es_document_manager.delete(index_name=index_name)
+```
+
+<pre class="custom">INFO:elastic_transport.transport:POST https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es/_delete_by_query?conflicts=proceed [status:200 duration:0.374s]
+</pre>
+
+```python
+## delete index
+es_connection_manager.delete_index(index_name)
+```
+
+<pre class="custom">INFO:elastic_transport.transport:HEAD https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es [status:200 duration:0.186s]
+    INFO:elastic_transport.transport:DELETE https://e638d39188c94d828a30ae87af1733ce.us-central1.gcp.cloud.es.io:443/langchain_tutorial_es [status:200 duration:0.215s]
+</pre>
+
+
+
+
+    "✅ Index 'langchain_tutorial_es' deleted successfully."
+
+
+
+Remove a **Huggingface Cache**  , `embeddings` and `client` .
+
+If you created a **vectordb** directory, please **remove** it at the end of this tutorial.
+
+```python
+from huggingface_hub import scan_cache_dir
+
+del embedded_documents
+del es_connection_manager
+del es_document_manager
+scan = scan_cache_dir()
+scan.delete_revisions()
+```
+
+
+
+
+<pre class="custom">DeleteCacheStrategy(expected_freed_size=0, blobs=frozenset(), refs=frozenset(), repos=frozenset(), snapshots=frozenset())</pre>
+
+

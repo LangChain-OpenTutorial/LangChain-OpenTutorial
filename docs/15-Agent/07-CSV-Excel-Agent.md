@@ -28,7 +28,7 @@ pre {
 
 ## Overview
 
-This tutorial covers how to create an agent that performs analysis on the Pandas DataFrame loaded from CSV or Excel files. The agent generates Pandas queries to analyze the dataset.
+This tutorial covers how to create an agent that performs analysis on the `Pandas` DataFrame loaded from CSV or Excel files. The agent generates `Pandas` queries to analyze the dataset.
 
 ### Table of Contents
 

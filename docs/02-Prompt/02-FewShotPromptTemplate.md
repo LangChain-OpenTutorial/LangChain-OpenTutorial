@@ -21,7 +21,7 @@ pre {
 
 - Author: [hong-seongmin](https://github.com/hong-seongmin)
 - Design: 
-- Peer Review: [Hye-yoon](https://github.com/Hye-yoonJeong),[Wooseok-Jeong](https://github.com/jeong-wooseok)
+- Peer Review: 
 - This is a part of [LangChain OpenTutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/langchain-ai/langchain-academy/blob/main/module-4/sub-graph.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
@@ -29,11 +29,11 @@ pre {
 
 ## Overview
 
-LangChain's Few-Shot Prompting provides a robust framework for guiding language models to generate high-quality outputs by supplying carefully selected examples. This technique minimizes the need for extensive model fine-tuning while ensuring precise, context-aware results across diverse use cases.
+LangChain's few-shot prompting provides a robust framework for guiding language models to generate high-quality outputs by supplying carefully selected examples. This technique minimizes the need for extensive model fine-tuning while ensuring precise, context-aware results across diverse use cases.
 
-- **Few-Shot Prompt Templates**: Define the structure and format of prompts by embedding illustrative examples, guiding the model to produce consistent outputs.
-- **Example Selection Strategies**: Dynamically select the most relevant examples for a given query, enhancing the model's contextual understanding and response accuracy.
-- **Chroma Vector Store**: A powerful utility for storing and retrieving examples based on semantic similarity, enabling scalable and efficient prompt construction.
+- **Few-shot prompt templates** : Define the structure and format of prompts by embedding illustrative examples, guiding the model to produce consistent outputs.
+- **Example selection strategies** : Dynamically select the most relevant examples for a given query, enhancing the model's contextual understanding and response accuracy.
+- **Chroma vector store** : A powerful utility for storing and retrieving examples based on semantic similarity, enabling scalable and efficient prompt construction.
 
 ### Table of Contents
 
@@ -55,8 +55,8 @@ LangChain's Few-Shot Prompting provides a robust framework for guiding language 
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -126,9 +126,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-## FewShotPromptTemplate
+## ```FewShotPromptTemplate```
 
-Few-shot prompting is a powerful technique that guides language models to produce accurate and contextually relevant outputs by providing a small set of carefully designed examples. LangChain's `FewShotPromptTemplate` streamlines this process, allowing users to construct flexible and reusable prompts for various tasks like question answering, summarization, and correction.
+Few-shot prompting is a powerful technique that guides language models to produce accurate and contextually relevant outputs by providing a small set of carefully designed examples. LangChain's ```FewShotPromptTemplate``` streamlines this process, allowing users to construct flexible and reusable prompts for various tasks like question answering, summarization, and correction.
 
 1. **Designing Few-Shot Prompts**
 
@@ -143,11 +143,11 @@ Few-shot prompting is a powerful technique that guides language models to produc
 
    - Combine prompt templates with language models to create robust chains for generating responses.
 
-### FewShotPromptTemplate Example
+### ```FewShotPromptTemplate``` Example
 
-The `FewShotPromptTemplate` allows you to provide a language model with a small set of examples that demonstrate the desired structure and format of its output. By leveraging these examples, the model can better understand the context and generate more accurate responses for new queries. This technique is especially useful for tasks like question answering, summarization, or generating structured outputs.
+The ```FewShotPromptTemplate``` allows you to provide a language model with a small set of examples that demonstrate the desired structure and format of its output. By leveraging these examples, the model can better understand the context and generate more accurate responses for new queries. This technique is especially useful for tasks like question answering, summarization, or generating structured outputs.
 
-Below, we define a few examples to help the model answer questions more effectively by breaking them down into intermediate steps. We then use the `FewShotPromptTemplate` to format the prompt dynamically based on the query.
+Below, we define a few examples to help the model answer questions more effectively by breaking them down into intermediate steps. We then use the ```FewShotPromptTemplate``` to format the prompt dynamically based on the query.
 
 ---
 
@@ -337,15 +337,15 @@ print(response)
     The final answer is: 42 years old.
 </pre>
 
-## Dynamic Example Selection with Chroma
+## Dynamic Example Selection with ```Chroma```
 
 Sometimes we need to go through multiple steps of thinking to evaluate a single question. Breaking down the question into steps and guiding towards the desired answer can lead to better quality responses.
-`Chroma` provides an efficient way to store and retrieve examples based on semantic similarity, enabling dynamic example selection in workflows.
+```Chroma``` provides an efficient way to store and retrieve examples based on semantic similarity, enabling dynamic example selection in workflows.
 
 1. **Embedding and Vector Store Initialization**
 
-   - Use `OpenAIEmbeddings` to embed examples.
-   - Store the embeddings in a `Chroma` vector store for efficient retrieval.
+   - Use ```OpenAIEmbeddings``` to embed examples.
+   - Store the embeddings in a ```Chroma``` vector store for efficient retrieval.
 
 2. **Example Storage**
 
@@ -426,7 +426,7 @@ The final answer is: Yes
 ]
 ```
 
-Create a vector store and define the DynamicFewShotLearning template.
+Create a vector store and define the ```DynamicFewShotLearning``` template.
 
 ```python
 # Add examples to the vector store
@@ -505,10 +505,10 @@ print(response)
     The final answer is: Elon Musk was 27 years old when he made PayPal.
 </pre>
 
-## FewShotChatMessagePromptTemplate
+## ```FewShotChatMessagePromptTemplate```
 
 Creating prompts for each situation is a complex and tedious task.
-The `FewShotChatMessagePromptTemplate` leverages a few-shot learning approach to dynamically generate chat-based prompts by combining relevant examples with a structured format. This method is especially effective for tasks like summarization, meeting minute creation, or document processing.
+The ```FewShotChatMessagePromptTemplate``` leverages a few-shot learning approach to dynamically generate chat-based prompts by combining relevant examples with a structured format. This method is especially effective for tasks like summarization, meeting minute creation, or document processing.
 
 
 ```python
@@ -763,7 +763,7 @@ print(response)
 
 ### Resolving Similarity Search Issues in Example Selector
 
-When calculating similarity, both `instruction` and `input` are used. However, searching based only on `instruction` does not yield accurate similarity results.
+When calculating similarity, both ```instruction``` and ```input``` are used. However, searching based only on ```instruction``` does not yield accurate similarity results.
 
 To resolve this, a custom class for similarity calculation is defined.
 

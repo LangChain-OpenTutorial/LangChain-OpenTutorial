@@ -135,7 +135,7 @@ with open("./data/appendix-keywords.txt", encoding="utf-8") as f:
 print(file[:350])
 ```
 
-## Creating a SemanticChunker
+## Creating a `SemanticChunker`
 
 The `SemanticChunker` is an experimental LangChain feature, that splits text into semantically similar chunks.
 
@@ -166,7 +166,7 @@ After splitting, you can examine the resulting chunks to see how the text has be
 print(chunks[0])
 ```
 
-The `create_documents()` function allows you to convert the individual chunks (`[file]`) into proper document objects (`docs`).
+The `create_documents()` function allows you to convert the individual chunks ([`file`]) into proper document objects (`docs`).
 
 
 ```python

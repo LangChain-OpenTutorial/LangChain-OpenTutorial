@@ -132,7 +132,7 @@ In this simulation, the **Moderator Agent** and **Participant Agents** interact 
 
 ### `DialogueAgent`
 
-The `DialogueAgent` class manages conversations by setting the agent's name, system message, and language model (`ChatOpenAI`). The primary methods of the class are as follows:
+The DialogueAgent class manages conversations by setting the agent's name, system message, and language model (`ChatOpenAI`). The primary methods of the class are as follows:
 
 - **`send` Method**
     - **Role**:  
@@ -293,7 +293,7 @@ class DialogueSimulator:
 
 ### `DialogueAgentWithTools`
 
-`DialogueAgentWithTools` extends the `DialogueAgent` class, adding support for **external tools**.  
+`DialogueAgentWithTools` extends the DialogueAgent class, adding support for **external tools**.  
 This class integrates an OpenAI model with external tools to handle both conversational and task-processing functionalities.
 
 **Methods**
@@ -890,7 +890,7 @@ def select_next_speaker(step: int, agents: List[DialogueAgent]) -> int:
 
 ## Debate Execution
 
-This code runs and manages a conversation between agents using the `DialogueSimulator`.  
+This code runs and manages a conversation between agents using the DialogueSimulator.  
 The debate is based on a specified topic and participating agents, with each step outputting the speaker and their message.
 
 ### Components
@@ -902,7 +902,7 @@ The debate is based on a specified topic and participating agents, with each ste
 
 - **`simulator`**
     - **Purpose**:
-        - An instance of the `DialogueSimulator` class that manages the flow of dialogue and message delivery.
+        - An instance of the DialogueSimulator class that manages the flow of dialogue and message delivery.
     - **Initialization**:
         1. **`agents`**: The list of agents participating in the conversation.
         2. **`select_next_speaker`**: A function to select the next speaker.

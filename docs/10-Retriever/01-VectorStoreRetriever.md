@@ -34,7 +34,7 @@ A **VectorStore-backed retriever** is a document retrieval system that leverages
 
 
 ### RAG (Retrieval-Augmented Generation) Workflow
-<img src="./assets/01-vectorstore-retriever-rag-flow.png" alt="rag-flow" width="1000">
+![rag-flow.png](./img/01-vectorstore-retriever-rag-flow.png)
 
 The diagram above illustrates the  **document search and response generation** workflow within a RAG system. 
 

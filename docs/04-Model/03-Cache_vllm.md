@@ -17,7 +17,7 @@ pre {
 
 </style>
 
-# Caching
+# Caching VLLM
 
 - Author: [Joseph](https://github.com/XaviereKU)
 - Peer Review : [Teddy Lee](https://github.com/teddylee777), [BAEM1N](https://github.com/BAEM1N)
@@ -34,7 +34,7 @@ This is useful for two reasons:
 - By **reduing the number of API calls** to the LLM provider, it can **improve the running time of the application.**
 
 But sometimes you need to deploy your own LLM service, like on-premise system where you cannot reach cloud services.
-In this tutorial, we will use `vllm` OpenAI compatible API and utilize two kinds of cache, **InMemoryCache** and **SQLite Cache** .  
+In this tutorial, we will use `vllm` OpenAI compatible API and utilize two kinds of cache, ```InMemoryCache``` and ```SQLiteCache```.  
 At end of each section we will compare wall times between before and after caching.
 
 Even though this is a tutorial for local LLM service case, we will remind you about how to use cache with OpenAI API service first.
@@ -147,7 +147,7 @@ print(response.content)
     Wall time: 1.09 s
 </pre>
 
-## InMemoryCache
+## ```InMemoryCache```
 First, cache the answer to the same question using `InMemoryCache`.
 
 ```python
@@ -202,7 +202,7 @@ print(response.content)
     Wall time: 972 ms
 </pre>
 
-## SQLite Cache
+## ```SQLiteCache```
 Now, we cache the answer to the same question by using `SQLiteCache`.
 
 ```python
@@ -262,7 +262,7 @@ print(response.content)
     Wall time: 4.01 ms
 </pre>
 
-## Setup Local LLM with VLLM
+## Setup Local LLM with ```VLLM```
 vLLM supports various cases, but for the most stable setup we utilize `docker` to serve local LLM model with `vLLM`.
 
 ### Device & Serving information - Windows
@@ -312,7 +312,7 @@ from langchain_core.caches import InMemoryCache
 set_llm_cache(InMemoryCache())
 ```
 
-Invoke chain with local LLM, do note that we print **response** not **response.content**
+Invoke chain with local LLM, do note that we print ```response``` not ```response.content```
 
 ```python
 %%time
@@ -344,7 +344,7 @@ print(response)
 
 ## SQLite Cache + Local VLLM
 Same as `SQLiteCache` section above, set `SQLiteCache`.  
-Note that we set db name to be **vllm_cache.db** to distinguish from the cache used in `SQLiteCache` section.
+Note that we set db name to be ```vllm_cache.db``` to distinguish from the cache used in `SQLiteCache` section.
 
 ```python
 from langchain_community.cache import SQLiteCache
@@ -359,7 +359,7 @@ if not os.path.exists("cache"):
 set_llm_cache(SQLiteCache(database_path="cache/vllm_cache.db"))
 ```
 
-Invoke chain with local LLM, again, note that we print **response** not **response.content**
+Invoke chain with local LLM, again, note that we print ```response``` not ```response.content```.
 
 ```python
 %%time

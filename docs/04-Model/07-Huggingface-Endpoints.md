@@ -64,7 +64,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 ```python
 %%capture --no-stderr
-!pip install langchain-opentutorial
+%pip install langchain-opentutorial
 ```
 
 ```python
@@ -103,22 +103,33 @@ if not load_dotenv():
 
 ## About Huggingface Endpoints
 
-The Hugging Face Hub is a platform hosting over 120,000 models, 20,000 datasets, and 50,000 demo apps (Spaces), all of which are open-source and publicly accessible. This online platform facilitates seamless collaboration for building machine learning solutions together.
+**What is Hugging Face Hub?**
 
-Additionally, the Hugging Face Hub offers a variety of endpoints for developing diverse ML applications. This example illustrates how to connect to different types of endpoints.
+It is a platform that hosts over 120,000 models, more than 20,000 datasets, and 50,000 demo apps (Spaces).
+All resources are open-source and publicly accessible, allowing anyone to view and collaborate.
 
-Notably, text generation inference is powered by Text Generation Inference, a custom-built server using Rust, Python, and gRPC, designed for exceptionally fast text generation inference.
+
+**What are Endpoints?**
+
+Endpoints act like doors that let your application easily connect to models.
+They help you add various machine learning features to your app effortlessly.
+
+**Text Generation Inference**
+
+It uses a special server built specifically for fast text generation.
+This server is built using Rust, Python, and gRPC, offering excellent performance.
 
 ## Obtaining a Huggingface Token
 
-After signing up on Hugging Face, you can obtain a token from the following URL.
-- URL : https://huggingface.co/docs/hub/security-tokens
+After signing up on Hugging Face, you can obtain a token from the following [URL](https://huggingface.co/docs/hub/security-tokens).
 
 ## Reference Model List
 
-- Huggingface LLM Leaderboard : https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard
-- Model list : https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads
-- LogicKor Leaderboard : https://lk.instruct.kr/   
+Below is a link to the Hugging Face LLM leaderboard, Model List, LogicKor. For more information, you can check the link.
+
+- [Huggingface LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)  
+- [Model list](https://huggingface.co/models?pipeline_tag=text-generation&sort=downloads)  
+- [LogicKor Leaderboard](https://lk.instruct.kr/)  
   LogicKor Leaderboard's link is for the leaderboard of Korean models. As the model performance increased, it has been archived due to meaningless scores as of October 17, 2024. However, you can find the best-performing Korean models.
 
 ## Using Hugging Face Endpoints
@@ -146,11 +157,11 @@ else:
 <pre class="custom">You have a HUGGINGFACEHUB_API_TOKEN
 </pre>
 
-You can choose either of the two methods above and use it.
-
 ## Serverless Endpoints
 
-The Inference API is free to use but comes with usage limitations. For production-level inference solutions, consider using the [Inference Endpoints](https://huggingface.co/docs/inference-endpoints/index) service. Inference Endpoints enable you to deploy any machine learning model seamlessly on dedicated, fully managed infrastructure. You can tailor the deployment to align with your model, latency, throughput, and compliance requirements by selecting the cloud provider, region, compute instance, auto-scaling range, and security level.
+The Inference API is free to use but comes with usage limitations. For production-level inference solutions, consider using the [Inference Endpoints](https://huggingface.co/docs/inference-endpoints/index) service.
+
+Inference Endpoints enable you to deploy any machine learning model seamlessly on dedicated, fully managed infrastructure. You can tailor the deployment to align with your model, latency, throughput, and compliance requirements by selecting the cloud provider, region, compute instance, auto-scaling range, and security level.
 
 Below is an example of how to access the Inference API.
 
@@ -214,7 +225,7 @@ These resources also include ongoing support, guaranteed uptime, and options lik
 - Set the Inference Endpoint URL to the `hf_endpoint_url` variable.
 
 **[Note]**
-- This address(https://api-inference.huggingface.co/models/Qwen/QwQ-32B-Preview) is not a Dedicated Endpoint but rather a public endpoint provided by Hugging Face. Because Dedicated Endpoints are a paid service, a public endpoint was used for this example.
+- This [address](https://api-inference.huggingface.co/models/Qwen/QwQ-32B-Preview) is not a Dedicated Endpoint but rather a public endpoint provided by Hugging Face. Because Dedicated Endpoints are a paid service, a public endpoint was used for this example.
 - For more details, please refer to [this link](https://huggingface.co/learn/cookbook/enterprise_dedicated_endpoints).
 
 ![06-huggingface-endpoints-dedicated-endpoints-01](./img/06-huggingface-endpoints-dedicated-endpoints-01.png)

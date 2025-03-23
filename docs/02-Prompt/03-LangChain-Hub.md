@@ -30,17 +30,23 @@ pre {
 
 This is an example of retrieving and executing prompts from LangChain Hub.
 
+LangChain Hub is a repository that collects prompts frequently used across various projects. This enables developers to efficiently search for, retrieve, and execute these prompts whenever needed, thereby streamlining their workflow.
+
+- **Prompt Search and Categorization**: Developers can easily find the desired prompts using keyword-based search and categorization.
+- **Reusability**: Once created, a prompt can be reused across multiple projects, reducing development time.
+- **Real-time Execution**: Retrieved prompts can be executed immediately through LangChain to view the results in real time.
+- **Extensibility and Customization**: In addition to the default prompts provided, users have the flexibility to add and modify prompts according to their needs.
+
 ### Table of Contents
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Register Your Own Prompt to Prompt Hub]()
+- [Getting Prompts from Hub](#getting-prompts-from-hub)
+- [Register Your Own Prompt to Prompt Hub](#register-your-own-prompt-to-prompt-hub)
 
 ### References
 
-- [LangChain ChatOpenAI API reference](https://python.langchain.com/api_reference/openai/chat_models/langchain_openai.chat_models.base.ChatOpenAI.html)
-- [LangChain Core Output Parsers](https://python.langchain.com/api_reference/core/output_parsers/langchain_core.output_parsers.list.CommaSeparatedListOutputParser.html#)
-- [Python List Tutorial](https://docs.python.org/3.13/tutorial/datastructures.html)
+- [LangChain Hub](https://python.langchain.com/api_reference/langchain/hub.html#langchain-hub)
 ---
 
 ## Environment Setup
@@ -50,14 +56,60 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 **[Note]**
 - You can check LangChain Hub prompts at the address below.
   - You can retrieve prompts by using the prompt repo ID, and you can also get prompts for specific versions by adding the commit ID.
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 You can check LangChain Hub prompts at the address below.
 
 You can retrieve prompts using the prompt repo ID, and you can also get prompts for specific versions by adding the commit ID.
 
-## **Getting Prompts from Hub**
+
+
+```python
+%%capture --no-stderr
+%pip install langchain-opentutorial langchain langchainhub
+```
+
+```python
+# Install required packages 
+from langchain_opentutorial import package
+
+package.install(
+    [
+        "langsmith",
+        "langchain",
+        "langchainhub"
+    ],
+    verbose=False,
+    upgrade=False,
+)
+```
+
+```python
+# Set environment variables
+from langchain_opentutorial import set_env
+
+set_env(
+    {
+        "OPENAI_API_KEY": "",
+        # Get an API key for your Personal organization if you have not yet. The hub will not work with your non-personal organization's api key!
+        # If you already have LANGCHAIN_API_KEY set to a personal organization’s api key from LangSmith, you can skip this.
+        "LANGCHAIN_API_KEY": "",
+        "LANGCHAIN_TRACING_V2": "true",
+        "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
+        "LANGCHAIN_PROJECT": "Personal Prompts for LangChain",
+    }
+)
+```
+
+<pre class="custom">Environment variables have been set successfully.
+</pre>
+
+## Getting Prompts from Hub
+
+- Retrieve and execute prompts directly from LangChain Hub to accelerate your workflow.
+- How to seamlessly integrate available prompts into your projects.
+
 
 ```python
 from langchain import hub 
@@ -71,7 +123,8 @@ prompt = hub.pull("rlm/rag-prompt")
 print(prompt)
 ```
 
-> input_variables=['context', 'question'] metadata={'lc_hub_owner': 'rlm', 'lc_hub_repo': 'rag-prompt', 'lc_hub_commit_hash': '50442af133e61576e74536c6556cefe1fac147cad032f4377b60c436e6cdcb6e'} messages=[HumanMessagePromptTemplate(prompt=PromptTemplate(input_variables=['context', 'question'], template="You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.\nQuestion: {question} \nContext: {context} \nAnswer:"))]
+<pre class="custom">input_variables=['context', 'question'] input_types={} partial_variables={} metadata={'lc_hub_owner': 'rlm', 'lc_hub_repo': 'rag-prompt', 'lc_hub_commit_hash': '50442af133e61576e74536c6556cefe1fac147cad032f4377b60c436e6cdcb6e'} messages=[HumanMessagePromptTemplate(prompt=PromptTemplate(input_variables=['context', 'question'], input_types={}, partial_variables={}, template="You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.\nQuestion: {question} \nContext: {context} \nAnswer:"), additional_kwargs={})]
+</pre>
 
 ```python
 # To get a specific version of prompt, specify the version hash
@@ -79,9 +132,17 @@ prompt = hub.pull("rlm/rag-prompt:50442af1")
 prompt
 ```
 
-> ChatPromptTemplate(input_variables=['context', 'question'], metadata={'lc_hub_owner': 'rlm', 'lc_hub_repo': 'rag-prompt', 'lc_hub_commit_hash': '50442af133e61576e74536c6556cefe1fac147cad032f4377b60c436e6cdcb6e'}, messages=[HumanMessagePromptTemplate(prompt=PromptTemplate(input_variables=['context', 'question'], template="You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.\nQuestion: {question} \nContext: {context} \nAnswer:"))])
 
-## **Register Your Own Prompt to Prompt Hub**
+
+
+<pre class="custom">ChatPromptTemplate(input_variables=['context', 'question'], input_types={}, partial_variables={}, metadata={'lc_hub_owner': 'rlm', 'lc_hub_repo': 'rag-prompt', 'lc_hub_commit_hash': '50442af133e61576e74536c6556cefe1fac147cad032f4377b60c436e6cdcb6e'}, messages=[HumanMessagePromptTemplate(prompt=PromptTemplate(input_variables=['context', 'question'], input_types={}, partial_variables={}, template="You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.\nQuestion: {question} \nContext: {context} \nAnswer:"), additional_kwargs={})])</pre>
+
+
+
+## Register Your Own Prompt to Prompt Hub
+
+- Registering your own prompt to Prompt Hub allows developers to share custom prompts with the community, making them reusable across various projects.
+- This feature enhances prompt standardization and efficient management, streamlining development and fostering collaboration.
 
 ```python
 from langchain.prompts import ChatPromptTemplate
@@ -93,20 +154,32 @@ prompt = ChatPromptTemplate.from_template(
 prompt
 ```
 
-> ChatPromptTemplate(input_variables=['context'], messages=[HumanMessagePromptTemplate(prompt=PromptTemplate(input_variables=['context'], template='Summarize the following text based on the given content. Please write the answer in Korean\n\nCONTEXT: {context}\n\nSUMMARY:'))])
+
+
+
+<pre class="custom">ChatPromptTemplate(input_variables=['context'], input_types={}, partial_variables={}, messages=[HumanMessagePromptTemplate(prompt=PromptTemplate(input_variables=['context'], input_types={}, partial_variables={}, template='Summarize the following text based on the given content. Please write the answer in Korean\n\nCONTEXT: {context}\n\nSUMMARY:'), additional_kwargs={})])</pre>
+
+
 
 ```python
 from langchain import hub
 
 # Upload the prompt to the hub
-hub.push("teddynote/simple-summary-korean", prompt)
+hub.push("cjlee/simple-summary-korean-1", prompt)
 ```
+
+
+
+
+<pre class="custom">'https://smith.langchain.com/prompts/simple-summary-korean-1/3635fdf1?organizationId=f03a1307-d0da-5ea5-9ee0-4fc021a0d5b2'</pre>
+
+
 
 The following is the output after successfully uploading to Hub.
 
-`ID/PromptName/Hash`
+ID/PromptName/Hash
 
-> Output: 'https://smith.langchain.com/hub/teddynote/simple-summary-korean/0e296563'
+> [Output](https://smith.langchain.com/hub/teddynote/simple-summary-korean/0e296563)
 
 ```python
 from langchain import hub
@@ -120,4 +193,5 @@ pulled_prompt = hub.pull("teddynote/simple-summary-korean")
 print(pulled_prompt)
 ```
 
-> input_variables=['context'] metadata={'lc_hub_owner': 'teddynote', 'lc_hub_repo': 'simple-summary-korean', 'lc_hub_commit_hash': '0e296563564b581e5ad77089b035596246c2b96046f8db0503355dd3c275d056'} messages=[HumanMessagePromptTemplate(prompt=PromptTemplate(input_variables=['context'], template='Summarize the following text based on the given content. Please write the answer in Korean\n\nCONTEXT: {context}\n\nSUMMARY:'))]
+<pre class="custom">input_variables=['context'] input_types={} partial_variables={} metadata={'lc_hub_owner': 'teddynote', 'lc_hub_repo': 'simple-summary-korean', 'lc_hub_commit_hash': 'b7e31df5666de7758d72fd038875973520d141548280185ee5b5ba846f015308'} messages=[HumanMessagePromptTemplate(prompt=PromptTemplate(input_variables=['context'], input_types={}, partial_variables={}, template='주어진 내용을 바탕으로 다음 문장을 요약하세요. 답변은 반드시 한글로 작성하세요\n\nCONTEXT: {context}\n\nSUMMARY:'), additional_kwargs={})]
+</pre>

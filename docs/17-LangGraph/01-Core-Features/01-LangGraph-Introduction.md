@@ -28,7 +28,7 @@ pre {
 
 ## Overview
 
-LangGraph is a powerful framework that allows you to design complex workflows for language models using a graph-based structure. It enhances modularity, scalability, and efficiency in building AI-driven applications.
+LangGraph is a powerful framework that allows you to design complex workflows for language models using a graph-based structure. It enhances the modularity, scalability, and efficiency in building AI-driven applications.
 
 This tutorial explains key Python concepts frequently used in LangGraph, including `TypedDict` , `Annotated` , and the `add_messages` function. We will also compare these concepts with standard Python features to highlight their advantages and typical use cases.
 
@@ -105,39 +105,30 @@ if not load_dotenv():
 
 ## TypedDict
 
-`TypedDict` is a feature introduced in Python's `typing` module that enables developers to define dictionaries with a fixed structure and explicit key-value types. It ensures type safety and improves code readability.
+`TypedDict`, a feature within Python's `typing` module, empowers developers to define dictionaries possessing a fixed structure and explicit key-value types. This enforces type safety and improves code readability.
 
-### Key Differences Between `dict` and `TypedDict`
+### Key Differences between `dict` and `TypedDict`
 
 1. **Type Checking**
+- `dict` : Does not provide type checking during runtime and development.
+- `TypedDict`: Supports static type checking using tools like `mypy` or IDEs with type checking functionality enabled.
 
-- `dict` : Does not provide type checking at runtime or during development.
+1. **Key and Value Specification**
+- `dict` : Specifies generic key-value types (e.g., `Dict[str, str]` ).
+- `TypedDict` : Explicitly defines the exact keys and their respective types.
 
-- `TypedDict` : Supports static type checking using tools like `mypy` or IDEs with type checking enabled.
-
-2. **Key and Value Specification**
-
-- `dict`: Specifies generic key-value types (e.g., `Dict[str, str]` ).
-
-- `TypedDict` : Specifies the exact keys and their respective types.
-
-3. **Flexibility**
-
+1. **Flexibility**
 - `dict` : Allows runtime addition or removal of keys without restriction.
+- `TypedDict` : Enforces a predefined structure, prohibiting extra keys unless specifically designated.
 
-- `TypedDict` : Enforces a predefined structure, disallowing extra keys unless explicitly marked.
-
-### Why Use `TypedDict` ?
-
-- **Type Safety** : Helps catch errors during development.
-
+### Benefits of using `TypedDict`
+- **Type Safety** : Raises errors during development.
 - **Readability** : Provides a clear schema for dictionaries.
-
 - **IDE Support** : Enhances autocompletion and documentation.
-
 - **Documentation** : Serves as self-documenting code.
 
 ### Example
+`TypedDict` ensures type safety by enforcing fixed keys and types, unlike standard dictionaries that allow flexible key-value modifications.
 
 ```python
 from typing import Dict, TypedDict
@@ -167,21 +158,21 @@ typed_dict["age"] = "35"  # Error: Type mismatch detected by type checker
 typed_dict["new_field"] = "Additional Info"  # Error: Key not defined in TypedDict
 ```
 
-`TypedDict` truly shines when paired with static type checkers like `mypy` or when using IDEs such as PyCharm or VS Code with type-checking enabled. These tools detect type mismatches and undefined keys at development time, providing valuable feedback to prevent runtime errors.
+The advantages of `TypedDict` are highlights when utilized in pair with static type checkers like `mypy`, and become apparent on IDEs such as PyCharm or VS Code, of which type-checking is enabled. These tools detect type inconsistencies and undefined keys during development, providing invaluable feedback to prevent runtime errors.
 
 ## Annotated
 
-`Annotated` is a feature in Python's `typing` module that allows metadata to be added to type hints. This feature provides enhanced functionality by including additional context, improving code readability and usability for developers and tools alike. For example, metadata can act as additional documentation for readers or as actionable information for tools.
+`Annotated`, also residing in Python's `typing` module, allows the addition of metadata to type hints. This feature supports functionality with additional context, improving code clarity and usability for both developers and development tools alike. For example, metadata can serve as supplementary documentation for readers or convey actionable information to tools.
 
-### Why Use `Annotated` ?
+### Benefits of using `Annotated`
 
-- **Additional Context** : Adds metadata to enrich type hints, improving clarity for developers and tools.
+- **Additional Context** : Adds metadata to enrich type hints, improving clarity for both developers and tools.
 
 - **Enhanced Documentation** : Serves as self-contained documentation that can clarify the purpose and constraints of variables.
 
-- **Validation** : Can be combined with libraries like Pydantic to enforce data validation using the annotated metadata.
+- **Validation** : Integrates with libraries like Pydantic to enforce data validation based on annotated metadata.
 
-- **Framework-Specific Behavior** : Enables advanced features in frameworks such as LangGraph by defining specialized operations.
+- **Framework-Specific Behavior** : Enables advanced features in frameworks like LangGraph by defining specialized operations.
 
 ### Syntax
 
@@ -189,16 +180,18 @@ typed_dict["new_field"] = "Additional Info"  # Error: Key not defined in TypedDi
 - Metadata: Adds descriptive information about the variable (e.g., `"unit: cm"`, `"range: 0-100"`).
 
 ### Usage Example
+`Annotated` enriches type hints with metadata, improving code clarity and intent.
 
 ```python
-from typing import Annotated\
+from typing import Annotated
 
 # Basic usage of Annotated with metadata for descriptive purposes
 name: Annotated[str, "User's name"]
 age: Annotated[int, "User's age (0-150)"]
 ```
 
-### Example with `Pydantic` 
+### Example with `Pydantic`
+When used with `Pydantic`, `Annotated` ensures strict validation by enforcing constraints like type, range, and length. Invalid inputs trigger detailed error messages identifying the issue.
 
 ```python
 from typing import Annotated, List
@@ -223,11 +216,11 @@ except ValidationError as e:
 # Example of invalid data
 try:
     invalid_employee = Employee(
-        id=1, 
+        id=1,
         name="Ted",  # Name is too short
         age=17,  # Age is out of range
         salary=20000,  # Salary exceeds the maximum
-        skills="Python"  # Skills is not a list
+        skills="Python",  # Skills is not a list
     )
 except ValidationError as e:
     print("Validation errors:")
@@ -244,34 +237,27 @@ except ValidationError as e:
 
 ## add_messages
 
-The `add_messages` reducer function, referenced by the `messages` key, instructs LangGraph to append new messages to an existing list.
+The `add_messages` reducer function, referenced by the `messages` key, directs LangGraph to append new messages to an existing list.
 
-For state keys without annotations, each update overwrites the value, storing only the most recent data.
+In scenarios where state keys lack annotations, each update overwrites the previous value, retaining only the most recent data.
 
-The `add_messages` function operates by merging two inputs (`left` and `right` ) into a unified list of messages.
+The `add_messages` function merges two inputs (`left` and `right` ) into a consolidated message list.
 
 ### Key Features
 
-- **Merges Two Message Lists** : Combines two separate message lists into one.
-
-- **Maintains Append-Only State** : Ensures that new messages are added while retaining existing ones.
-
-- **Replaces Messages with Matching IDs** : If a message in `right` has the same ID as one in `left`, it replaces the existing message.
-
-### How It Works:
-- Messages in `right` with IDs that match those in `left` replace the corresponding messages in `left` .
-
-- All other messages in `right` are appended to `left` .
+- **Message Lists Merging** : Combines two separate message lists into a signle unified list.
+- **Append-Only State Maintenance** : Ensures new messages are added while preserving existing messages.
+- **Messages with Matching IDs** : If an incoming message in `right` shares an ID with an existing message in `left`, it replaces the existing message. All remaining messages from `right` are appended to `left`.
 
 ### Parameters:
-- `left` (Messages): The base list of messages.
-
+- `left` (Messages): The initial message list.
 - `right` (Messages): A list of new messages to merge or a single message to add.
 
-### Return Value:
-- `Messages` : A new list of messages that merges `right` into `left` .
+### Outputs:
+- `Messages` : Returns a new message list with replacements as described above, merging `right` into `left`.
 
 ### Example
+`add_messages` merges message lists by appending new messages when IDs differ and replacing existing ones if IDs match.
 
 ```python
 from langchain_core.messages import AIMessage, HumanMessage
@@ -287,14 +273,13 @@ result1 = add_messages(msgs1, msgs2)
 print(result1)
 
 # Example 2: Replacing messages with the same ID
-# If `msgs2` contains a message with the same ID as one in `msgs1`, 
+# If `msgs2` contains a message with the same ID as one in `msgs1`,
 # the message in `msgs2` replaces the corresponding message in `msgs1`.
 msgs1 = [HumanMessage(content="Hello?", id="1")]
 msgs2 = [HumanMessage(content="Nice to meet you!", id="1")]
 
 result2 = add_messages(msgs1, msgs2)
 print(result2)
-
 ```
 
 <pre class="custom">[HumanMessage(content='Hello?', additional_kwargs={}, response_metadata={}, id='1'), AIMessage(content='Nice to meet you!', additional_kwargs={}, response_metadata={}, id='2')]

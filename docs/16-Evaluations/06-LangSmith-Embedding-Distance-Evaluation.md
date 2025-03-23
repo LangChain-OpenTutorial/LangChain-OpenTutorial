@@ -28,14 +28,14 @@ pre {
 
 ## Overview
 
-The **Embedding-based Evaluator** (`embedding_distance`) part is designed to evaluate question-answering systems using various **embedding models** and **distance metrics** .
+The **Embedding-based Evaluator** (```embedding_distance```) part is designed to evaluate question-answering systems using various **embedding models** and **distance metrics** .
 
 ### Table of Contents
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Defining functions for rag performance testing](#defining-functions-for-rag-performance-testing)
-- [Embedding distance based evaluator](#embedding-distance-based-evaluator)
+- [Defining functions for RAG performance testing](#defining-functions-for-rag-performance-testing)
+- [Embedding distance-based evaluator](#embedding-distance-based-evaluator)
 
 ### References
 
@@ -51,7 +51,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 
 **[Note]**
 
-The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
+The ```langchain-opentutorial``` is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
 Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
@@ -131,7 +131,7 @@ chain.invoke("How do agents differ from standalone language models?")
 
 
 
-Create a function named `ask_question` to handle answering questions. The function takes a dictionary `inputs` as input and returns a dictionary `answer` as output.
+Create a function named ```ask_question``` to handle answering questions. The function takes a dictionary ```inputs``` as input and returns a dictionary ```answer``` as output.
 
 ```python
 # Create a function to answer questions
@@ -143,10 +143,10 @@ def ask_question(inputs: dict):
 
 We will build a system for evaluating sentence similarity using various embedding models and distance metrics. 
 
-The code below defines configurations for each model and metric using the `LangChainStringEvaluator`.
+The code below defines configurations for each model and metric using the ```LangChainStringEvaluator```.
 
 [ **Note** ]  
-For LangChainStringEvaluator, `OpenAIEmbeddings` is set as the default, but it can be changed.
+For LangChainStringEvaluator, ```OpenAIEmbeddings``` is set as the default, but it can be changed.
 
 ```python
 from langsmith.evaluation import LangChainStringEvaluator
@@ -185,10 +185,10 @@ openai_embedding_evaluator = LangChainStringEvaluator(
 When multiple embedding models are used for **one metric** , the results are averaged.
 
 Example:
-- `cosine` : OpenAI
-- `euclidean` : OpenAI, Upstage
+- ```cosine``` : OpenAI
+- ```euclidean``` : OpenAI, Upstage
 
-For `euclidean` , the average value across the models is calculated.
+For ```euclidean``` , the average value across the models is calculated.
 
 ```python
 from langsmith.evaluation import evaluate

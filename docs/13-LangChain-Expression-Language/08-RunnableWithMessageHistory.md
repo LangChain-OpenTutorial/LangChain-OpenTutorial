@@ -59,7 +59,7 @@ pre {
 
 **Advantages Over Legacy Approaches**
 - More flexible than the older ConversationChain.
-- offer better state management.
+- Offers better state management.
 - Provides improved integration with modern LangChain components.
 
 ### Summary
@@ -74,7 +74,7 @@ pre {
 - [Environment Setup](#environment-setup)  
 - [Getting Started with RunnableWithMessageHistory](#getting-started-with-runnablewithmessagehistory)
 - [Understanding In-Memory Conversation History](#understanding-in-memory-conversation-history)
-- [Example of Runnables with using different keys](#example-of-runnables-with-using-defferent-keys)
+- [Example of Runnables Using Different Keys](#example-of-runnables-using-different-keys)
 - [Persistent Storage](#persistent-storage)
 - [Using Redis for Persistence](#using-redis-for-persistence)
 
@@ -304,7 +304,7 @@ with_message_history.invoke(
 
 
 
-However, using a different `session_id` will result in an inaccurate response because no corresponding history. 
+However, using a different `session_id` will result in an inaccurate response because there is no corresponding history. 
 
 For example, if `session_id` is `def234` and no history exists for that ID, you'll see an irrelevant response (see the following code snippet).
 
@@ -374,7 +374,7 @@ with_message_history = RunnableWithMessageHistory(
 )
 ```
 
-Let's try a custom configuration .
+Let's try a custom configuration.
 
 ```python
 with_message_history.invoke(
@@ -390,7 +390,7 @@ with_message_history.invoke(
 
 
 
-## Example of Runnables with using defferent keys
+## Example of Runnables Using Different Keys
 
 This example demonstrates how to handle inputs and output messages with `RunnableWithMessageHistory`.
 
@@ -453,7 +453,7 @@ with_message_history.invoke(
 
 
 
-This configuration enables:
+This configuration provides:
 - Direct handling of the input `Message` object.
 -  Outputting data in a dictionary format.
 - Maintaining conversation history across sessions.
@@ -531,7 +531,7 @@ This configuration enables:
 
 ## Understanding Persistent Storage
 
-Persistent storage ensures data is retained **even after a program terminates or the system restarts** . This is typically achieved using databases, file systems, or other non-volatile storage devices.
+Persistent storage ensures that data is retained **even after a program terminates or the system restarts** . This is typically achieved using databases, file systems, or other non-volatile storage devices.
 
 Persistent storage is **essential for long-term data preservation** in applications. It enables.:
 - State preservation across sessions.
@@ -608,7 +608,7 @@ with_message_history = RunnableWithMessageHistory(
 ### Testing Conversation Continuity
 
 **First Interaction**
-- You can call the function/chain as before.
+- You can call the function / chain as before.
 
 ```python
 # Initial query with new session ID

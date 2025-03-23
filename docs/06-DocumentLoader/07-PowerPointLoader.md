@@ -80,7 +80,7 @@ package.install(
 
 ## Converting PPTX to Langchain Documents Using Unstructured
 
-[Unstructured](https://github.com/Unstructured-IO/unstructured) is a robust document processing library that excels at converting various document formats into clean, structured text. <br/>It is well integrated with LangChain's ecosystem and provides reliable document parsing capabilities. 
+`Unstructured` is a robust document processing library that excels at converting various document formats into clean, structured text. <br/>It is well integrated with LangChain's ecosystem and provides reliable document parsing capabilities. 
 
 The library includes:
 
@@ -143,7 +143,7 @@ docs[0]
 
 
 
-<pre class="custom">Document(metadata={'source': 'assets/sample.pptx', 'category_depth': 0, 'file_directory': 'assets', 'filename': 'sample.pptx', 'last_modified': '2024-12-30T01:00:34', 'page_number': 1, 'languages': ['eng'], 'filetype': 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'category': 'Title', 'element_id': 'aa75080e026117468068eec241cf786f'}, page_content='Natural Language Processing with Deep Learning')</pre>
+<pre class="custom">Document(metadata={'source': 'data/07-ppt-loader-sample.pptx', 'category_depth': 0, 'file_directory': 'data', 'filename': '07-ppt-loader-sample.pptx', 'last_modified': '2025-01-16T21:42:19', 'page_number': 1, 'languages': ['eng'], 'filetype': 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'category': 'Title', 'element_id': 'bb6cdc142e5062b564541bfbc10f7f8c'}, page_content='Natural Language Processing with Deep Learning')</pre>
 
 
 
@@ -157,9 +157,9 @@ print("Content:", first_element.page_content)
 print("Metadata:", first_element.metadata)
 ```
 
-<pre class="custom">page_content='Natural Language Processing with Deep Learning' metadata={'source': 'assets/sample.pptx', 'category_depth': 0, 'file_directory': 'assets', 'filename': 'sample.pptx', 'last_modified': '2024-12-30T01:00:34', 'page_number': 1, 'languages': ['eng'], 'filetype': 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'category': 'Title', 'element_id': 'aa75080e026117468068eec241cf786f'}
+<pre class="custom">page_content='Natural Language Processing with Deep Learning' metadata={'source': 'data/07-ppt-loader-sample.pptx', 'category_depth': 0, 'file_directory': 'data', 'filename': '07-ppt-loader-sample.pptx', 'last_modified': '2025-01-16T21:42:19', 'page_number': 1, 'languages': ['eng'], 'filetype': 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'category': 'Title', 'element_id': 'bb6cdc142e5062b564541bfbc10f7f8c'}
     Content: Natural Language Processing with Deep Learning
-    Metadata: {'source': 'assets/sample.pptx', 'category_depth': 0, 'file_directory': 'assets', 'filename': 'sample.pptx', 'last_modified': '2024-12-30T01:00:34', 'page_number': 1, 'languages': ['eng'], 'filetype': 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'category': 'Title', 'element_id': 'aa75080e026117468068eec241cf786f'}
+    Metadata: {'source': 'data/07-ppt-loader-sample.pptx', 'category_depth': 0, 'file_directory': 'data', 'filename': '07-ppt-loader-sample.pptx', 'last_modified': '2025-01-16T21:42:19', 'page_number': 1, 'languages': ['eng'], 'filetype': 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'category': 'Title', 'element_id': 'bb6cdc142e5062b564541bfbc10f7f8c'}
 </pre>
 
 ```python
@@ -301,8 +301,8 @@ documents[:2]
 
 
 
-<pre class="custom">[Document(metadata={'source': '../99-TEMPLATE/assets/sample.pptx', 'slide_number': 1, 'slide_title': 'Natural Language Processing with Deep Learning'}, page_content='![object 2](object2.jpg)\n# Natural Language Processing with Deep Learning\nCS224N/Ling284\nChristopher Manning\nLecture 2: Word Vectors, Word Senses, and Neural Classifiers'),
-     Document(metadata={'source': '../99-TEMPLATE/assets/sample.pptx', 'slide_number': 2, 'slide_title': 'Lecture Plan'}, page_content='# Lecture Plan\n10\nLecture 2: Word Vectors, Word Senses, and Neural Network Classifiers\nCourse organization (3 mins)\nOptimization basics (5 mins)\nReview of word2vec and looking at word vectors (12 mins)\nMore on word2vec (8 mins)\nCan we capture the essence of word meaning more effectively by counting? (12m)\nEvaluating word vectors (10 mins)\nWord senses (10 mins)\nReview of classification and how neural nets differ (10 mins)\nIntroducing neural networks (10 mins)\n\nKey Goal: To be able to read and understand word embeddings papers by the end of class')]</pre>
+<pre class="custom">[Document(metadata={'source': 'data/07-ppt-loader-sample.pptx', 'slide_number': 1, 'slide_title': 'Natural Language Processing with Deep Learning'}, page_content='![object 2](object2.jpg)\n# Natural Language Processing with Deep Learning\nCS224N/Ling284\nChristopher Manning\nLecture 2: Word Vectors, Word Senses, and Neural Classifiers'),
+     Document(metadata={'source': 'data/07-ppt-loader-sample.pptx', 'slide_number': 2, 'slide_title': 'Lecture Plan'}, page_content='# Lecture Plan\n10\nLecture 2: Word Vectors, Word Senses, and Neural Network Classifiers\nCourse organization (3 mins)\nOptimization basics (5 mins)\nReview of word2vec and looking at word vectors (12 mins)\nMore on word2vec (8 mins)\nCan we capture the essence of word meaning more effectively by counting? (12m)\nEvaluating word vectors (10 mins)\nWord senses (10 mins)\nReview of classification and how neural nets differ (10 mins)\nIntroducing neural networks (10 mins)\n\nKey Goal: To be able to read and understand word embeddings papers by the end of class')]</pre>
 
 
 

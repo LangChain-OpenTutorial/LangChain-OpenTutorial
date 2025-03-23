@@ -36,7 +36,7 @@ pre {
 
 2. **Easy Integration**:
    - Works with LangChain's RAG systems
-   - Compatible with LangSmith for tracking
+   - Compatible with LangSmith for evaluation tracking
 
 3. **Evaluation Methods**:
    - Simple metric-based evaluation
@@ -123,7 +123,7 @@ load_dotenv(override=True)
 
 ## RAG System Setup
 
-We'll build a basic **RAG** (Retrieval-Augmented Generation) system to test **Custom Evaluators**. This implementation creates a question-answering system based on PDF documents, which will serve as our foundation for evaluation purposes.
+We will build a basic **RAG** (Retrieval-Augmented Generation) system to test **Custom Evaluators**. This implementation creates a question-answering system based on PDF documents, which will serve as our foundation for evaluation purposes.
 
 This **RAG** system will be used to evaluate answer quality and accuracy through **Custom Evaluators** in later sections.
 
@@ -197,18 +197,34 @@ In most cases, `inputs`, `outputs`, and `reference_outputs` are sufficient. The 
 **Custom Evaluators** can return results in the following formats:
 
 1. **Dictionary Format** (Recommended)
-   ```python
-   {"key": "metric_name", "score": value}
-   ```
+
+```python
+"{\"key\": \"metric_name\", \"score\": value}"
+```
+
+
+
+
+<pre class="custom">'{"key": "metric_name", "score": value}'</pre>
+
+
 
 2. **Basic Types** (Python)
    - `int`, `float`, `bool`: Continuous numerical metrics
    - `str`: Categorical metrics
    
 3. **Multiple Metrics**
-   ```python
-   [{"key": "metric1", "score": value1}, {"key": "metric2", "score": value2}]
-   ```
+
+```python
+"[{\"key\": \"metric1\", \"score\": value1}, {\"key\": \"metric2\", \"score\": value2}]"
+```
+
+
+
+
+<pre class="custom">'[{"key": "metric1", "score": value1}, {"key": "metric2", "score": value2}]'</pre>
+
+
 
 ### Random Score Evaluator Example
 
@@ -216,7 +232,7 @@ Now, let's create a simple **Custom Evaluator** example. This evaluator will ret
 
 **Random Score Evaluator Implementation**
 - Takes `Run` and `Example` objects as input parameters
-- Returns a dictionary in the format: **{"key": "score_name", "score": score}**
+- Returns a dictionary in the format: `{\"key\": \"random_score\", \"score\": score}`
 
 Here's the basic implementation of a random score evaluator:
 
@@ -392,7 +408,7 @@ def context_answer_rag_answer(inputs: dict):
 
 Let's run our evaluation using LangSmith's evaluate function. We'll use our custom evaluator to assess the RAG system's performance across our test dataset.
 
-We'll use the "teddynote/context-answer-evaluator" prompt template from LangChain Hub, which provides a structured evaluation framework for RAG systems.
+We'll use the `teddynote/context-answer-evaluator` prompt template from LangChain Hub, which provides a structured evaluation framework for RAG systems.
 
 The evaluator uses the following criteria:
 - **Accuracy (0-10)**: How well the answer aligns with the context

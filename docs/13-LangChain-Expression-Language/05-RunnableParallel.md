@@ -20,14 +20,14 @@ pre {
 # Runnable Parallel
 
 - Author: [Jaemin Hong](https://github.com/geminii01)
-- Peer Review: 
+- Peer Review: [ranian963](https://github.com/ranian963), [Jinu Cho](https://github.com/jinucho)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/05-RunnableParallel.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/05-RunnableParallel.ipynb)
 
 ## Overview
 
-This tutorial covers `RunnableParallel` , a core component of the LangChain Expression Language(LCEL).
+This tutorial covers `RunnableParallel`, a core component of the LangChain Expression Language(LCEL).
 
 `RunnableParallel` is designed to execute multiple Runnable objects in parallel and return a mapping of their outputs.
 
@@ -36,7 +36,7 @@ This class delivers the same input to each Runnable, making it ideal for running
 ### Table of Contents
 
 - [Overview](#overview)
-- [Environement Setup](#environment-setup)
+- [Environment Setup](#environment-setup)
 - [Handling Input and Output](#handling-input-and-output)
 - [Using itemgetter as a Shortcut](#using-itemgetter-as-a-shortcut)
 - [Understanding Parallel Processing Step-by-Step](#understanding-parallel-processing-step-by-step)
@@ -44,7 +44,7 @@ This class delivers the same input to each Runnable, making it ideal for running
 
 ### References
 
-- [RunalbleParallel](https://python.langchain.com/api_reference/core/runnables/langchain_core.runnables.base.RunnableParallel.html)
+- [RunnableParallel](https://python.langchain.com/api_reference/core/runnables/langchain_core.runnables.base.RunnableParallel.html)
 - [itemgetter](https://docs.python.org/3/library/operator.html#operator.itemgetter)
 - [FAISS](https://python.langchain.com/docs/integrations/vectorstores/faiss/#setup)
 ----
@@ -55,7 +55,7 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 **[Note]**
 - `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -119,7 +119,7 @@ load_dotenv(override=True)
 
 `RunnableParallel` is useful for manipulating the output of one Runnable within a sequence to match the input format requirements of the next Runnable.
 
-Let's suppose a prompt expects input as a map with keys ( `context` , `question` ).
+Let's suppose a prompt expects input as a map with keys (`context` , `question`).
 
 The user input is simply the question, providing content. Therefore, you'll need to use a retriever to get the context and pass the user input under the `question` key.
 
@@ -316,7 +316,7 @@ map_chain2.invoke({"country1": "Republic of Korea", "country2": "United States"}
 
 `RunnableParallel` is particularly useful for running independent processes in parallel because each Runnable in the map is executed concurrently.
 
-For example, you can see that `area_chain`, `capital_chain`, and `map_chain` take the almost same execution time, even though `map_chain` runs the other two chains in parallel.
+For example, you can see that `area_chain`, `capital_chain`, and `map_chain` take almost the same execution time, even though `map_chain` runs the other two chains in parallel.
 
 ```python
 %%timeit

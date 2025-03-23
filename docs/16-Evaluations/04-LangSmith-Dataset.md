@@ -28,7 +28,7 @@ pre {
 
 ## Overview
 
-The notebook demonstrates how to create a dataset for evaluating Retrieval-Augmented Generation (RAG) models using LangSmith. It includes steps for setting up environment variables, creating datasets with questions and answers, and uploading examples to LangSmith for testing. Additionally, it provides instructions on using HuggingFace datasets and updating datasets with new examples.
+The notebook demonstrates how to create a **dataset for evaluating Retrieval-Augmented Generation (RAG) models using LangSmith.** It includes steps for setting up environment variables, creating datasets with questions and answers, and uploading examples to LangSmith for testing. Additionally, it provides instructions on using HuggingFace datasets and updating datasets with new examples.
 
 ### Table of Contents
 

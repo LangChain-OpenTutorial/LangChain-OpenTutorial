@@ -214,9 +214,9 @@ print(docs[1].page_content[:500])
 You can speed up the process of scraping and parsing multiple URLs by using asynchronous loading. This allows you to fetch documents concurrently, improving efficiency while adhering to rate limits.
 
 ### Key Points:
-- **Rate Limit**: The `requests_per_second` parameter controls how many requests are made per second. In this example, it's set to 1 to avoid overloading the server.
-- **Asynchronous Loading**: The `alazy_load()` function is used to load documents asynchronously, enabling faster processing of multiple URLs.
-- **Jupyter Notebook Compatibility**: If running in Jupyter Notebook, `nest_asyncio` is required to handle asynchronous tasks properly.
+- **Rate Limit** : The `requests_per_second` parameter controls how many requests are made per second. In this example, it's set to 1 to avoid overloading the server.
+- **Asynchronous Loading** : The `alazy_load()` function is used to load documents asynchronously, enabling faster processing of multiple URLs.
+- **Jupyter Notebook Compatibility** : If running in Jupyter Notebook, `nest_asyncio` is required to handle asynchronous tasks properly.
 
 The code below demonstrates how to configure and load documents asynchronously:
 
@@ -278,8 +278,8 @@ docs = loader.load()
 
 For handling large documents, `WebBaseLoader` provides two memory-efficient loading methods:
 
-1. Lazy Loading - loads one page at a time
-2. Async Loading - asynchronous page loading for better performance
+1. lazy_load() - loads one page at a time
+2. alazy_load() - asynchronous page loading for better performance
 
 ```python
 # Lazy Loading Example

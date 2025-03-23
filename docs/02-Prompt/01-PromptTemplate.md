@@ -19,7 +19,7 @@ pre {
 
 # Prompt Template
 
-- Author: [Hye-yoon](https://github.com/Hye-yoonJeong)
+- Author: [Hye-yoon Jeong](https://github.com/Hye-yoonJeong)
 - Design: 
 - Peer Review :
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
@@ -27,18 +27,18 @@ pre {
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/02-Prompt/01-PromptTemplate.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/02-Prompt/01-PromptTemplate.ipynb)
 
 ## Overview
-This tutorial covers how to create and utilize prompt templates using `LangChain` .
+This tutorial covers how to create and utilize prompt templates using ```LangChain```.
 
 Prompt templates are essential for generating dynamic and flexible prompts that cater to various use cases, such as conversation history, structured outputs, and specialized queries.
 
-In this tutorial, we will explore methods for creating `PromptTemplate` objects, applying partial variables, managing templates through YAML files, and leveraging advanced tools like `ChatPromptTemplate` and `MessagePlaceholder` for enhanced functionality.
+In this tutorial, we will explore methods for creating ```PromptTemplate``` objects, applying partial variables, managing templates through YAML files, and leveraging advanced tools like ```ChatPromptTemplate``` and ```MessagePlaceholder``` for enhanced functionality.
 
 ### Table of Contents
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
 - [Creating a PromptTemplate Object](#creating-a-prompttemplate-object)
 - [Using partial_variables](#using-partial_variables)
-- [Load prompt template from YAML file](#load-prompt-template-from-yaml-file)
+- [Load Prompt Templates from YAML Files](#load-prompt-templates-from-yaml-files)
 - [ChatPromptTemplate](#chatprompttemplate)
 - [MessagePlaceholder](#messageplaceholder)
 
@@ -51,8 +51,8 @@ In this tutorial, we will explore methods for creating `PromptTemplate` objects,
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can check out the [`langchain-opentutorial` ](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -112,7 +112,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-Let's setup `ChatOpenAI` with `gpt-4o` model.
+Let's setup ```ChatOpenAI``` with ```gpt-4o``` model.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -121,15 +121,15 @@ from langchain_openai import ChatOpenAI
 llm = ChatOpenAI(model_name="gpt-4o")
 ```
 
-## Creating a PromptTemplate Object
+## Creating a ```PromptTemplate``` Object
 
-There are two ways to create a `PromptTemplate` object.
-- 1. Using the `from_template()` method.
-- 2. Creating a `PromptTemplate` object and generating a prompt simultaneously.
+There are two ways to create a ```PromptTemplate``` object.
+- 1. Using the ```from_template()``` method
+- 2. Creating a ```PromptTemplate``` object and a prompt all at once
 
-### Method 1. Using from_template() method
+### Method 1. Using the ```from_template()``` method
 
-- Define template with variable as `{variable}` .
+- Define template with variable as ```{variable}``` .
 
 ```python
 from langchain_core.prompts import PromptTemplate
@@ -149,7 +149,7 @@ prompt
 
 
 
-You can complete the prompt by assigning a value to the variable `country` .
+You can complete the prompt by assigning a value to the variable ```country``` .
 
 ```python
 # Create prompt. Assign value to the variable using `format` method
@@ -187,9 +187,9 @@ chain.invoke("United States of America").content
 
 
 
-### Method 2. Creating a PromptTemplate object and a prompt all at once.
+### Method 2. Creating a ```PromptTemplate``` object and a prompt all at once
 
-Explicitly specify `input_variables` for additional validation.
+Explicitly specify ```input_variables``` for additional validation.
 
 Otherwise, a mismatch between such variables and the variables within the template string can raise an exception in instantiation.
 
@@ -306,9 +306,9 @@ chain.invoke({"country1": "United States of America", "country2": "India"}).cont
 
 
 
-## Using partial_variables
+## Using ```partial_variables```
 
-Using `partial_variables` , you can partially apply functions.  This is particularly useful when there are **common variables** to be shared.
+Using ```partial_variables``` , you can partially apply functions.  This is particularly useful when there are **common variables** to be shared.
 
 Common examples are **date or time**.
 
@@ -385,9 +385,9 @@ print(chain.invoke({"today": "Jan 02", "n": 3}).content)
     3. **Kate Bosworth** - Born on January 2, 1983.
 </pre>
 
-## Load prompt template from YAML file
+## Load Prompt Templates from YAML Files
 
-You can manage prompt templates in seperate yaml files and load using `load_prompt` .
+You can manage prompt templates in seperate yaml files and load using ```load_prompt``` .
 
 ```python
 from langchain_core.prompts import load_prompt
@@ -432,16 +432,16 @@ print(prompt2.format(country="United States of America"))
     
 </pre>
 
-## ChatPromptTemplate
+## ```ChatPromptTemplate```
 
-`ChatPromptTemplate` can be used to include a conversation history as a prompt.
+```ChatPromptTemplate``` can be used to include a conversation history as a prompt.
 
-Messages are structured as tuples in the format (`role` , `message` ) and are created as a list.
+Messages are structured as tuples in the format (```role``` , ```message``` ) and are created as a list.
 
 **role**
-- `"system"` : A system setup message, typically used for global settings-related prompts.
-- `"human"` : A user input message.
-- `"ai"` : An AI response message.
+- ```system``` : A system setup message, typically used for global settings-related prompts.
+- ```human``` : A user input message.
+- ```ai``` : An AI response message.
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate
@@ -526,9 +526,9 @@ chain.invoke({"name": "Teddy", "user_input": "What is your name?"}).content
 
 
 
-## MessagePlaceholder
+## ```MessagePlaceholder```
 
-`LangChain` also provides a `MessagePlaceholder` , which provides complete control over rendering messages during formatting.
+```LangChain``` also provides a ```MessagePlaceholder``` , which provides complete control over rendering messages during formatting.
 
 This can be useful if you’re unsure which roles to use in a message prompt template or if you want to insert a list of messages during formatting.
 
@@ -556,7 +556,7 @@ chat_prompt
 
 
 
-You can use `MessagesPlaceholder` to add the conversation message list.
+You can use ```MessagesPlaceholder``` to add the conversation message list.
 
 ```python
 formatted_chat_prompt = chat_prompt.format(
@@ -589,7 +589,7 @@ chain.invoke(
         "conversation": [
             (
                 "human",
-                "Hello! I’m Teddy. Nice to meet you.",
+                "Hello! I'm Teddy. Nice to meet you.",
             ),
             ("ai", "Nice to meet you! I look forward to working with you."),
         ],

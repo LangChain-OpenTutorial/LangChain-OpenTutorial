@@ -28,11 +28,11 @@ pre {
 
 ## Overview
 
-When configuring an agent using LangChain, one of the biggest advantages is **the integration of various features through third-party tools** .
+When configuring an agent using LangChain, one of the biggest advantages is **the integration of various features through third-party tools**.
 
 Among them, Toolkits provide a variety of integrated tools.
 
-In this tutorial, we will learn how to manage local files using the `FileManagementToolkit`.
+In this tutorial, we will learn how to manage local files using the **FileManagementToolkit**.
 
 ### Table of Contents
 
@@ -108,7 +108,7 @@ These are the materials needed for the practice.
 
 ### GoogleNews
 
-The `GoogleNews` class is the utility for fetching and parsing news from Google News RSS feeds. Here's a concise explanation of its key features:
+The **GoogleNews** class is the utility for fetching and parsing news from Google News RSS feeds. Here's a concise explanation of its key features:
 
 **Core Functionality**
 
@@ -392,13 +392,13 @@ class AgentStreamParser:
 
 ## How to Use FileManagementToolkit
 
-`FileManagementToolkit` is a toolkit for local file management operations that:
+**FileManagementToolkit** is a toolkit for local file management operations that:
 - Automates file management tasks
 - Enables AI agents to manipulate files safely
 - Provides comprehensive file operation tools
 
 ### Security Considerations
-When using `FileManagementToolkit`, implement these security measures:
+When using **FileManagementToolkit**, implement these security measures:
 - Limit directory access using `root_dir`
 - Configure filesystem permissions
 - Use `selected_tools` to restrict available operations
@@ -422,7 +422,7 @@ When using `FileManagementToolkit`, implement these security measures:
 - `get_tools` : create instances of the selected tools.
 
 ### 1. Basic Setup
-The `FileManagementToolkit` provides essential file operation capabilities with security considerations. Let's explore how to set it up and use it safely.
+The **FileManagementToolkit** provides essential file operation capabilities with security considerations. Let's explore how to set it up and use it safely.
 
 ```python
 from langchain_community.agent_toolkits import FileManagementToolkit
@@ -481,7 +481,6 @@ tools
 ```python
 # Unpack tools for easier access
 read_tool, delete_tool, write_tool, list_tool = tools
-
 
 
 # Create a new file with content
@@ -661,7 +660,7 @@ agent_executor = AgentExecutor(
 )
 
 
-# Retrieve or create a session’s chat history
+# Retrieve or create a session's chat history
 def get_session_history(session_ids):
     if session_ids not in store:  # If session_id is not in store
         # Create a new ChatMessageHistory object and store it
@@ -690,17 +689,11 @@ agent_stream_parser = AgentStreamParser()
 ```python
 # Request the agent to fetch and store news articles
 result = agent_with_chat_history.stream(
-
     {
-
         "input": "Search for the latest 5 news articles, create a file for each news article with the title as the filename (.txt), "
-
         "and include the content and URL of the news in the file."
-
     },
-
     config={"configurable": {"session_id": "abc123"}},
-
 )
 
 

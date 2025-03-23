@@ -27,7 +27,7 @@ pre {
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
 
 ## Overview
-In some evaluations, the goal is to compare the outputs of two or more LLMs.
+You can also evaluate the responses of LLM models by comparing them with each other. Using pairwise preference scoring, you can generate more reliable feedback.
 
 This comparative evaluation method is commonly encountered on platforms like [Chatbot Arena](https://lmsys.org/blog/2023-05-03-arena/) or LLM leaderboards.
 
@@ -89,12 +89,24 @@ if not load_dotenv():
             "LANGCHAIN_API_KEY": "",
             "LANGCHAIN_TRACING_V2": "true",
             "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
-            "LANGCHAIN_PROJECT": "",  # set the project name same as the title
+            "LANGCHAIN_PROJECT": "12-LangSmith-Pairwise-Evaluation",
         }
     )
 ```
 
 ## Pairwise Evaluation
+
+Prepare two answers generated from the LLM in advance.
+
+Provide these two answers to the LLM and have it select the better answer using the following prompt:
+
+"You are an LLM judge. Compare the following two answers to a question and determine which one is better.
+Better answer is the one that is more detailed and informative.
+If the answer is not related to the question, it is not a good answer."
+
+Configure the system so that the judged result can be uploaded to and verified on langsmith.
+
+Let's define a function.
 
 Now, you can generate a dataset from these example executions.
 

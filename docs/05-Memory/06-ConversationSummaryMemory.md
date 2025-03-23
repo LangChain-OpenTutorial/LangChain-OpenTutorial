@@ -28,11 +28,11 @@ pre {
 
 ## Overview
 
-This tutorial covers how to summarize and manage conversation history using `LangChain`.  
+This tutorial covers how to summarize and manage conversation history using ```LangChain```.  
 
-`ConversationSummaryMemory` optimizes memory usage by summarizing conversation content, allowing efficient management of long conversation histories.  
+```ConversationSummaryMemory``` optimizes memory usage by summarizing conversation content, allowing efficient management of long conversation histories.  
 
-In this tutorial, we will demonstrate how to implement conversation summarization functionality using LangChain's `ConversationSummaryMemory`.
+In this tutorial, we will demonstrate how to implement conversation summarization functionality using LangChain's ```ConversationSummaryMemory```.
 
 ### Table of Contents
 
@@ -52,8 +52,8 @@ In this tutorial, we will demonstrate how to implement conversation summarizatio
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -99,9 +99,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 # Load environment variables
@@ -121,17 +121,17 @@ load_dotenv(override=True)
 
 ## Conversation Summary Memory
 
-Let's now explore how to use a more complex type of memory: `ConversationSummaryMemory`.
+Let's now explore how to use a more complex type of memory: ```ConversationSummaryMemory```.
 
 This type of memory generates **a summary of the conversation over time** , which can be useful for compressing conversational information as the conversation progresses.
 
-`ConversationSummaryMemory` summarizes the conversation as it continues and **stores the current summary in memory** .
+```ConversationSummaryMemory``` summarizes the conversation as it continues and **stores the current summary in memory** .
 
 This memory can then be used to insert the summarized conversation history into prompts or chains.
 
 It is particularly useful for longer conversations, where retaining the entire conversation history in the prompt would take up too many tokens.
 
-Let's create a `ConversationSummaryMemory`.
+Let's create a ```ConversationSummaryMemory```.
 
 ```python
 from langchain.memory import ConversationSummaryMemory
@@ -211,7 +211,7 @@ print(memory.load_memory_variables({})["history"])
 
 ## Conversation Summary Buffer Memory
 
-`ConversationSummaryBufferMemory` combines two key ideas:
+```ConversationSummaryBufferMemory``` combines two key ideas:
 
 It retains a buffer of the recent conversation history in memory while compiling older interactions into a summary without completely flushing them.
 

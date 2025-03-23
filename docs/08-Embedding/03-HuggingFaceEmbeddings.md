@@ -120,7 +120,7 @@ set_env(
         "LANGCHAIN_API_KEY": "",
         "LANGCHAIN_TRACING_V2": "true",
         "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
-        "LANGCHAIN_PROJECT": "HuggingFace Embeddings",  # title 과 동일하게 설정해 주세요
+        "LANGCHAIN_PROJECT": "HuggingFace Embeddings",  # Please set it the same as the title
         "HUGGINGFACEHUB_API_TOKEN": "",
     }
 )

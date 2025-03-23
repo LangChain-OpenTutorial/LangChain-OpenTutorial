@@ -21,22 +21,22 @@ pre {
 
 - Author: [Yoolim Han](https://github.com/hohosznta)
 - Design: []()
-- Peer Review : [Jeongeun Lim](https://www.linkedin.com/in/jeongeun-lim-808978188/)
+- Peer Review: [ranian963](https://github.com/ranian963), [asummerz](https://github.com/asummerz)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/03-StructuredOutputParser.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/03-StructuredOutputParser.ipynb)
 
 ## Overview
 
-The `StructuredOutputParser` is a valuable tool for formatting Large Language Model (LLM) responses into dictionary structures, enabling the return of multiple fields as key/value pairs. 
-hile Pydantic and JSON parsers offer robust capabilities, the `StructuredOutputParser `is particularly effective for less powerful models, such as local models with fewer parameters. It is especially beneficial for models with lower intelligence compared to advanced models like GPT or Claude. 
-By utilizing the `StructuredOutputParser`, developers can maintain data integrity and consistency across various LLM applications, even when operating with models that have reduced parameter counts.
+The ```StructuredOutputParser``` is a valuable tool for formatting Large Language Model (LLM) responses into dictionary structures, enabling the return of multiple fields as key/value pairs. 
+While Pydantic and JSON parsers offer robust capabilities, the ```StructuredOutputParser``` is particularly effective for less powerful models, such as local models with fewer parameters. It is especially beneficial for models with lower intelligence compared to advanced models like GPT or Claude. 
+By utilizing the ```StructuredOutputParser```, developers can maintain data integrity and consistency across various LLM applications, even when operating with models that have reduced parameter counts.
 
 ### Table of Contents
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Implementing Structured Output Parser](#implementing-structured-output-parser)
+- [Implementing the StructuredOutputParser](#implementing-the-structuredoutputparser)
 
 ### References
 
@@ -49,8 +49,8 @@ By utilizing the `StructuredOutputParser`, developers can maintain data integrit
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup along with useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -93,9 +93,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+You can alternatively set```OPENAI_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -111,15 +111,15 @@ load_dotenv(override=True)
 
 
 
-## Implementing Structured Output Parser
+## Implementing the ```StructuredOutputParser```
 
-### Using ResponseSchema with StructuredOutputParser
-*   Define a response schema using the ResponseSchema class to include the answer to the user's question and a description of the source (website) used.
+### Using ```ResponseSchema``` with ```StructuredOutputParser```
+*   Define a response schema using the ```ResponseSchema``` class to include the answer to the user's question and a ```description``` of the source (website) used.
 
-*   Initialize `StructuredOutputParser` with response_schemas to structure the output according to the defined response schema.
+*   Initialize ```StructuredOutputParser``` with ```response_schemas``` to structure the output according to the defined response schema.
 
 **[Note]**
-When using local models, Pydantic parsers may frequently fail to work properly. In such cases, using `StructuredOutputParser` can be a good alternative solution.
+When using local models, Pydantic parsers may frequently fail to work properly. In such cases, using ```StructuredOutputParser``` can be a good alternative solution.
 
 ```python
 from langchain.output_parsers import ResponseSchema, StructuredOutputParser
@@ -139,15 +139,15 @@ output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
 
 ### Embedding Response Schemas into Prompts 
 
-Create a PromptTemplate to format user questions and embed parsing instructions for structured outputs.
+Create a ```PromptTemplate``` to format user questions and embed parsing instructions for structured outputs.
 
 ```python
 from langchain_core.prompts import PromptTemplate
 # Parse the format instructions.
 format_instructions = output_parser.get_format_instructions()
 prompt = PromptTemplate(
-    # Set up the template to answer the user's question as best as possible.
-    template="answer the users question as best as possible.\n{format_instructions}\n{question}",
+    # Set up the template to answer the user's question as well as possible.
+    template="answer the user's question as well as possible.\n{format_instructions}\n{question}",
     # Use 'question' as the input variable.
     input_variables=["question"],
     # Use 'format_instructions' as a partial variable.
@@ -155,9 +155,9 @@ prompt = PromptTemplate(
 )
 ```
 
-### Integrating with ChatOpenAI and Running the Chain
+### Integrating with ```ChatOpenAI``` and Running the ```Chain```
 
-Combine the `PromptTemplate`, `ChatOpenAI` model, and `StructuredOutputParser` into a chain. Finally, run the chain with a specific `question` to produce results.
+Combine the ```PromptTemplate``` , ```ChatOpenAI``` model , and ```StructuredOutputParser``` into a ```chain``` . Finally, run the ```chain``` with a specific ```question``` to produce results.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -180,7 +180,7 @@ chain.invoke({"question": "What is the largest desert in the world?"})
 
 ### Using Streamed Outputs
 
-Use the `chain.stream` method to receive a streaming response to the question, "How many players are on a soccer team?"
+Use the ```chain.stream``` method to receive a streaming response to the ```question``` , "How many players are on a soccer team?"
 
 ```python
 for s in chain.stream({"question": "How many players are on a soccer team?"}):

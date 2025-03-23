@@ -20,7 +20,7 @@ pre {
 # Document & Document Loader
 
 - Author: [Jaemin Hong](https://github.com/geminii01)
-- Peer Review : [Taylor(Jihyun Kim)](https://github.com/Taylor0819), [ppakyeah](https://github.com/ppakyeah)
+- Peer Review : [Taylor(Jihyun Kim)](https://github.com/Taylor0819), [Yejin Park](https://github.com/ppakyeah)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/01-DocumentLoader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/01-DocumentLoader.ipynb)
@@ -34,7 +34,7 @@ By completing this tutorial, you will learn how to load Documents and check thei
 ### Table of Contents
 
 - [Overview](#overview)
-- [Environement Setup](#environment-setup)
+- [Environment Setup](#environment-setup)
 - [Document](#document)
 - [Document Loader](#document-loader)
 
@@ -160,12 +160,12 @@ Document Loader is a class that loads Documents from various sources.
 
 Listed below are some examples of Document Loaders.
 
-- `PyPDFLoader` : Loads PDF files
-- `CSVLoader` : Loads CSV files
-- `UnstructuredHTMLLoader` : Loads HTML files
-- `JSONLoader` : Loads JSON files
-- `TextLoader` : Loads text files
-- `DirectoryLoader` : Loads documents from a directory
+- `PyPDFLoader`: Loads PDF files
+- `CSVLoader`: Loads CSV files
+- `UnstructuredHTMLLoader`: Loads HTML files
+- `JSONLoader`: Loads JSON files
+- `TextLoader`: Loads text files
+- `DirectoryLoader`: Loads documents from a directory
 
 Now, let's learn how to load Documents .
 
@@ -181,9 +181,9 @@ from langchain_community.document_loaders import PyPDFLoader
 loader = PyPDFLoader(FILE_PATH)
 ```
 
-### load()
+### `load()`
 
-- Loads Documents and returns them as a `list[Document]` .
+- Loads Documents and returns them as a `list[Document]`.
 
 ```python
 # Load Documents
@@ -223,18 +223,18 @@ docs[0:10]
 
 
 
-### aload()
+### `aload()`
 
-- Asynchronously loads Documents and returns them as a `list[Document]` .
+- Asynchronously loads Documents and returns them as a `list[Document]`.
 
 ```python
 # Load Documents asynchronously
 docs = await loader.aload()
 ```
 
-### load_and_split()
+### `load_and_split()`
 
-- Loads Documents and automatically splits them into chunks using TextSplitter , and returns them as a `list[Document]` .
+- Loads Documents and automatically splits them into chunks using TextSplitter , and returns them as a `list[Document]`.
 
 ```python
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -279,9 +279,9 @@ docs[0:10]
 
 
 
-### lazy_load()
+### `lazy_load()`
 
-- Loads Documents sequentially and returns them as an `Iterator[Document]` .
+- Loads Documents sequentially and returns them as an `Iterator[Document]`.
 
 ```python
 loader.lazy_load()
@@ -294,7 +294,7 @@ loader.lazy_load()
 
 
 
-It can be observed that this method operates as a `generator` . This is a special type of iterator that produces values on-the-fly, without storing them all in memory at once.
+It can be observed that this method operates as a `generator`. This is a special type of iterator that produces values on-the-fly, without storing them all in memory at once.
 
 ```python
 # Load Documents sequentially
@@ -307,9 +307,9 @@ for doc in docs:
 <pre class="custom">{'source': './data/01-document-loader-sample.pdf', 'page': 0}
 </pre>
 
-### alazy_load()
+### `alazy_load()`
 
-- Asynchronously loads Documents sequentially and returns them as an `AsyncIterator[Document]` .
+- Asynchronously loads Documents sequentially and returns them as an `AsyncIterator[Document]`.
 
 ```python
 loader.alazy_load()
@@ -322,7 +322,7 @@ loader.alazy_load()
 
 
 
-It can be observed that this method operates as an `async_generator` . This is a special type of asynchronous iterator that produces values on-the-fly, without storing them all in memory at once.
+It can be observed that this method operates as an `async_generator`. This is a special type of asynchronous iterator that produces values on-the-fly, without storing them all in memory at once.
 
 ```python
 # Load Documents asynchronously and sequentially

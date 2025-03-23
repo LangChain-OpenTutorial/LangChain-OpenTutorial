@@ -21,11 +21,11 @@ pre {
 
 - Author: [Sunworl Kim](https://github.com/sunworl)
 - Design:
-- Peer Review:
+- Peer Review: [Yun Eun](https://github.com/yuneun92)
 - Proofread:
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/langchain-ai/langchain-academy/blob/main/module-4/sub-graph.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/05-Conversation-With-History.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/05-Conversation-With-History.ipynb)
 
 ## Overview
 
@@ -33,18 +33,18 @@ This tutorial provides a comprehensive guide to implementing **conversational AI
 
 **1. Creating a chain to record conversations**
 
-- Creates a simple question-answering **chatbot** using ChatOpenAI.
+- Creates a simple question-answering **chatbot** using ```ChatOpenAI```.
 
 - Implements a system to store and retrieve conversation history based on session IDs.
 
-- Uses **RunnableWithMessageHistory** to incorporate chat history into the chain.
+- Uses ```RunnableWithMessageHistory``` to incorporate chat history into the chain.
 
 
 **2. Creating a RAG chain that retrieves information from documents and records conversations**
 
 - Builds a more complex system that combines document retrieval with conversational AI. 
 
-- Processes a **PDF document**, creates embeddings, and sets up a vector store for efficient retrieval.
+- Processes a **PDF document** , creates embeddings, and sets up a vector store for efficient retrieval.
 
 - Implements a **RAG chain** that can answer questions based on the document content and previous conversation history.
 
@@ -54,8 +54,8 @@ This tutorial provides a comprehensive guide to implementing **conversational AI
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
 - [Creating a Chain that remembers previous conversations](#creating-a-chain-that-remembers-previous-conversations)
-  - [1. Add conversation history to the general Chain](#1-add-conversation-history-to-the-general-chain)
-  - [2. RAG + RunnableWithMessageHistory](#2-rag--runnablewithmessagehistory)
+  - [1. Adding Chat History to the Core Chain](#1-adding-chat-history-to-the-core-chain)
+  - [2. Implementing RAG with Conversation History Management](#2-implementing-rag-with-conversation-history-management)
 
 
 ### References
@@ -135,17 +135,17 @@ load_dotenv(override=True)
 
 Background knowledge needed to understand this content : [RunnableWithMessageHistory](https://python.langchain.com/api_reference/core/runnables/langchain_core.runnables.history.RunnableWithMessageHistory.html#runnablewithmessagehistory)
 
-## 1. Add conversation history to the general Chain
+### 1. Adding Chat History to the Core Chain
 
-- Use `MessagesPlaceholder` to include conversation history.
+- Implement `MessagesPlaceholder` to incorporate conversation history
 
-- Define a prompt that takes user input for questions.
+- Define a prompt template that handles user input queries
 
-- Create a `ChatOpenAI` instance that uses OpenAI's `ChatGPT` model.
+- Initialize a `ChatOpenAI` instance configured to use the **ChatGPT** model
 
-- Build a chain by connecting the prompt, language model, and output parser.
+- Construct a chain by connecting the prompt template, language model, and output parser
 
-- Use `StrOutputParser` to convert the model's output into a string.
+- Implement `StrOutputParser` to format the model's response as a string
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -154,64 +154,67 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 
-
-# Defining the prompt
+# Define the chat prompt template with system message and history placeholder
 prompt = ChatPromptTemplate.from_messages(
     [
         (
             "system",
             "You are a Question-Answering chatbot. Please provide an answer to the given question.",
         ),
-        # Please use the key 'chat_history' for conversation history without changing it if possible!
+        # Note: Keep 'chat_history' as the key name for maintaining conversation context
         MessagesPlaceholder(variable_name="chat_history"),
-        ("human", "#Question:\n{question}"),  # Use user input as a variable
+        # Format user question as input variable {question}
+        ("human", "#Question:\n{question}"),
     ]
 )
 
-# Generating an LLM
+# Initialize the ChatGPT language model
 llm = ChatOpenAI()
 
-# Creating a regular Chain
+# Build the processing chain: prompt -> LLM -> string output
 chain = prompt | llm | StrOutputParser()
 ```
 
-Creating a chain that records conversations (chain_with_history)
+Creating a Chain with Conversation History (```chain_with_history```)
 
-- Create a dictionary to store session records.
+- Initialize a dictionary to store conversation session records
 
-- Define a function to retrieve session records based on session ID. If the session ID is not in the store, create a new `ChatMessageHistory` object.
+- Create the function `get_session_history` that retrieves chat history by session ID and creates a new `ChatMessageHistory` instance if none exists
 
-- Create a `RunnableWithMessageHistory` object to manage conversation history.
+- Instantiate a `RunnableWithMessageHistory` object to handle persistent conversation history
 
 
 ```python
-# Dictionary to store session records
+# Initialize an empty dictionary to store conversation sessions
 store = {}
 
-# Function to retrieve session records based on session ID
+# Get or create chat history for a given session ID
 def get_session_history(session_ids):
     print(f"[Conversation Session ID]: {session_ids}")
-    if session_ids not in store:  # If the session ID is not in the store
-        # Create a new ChatMessageHistory object and save it to the store
+    
+    if session_ids not in store:     
+        # Initialize new chat history for this session
         store[session_ids] = ChatMessageHistory()
-    return store[session_ids]  # Return the session history for the corresponding session ID
+    return store[session_ids]  # Return existing or newly created chat history
 
-
+# Configure chain with conversation history management
 chain_with_history = RunnableWithMessageHistory(
     chain,
-    get_session_history,  # Function to retrieve session history
-    input_messages_key="question",  # Key for the template variable that will contain the user's question
-    history_messages_key="chat_history",  # Key for the history messages
+    get_session_history,  
+    input_messages_key="question",  # User input variable name
+    history_messages_key="chat_history",  # Conversation history variable name
 )
 ```
 
-Execute the first question.
+Process the initial input.
 
 ```python
 chain_with_history.invoke(
-    # Input question
+
+    # User input message
     {"question": "My name is Jack."},
-    # Record the conversation based on the session ID.
+    
+    # Configure session ID for conversation tracking
     config={"configurable": {"session_id": "abc123"}},
 )
 ```
@@ -226,13 +229,15 @@ chain_with_history.invoke(
 
 
 
-Execute the question in continuation.
+Handle Subsequent Query.
 
 ```python
 chain_with_history.invoke(
-    # Input question
+
+    # User follow-up question
     {"question": "What is my name?"},
-    # Record the conversation based on the session ID.
+
+    # Use same session ID to maintain conversation context
     config={"configurable": {"session_id": "abc123"}},
 )
 ```
@@ -247,30 +252,29 @@ chain_with_history.invoke(
 
 
 
-## 2. RAG + RunnableWithMessageHistory
+### 2. Implementing RAG with Conversation History Management
 
-Implement a PDF document-based question-answering (QA) system.
+Build a PDF-based Question Answering system that incorporates conversational context.
 
-First, create a regular RAG Chain, However, make sure to include `{chat_history}` in the prompt for step 6.
+Create a standard RAG Chain, ensuring to include `{chat_history}` in the prompt template at step 6.
 
-- (step 1) Use `PDFPlumberLoader` to load PDF files.
+- (step 1) Load PDF documents using `PDFPlumberLoader`
 
-- (step 2)  Split documents into smaller chunks using `RecursiveCharacterTextSplitter`.
+- (step 2) Segment documents into manageable chunks with `RecursiveCharacterTextSplitter`
 
-- (step 3)  Generate vector representations of text chunks using `OpenAIEmbeddings`.
+- (step 3) Create vector embeddings of text chunks using `OpenAIEmbeddings`
 
-- (step 4)  Store embeddings and make them searchable using `FAISS`.
+- (step 4) Index and store embeddings in a `FAISS` vector database
 
-- (step 5) Create a `retriever` to search for relevant information in the vector database.
+- (step 5) Implement a `retriever` to query relevant information from the vector database
 
-- (step 6)  Generate a prompt template for question-answering tasks, including previous conversation history, questions, and context, with instructions to answer.
+- (step 6) Design a QA prompt template that incorporates **conversation history** , user queries, and retrieved context with response instructions
 
-- (step 7)  Initialize the `GPT-4o` model using `ChatOpenAI`.
+- (step 7) Initialize a `ChatOpenAI` instance configured to use the `GPT-4o` model
 
-- (step 8)  Construct a chain that connects retrieval, prompt processing, and language model inference.
+- (step 8) Build the complete chain by connecting the retriever, prompt template, and language model
 
-Retrieve relevant context for user questions and generate answers based on this context.
-
+The system retrieves relevant document context for user queries and generates contextually informed responses.
 
 ```python
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -283,27 +287,18 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from operator import itemgetter
 
-# Step 1: Load Documents
 loader = PDFPlumberLoader("data/A European Approach to Artificial Intelligence - A Policy Perspective.pdf") 
 docs = loader.load()
 
-# Step 2: Split Documents
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=50)
 split_documents = text_splitter.split_documents(docs)
 
-# Step 3: Generate Embeddings
 embeddings = OpenAIEmbeddings()
 
-# Step 4: Create DB and Save
-# Create the vector store.
 vectorstore = FAISS.from_documents(documents=split_documents, embedding=embeddings)
 
-# Step 5: Create Retriever
-# Retrieve and generate information contained in the documents.
 retriever = vectorstore.as_retriever()
 
-# Step 6: Create Prompt
-# Generate the prompt.
 prompt = PromptTemplate.from_template(
     """You are an assistant for question-answering tasks. 
 Use the following pieces of retrieved context to answer the question. 
@@ -321,11 +316,8 @@ If you don't know the answer, just say that you don't know.
 #Answer:"""
 )
 
-# Step 7: Create Language Model (LLM)
-# Generate the model (LLM).
 llm = ChatOpenAI(model_name="gpt-4o", temperature=0)
 
-# Step 8: Create Chain
 chain = (
     {
         "context": itemgetter("question") | retriever,
@@ -338,41 +330,45 @@ chain = (
 )
 ```
 
-Defining a function to save the conversation.
+**Implementing Conversation History Management**
 
-- The `store` dictionary is used to save conversation histories according to `session ids`, and the `get_session_history` function retrieves session records. 
+- Initialize the `store` dictionary to maintain conversation histories indexed by session IDs, and create the `get_session_history` function to retrieve or create session records
 
-- A `RunnableWithMessageHistory` object is created to add conversation history management functionality to the `RAG chain`, processing user questions and conversation histories. 
+- Create a `RunnableWithMessageHistory` instance to enhance the RAG chain with conversation tracking capabilities, handling both user queries and historical context
 
 ```python
-# Dictionary to store session records
+# Dictionary for storing session records
 store = {}
 
-# Function to retrieve session records based on session ID
+# Retrieve session records by session ID
 def get_session_history(session_ids):
     print(f"[Conversation Session ID]: {session_ids}")
-    if session_ids not in store:  # If the session ID is not in the store
-        # Create a new ChatMessageHistory object and save it to the store
+
+    if session_ids not in store:
+        # Initialize new ChatMessageHistory and store it
         store[session_ids] = ChatMessageHistory()
     return store[session_ids]  
 
-# Create a RAG chain that records conversations
+# Create RAG chain with conversation history tracking
 rag_with_history = RunnableWithMessageHistory(
     chain,
-    get_session_history,  # Function to retrieve session history
-    input_messages_key="question",  # Key for the template variable that will contain the user's question
-    history_messages_key="chat_history",  # Key for the history messages
+    get_session_history,  # Session history retrieval function
+    input_messages_key="question",  # Template variable key for user question
+    history_messages_key="chat_history",  # Key for conversation history
 )
 ```
 
-Execute the first question.
+Process the first user input.
 
 ```python
 rag_with_history.invoke(
-    # Input question
+
+    # User query for analysis
     {"question": "What are the three key components necessary to achieve 'trustworthy AI' in the European approach to AI policy?"},
-    # Record the conversation based on the session ID.
+
+    # Session configuration for conversation tracking
     config={"configurable": {"session_id": "rag123"}},
+
 )
 ```
 
@@ -390,10 +386,13 @@ Execute the subsequent question.
 
 ```python
 rag_with_history.invoke(
-    # Input question
+
+    # Request for translation of previous response
     {"question": "Please translate the previous answer into Spanish."},
-    # Record the conversation based on the session ID.
+
+    # Session configuration for maintaining conversation context
     config={"configurable": {"session_id": "rag123"}},
+    
 )
 ```
 

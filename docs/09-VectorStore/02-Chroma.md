@@ -703,7 +703,7 @@ embeddings = HuggingFaceEmbeddings(
 )
 ```
 
-Load `ChromaDocument Manager` .
+Load `ChromaDocumentManager` .
 
 ```python
 from utils.chroma.crud import ChromaDocumentMangager

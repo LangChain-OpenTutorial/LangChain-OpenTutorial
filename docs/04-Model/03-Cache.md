@@ -140,7 +140,7 @@ print(response.content)
     Wall time: 1.54 s
 </pre>
 
-## InMemoryCache
+## ```InMemoryCache```
 First, cache the answer to the same question using `InMemoryCache`.
 
 ```python
@@ -195,8 +195,8 @@ print(response.content)
     Wall time: 972 ms
 </pre>
 
-## SQLiteCache
-Now, we cache the answer to the same question by using `SQLiteCache`.
+## ```SQLiteCache```
+Now, we cache the answer to the same question by using ```SQLiteCache```.
 
 ```python
 from langchain_community.cache import SQLiteCache

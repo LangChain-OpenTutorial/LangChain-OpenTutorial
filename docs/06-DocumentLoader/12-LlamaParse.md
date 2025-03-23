@@ -24,7 +24,7 @@ pre {
 - Peer Review: [JoonHo Kim](https://github.com/jhboyo), [Jaemin Hong](https://github.com/geminii01), [leebeanbin](https://github.com/leebeanbin), [Taylor(Jihyun Kim)](https://github.com/Taylor0819), [Dooil Kwak](https://github.com/back2zion)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/13-LlamaParse.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/13-LlamaParse.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/12-LlamaParse.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/12-LlamaParse.ipynb)
 
 
 ## Overview
@@ -117,6 +117,10 @@ set_env(
 
 <pre class="custom">Environment variables have been set successfully.
 </pre>
+
+You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+
+**[Note]** This is not necessary if you've already set the required API keys in previous steps.
 
 ```python
 from dotenv import load_dotenv

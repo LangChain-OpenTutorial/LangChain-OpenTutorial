@@ -30,7 +30,7 @@ pre {
 
 An **Agent** is useful when deciding whether to use a search tool. For more details about agents, refer to the [Agent](https://wikidocs.net/233782) page.
 
-To implement a search agent, simply grant the `LLM` access to the search tool.
+To implement a search agent, simply grant the **LLM** access to the search tool.
 
 This can be integrated into [LangGraph](https://langchain-ai.github.io/langgraph/).
 
@@ -41,11 +41,14 @@ This can be integrated into [LangGraph](https://langchain-ai.github.io/langgraph
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
 - [Create a basic PDF-based Retrieval Chain](#create-a-basic-pdf-based-retrieval-chain)
-- [Agent State](#agent-state)
+- [Defining AgentState](#defining-agentstate)
 - [Nodes and Edges](#nodes-and-edges)
 - [Graph](#graph)
 - [Execute the Graph](#execute-the-graph)
 
+### References
+
+- [LangGraph Tutorials](https://langchain-ai.github.io/langgraph/tutorials/)
 ----
 
 ## Environment Setup
@@ -126,7 +129,7 @@ Here, we create a Retrieval Chain based on a PDF document. This is the Retrieval
 
 However, in LangGraph, Retirever and Chain are created separately. Only then can detailed processing be performed for each node.
 
-**Reference**
+**[Note]**
 - As this was covered in the previous tutorial, detailed explanation will be omitted.
 
 ```python
@@ -177,11 +180,11 @@ retriever_tool = create_retriever_tool(
 tools = [retriever_tool]
 ```
 
-## Agent State
+## Defining `AgentState`
 
-We will define the graph.
+We will define the `AgentState` .
 
-Each node is passed a `state` object. The state consists of a list of `messages` .
+Each node is passed a `state` object. The `state` consists of a list of `messages` .
 
 Each node in the graph adds content to this list.
 
@@ -201,9 +204,9 @@ class AgentState(TypedDict):
 
 An agent-based RAG graph can be structured as follows:
 
-- `State` is a collection of messages.  
-- Each `node` updates (adds to) the state.  
-- `Conditional edges` determine the next node to visit.
+- `state` is a collection of messages.  
+- Each **node** updates (adds to) the `state` .  
+- **Conditional edges** determine the next node to visit.
 
 Now, let's create a simple **Grader**.
 

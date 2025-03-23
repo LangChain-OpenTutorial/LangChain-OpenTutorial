@@ -70,13 +70,13 @@ package.install(
 )
 ```
 
-## UnstructuredExcelLoader
+## `UnstructuredExcelLoader`
 
 `UnstructuredExcelLoader` is used to load `Microsoft Excel` files.
 
 This loader works with both `.xlsx` and `.xls` files.
 
-When the loader is used in `"elements"` mode, an HTML representation of the Excel file is provided under the `text_as_html` key in the document metadata.
+When the loader is used in `mode="elements"` , an HTML representation of the Excel file is provided under the `text_as_html` key in the document metadata.
 
 ```python
 # install
@@ -114,11 +114,11 @@ print(docs[0].page_content[:200])
 print(docs[0].metadata["text_as_html"][:1000])
 ```
 
-![text_as_html](./img/05-Excel-Loader-text-as-html.png)
+![text_as_html](./img/05-excel-loader-text-as-html.png)
 
-## DataFrameLoader
+## `DataFrameLoader`
 
-- Similar to CSV files, we can load Excel files by using the `read_excel()` function to create a DataFrame, and then load it.
+- Similar to CSV files, we can load Excel files by using the `read_excel()` function to create a `pandas.DataFrame`, and then load it.
 
 ```python
 import pandas as pd

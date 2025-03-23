@@ -20,10 +20,10 @@ pre {
 # Bind Tools
 
 - Author: [Jaemin Hong](https://github.com/geminii01)
-- Peer Review: 
+- Peer Review: [Hye-yoon Jeong](https://github.com/Hye-yoonJeong), [JoonHo Kim](https://github.com/jhboyo)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/02-Bind-Tools.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/02-Bind-Tools.ipynb)
 
 ## Overview
 
@@ -34,7 +34,7 @@ This tutorial will show you how to create, bind tools, parse and execute outputs
 ### Table of Contents
 
 - [Overview](#overview)
-- [Environement Setup](#environment-setup)
+- [Environment Setup](#environment-setup)
 - [Creating Tools](#creating-tools)
 - [Binding Tools](#binding-tools)
 - [Binding tools with Parser to Execute](#binding-tools-with-parser-to-execute)

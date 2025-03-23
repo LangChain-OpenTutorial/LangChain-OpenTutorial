@@ -17,7 +17,7 @@ pre {
 
 </style>
 
-# Runnable-Pass-Through
+# RunnablePassthrough
 
 - Author: [Suhyun Lee](https://github.com/suhyun0115)
 - Design: 
@@ -45,12 +45,18 @@ Common use cases for `RunnablePassthrough` include:
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
 - [Passing Data with RunnablePassthrough and RunnableParallel](#passing-data-with-runnablepassthrough-and-runnableparallel)
-  - [Example of Using `RunnableParallel` and `RunnablePassthrough`](#example-of-using-runnableparallel-and-runnablepassthrough)
+  - [Example of Using RunnableParallel and RunnablePassthrough](#example-of-using-runnableparallel-and-runnablepassthrough)
   - [Summary of Results](#summary-of-results)
 - [Search Engine Integration](#search-engine-integration)
-  - [Using GPT](#using-gpt)
+  - [Using RunnablePassthrough in a FAISS-Based RAG Pipeline](#using-runnablepassthrough-in-a-faiss-based-rag-pipeline)
   - [Using Ollama](#using-ollama)
     - [Ollama Installation Guide on Colab](#ollama-installation-guide-on-colab)
+
+### References
+
+- [LangChain Python API Reference > RunnablePassthrough](https://python.langchain.com/api_reference/core/runnables/langchain_core.runnables.passthrough.RunnablePassthrough.html#runnablepassthrough)
+- [Ollama official website](https://ollama.com/)
+- [GitHub tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/10-Ollama.ipynb)
 
 ----
 
@@ -120,7 +126,7 @@ load_dotenv(override=True)
 
 
 
-## Passing Data with RunnablePassthrough and RunnableParallel
+## Passing Data with `RunnablePassthrough` and `RunnableParallel`
 
 `RunnablePassthrough` is a utility that **passes data through unchanged** or adds minimal information before forwarding.
 
@@ -138,13 +144,11 @@ By leveraging `RunnablePassthrough`, you can maintain data integrity through pip
 
 Let me continue reviewing any additional content. I'm tracking all modifications to provide a comprehensive summary once the review is complete.
 
-## Example of Using `RunnableParallel` and `RunnablePassthrough`
+### Example of Using `RunnableParallel` and `RunnablePassthrough`
 
 While `RunnablePassthrough` is effective independently, it becomes more powerful when combined with `RunnableParallel`.
 
 This section demonstrates how to configure and run **parallel tasks** using the `RunnableParallel` class. The following steps provide a beginner-friendly implementation guide.
-
----
 
 1. **Initialize `RunnableParallel`**
    
@@ -158,7 +162,7 @@ This section demonstrates how to configure and run **parallel tasks** using the 
 3. **Set Up `extra` Task**
    
    - Implement an `extra` task using `RunnablePassthrough.assign()`
-   - This task computes triple the "num" value and stores it with key "mult"
+   - This task computes triple the "num" value and stores it with key `mult`
 
 4. **Implement `modified` Task**
    
@@ -209,7 +213,7 @@ r.invoke({"num": 1})
 
 
 
-## Summary of Results
+### Summary of Results
 
 When provided with input `{"num": 1}`, each task produces the following output:
 
@@ -226,7 +230,10 @@ When provided with input `{"num": 1}`, each task produces the following output:
 
 The following example illustrates an implementation of `RunnablePassthrough`.
 
-## Using GPT
+### Using `RunnablePassthrough` in a FAISS-Based RAG Pipeline
+
+This code uses `RunnablePassthrough` in a FAISS-based RAG pipeline to pass retrieved context into a chat prompt.  
+It enables seamless integration of OpenAI embeddings for efficient retrieval and response generation.
 
 ```python
 from langchain_community.vectorstores import FAISS
@@ -303,45 +310,48 @@ retrieval_chain.invoke("What do dogs like?")
 
 
 
-## Using Ollama
+### Using Ollama
 
 - Download the application from the [Ollama official website](https://ollama.com/)
 - For comprehensive Ollama documentation, visit the [GitHub tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/10-Ollama.ipynb)
 - Implementation utilizes the `llama3.2` 1b model for response generation and `mxbai-embed-large` for embedding operations
 
-## Ollama Installation Guide on Colab
+**Ollama Installation Guide on Colab**
 
 Google Colab requires the `colab-xterm` extension for terminal functionality. Follow these steps to install Ollama:
 
----
-
 1. **Install and Initialize `colab-xterm`**
-    ```python
-    !pip install colab-xterm
-    %load_ext colabxterm
-    ```
+
+```python
+!pip install colab-xterm
+%load_ext colabxterm
+```
 
 2. **Launch Terminal**
-    ```python
-    %xterm
-    ```
+
+```python
+%xterm
+```
 
 3. **Install Ollama**
 
     Execute the following command in the terminal:
-    ```python
-    curl -fsSL https://ollama.com/install.sh | sh
-    ```
+
+```python
+curl -fsSL https://ollama.com/install.sh | sh
+```
 
 4. **Installation Verification**
 
     Verify installation by running:
-    ```python
-    ollama
-    ```
-    Successful installation displays the "Available Commands" menu.
 
-Download and Prepare the Embedding Model for Ollama
+```python
+ollama
+```
+
+Successful installation displays the "Available Commands" menu.
+
+5. **Download and Prepare the Embedding Model for Ollama**
 
 ```python
 !ollama pull mxbai-embed-large
@@ -382,7 +392,7 @@ Question: {question}
 prompt = ChatPromptTemplate.from_template(template)
 ```
 
-Download and Prepare the Model for Answer Generation
+6. **Download and Prepare the Model for Answer Generation**
 
 ```python
 !ollama pull llama3.2:1b

@@ -43,7 +43,7 @@ These agents collect data from a PDF, supplement it with web search results, and
 By the end of this tutorial, you will learn how to:
 
 - **Integrate** multiple agents (Web Searching, RAG, Image Generation) in a single **LangChain** pipeline.
-- **Generate** and **update** a Markdown report (`report.md` and `report-final.md`) using the agents’ outputs.
+- **Generate** and **update** a Markdown report (report.md and report-final.md) using the agents’ outputs.
 - **Observe** and process streaming outputs using a **custom generator** and **callback** system.
 
 ### Table of Contents
@@ -114,7 +114,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+You can alternatively set `OPENAI_API_KEY` in `.env `file and load it. 
 
 [Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
 
@@ -175,7 +175,7 @@ search = TavilySearchResults(k=6)
 ### Data Loading and Vector Store (RAG)
 
 Next, we set up the **RAG (Retrieval-Augmented Generation) Agent**. 
-Below, we load a PDF file (e.g., `shsconf_icdeba2023_02022.pdf`), split it into chunks, 
+Below, we load a PDF file (e.g., shsconf_icdeba2023_02022.pdf), split it into chunks, 
 and create a **VectorStore** using **FAISS**. We then initialize a **retriever** 
 to query those chunks.
 
@@ -265,7 +265,7 @@ def dalle_tool(query: str) -> str:
 
 Next, we set up file management tools to enable the agent to write, read, 
 and list files within a specified directory. This is used to store 
-and update the `report.md`, `report-final.md`, and other files.
+and update the report.md, report-final.md, and other files.
 
 
 ```python
@@ -471,9 +471,9 @@ in a **streaming** fashion. Each step is processed by our custom parser,
 allowing us to see **tool calls**, **observations**, and **final answers** in real time.
 
 
-### Step 1: Summarize PDF Content and Save to `report.md`
+### Step 1: Summarize PDF Content and Save to report.md
 
-First, we instruct the agent to summarize key aspects of the Tesla PDF and save the summary to `report.md`.
+First, we instruct the agent to summarize key aspects of the Tesla PDF and save the summary to report.md.
 
 ```python
 # This cell asks the agent to summarize certain aspects of the Tesla PDF,
@@ -650,12 +650,12 @@ for step in result_1:
     - Tesla's financial disclosures are limited, affecting the comprehensiveness of these predictions.
 </pre>
 
-When you check the contents of the generated report file (`report.md`), it will display as follows.  
+When you check the contents of the generated report file (report.md), it will display as follows.  
 ![](./img/09-makereport-using-rag-websearching-imagegeneration-report-using-rag.png)
 
 ### Step 2: Perform Web Search and Append to report.md
 
-Next, we perform a web search about Tesla's revenue outlook, append the findings to `report.md`, 
+Next, we perform a web search about Tesla's revenue outlook, append the findings to report.md, 
 and then read the updated file content.
 
 ```python
@@ -813,13 +813,13 @@ for step in result_2:
       - No specific sales target for 2024, but anticipated lower growth compared to 2023.
 </pre>
 
-When you check the contents of the updated report file (`report.md`), it will display as follows.  
+When you check the contents of the updated report file (report.md), it will display as follows.  
 ![](./img/09-makereport-using-rag-websearching-imagegeneration-report-using-websearching.png)
 
-### Step 3: Create a Professional Report and Save to `report-final.md`
+### Step 3: Create a Professional Report and Save to report-final.md
 
-Then, we instruct the agent to create a more professional report based on `report.md`, 
-add a table, and save it as `report-final.md`. Finally, we read and display the final report.
+Then, we instruct the agent to create a more professional report based on report.md, 
+add a table, and save it as report-final.md. Finally, we read and display the final report.
 
 ```python
 # This cell instructs the agent to create a more professional report based on 'report.md',
@@ -985,14 +985,14 @@ for step in result_3:
     Tesla's financial performance and revenue outlook reflect a dynamic growth trajectory, driven by increased production and strategic business models. However, the variability in forecasts and financial disclosures highlight the need for cautious optimism. For further details, refer to "data/shsconf_icdeba2023_02022.pdf" and online sources from Yahoo Finance, Investors.com, and Counterpoint Research.
 </pre>
 
-When you check the contents of the newly created report file (`report-final.md`), it will display as follows.  
+When you check the contents of the newly created report file (report-final.md), it will display as follows.  
 
 ![](./img/09-makereport-using-rag-websearching-imagegeneration-report-summary.png)
 
-### Step 4: Generate and Embed an Image into `report-final.md`
+### Step 4: Generate and Embed an Image into report-final.md
 
 Finally, we generate an image symbolizing Tesla’s future using the **Image Generation Agent**, 
-and prepend the image URL to `report-final.md`.
+and prepend the image URL to report-final.md.
 
 
 ```python
@@ -1170,7 +1170,7 @@ for step in result_4:
     Tesla's financial performance and revenue outlook reflect a dynamic growth trajectory, driven by increased production and strategic business models. However, the variability in forecasts and financial disclosures highlight the need for cautious optimism. For further details, refer to "data/shsconf_icdeba2023_02022.pdf" and online sources from Yahoo Finance, Investors.com, and Counterpoint Research.
 </pre>
 
-Finally, when you check a portion of the most recently generated report file (`report-final.md`), it will display as follows.  
+Finally, when you check a portion of the most recently generated report file (report-final.md), it will display as follows.  
 
 ![](./img/09-makereport-using-rag-websearching-imagegeneration-report-add-image.png)
 

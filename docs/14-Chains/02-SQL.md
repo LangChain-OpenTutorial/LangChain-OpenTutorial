@@ -20,8 +20,8 @@ pre {
 # SQL
 
 - Author: [Jinu Cho](https://github.com/jinucho)
-- Design:
-- Peer Review: 
+- Design: [LeeYuChul](https://github.com/LeeYuChul)
+- Peer Review: [JeongHo Shin](https://github.com/ThePurpleCollar), [Erika Park](https://www.linkedin.com/in/yeonseo-park-094193198/)
 - Proofread:
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
@@ -119,7 +119,7 @@ load_dotenv(override=True)
 
 
 
-## Loading SQL Database
+## Loading SQL Databases
 
 ### Usage methods for various databases and required library list:
 
@@ -831,7 +831,7 @@ from langchain_core.prompts import PromptTemplate
 answer_prompt = PromptTemplate.from_template(
     """Given the following user question, corresponding SQL query, and SQL result, answer the user question.
 
-Question: {question}ㅑㅑ
+Question: {question}
 SQL Query: {query}
 SQL Result: {result}
 Answer: """

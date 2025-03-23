@@ -64,7 +64,7 @@ Click the Next button for all the rest to proceed with the installation.
 Window key - PowerShell must be run as administrator
 
 Enter the command "`git`" and verify that the output looks like the image below
-```Powershell
+```powershell1
 git
 ```
 
@@ -76,7 +76,7 @@ git
 First, run **Windows PowerShell** as an "administrator."</p> <p><br>
 
 Enter the following command to apply the policy
-```Powershell
+```powershell
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 ```
 After the application is complete, turn Windows PowerShell off and then on. For the purposes of the following, "Run as administrator" when running Windows PowerShell.
@@ -84,14 +84,14 @@ After the application is complete, turn Windows PowerShell off and then on. For 
 ## Install pyenv
 Install pyenv before installing python. pyenv installs a virtualization environment to prevent conflicts between packages.
 
-```Powershell
+```bash
 git clone https://github.com/pyenv-win/pyenv-win.git "$env:USERPROFILE\.pyenv"
 ```
 
 - Add environment variables
 
 Copy and paste the content below and run it
-```Powershell
+```powershell
 [System.Environment]::SetEnvironmentVariable('PYENV', $env:USERPROFILE + "\.pyenv\pyenv-win\", "User")
 [System.Environment]::SetEnvironmentVariable('PYENV_ROOT', $env:USERPROFILE + "\.pyenv\pyenv-win\", "User")
 [System.Environment]::SetEnvironmentVariable('PYENV_HOME', $env:USERPROFILE + "\.pyenv\pyenv-win\", "User")
@@ -132,13 +132,11 @@ Make sure you have version 3.11.9 installed (or 3.11.11 is fine too!).
 
 
 Run the command below to install the Poetry package management tool.
-```powershell
+```bash
 pip3 install poetry
 ```
 
-(Note)
-
-- Link to the lab code: https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial.git
+- [Link to LangChain-OpenTutorial.git](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial.git)
 
 Navigate to the Documents folder.
 
@@ -170,7 +168,7 @@ poetry update
 
 Download Visual Studio Code
 
-- Download link: https://code.visualstudio.com/download
+- [Download Visual Studio Code](https://code.visualstudio.com/download)
 
 Install the downloaded Visual Studio Code (copy it to the Applications folder)
 

@@ -41,6 +41,7 @@ In this tutorial, we will inherit the `ChromaDB` class from the previous tutoria
 - [Multimodal Search](#multimodal-search)
 - [Create a Multimodal Vector Store](#create-a-multimodal-vector-store)
 - [Image Searching](#image-searching)
+- [Multimodal Document Manager](#multimodal-document-manager)
 
 
 ### References
@@ -62,6 +63,11 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 %%capture --no-stderr
 %pip install langchain-opentutorial
 ```
+
+<pre class="custom">
+    [notice] A new release of pip is available: 24.3.1 -> 25.0
+    [notice] To update, run: python.exe -m pip install --upgrade pip
+</pre>
 
 ```python
 # Install required packages
@@ -160,13 +166,14 @@ def save_temp_gen_url(image: Image) -> str:
 
 ```python
 from datasets import load_dataset
+import random
 
 dataset = load_dataset("Pupba/animal-180", split="train")
-
-# slice 50 set
-images = dataset[:50]["png"]
+dataset = dataset.shuffle()
+# slice random 50 set
+images = dataset["png"][:50]
 image_paths = [save_temp_gen_url(img) for img in images]
-metas = dataset[:50]["json"]
+metas = dataset["json"][:50]
 prompts = [data["prompt"] for data in metas]
 categories = [data["category"] for data in metas]
 ```
@@ -178,9 +185,9 @@ print("Category:", categories[0])
 images[0]
 ```
 
-<pre class="custom">Image Path: C:\Users\Jung\AppData\Local\Temp\tmp9dt0pak8.png
-    Prompt: a fluffy white rabbit sitting in a grassy meadow, soft sunlight illuminating its fur, highly detailed, 8k resolution.
-    Category: rabbit
+<pre class="custom">Image Path: C:\Users\Jung\AppData\Local\Temp\tmpnu33eb2u.png
+    Prompt: a cat lying on a soft blanket, surrounded by toys, warm lighting, photorealistic, 8k resolution.
+    Category: cat
 </pre>
 
 
@@ -460,10 +467,215 @@ show_docs(results=results)
     
     
 
-Remove a `Huggingface Cache`
+Disconnect `Chroma` DB and Remove Local DB file
 
 ```python
-dataset.cleanup_cache_files()
+del vector_store
+```
+
+## Multimodal Document Manager
+
+We have developed an interface that makes **Image CRUD** of **VectorDB** easy to use in tutorials.
+
+This class was implemented by inheriting `ChromaDocumentMangager` .
+
+- `upsert` : Inserts or updates Image documents in the vector database with optional metadata and embeddings.
+
+- `upsert_parellel` : Processes batch insertions or updates in parallel for improved performance.
+
+- `search` : Searches for the top k most similar Image documents using **cosine similarity** (In this tutorial, we fix the similarity score as cosine similarity) .
+
+- `delete` : Same as parent class
+
+Each function was inherited and developed for each vector DB.
+
+In this tutorial, it was developed for **Chroma** .
+
+Load **Chroma Client** and **Multimodal Embedding** .
+
+```python
+import chromadb
+
+client = chromadb.PersistentClient(path="./chroma")
+```
+
+```python
+from langchain_experimental.open_clip import OpenCLIPEmbeddings
+
+MODEL = "ViT-B-16-quickgelu"
+CHECKPOINT = "openai"
+
+multimodal_embedding = OpenCLIPEmbeddings(model_name=MODEL, checkpoint=CHECKPOINT)
+```
+
+Load `ChromaDocumentMultuimoalManager` .
+
+```python
+from utils.chroma.multimodal_crud import ChromaMultimodalDocumentMangager
+
+cdmm = ChromaMultimodalDocumentMangager(
+    client=client, embedding=multimodal_embedding, name="chroma"
+)  # Default open_clip
+```
+
+Preprocessing for `image_upsert` .
+
+```python
+from uuid import uuid4
+
+images
+metas
+ids = [str(uuid4()) for i in range(len(images))]
+```
+
+### Upsert
+
+The upsert method is designed to **insert** or **update** documents in a vector database. 
+
+It takes the following parameters:
+
+- **images** : A collection of PIL.Image to be inserted or updated. PIL.Image change to base64 string.
+
+- **metadatas** : Optional metadata associated with each document.
+
+- **ids** : Optional unique identifiers for each document.
+
+- ****kwargs** : Additional keyword arguments for flexibility.
+
+```python
+cdmm.image_upsert(
+    images=images[:2],
+    metadatas=metas[:2],
+    ids=ids[:2],
+)
+```
+
+### Upsert-Parellel
+
+The `image_upsert_parallel` method is an optimized version of `image_upsert` that processes documents in parallel.
+
+The following parameters are added.
+
+- **batch_size** : The number of documents to process in each batch (default: 32).
+
+- **workers** : The number of parallel workers to use (default: 10).
+
+```python
+cdmm.image_upsert_parallel(
+    images=images[2:10],
+    metadatas=metas[2:10],
+    ids=ids[2:10],
+)
+```
+
+### Search
+
+The `search_image` method returns a list of Document objects, which are the top k most similar documents to the query. 
+
+- **query** : A string representing the search query.
+
+- **k** : An integer specifying the number of top results to return (default is 10).
+
+- ****kwargs** : Additional keyword arguments for flexibility in search options. This can include metadata filters( `where` , `where_document` ).
+
+```python
+from IPython.display import display
+
+
+def show_image_docs(results: list) -> None:
+    for idx, (score, docs) in enumerate(results):
+        print(f"Rank[{idx+1}]")
+        print(f"Category: {docs.metadata['category']}")
+        print(f"Prompt: {docs.metadata['prompt']}")
+        print(f"Cosine Similarity Score: {score:.3f}")
+        display(docs.image)
+        print()
+```
+
+```python
+result = cdmm.search_image(image_or_text="a lion")
+```
+
+```python
+show_image_docs(result)
+```
+
+<pre class="custom">Rank[1]
+    Category: cat
+    Prompt: a cat lying on a soft blanket, surrounded by toys, warm lighting, photorealistic, 8k resolution.
+    Cosine Similarity Score: 0.242
+</pre>
+
+
+    
+![png](./img/output_50_1.png)
+    
+
+
+    
+    
+
+```python
+images[5]
+```
+
+
+
+
+    
+![png](./img/output_51_0.png)
+    
+
+
+
+```python
+result = cdmm.search_image(image_or_text=images[5])
+```
+
+```python
+show_image_docs(result)
+```
+
+<pre class="custom">Rank[1]
+    Category: elephant
+    Prompt: an elephant standing in tall grass, golden sunlight illuminating its skin, highly detailed, ultra-realistic, 8k resolution.
+    Cosine Similarity Score: 0.923
+</pre>
+
+
+    
+![png](./img/output_53_1.png)
+    
+
+
+    
+    
+
+### Delete
+
+The `delete` method removes documents from the vector database based on specified criteria.
+
+- `ids` : A list of document IDs to be deleted. If None, all documents delete.
+
+- `filters` : A dictionary specifying filtering criteria for deletion. This can include metadata filters( `where` , `where_document` ).
+
+- `**kwargs` : Additional keyword arguments for custom deletion options.
+
+```python
+len(cdmm.collection.get()["ids"])
+```
+
+
+
+
+<pre class="custom">2</pre>
+
+
+
+```python
+ids = cdmm.collection.get()["ids"][:20]
+cdmm.delete(ids=ids)
+len(cdmm.collection.get()["ids"])
 ```
 
 
@@ -473,8 +685,23 @@ dataset.cleanup_cache_files()
 
 
 
-Disconnect `Chroma` DB and Remove Local DB file
+Remove a `Huggingface Cache` .
 
 ```python
-del vector_store
+dataset.cleanup_cache_files()
+```
+
+
+
+
+<pre class="custom">7</pre>
+
+
+
+Remove `Chroma Client` , `Embedding` .
+
+```python
+del cdmm
+del client
+del multimodal_embedding
 ```

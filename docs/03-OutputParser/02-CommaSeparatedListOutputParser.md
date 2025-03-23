@@ -17,7 +17,7 @@ pre {
 
 </style>
 
-# Comma Separated List Output Parser
+# CommaSeparatedListOutputParser
 
 - Author: [Junseong Kim](https://www.linkedin.com/in/%EC%A4%80%EC%84%B1-%EA%B9%80-591b351b2/)
 - Design: []()
@@ -28,11 +28,11 @@ pre {
 
 ## Overview
 
-The `CommaSeparatedListOutputParser` is a specialized output parser in LangChain designed for generating structured outputs in the form of comma-separated lists.
+The ```CommaSeparatedListOutputParser``` is a specialized output parser in LangChain designed for generating structured outputs in the form of comma-separated lists.
 
 It simplifies the process of extracting and presenting data in a clear and concise list format, making it particularly useful for organizing information such as data points, names, items, or other structured values. By leveraging this parser, users can enhance data clarity, ensure consistent formatting, and improve workflow efficiency, especially in applications where structured outputs are essential.
 
-This tutorial demonstrates how to use the `CommaSeparatedListOutputParser` to:
+This tutorial demonstrates how to use the ```CommaSeparatedListOutputParser``` to:
 
   1. Set up and initialize the parser for generating comma-separated lists
   2. Integrate it with a prompt template and language model
@@ -43,7 +43,7 @@ This tutorial demonstrates how to use the `CommaSeparatedListOutputParser` to:
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Implementing the Comma-Separated List Output Parser](#implementing-the-comma-separated-list-output-parser)
+- [Implementing the CommaSeparatedListOutputParser](#implementing-the-commaseparatedlistoutputparser)
 - [Using Streamed Outputs](#using-streamed-outputs)
 
 ### References
@@ -58,8 +58,8 @@ This tutorial demonstrates how to use the `CommaSeparatedListOutputParser` to:
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -117,12 +117,11 @@ load_dotenv()
 
 
 
-## Implementing the Comma-Separated List Output Parser
+## Implementing the ```CommaSeparatedListOutputParser```
+If you need to generate outputs in the form of a comma-separated list, the ```CommaSeparatedListOutputParser``` from LangChain simplifies the process. Below is a step-by-step implementation:
 
-If you need to generate outputs in the form of a comma-separated list, the `CommaSeparatedListOutputParser` from LangChain simplifies the process. Below is a step-by-step implementation:
-
-### Importing Required Modules
-Start by importing the necessary modules and initializing the `CommaSeparatedListOutputParser`. Retrieve the formatting instructions from the parser to guide the output structure.
+### 1. Importing Required Modules
+Start by importing the necessary modules and initializing the ```CommaSeparatedListOutputParser```. Retrieve the formatting instructions from the parser to guide the output structure.
 
 
 ```python
@@ -139,8 +138,8 @@ print(format_instructions)
 <pre class="custom">Your response should be a list of comma separated values, eg: `foo, bar, baz` or `foo,bar,baz`
 </pre>
 
-### Creating the Prompt Template
-Define a `PromptTemplate` that dynamically generates a list of items. The placeholder subject will be replaced with the desired topic during execution.
+### 2. Creating the Prompt Template
+Define a ```PromptTemplate``` that dynamically generates a list of items. The placeholder subject will be replaced with the desired topic during execution.
 
 ```python
 from langchain_core.prompts import PromptTemplate
@@ -159,8 +158,8 @@ print(prompt)
 <pre class="custom">input_variables=['subject'] input_types={} partial_variables={'format_instructions': 'Your response should be a list of comma separated values, eg: `foo, bar, baz` or `foo,bar,baz`'} template='List five {subject}.\n{format_instructions}'
 </pre>
 
-### Integrating with ChatOpenAI and Running the Chain
-Combine the `PromptTemplate`, `ChatOpenAI` model, and `CommaSeparatedListOutputParser` into a chain. Finally, run the chain with a specific `subject` to produce results.
+### 3. Integrating with ```ChatOpenAI``` and Running the Chain
+Combine the ```PromptTemplate```, ```ChatOpenAI``` model, and ```CommaSeparatedListOutputParser``` into a chain. Finally, run the chain with a specific ```subject``` to produce results.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -179,8 +178,8 @@ print(result)
 <pre class="custom">['Gyeongbokgung Palace', 'N Seoul Tower', 'Bukchon Hanok Village', 'Seongsan Ilchulbong Peak', 'Haeundae Beach']
 </pre>
 
-### Accessing Data with Python Indexing
-Since the `CommaSeparatedListOutputParser` automatically formats the output as a Python list, you can easily access individual elements using indexing.
+### 4. Accessing Data with Python Indexing
+Since the ```CommaSeparatedListOutputParser``` automatically formats the output as a Python list, you can easily access individual elements using indexing.
 
 ```python
 # Accessing specific elements using Python indexing
@@ -195,7 +194,7 @@ print("Last Landmark:", result[-1])
 </pre>
 
 ## Using Streamed Outputs
-For larger outputs or real-time feedback, you can process the results using the `stream` method. This allows you to handle data piece by piece as it is generated.
+For larger outputs or real-time feedback, you can process the results using the ```stream``` method. This allows you to handle data piece by piece as it is generated.
 
 ```python
 # Iterate through the streamed output for a subject

@@ -47,22 +47,16 @@ This tutorial covers an explanation of various Chat models (OpenAI, Anthropic, e
 
 - [OpenAI Model Specifications](https://platform.openai.com/docs/models)
 - [LangChain ChatOpenAI API reference](https://python.langchain.com/api_reference/openai/chat_models/langchain_openai.chat_models.base.ChatOpenAI.html)
-
 - [Anthropic Model Specifications](https://docs.anthropic.com/en/docs/about-claude/models)
 - [LangChain ChatAnthropic API reference](https://python.langchain.com/api_reference/anthropic/chat_models/langchain_anthropic.chat_models.ChatAnthropic.html)
-
 - [Perplexity Model Cards](https://docs.perplexity.ai/guides/model-cards)
 - [LangChain ChatPerplexity API reference](https://api.python.langchain.com/en/latest/community/chat_models/langchain_community.chat_models.perplexity.ChatPerplexity.html)
-
 - [Together AI Model Specifications](https://api.together.xyz/models)
 - [LangChain ChatTogether API reference](https://python.langchain.com/api_reference/together/chat_models/langchain_together.chat_models.ChatTogether.html)
-
 - [Cohere Model Specifications](https://docs.cohere.com/docs/models)
 - [LangChain ChatCohere API reference](https://python.langchain.com/api_reference/cohere/chat_models/langchain_cohere.chat_models.ChatCohere.html)
-
 - [Upstage Model Specifications](https://console.upstage.ai/docs/capabilities/chat)
 - [LangChain ChatUpstage API reference](https://python.langchain.com/api_reference/upstage/chat_models/langchain_upstage.chat_models.ChatUpstage.html)
-
 - [HuggingFace Open LLM Leaderboard](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard)
 - [Vellum LLM Leaderboard](https://www.vellum.ai/llm-leaderboard)
 ----
@@ -124,7 +118,7 @@ If you want to get automated tracing of your model calls you can also set your L
 
 ## OpenAI
 
-OpenAI is an AI research and deployment company based in San Francisco, dedicated to ensuring that artificial general intelligence benefits all of humanity. Models include the GPT series of language models, such as `GPT-4` and `GPT-4o`, as well as the `DALL·E` series for image generation.
+OpenAI is an AI research and deployment company based in San Francisco, dedicated to ensuring that artificial general intelligence benefits all of humanity. Models include the GPT series of language models, such as **GPT-4** and **GPT-4o**, as well as the **DALL·E** series for image generation.
 
 ### Model Description
 
@@ -173,10 +167,10 @@ model = ChatOpenAI(
 )
 ```
 
-The code provided assumes that your `OPENAI_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, you can use the following code:
+The code provided assumes that your `OPENAI_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
 
-``` python
-model = ChatOpenAI(temperature=0, api_key="YOUR_API_KEY_HERE", model="gpt-4o-mini")
+```python
+# model = ChatOpenAI(temperature=0, api_key="YOUR_API_KEY_HERE", model="gpt-4o-mini")
 ```
 
 ```python
@@ -197,7 +191,7 @@ for token in response:
 ## Anthropic
 
 Anthropic is an AI safety and research company based in San Francisco, dedicated to building reliable, interpretable, and steerable AI systems.   
-Their primary offering is the `Claude` family of large language models, including `Claude 3.5 Sonnet` and `Claude 3.5 Haiku`, designed for various applications such as reasoning, coding, and multilingual tasks.
+Their primary offering is the **Claude family** of large language models, including **Claude 3.5 Sonnet** and **Claude 3.5 Haiku**, designed for various applications such as reasoning, coding, and multilingual tasks.
 
 ### Model Description
 
@@ -243,10 +237,10 @@ model = ChatAnthropic(
 )
 ```
 
-The code provided assumes that your `ANTHROPIC_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, you can use the following code:
+The code provided assumes that your `ANTHROPIC_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
 
-``` python
-model = ChatAnthropic(temperature=0, api_key="YOUR_API_KEY_HERE", model="claude-3-5-haiku-latest")
+```python
+# model = ChatAnthropic(temperature=0, api_key="YOUR_API_KEY_HERE", model="claude-3-5-haiku-latest")
 ```
 
 ```python
@@ -288,13 +282,13 @@ A detailed specification of these models can be found at the following link:
 
 The basic API options are as follows:
 
-- `model` : `str`  
-  Specifies the language model to use (e.g., `"llama-3.1-sonar-small-128k-online"`). This determines the performance and capabilities of the response.
+- `model` : str  
+  Specifies the language model to use (e.g., **llama-3.1-sonar-small-128k-online**). This determines the performance and capabilities of the response.
 
-- `temperature` : `float` = 0.7  
+- `temperature` : float = 0.7  
   Controls the randomness of responses. A value of 0 is deterministic, while 1 allows for the most random outputs.
 
-- `max_tokens` : `int` | `None` = `None`    
+- `max_tokens` : int | None = None    
   Specifies the maximum number of tokens to generate in the chat completion. This option controls the length of text the model can generate in one instance.
 
 For more detailed information about the available API options, visit [Perplexity API Reference](https://api.python.langchain.com/en/latest/community/chat_models/langchain_community.chat_models.perplexity.ChatPerplexity.html).
@@ -315,10 +309,10 @@ model = ChatPerplexity(
 )
 ```
 
-The code provided assumes that your `PPLX_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, you can use the following code:
+The code provided assumes that your `PPLX_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
 
-``` python
-model = ChatPerplexity(temperature=0, pplx_api_key="YOUR_API_KEY_HERE", model="llama-3.1-sonar-large-128k-online")
+```python
+# model = ChatPerplexity(temperature=0, pplx_api_key="YOUR_API_KEY_HERE", model="llama-3.1-sonar-large-128k-online")
 ```
 
 ```python
@@ -347,7 +341,7 @@ Together AI is a San Francisco-based company specializing in decentralized cloud
 
 ### Together Inference  
 - Offers the fastest inference stack in the industry, up to 4x faster than vLLM.
-- Operates at 11x lower cost compared to GPT-4 when using Llama-3 70B.
+- Operates at 11x lower cost compared to **GPT-4** when using **Llama-3 70B**.
 - Features auto-scaling capabilities that adjust capacity based on API request volume.
 
 ### Together Custom Models  
@@ -365,7 +359,7 @@ Together AI is a San Francisco-based company specializing in decentralized cloud
 - Provides users with complete control over data storage.
 
 ### Supported Models  
-- Supports over 200 open-source models, including Google Gemma, Meta's Llama 3.3, Qwen2.5, and Mistral/Mixtral from Mistral AI.
+- Supports over 200 open-source models, including Google Gemma, Meta's **Llama 3.3**, **Qwen2.5**, and **Mistral**/**Mixtral** from Mistral AI.
 - Enables multimodal AI models to process various types of data.
 - A detailed specification of these models can be found at the following link:  
   [Together AI Models](https://api.together.xyz/models)
@@ -402,10 +396,10 @@ model = ChatTogether(
 )
 ```
 
-The code provided assumes that your `TOGETHER_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, you can use the following code:
+The code provided assumes that your `TOGETHER_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
 
-``` python
-model = ChatTogether(temperature=0, api_key="YOUR_API_KEY_HERE", model="meta-llama/Llama-3.3-70B-Instruct-Turbo")
+```python
+# model = ChatTogether(temperature=0, api_key="YOUR_API_KEY_HERE", model="meta-llama/Llama-3.3-70B-Instruct-Turbo")
 ```
 
 ```python
@@ -487,10 +481,10 @@ model = ChatCohere(
 )
 ```
 
-The code provided assumes that your `COHERE_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, you can use the following code:
+The code provided assumes that your `COHERE_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
 
-``` python
-model = ChatCohere(temperature=0, cohere_api_key="YOUR_API_KEY_HERE", model="command-r7b-12-2024")
+```python
+# model = ChatCohere(temperature=0, cohere_api_key="YOUR_API_KEY_HERE", model="command-r7b-12-2024")
 ```
 
 ```python
@@ -580,10 +574,10 @@ model = ChatUpstage(
 )
 ```
 
-The code provided assumes that your `UPSTAGE_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, you can use the following code:
+The code provided assumes that your `UPSTAGE_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
 
-``` python
-model = ChatUpstage(temperature=0, upstage_api_key="YOUR_API_KEY_HERE", model="solar-mini")
+```python
+# model = ChatUpstage(temperature=0, upstage_api_key="YOUR_API_KEY_HERE", model="solar-mini")
 ```
 
 ```python

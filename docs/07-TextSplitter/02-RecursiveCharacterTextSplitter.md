@@ -28,27 +28,21 @@ pre {
 
 ## Overview
 
-This tutorial will show you how to use the `RecursiveCharacterTextSplitter`. 
+This tutorial explains how to use the `RecursiveCharacterTextSplitter`, the recommended way to split text in LangChain.
 
-This is the recommended way to split text.
+The `RecursiveCharacterTextSplitter` works by taking a list of characters and attempting to split the text into smaller pieces based on that list. It continues splitting until the pieces are sufficiently small.
 
-It works by taking a list of characters as a parameter.
+By default, the character list is **['\\n\\n', '\\n', ' \", \"']**, which means it recursively splits in the following order: **paragraph** -> **sentence** -> **word**. This prioritizes keeping paragraphs, then sentences, then words together as much as possible, as these are considered the most semantically related units.
 
-It tries to split the text into smaller pieces in the order of the given character list until the pieces are very small.
-
-By default, the character lists are **['\n\n', '\n', ' ", "']**.
-
-It recursively splits in the following order: **paragraph** -> **sentence** -> **word**.
-
-This means that paragraphs (then sentences, then words) are considered to be the most semantically related pieces of text, so we want to keep them together as much as possible.
-
-1. How the text is split: by a list of characters (**[‘\n\n’, ‘\n’, ‘ “, ”’]**).
-2. The chunk size is measured by the number of characters.
+Here's a summary of how it works:
+1. Splitting is done by a list of characters (**[‘\\n\\n’, ‘\\n’, ‘ “, ”’]**).
+2. Chunk size is measured by the number of characters.
 
 ### Table of Contents
 
 - [Overview](#overview)
-- [RecursiveCharacterTextSplitter Example](#recursivecharactertextsplitter-example)
+- [Environement Setup](#environment-setup)
+- [Example Usage of RecursiveCharacterTextSplitter](#example-usage-of-recursivecharactertextsplitter)
 
 ### References
 
@@ -112,12 +106,10 @@ load_dotenv()
 
 
 
-## RecursiveCharacterTextSplitter Example
+## Example Usage of RecursiveCharacterTextSplitter
 
-Read a file for the `RecursiveCharacterTextSplitter` exercise.
-
-- Open the **appendix-keywords.txt** file and read its contents.
-- Save the text to the **file** variable.
+This example demonstrates how to use the `RecursiveCharacterTextSplitter` to split text into smaller chunks.
+1. Open the text file `appendix-keywords.txt` and read its contents and store this text in a variable named `file`.
 
 ```python
 # Open the appendix-keywords.txt file to create a file object named f.
@@ -125,7 +117,7 @@ with open("./data/appendix-keywords.txt") as f:
     file = f.read()  # Reads the contents of the file and stores them in the file variable.
 ```
 
-Output some of the contents of the file read from the file.
+2. Display some of the content read from the `file`.
 
 ```python
 # Output the top 500 characters read from the file.
@@ -143,12 +135,12 @@ print(file[:500])
     Definition: Embedding is the process of converting textual data, such as words or sentences, into a low-dimensional, continuous vector. This allows computers to unders
 </pre>
 
-Example of using `RecursiveCharacterTextSplitter` to split text into small chunks.
+3. Now, create a `RecursiveCharacterTextSplitter` with the following parameters:
 
-- Set **chunk_size** to 250 to limit the size of each chunk.
-- Set **chunk_overlap** to 50 to allow 50 characters of overlap between neighbouring chunks.
-- Use the **len** function as **length_function** to calculate the length of the text.
-- Set **is_separator_regex** to **False** to disable the use of regular expressions as separators.
+- `chunk_size` = 250 (limits each chunk to 250 characters)
+- `chunk_overlap` = 50 (allows 50 characters of overlap between chunks)
+- `length_function` = `len()` (specifies that built-in `len()` function for length calculation)
+- `is_separator_regex` = `False` (disables regular expression separators).
 
 ```python
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -165,9 +157,8 @@ text_splitter = RecursiveCharacterTextSplitter(
 )
 ```
 
-- Use **text_splitter** to split the **file** text into documents.
-- The split documents are stored in the **texts** list.
-- Print the first and second documents of the split document via **print(texts[0])** and **print(texts[1])**.
+4. Use the `text_splitter` to split the text stored in the `file` variable into a list of `Document` objects. This list will be stored in a variable called `texts`.
+5. Print the first and second documents using `print(texts[0])` and `print(texts[1])`.
 
 ```python
 # Split the file text into documents using text_splitter.
@@ -183,7 +174,7 @@ print(texts[1])  # Output the second document of the split document.
     Example: Vectors of word embeddings can be stored in a database for quick access.'
 </pre>
 
-Use the `text_splitter.split_text()` function to split the **file** text.
+Alternatively, you can also use the `text_splitter.split_text()` function to split the `file` text.
 
 ```python
 # Splits the text and returns the first two elements of the split text.

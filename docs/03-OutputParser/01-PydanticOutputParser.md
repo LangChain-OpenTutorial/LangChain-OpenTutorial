@@ -29,33 +29,36 @@ pre {
 ## Overview
 
 
-This tutorial covers how to perform `PydanticOutputParser` using `pydantic`.
+This tutorial covers how to perform ```PydanticOutputParser``` using ```pydantic```.
 
-The `PydanticOutputParser` is a class that helps transform the output of a language model into **structured information**. This class can **provide the information you need in a clear and organized form** instead of a simple text response.
-
-By utilizing this class, you transform the output of your language model to fit a specific data model, making it easier to process and utilize the information.
-
-## Main Method
-
-A `PydanticOutputParser` primarily requires the implementation of **two core methods**.
+The ```PydanticOutputParser``` is a class that helps transform the output of a language model into **structured information** . This class can **provide the information you need in a clear and organized form** instead of a simple text response.
 
 
-1. **`get_format_instructions()`**: Provide instructions that define the format of the information that the language model should output. 
+By utilizing this class, you can transform the output of your language model to fit a specific data model, making it easier to process and utilize the information
+
+### Main Method
+
+A ```PydanticOutputParser``` primarily requires the implementation of **two core methods**.
+
+
+1. **```get_format_instructions()```**: Provide instructions that define the format of the information that the language model should output. 
 For example, you can return instructions as a string that describes the fields of data that the language model should output and how they should be formatted. 
 These instructions are very important for the language model to structure the output and transform it to fit your specific data model.
 
-2. **`parse()`**: Takes the output of the language model (assumed to be a string) and analyzes and transforms it into a specific structure. 
+2. **```parse()```**: Takes the output of the language model (assumed to be a string) and analyzes and transforms it into a specific structure. 
 Use a tool like Pydantic to validate the input string against a predefined schema and transform it into a data structure that follows that schema.
 
 
 ### Table of Contents
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [PydanticOutputParser](#Use_PydanticOutputParser)
+- [A Chain with the Basic StrOutputParser](#a-chain-with-the-basic-stroutputparser)
+- [Using the PydanticOutputParser](#using-the-pydanticoutputparser)
 
 ### References
 
 - [Pydantic Official Document](https://docs.pydantic.dev/latest/)
+---
 
 
 ## Environment Setup
@@ -63,8 +66,8 @@ Use a tool like Pydantic to validate the input string against a predefined schem
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setups, useful functions, and utilities for tutorials. 
-- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setups, useful functions, and utilities for tutorials. 
+- You can check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -108,7 +111,7 @@ set_env(
 </pre>
 
 Environment variables have been set successfully.
-You can alternatively set API keys, such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys, such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -127,7 +130,7 @@ load_dotenv(override=True)
 
 
 ```python
-# Required Library Import
+# Import the required libraries
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field
@@ -136,7 +139,8 @@ from pydantic import BaseModel, Field
 llm = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
 ```
 
-Below is an example of an email conversation stored in the variable `email_conversation` .
+Below is an example of an email conversation stored in the variable ```email_conversation``` .
+
 
 
 ```python
@@ -161,7 +165,7 @@ Bike Corporation
 """
 ```
 
-Example of not using an output parser(PydanticOutputParser).
+Let's create a chain that utilizes the basic ```StrOutputParser```.
 
 ```python
 from itertools import chain
@@ -194,7 +198,7 @@ def stream_response(response, return_output=False):
     - return_output (bool, optional): If True, the function returns the concatenated response string. The default is False.
 
     Returns:
-    - str: If `return_output` is True, the concatenated response string. Otherwise, nothing is returned.
+    - str: If ```return_output``` is True, the concatenated response string. Otherwise, nothing is returned.
     """
     answer = ""
     for token in response:
@@ -270,10 +274,10 @@ print(output)
     - **Closing:** Thank you and best regards.
 </pre>
 
-## Use_PydanticOutputParser
-When provided with email content like the one above, we will parse the email information using the class defined in the `Pydantic` style below.
+## Using the ```PydanticOutputParser```
+When provided with email content like the one above, we can parse the email information using the class defined in the ```Pydantic``` style below.
 
-For reference, the `description` inside the `Field` serves as guidance for extracting key information from text-based responses. LLMs rely on this description to extract the required information. Therefore, it is crucial that this description is accurate and clear.
+For reference, the ```description``` inside the ```Field``` serves as guidance for extracting key information from text-based responses. LLMs rely on this description to extract the required information. Therefore, it is crucial that this description is accurate and clear.
 
 ```python
 class EmailSummary(BaseModel):
@@ -286,12 +290,12 @@ class EmailSummary(BaseModel):
     )
 
 
-# Create PydanticOutputParser
+# Create an output parser using the PydanticOutputParser
 parser = PydanticOutputParser(pydantic_object=EmailSummary)
 ```
 
 ```python
-# Print the instruction.
+# Print the instructions.
 print(parser.get_format_instructions())
 ```
 
@@ -306,11 +310,11 @@ print(parser.get_format_instructions())
     ```
 </pre>
 
-Defining the prompt:
+Let's define a prompt including the following variables:
 
-1. `question`: Receives the user's question.
-2. `email_conversation`: Inputs the content of the email conversation.
-3. `format`: Specifies the format.
+1. ```question```: Receives the user's question.
+2. ```email_conversation```: Inputs the content of the email conversation.
+3. ```format```: Specifies the format.
 
 
 ```python
@@ -330,14 +334,13 @@ FORMAT:
 )
 
 
-# Add partial formatting of PydanticOutputParser to format
+# Apply the partial method and fill in the ```format``` variable in advance
 prompt = prompt.partial(format=parser.get_format_instructions())
 ```
 
-Next, create a Chain.
+Next, create a chain.
 
 ```python
-# Create a chain.
 chain = prompt | llm
 ```
 
@@ -366,11 +369,9 @@ output = stream_response(response, return_output=True)
     }
     ```</pre>
 
-Finally, use the parser to parse the results and convert them into an EmailSummary object.
+Finally, use the parser to parse the results and convert them into an ```EmailSummary``` object.
 
 ```python
-# Parse the results using PydanticOutputParser.
-
 structured_output = parser.parse(output)
 print(structured_output)
 ```
@@ -378,17 +379,17 @@ print(structured_output)
 <pre class="custom">person='John' email='John@bikecorporation.me' subject='ZENESIS bike distribution cooperation and meeting schedule proposal' summary='John from Bike Corporation requests a detailed brochure for the ZENESIS bike model, including technical specifications, battery performance, and design aspects. He also proposes a meeting on January 15th at 10:00 AM to discuss collaboration possibilities.' date='January 15th, 10:00 AM'
 </pre>
 
-### Create chain with parser
+### Creating a Chain Including the ```PydanticOutputParser```
 
 You can generate the output as a Pydantic object that you define.
 
 ```python
-# Reconstruct the entire chain by adding an output parser.
+# Reconstruct the entire chain by adding an output parser
 chain = prompt | llm | parser
 ```
 
 ```python
-# Execute the chain and print the results.
+# Execute the chain and print the results
 response = chain.invoke(
     {
         "email_conversation": email_conversation,
@@ -396,16 +397,16 @@ response = chain.invoke(
     }
 )
 
-# The results are output in the form of an EmailSummary object.
+# The results are output in the form of an EmailSummary object
 print(response)
 ```
 
 <pre class="custom">person='John' email='John@bikecorporation.me' subject='ZENESIS bike distribution cooperation and meeting schedule proposal' summary='John from Bike Corporation requests a detailed brochure for the ZENESIS bike model, including technical specifications, battery performance, and design aspects. He also proposes a meeting on January 15th at 10:00 AM to discuss collaboration possibilities.' date='January 15th, 10:00 AM'
 </pre>
 
-### with_structured_output()
+### ```with_structured_output()```
 
-By using `.with_structured_output(Pydantic)`, you can add an output parser and convert the output into a Pydantic object.
+By adding an output parser using ```.with_structured_output(Pydantic)```, you can convert the output into a Pydantic object.
 
 ```python
 llm_with_structured = ChatOpenAI(
@@ -414,7 +415,7 @@ llm_with_structured = ChatOpenAI(
 ```
 
 ```python
-# Call the `invoke()` function to print the result.
+# Call the ```invoke()``` method and print the result
 answer = llm_with_structured.invoke(email_conversation)
 answer
 ```
@@ -428,4 +429,4 @@ answer
 
 **Note**
 
-One thing to note is that the `.with_structured_output()` function does not support the `stream()` function.
+One thing to note is that the ```.with_structured_output()``` method does not support the ```stream()``` method.
