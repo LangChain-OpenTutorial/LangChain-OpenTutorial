@@ -16,7 +16,7 @@ body:
   attributes:
     label: URL
     description: Provide the URL of the documentation page where the issue occurs.
-    placeholder: "https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/01-Document-Loader.ipynb"
+    placeholder: "https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/01-DocumentLoader.ipynb"
   validations:
     required: true
 
