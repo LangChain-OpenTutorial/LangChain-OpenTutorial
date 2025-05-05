@@ -34,7 +34,7 @@ class ChromaDocumentMangager(DocumentManager):
                 - version[int or None] : Version about collection
         """
         if "name" not in kwargs:
-            raise Exception("Please enter the collection name 'name'")
+            kwargs["name"] = "chroma_test"
         self.client = client  # Chroma Python SDK Client
 
         # fix hnsw:space cosine-distance `ChromaDocumentMangager`` v0.0.1
