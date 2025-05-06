@@ -188,6 +188,7 @@ def _get_embedding_collection_store(vector_dimension: Optional[int] = None) -> A
 class pgVectorIndexManager:
     def __init__(
         self,
+        client=None,
         connection=None,
         host=None,
         port=None,
@@ -198,28 +199,34 @@ class pgVectorIndexManager:
         dbname=None,
         db=None,
     ):
-        if connection is not None:
-            self.connection_str = connection
-
+        if client is not None:
+            self.client = client
+            self.connection_str = None
+            self._engine = client
         else:
-            assert host is not None, "host is missing"
-            assert port is not None, "port is missing"
-            assert (
-                username is not None or user is not None
-            ), "username(or user) is missing"
-            assert (
-                password is not None or passwd is not None
-            ), "password(or passwd) is missing"
-            assert dbname is not None or db is not None, "dbname(or db) is missing"
+            self.client = None
+            if connection is not None:
+                self.connection_str = connection
 
-            self.host = host
-            self.port = port
-            self.userName = username if username is not None else user
-            self.passWord = password if password is not None else passwd
-            self.dbName = dbname if dbname is not None else db
-            self.connection_str = f"postgresql+psycopg://{self.userName}:{self.passWord}@{self.host}:{self.port}/{self.dbName}"
+            else:
+                assert host is not None, "host is missing"
+                assert port is not None, "port is missing"
+                assert (
+                    username is not None or user is not None
+                ), "username(or user) is missing"
+                assert (
+                    password is not None or passwd is not None
+                ), "password(or passwd) is missing"
+                assert dbname is not None or db is not None, "dbname(or db) is missing"
 
-        self._engine = create_engine(url=self.connection_str, **({}))
+                self.host = host
+                self.port = port
+                self.userName = username if username is not None else user
+                self.passWord = password if password is not None else passwd
+                self.dbName = dbname if dbname is not None else db
+                self.connection_str = f"postgresql+psycopg://{self.userName}:{self.passWord}@{self.host}:{self.port}/{self.dbName}"
+
+            self._engine = create_engine(url=self.connection_str, **({}))
         self.session_maker: scoped_session
         self.session_maker = scoped_session(sessionmaker(bind=self._engine))
         self.collection_metadata = None
@@ -334,29 +341,44 @@ class pgVectorIndexManager:
             )
             return False
         else:
-            return pgVectorDocumentManager(
-                embedding=embedding,
-                connection_info=self.connection_str,
-                collection_name=collection_name,
-            )
+            if self.client is not None:
+                return pgVectorCRUDManager(
+                    embedding=embedding,
+                    client=self.client,
+                    collection_name=collection_name,
+                )
+            else:
+                return pgVectorCRUDManager(
+                    embedding=embedding,
+                    connection_info=self.connection_str,
+                    collection_name=collection_name,
+                )
 
     def get_index(self, embedding, collection_name):
-        return pgVectorDocumentManager(
+        return pgVectorCRUDManager(
             embedding=embedding,
             connection_info=self.connection_str,
             collection_name=collection_name,
         )
 
 
-class pgVectorDocumentManager(DocumentManager):
+class pgVectorCRUDManager(DocumentManager):
     def __init__(
-        self, embedding, connection_info=None, collection_name=None, distance="cosine"
+        self,
+        embedding,
+        client=None,
+        connection_info=None,
+        collection_name=None,
+        distance="cosine",
     ):
-        if isinstance(connection_info, str):
-            self.connection_info = connection_info
-        elif isinstance(connection_info, dict):
-            self.connection_info = self._make_conn_string(connection_info)
-        self._engine = create_engine(url=self.connection_info, **({}))
+        if client is not None:
+            self._engine = client
+        else:
+            if isinstance(connection_info, str):
+                self.connection_info = connection_info
+            elif isinstance(connection_info, dict):
+                self.connection_info = self._make_conn_string(connection_info)
+            self._engine = create_engine(url=self.connection_info, **({}))
         self.session_maker: scoped_session
         self.session_maker = scoped_session(sessionmaker(bind=self._engine))
         self.collection_metadata = None
@@ -791,12 +813,14 @@ class pgVectorDocumentManager(DocumentManager):
                     stmt = stmt.where(self.EmbeddingStore.id.in_(ids))
                     session.execute(stmt)
 
-                elif filter:
+                elif filter is not None:
                     filter_by = [self.EmbeddingStore.collection_id == collection.uuid]
                     filter_clauses = self._create_filter_clause(filter)
                     if filter_clauses is not None:
                         filter_by.append(filter_clauses)
                     stmt = stmt.where(filter_clauses)
+                    session.execute(stmt)
+                else:
                     session.execute(stmt)
                 session.commit()
         except Exception as e:
@@ -814,10 +838,6 @@ class pgVectorDocumentManager(DocumentManager):
         if self.embeddings:
             tags.append(self.embeddings.__class__.__name__)
         return tags
-
-    def as_retriever(self, **kwargs):
-        tags = kwargs.pop("tags", None) or [] + self._get_retriever_tags()
-        return pgVectorRetriever(vectorstore=self, tags=tags, **kwargs)
 
     def scroll(self, ids=None, filter=None, k=10, **kwargs):
         with self._make_sync_session() as session:  # type: ignore[arg-type]
@@ -857,85 +877,3 @@ class pgVectorDocumentManager(DocumentManager):
         ]
 
         return docs
-
-
-class pgVectorRetriever(BaseRetriever):
-    vectorstore: pgVectorDocumentManager
-    search_type: str = "similarity"
-    search_kwargs: dict = Field(default_factory=dict)
-    allowed_search_types: ClassVar[Collection[str]] = (
-        "similarity",
-        "similarity_score_threshold",
-        "mmr",
-    )
-
-    model_config = ConfigDict(
-        arbitrary_types_allowed=True,
-    )
-
-    @model_validator(mode="before")
-    @classmethod
-    def validate_search_type(cls, values: dict) -> Any:
-        search_type = values.get("search_type", "similarity")
-        if search_type not in cls.allowed_search_types:
-            msg = (
-                f"search_type of {search_type} not allowed. Valid values are: "
-                f"{cls.allowed_search_types}"
-            )
-            raise ValueError(msg)
-        if search_type == "similarity_score_threshold":
-            score_threshold = values.get("search_kwargs", {}).get("score_threshold")
-            if (score_threshold is None) or (not isinstance(score_threshold, float)):
-                msg = (
-                    "`score_threshold` is not specified with a float value(0~1) "
-                    "in `search_kwargs`."
-                )
-                raise ValueError(msg)
-        return values
-
-    def _get_ls_params(self, **kwargs: Any) -> LangSmithRetrieverParams:
-        """Get standard params for tracing."""
-
-        _kwargs = self.search_kwargs | kwargs
-
-        ls_params = super()._get_ls_params(**_kwargs)
-        ls_params["ls_vector_store_provider"] = self.vectorstore.__class__.__name__
-
-        if self.vectorstore.embeddings:
-            ls_params["ls_embedding_provider"] = (
-                self.vectorstore.embeddings.__class__.__name__
-            )
-        elif hasattr(self.vectorstore, "embedding") and isinstance(
-            self.vectorstore.embedding, Embeddings
-        ):
-            ls_params["ls_embedding_provider"] = (
-                self.vectorstore.embedding.__class__.__name__
-            )
-
-        return ls_params
-
-    def _get_relevant_documents(
-        self, query: str, *, run_manager, **kwargs: Any
-    ) -> list[Document]:
-        _kwargs = self.search_kwargs | kwargs
-        print(f"_kwargs: {_kwargs}")
-        if self.search_type == "similarity":
-            docs = self.vectorstore.search(query, **_kwargs)
-        else:
-            msg = f"search_type of {self.search_type} not allowed."
-            raise ValueError(msg)
-        return docs
-
-    def add_documents(self, documents: list[Document], **kwargs: Any) -> list[str]:
-        """Add documents to the vectorstore.
-
-        Args:
-            documents: Documents to add to the vectorstore.
-            **kwargs: Other keyword arguments that subclasses might use.
-
-        Returns:
-            List of IDs of the added texts.
-        """
-        texts = [doc.page_content for doc in documents]
-        metadatas = [doc.metadata for doc in documents]
-        return self.vectorstore.upsert(texts, metadatas, **kwargs)

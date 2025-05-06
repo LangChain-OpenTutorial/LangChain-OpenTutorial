@@ -67,7 +67,18 @@ class DocumentManager(ABC):
 New Interface for VectorDB CRUD
 """
 
-from typing import Optional, List, Iterable, Any, Dict
+from typing import Optional, List, Iterable, Any, Dict, Callable
+from langchain_core.retrievers import BaseRetriever
+from langchain_core.documents import Document
+from pydantic import Field
+
+
+class LightCustomRetriever(BaseRetriever):
+    search_fn: Callable
+    search_kwargs: Dict = Field(default_factory=dict)
+
+    def get_relevant_documents(self, query: str) -> List[Document]:
+        return self.search_fn(query, **self.search_kwargs)
 
 
 class DocumentManager(ABC):
@@ -128,3 +139,31 @@ class DocumentManager(ABC):
 
         """
         pass
+
+    def as_retriever(
+        self, search_fn: Callable, search_kwargs: Dict = {}
+    ) -> LightCustomRetriever:
+        """
+        Create a LangChain-compatible retriever using a custom search function.
+
+        This method wraps a provided search function and its keyword arguments
+        into a `LightCustomRetriever` object that conforms to LangChain's `BaseRetriever` interface.
+        Useful for integrating lightweight, SDK-based CRUD search implementations with LangChain chains.
+
+        Args:
+            search_fn (Callable):
+                The function that performs the similarity search and returns a list of `Document` objects.
+                Typically this is the `search()` method of the DocumentManager.
+            search_kwargs (Dict, optional):
+                Additional keyword arguments to pass into the `search_fn`.
+                Example: {'k': 5} to retrieve top 5 similar documents.
+
+        Returns:
+            LightCustomRetriever:
+                A retriever instance that can be used with LangChain chains like `RetrievalQA`
+                or `ConversationalRetrievalChain`.
+        """
+        retriever = LightCustomRetriever(
+            search_fn=search_fn, search_kwargs=search_kwargs
+        )
+        return retriever
