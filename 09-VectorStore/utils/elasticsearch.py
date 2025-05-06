@@ -6,9 +6,10 @@ import logging
 
 # Elasticsearch
 from elasticsearch import Elasticsearch, helpers
+from elasticsearch.exceptions import NotFoundError
 
 # Langchain
-from langchain_elasticsearch import ElasticsearchStore
+from langchain_openai import OpenAIEmbeddings
 
 # Interface
 from utils.vectordbinterface import DocumentManager
@@ -18,67 +19,55 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class ElasticsearchConnectionManager:
-    def __init__(
-        self,
-        es_url: str = "http://localhost:9200",
-        api_key: Optional[str] = None,
-        embedding_model: Any = None,
-        index_name: str = "langchain_tutorial_es",
-    ) -> None:
+class ElasticsearchIndexManager:
+    def __init__(self, client):
+        self.es = client
+
+    def get_embedding_dims(self, embedding_model) -> int:
         """
-        Initialize the ElasticsearchConnectionManager with a connection to the Elasticsearch instance
-        and initialize the ElasticsearchStore for vector operations.
+        Get embedding dimension size from the embedding model.
 
         Parameters:
-            es_url (str): URL of the Elasticsearch host.
-            api_key (Optional[str]): API key for authentication (optional).
-            embedding_model (Any): Object responsible for generating text embeddings.
-            index_name (str): Elasticsearch index name.
+            embedding_model: An embedding model instance.
+
+        Returns:
+            int: Dimension of the embedding.
         """
-        self.es_url = es_url
-        self.api_key = api_key
-        self.embedding_model = embedding_model  # Store the embedding model
-        self.es = Elasticsearch(
-            es_url, api_key=api_key, timeout=120, retry_on_timeout=True
-        )
-
-        # Test connection
-        if self.es.ping():
-            logger.info("✅ Successfully connected to Elasticsearch!")
-        else:
-            raise ConnectionError("❌ Failed to connect to Elasticsearch.")
-
-        # Initialize vector store
-        try:
-            self.vector_store = ElasticsearchStore(
-                index_name=index_name,
-                embedding=self.embedding_model,
-                es_url=self.es_url,
-                es_api_key=self.api_key,
-            )
-            logger.info(f"✅ Vector store initialized for index '{index_name}'.")
-        except Exception as e:
-            logger.error(f"❌ Error initializing vector store: {e}")
-            raise RuntimeError(f"Error initializing vector store: {e}")
-
+        test_vector = embedding_model.embed_query("test")
+        return len(test_vector)
+    
     def create_index(
         self,
+        embedding,
         index_name: str,
-        mapping: Optional[Dict] = None,
+        metric: str = "cosine",
         settings: Optional[Dict] = None,
     ) -> str:
         """
-        Create an Elasticsearch index with optional mapping and settings.
+        Create an Elasticsearch index using embedding dimension from the embedding model.
 
         Parameters:
             index_name (str): Name of the index to create.
-            mapping (Optional[Dict]): Mapping definition for the index.
-            settings (Optional[Dict]): Settings definition for the index.
+            embedding_model: An embedding model instance to determine dimension.
+            settings (Optional[Dict]): Additional settings definition for the index.
 
         Returns:
             str: Success or warning message.
         """
+        dims = self.get_embedding_dims(embedding)
+        
+        mapping = {
+            "properties": {
+                "metadata": {"properties": {"doc_id": {"type": "keyword"}}},
+                "text": {"type": "text"},  # Field for storing textual content
+                "vector": {  # Field for storing vector embeddings
+                    "type": "dense_vector",  # Specifies dense vector type
+                    "dims": dims,  # Number of dimensions in the vector
+                    "index": True,  # Enable indexing for vector search
+                    "similarity": metric,  # Use cosine similarity for vector comparisons
+                },
+            }
+        }
         try:
             if not self.es.indices.exists(index=index_name):
                 body = {}
@@ -87,9 +76,21 @@ class ElasticsearchConnectionManager:
                 if settings:
                     body["settings"] = settings
                 self.es.indices.create(index=index_name, body=body)
-                return f"✅ Index '{index_name}' created successfully."
+                print(f"✅ Index '{index_name}' created successfully.")
+                return {
+                    "status": "created",
+                    "index_name": index_name,
+                    "embedding_dims": dims,
+                    "metric": metric,
+                }
             else:
-                return f"⚠️ Index '{index_name}' already exists. Skipping creation."
+                print(f"⚠️ Index '{index_name}' already exists. Skipping creation.")
+                return {
+                    "status": "exists",
+                    "index_name": index_name,
+                    "embedding_dims": dims,
+                    "metric": metric,
+                }
         except Exception as e:
             logger.error(f"❌ Error creating index '{index_name}': {e}")
             raise
@@ -115,51 +116,28 @@ class ElasticsearchConnectionManager:
             raise
 
 
-class ElasticsearchDocumentManager(DocumentManager):
-    def __init__(self, connection_manager: ElasticsearchConnectionManager) -> None:
+class ElasticsearchCRUDManager(DocumentManager):
+    def __init__(self, client, index_name, embedding):
+        self.es = client
+        self.index_name = index_name
+        self.embedding = embedding
+    
+    def _embed_doc(self, texts) -> List[float]:
         """
-        Initialize the ElasticsearchDocumentManager with a connection manager.
-
-        Parameters:
-            connection_manager (ElasticsearchConnectionManager): The connection manager for Elasticsearch.
+        Embed texts
+        
+        Args:
+        - texts: List of text
+        
+        Return:
+        List of floats.
         """
-        self.connection_manager = connection_manager
-        self.es = connection_manager.es
-        self.embedding_model = (
-            connection_manager.embedding_model
-        )  # Access the embedding model
-
-    def prepare_documents_with_ids(
-        self, docs: List[str], embedded_documents: List[List[float]]
-    ) -> Tuple[List[Dict], List[str]]:
-        """
-        Prepare a list of documents with unique IDs and their corresponding embeddings.
-
-        Parameters:
-            docs (List[str]): List of document texts.
-            embedded_documents (List[List[float]]): List of embedding vectors corresponding to the documents.
-
-        Returns:
-            Tuple[List[Dict], List[str]]: A tuple containing:
-                - List of document dictionaries with `doc_id`, `text`, and `vector`.
-                - List of unique document IDs (`doc_ids`).
-        """
-        # Generate unique IDs for each document
-        doc_ids = [str(uuid4()) for _ in range(len(docs))]
-
-        # Prepare the document list with IDs, texts, and embeddings
-        documents = [
-            {"doc_id": doc_id, "text": doc, "vector": embedding}
-            for doc, doc_id, embedding in zip(docs, doc_ids, embedded_documents)
-        ]
-
-        return documents, doc_ids
+        embedded_documents = self.embedding.embed_documents(texts)
+        return embedded_documents
 
     def upsert(
         self,
-        index_name: str,
         texts: Iterable[str],
-        embedded_documents: List[List[float]],
         metadatas: Optional[List[Dict]] = None,
         ids: Optional[List[str]] = None,
         **kwargs: Any,
@@ -169,22 +147,36 @@ class ElasticsearchDocumentManager(DocumentManager):
 
         Parameters:
             texts (Iterable[str]): List of text documents to upsert.
-            embedded_documents (List[List[float]]): List of embedding vectors corresponding to the documents.
             metadatas (Optional[List[Dict]]): List of metadata dictionaries for each document.
             ids (Optional[List[str]]): List of document IDs.
             **kwargs (Any): Additional keyword arguments.
         """
-        documents, doc_ids = self.prepare_documents_with_ids(texts, embedded_documents)
-        self._bulk_upsert(index_name=index_name, documents=documents)
-        self.doc_ids = doc_ids
+        # 1. Generate embeddings
+        embedded_documents = self._embed_doc(texts)
+        # 2. Structure documents accordingly
+        documents = []
+        for i, (text, vector) in enumerate(zip(texts, embedded_documents)):
+            doc_id = ids[i] if ids else str(uuid4())
+            metadata = metadatas[i] if metadatas else {}
+            doc = {
+                "text": text,
+                "vector": vector,
+                "metadata": {
+                    "doc_id": doc_id,
+                    **metadata
+                }
+            }
+            documents.append(doc)
+        # 3. bulk upsert
+        self._bulk_upsert(index_name=self.index_name, documents=documents)
 
     def upsert_parallel(
         self,
-        index_name: str,
         texts: Iterable[str],
-        embedded_documents: List[List[float]],
         metadatas: Optional[List[Dict]] = None,
         ids: Optional[List[str]] = None,
+        batch_size: int = 100,
+        max_workers: int = 4,
         **kwargs: Any,
     ) -> None:
         """
@@ -192,77 +184,139 @@ class ElasticsearchDocumentManager(DocumentManager):
 
         Parameters:
             texts (Iterable[str]): List of text documents to upsert.
-            embedded_documents (List[List[float]]): List of embedding vectors corresponding to the documents.
             metadatas (Optional[List[Dict]]): List of metadata dictionaries for each document.
             ids (Optional[List[str]]): List of document IDs.
+            batch_size (int): Number of documents per batch.
+            max_workers (int): Number of parallel threads.
             **kwargs (Any): Additional keyword arguments.
         """
-        documents, doc_ids = self.prepare_documents_with_ids(texts, embedded_documents)
-        self._parallel_bulk_upsert(index_name=index_name, documents=documents)
-        self.doc_ids = doc_ids
+        # 1. Generate embeddings
+        embedded_documents = self._embed_doc(texts)
+        # 2. Structure documents accordingly
+        documents = []
+        for i, (text, vector) in enumerate(zip(texts, embedded_documents)):
+            doc_id = ids[i] if ids else str(uuid4())
+            metadata = metadatas[i] if metadatas else {}
+            doc = {
+                "text": text,
+                "vector": vector,
+                "metadata": {
+                    "doc_id": doc_id,
+                    **metadata
+                }
+            }
+            documents.append(doc)
+        # 3. parallel bulk upsert
+        self._parallel_bulk_upsert(
+            index_name=self.index_name,
+            documents=documents,
+            batch_size=batch_size,
+            max_workers=max_workers
+        )
 
-    def search(
+    def search_by_embedding(
         self,
-        index_name: str = "langchain_tutorial_es",
-        query: str = None,
+        query: str,
         k: int = 10,
-        use_similarity: bool = False,
-        keyword: Optional[str] = None,
+        filters: Optional[dict] = None,
         **kwargs: Any,
-    ) -> List[Dict]:
+    ) -> list:
         """
-        Search for documents using different methods.
+        Search for documents using cosine similarity on dense vector embeddings, with optional metadata filters.
 
         Parameters:
             query (str): The search query.
             k (int): Number of top results to retrieve.
-            use_similarity (bool): Whether to use similarity search.
-            keyword (Optional[str]): Keyword for hybrid search.
+            filters (Optional[dict]): Metadata filters, e.g. {"title": "Chapter 4"}
 
         Returns:
-            List[Dict]: A list of documents.
+            List[Document]: A list of LangChain Document objects sorted by similarity.
         """
-        if not use_similarity:
+        from langchain.schema import Document
+        try:
+            query_vector = self.embedding.embed_query(query)
+            # filter 쿼리 생성
+            filter_clauses = []
+            if filters:
+                for key, value in filters.items():
+                    filter_clauses.append({"match": {f"metadata.{key}": value}})
+            base_query = {"bool": {"filter": filter_clauses}} if filter_clauses else {"match_all": {}}
+            response = self.es.search(
+                index=self.index_name,
+                body={
+                    "size": k,
+                    "query": {
+                        "script_score": {
+                            "query": base_query,
+                            "script": {
+                                "source": "cosineSimilarity(params.query_vector, 'vector') + 1.0",
+                                "params": {"query_vector": query_vector}
+                            }
+                        }
+                    }
+                }
+            )
+            hits = response["hits"]["hits"]
+            documents = [
+                Document(
+                    page_content=hit["_source"]["text"],
+                    metadata={**hit["_source"].get("metadata", {}), "score": hit["_score"] / 2}
+                )
+                for hit in hits
+            ]
+            return documents
+        except Exception as e:
+            logger.error(f"❌ Error in embedding similarity search: {e}")
+            return []
+
+    def search(
+        self,
+        query: str = None,
+        k: int = 10,
+        use_similarity: bool = True,
+        filters: Optional[dict] = None,
+        **kwargs: Any,
+    ) -> list:
+        """
+        Search for documents using either BM25 match or cosine similarity on dense vectors, with optional metadata filters.
+
+        Parameters:
+            query (str): The search query.
+            k (int): Number of top results to retrieve.
+            use_similarity (bool): Whether to use cosine similarity search.
+            filters (Optional[dict]): Metadata filters, e.g. {"title": "Chapter 4"}
+
+        Returns:
+            List[Document]: A list of LangChain Document objects.
+        """
+        if use_similarity:
+            return self.search_by_embedding(query=query, k=k, filters=filters)
+        else:
+            from langchain.schema import Document
             try:
+                must_clauses = [{"match": {"text": query}}] if query else []
+                if filters:
+                    for key, value in filters.items():
+                        must_clauses.append({"match": {f"metadata.{key}": value}})
+                es_query = {"query": {"bool": {"must": must_clauses}}}
                 response = self.es.search(
-                    index=index_name,
-                    body={"query": {"match": {"text": query}}},
+                    index=self.index_name,
+                    body=es_query,
                 )["hits"]["hits"][:k]
-                documents = [hit["_source"]["text"] for hit in response]
+                documents = [
+                    Document(
+                        page_content=hit["_source"]["text"],
+                        metadata=hit["_source"].get("metadata", {})
+                    )
+                    for hit in response
+                ]
                 return documents
             except Exception as e:
                 logger.error(f"❌ Error searching documents: {e}")
                 return []
-        else:
-            if keyword:
-                try:
-                    results = self.connection_manager.vector_store.similarity_search_with_score(
-                        query=query,
-                        k=k,
-                        filter=[{"term": {"text": keyword}}],
-                    )
-                    logger.info(
-                        f"✅ Hybrid search completed. Found {len(results)} results."
-                    )
-                    return results
-                except Exception as e:
-                    logger.error(f"❌ Error in hybrid search with score: {e}")
-                    return []
-            else:
-                try:
-                    results = self.connection_manager.vector_store.similarity_search(
-                        query=query, k=k
-                    )
-                    logger.info(f"✅ Found {len(results)} similar documents.")
-                    documents = [result.page_content for result in results]
-                    return documents
-                except Exception as e:
-                    logger.error(f"❌ Error in similarity search: {e}")
-                    return []
 
     def delete(
         self,
-        index_name: str,
         ids: Optional[List[str]] = None,
         filters: Optional[Dict] = None,
         **kwargs: Any,
@@ -271,22 +325,34 @@ class ElasticsearchDocumentManager(DocumentManager):
         Delete documents from Elasticsearch.
 
         Parameters:
-            ids (Optional[List[str]]): List of document IDs to delete.
-            filters (Optional[Dict]): Query to filter documents for deletion.
+            ids (Optional[List[str]]): List of metadata.doc_id values to delete.
+            filters (Optional[Dict]): Metadata filters for deletion, e.g. {"title": "chapter 6"}
             **kwargs (Any): Additional keyword arguments.
         """
         if ids:
+            # Treat ids as metadata.doc_id, search for ES _id and delete
             for doc_id in ids:
-                self._delete_document(
-                    index_name=index_name,
-                    document_id=doc_id,
-                )
+                # Search for documents with metadata.doc_id == doc_id
+                query = {"query": {"term": {"metadata.doc_id": doc_id}}}
+                response = self.es.search(index=self.index_name, body=query)
+                hits = response.get("hits", {}).get("hits", [])
+                for hit in hits:
+                    es_id = hit["_id"]
+                    self._delete_document(
+                        index_name=self.index_name,
+                        document_id=es_id,
+                    )
         elif filters:
-            self._delete_by_query(index_name=index_name, query=filters)
+            # Convert filters dict to bool/must term queries on metadata fields
+            must_clauses = []
+            for key, value in filters.items():
+                must_clauses.append({"term": {f"metadata.{key}": value}})
+            es_query = {"bool": {"must": must_clauses}} if must_clauses else {"match_all": {}}
+            self._delete_by_query(index_name=self.index_name, query=es_query)
         else:
-            # Delete all documents
+            # No ids or filters: delete all documents in the index
             self._delete_by_query(
-                index_name=index_name,
+                index_name=self.index_name,
                 query={"match_all": {}},
             )
 
@@ -303,9 +369,14 @@ class ElasticsearchDocumentManager(DocumentManager):
         """
         try:
             response = self.es.delete(index=index_name, id=document_id)
+            if response.get("result") == "not_found":
+                logger.info(f"Document {document_id} not found in index {index_name}.")
             return response
+        except NotFoundError:
+            logger.info(f"Document {document_id} not found in index {index_name}.")
+            return {}
         except Exception as e:
-            print(f"❌ Error deleting document: {e}")
+            logger.error(f"❌ Error deleting document: {e}")
             return {}
 
     def _delete_by_query(self, index_name: str, query: Dict) -> Dict:
