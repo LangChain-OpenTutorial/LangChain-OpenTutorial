@@ -21,13 +21,13 @@ pre {
 
 - Author: [hyeyeoon](https://github.com/hyeyeoon)
 - Peer Review: 
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/08-Runnable.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/08-Runnable.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/11-Reranker/03-JinaReranker.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/11-Reranker/03-JinaReranker.ipynb)
 ## Overview
 
-`Jina Reranker` is a document re-ranking and compression tool that reorders retrieved documents or results to prioritize the most relevant items. It is primarily used in information retrieval and natural language processing (NLP) tasks, designed to extract critical information more quickly and accurately from large datasets.
+```Jina Reranker``` is a document re-ranking and compression tool that reorders retrieved documents or results to prioritize the most relevant items. It is primarily used in information retrieval and natural language processing (NLP) tasks, designed to extract critical information more quickly and accurately from large datasets.
 
 ---
 
@@ -39,11 +39,11 @@ pre {
 
 - Multilingual Support
 
-    Jina Reranker supports multilingual models, such as `jina-reranker-v2-base-multilingual`, enabling the processing of data in various languages.
+    Jina Reranker supports multilingual models, such as ```jina-reranker-v2-base-multilingual```, enabling the processing of data in various languages.
 
 - Document Compression
 
-    It selects only the top N most relevant documents (`top_n`), compressing the search results to reduce noise and optimize performance.
+    It selects only the top N most relevant documents (```top_n```), compressing the search results to reduce noise and optimize performance.
 
 - Integration with LangChain
 
@@ -59,7 +59,7 @@ pre {
 
 - Relevance Score Calculation
 
-    Jina Reranker utilizes pre-trained models (e.g., `jina-reranker-v2-base-multilingual`) to calculate relevance scores for each document.
+    Jina Reranker utilizes pre-trained models (e.g., ```jina-reranker-v2-base-multilingual```) to calculate relevance scores for each document.
 
 - Document Re-ranking and Compression
 
@@ -85,8 +85,8 @@ pre {
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 **Issuing an API Key for JinaReranker**
 - Add the following to your .env file
     >JINA_API_KEY="YOUR_JINA_API_KEY"
@@ -112,7 +112,7 @@ package.install(
 )
 ```
 
-You can also load the `OPEN_API_KEY` from the `.env` file.
+You can also load the ```OPEN_API_KEY``` from the ```.env``` file.
 
 ```python
 from dotenv import load_dotenv
@@ -160,7 +160,7 @@ def pretty_print_docs(docs):
 
 - The document is split into smaller chunks for better processing.
 
-- `FAISS` is used with `OpenAI embeddings` to create a retriever.
+- ```FAISS``` is used with ```OpenAI embeddings``` to create a retriever.
 
 - The retriever processes a query to find and display the most relevant documents.
 
@@ -272,7 +272,7 @@ pretty_print_docs(docs)
 
 - Retrieved documents are compressed by selecting the top 3 (top_n=3) based on relevance.
 
-- A `ContextualCompressionRetriever` is created with the JinaRerank compressor and an existing retriever.
+- A ```ContextualCompressionRetriever``` is created with the JinaRerank compressor and an existing retriever.
 
 - The system processes a query to retrieve and compress relevant documents.
 

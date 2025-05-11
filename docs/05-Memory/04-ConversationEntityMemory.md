@@ -21,14 +21,14 @@ pre {
 
 - Author: [ulysyszh](https://github.com/ulysyszh)
 - Peer Review: [rlatjcj](https://github.com/rlatjcj), [gyjong](https://github.com/gyjong)
+- Proofread : [Juni Lee](https://www.linkedin.com/in/ee-juni) 
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/04-ConversationEntityMemory.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/04-ConversationEntityMemory.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/04-ConversationEntityMemory.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/04-ConversationEntityMemory.ipynb)
 
 ## Overview
 
-`ConversationEntityMemory` allows the conversation system to retain facts about specific entities mentioned during the dialogue.
+```ConversationEntityMemory``` allows the conversation system to retain facts about specific entities mentioned during the dialogue.
 
 It extracts information about entities from the conversation (using an LLM) and 
 accumulates knowledge about these entities over time (also using an LLM)
@@ -50,8 +50,8 @@ accumulates knowledge about these entities over time (also using an LLM)
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 
 ```python
@@ -78,9 +78,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it.
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -97,7 +97,7 @@ load_dotenv(override=True)
 
 ## Entity Memory Conversation Example
 
-This example demonstrates how to use `ConversationEntityMemory` to store and manage information about entities mentioned during a conversation. The conversation accumulates ongoing knowledge about these entities while maintaining a natural flow.
+This example demonstrates how to use ```ConversationEntityMemory``` to store and manage information about entities mentioned during a conversation. The conversation accumulates ongoing knowledge about these entities while maintaining a natural flow.
 
 
 ```python
@@ -163,7 +163,7 @@ print(response)
 </pre>
 
 ## Retrieving Entity Memory
-Let's examine the conversation history stored in memory using the `memory.entity_store.store` method to verify memory retention.
+Let's examine the conversation history stored in memory using the ```memory.entity_store.store``` method to verify memory retention.
 
 ```python
 # Print the entity memory

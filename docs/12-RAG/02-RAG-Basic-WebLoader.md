@@ -20,12 +20,11 @@ pre {
 # RAG Basic WebBaseLoader
 
 - Author: [Sunyoung Park (architectyou)](https://github.com/architectyou)
-- Design: 
 - Peer Review: 
+- Proofread : [BokyungisaGod](https://github.com/BokyungisaGod)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/02-RAG-Basic-WebLoader.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/02-RAG-Basic-WebLoader.ipynb)
 ## Overview
 
 This tutorial will cover the implementation of a news article QA app that can query the content of news articles using web data for RAG practice. This guide builds a RAG pipeline using OpenAI Chat models, Embedding, and ChromaDB vector store, utilizing Forbes News pages and Naver News pages which is the most popular news website in Korea.
@@ -75,8 +74,8 @@ The pre-processing stage involves four steps to load, split, embed, and store do
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -127,7 +126,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -156,9 +155,9 @@ In this tutorial we'll learn about the implementation of a news article QA app t
 First, through the following process, we can implement a simple indexing pipeline and RAG chain with approximately 20 lines of code.
 
 **[Note]**
-- `bs4` is a library for parsing web pages.
-- `langchain` is a library that provides various AI-related functionalities. Here, we'll specifically cover text splitting (`RecursiveCharacterTextSplitter`), document loading (`WebBaseLoader`), vector storage (`Chroma`, `FAISS`), output parsing (`StrOutputParser`), and runnable passthrough (`RunnablePassthrough`).
-- Through the `langchain_openai` module, we can use OpenAI's chatbot (`ChatOpenAI`) and embedding (`OpenAIEmbeddings`) functionalities.
+- ```bs4``` is a library for parsing web pages.
+- ```langchain``` is a library that provides various AI-related functionalities. Here, we'll specifically cover text splitting (```RecursiveCharacterTextSplitter```), document loading (```WebBaseLoader```), vector storage (```Chroma```, ```FAISS```), output parsing (```StrOutputParser```), and runnable passthrough (```RunnablePassthrough```).
+- Through the ```langchain_openai``` module, we can use OpenAI's chatbot (```ChatOpenAI```) and embedding (```OpenAIEmbeddings```) functionalities.
 
 ```python
 import bs4
@@ -173,11 +172,11 @@ from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 We implement a process that loads web page content, splits text into chunks for indexing, and then searches for relevant text snippets to generate new content.
 
-`WebBaseLoader` uses `bs4.SoupStrainer` to parse only the necessary parts from the specified web page.
+```WebBaseLoader``` uses ```bs4.SoupStrainer``` to parse only the necessary parts from the specified web page.
 
 [Note]
 
-- `bs4.SoupStrainer` allows you to conveniently retrieve desired elements from the web.
+- ```bs4.SoupStrainer``` allows you to conveniently retrieve desired elements from the web.
 
 (Example)
 
@@ -237,7 +236,7 @@ loader = WebBaseLoader(
 )
 ```
 
-`RecursiveCharacterTextSplitter` splits documents into chunks of specified size.
+```RecursiveCharacterTextSplitter``` splits documents into chunks of specified size.
 
 ```python
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
@@ -257,7 +256,7 @@ len(splits)
 
 
 
-Vector stores like `FAISS` or `Chroma` generate vector representations of documents based on these chunks.
+Vector stores like ```FAISS``` or ```Chroma``` generate vector representations of documents based on these chunks.
 
 ```python
 vectorstore = FAISS.from_documents(splits, OpenAIEmbeddings())
@@ -271,9 +270,9 @@ vectorstore = FAISS.from_documents(documents=splits, embedding=OpenAIEmbeddings(
 retriever = vectorstore.as_retriever()
 ```
 
-The retriever created through `vectorstore.as_retriever()` generates new content using the prompt fetched with `hub.pull` and the `ChatOpenAI` model.
+The retriever created through ```vectorstore.as_retriever()``` generates new content using the prompt fetched with ```hub.pull``` and the ```ChatOpenAI``` model.
 
-Finally, `StrOutputParser` parses the generated results into a string.
+Finally, ```StrOutputParser``` parses the generated results into a string.
 
 ```python
 from langchain_core.prompts import PromptTemplate
@@ -326,7 +325,7 @@ rag_chain = (
 )
 ```
 
-To use streaming output, use `stream_response`.
+To use streaming output, use ```stream_response```.
 
 ```python
 stream_response = rag_chain.stream_response(

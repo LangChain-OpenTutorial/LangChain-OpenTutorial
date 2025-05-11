@@ -20,12 +20,11 @@ pre {
 # Ollama Deep Researcher (Deepseek-R1)
 
 - Author: [Youngin Kim](https://github.com/Normalist-K)
-- Design: 
 - Peer Review: 
+- Proofread : [fastjw](https://github.com/fastjw)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/14-LangGraph-Ollama-Deep-Researcher-DeepSeek.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/14-LangGraph-Ollama-Deep-Researcher-DeepSeek.ipynb)
 ## Overview
 
 This tutorial explores how to **build a fully local AI-powered research agent** using **Ollama** and **Deepseek-R1** , an open-source large language model. The research agent is designed based on **Iterative Demonstration-Based Retrieval-Augmented Generation (IterDRAG)** , a methodology that enhances complex query resolution through **iterative query decomposition, retrieval, and synthesis** . By leveraging this structured approach, we can enable AI to **autonomously refine queries, retrieve relevant documents, and synthesize  high-quality research outputs** — all while running **entirely on your local machine** .
@@ -78,7 +77,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -104,9 +103,9 @@ package.install(
 )
 ```
 
-You can set API keys in a ` .env` file or set them manually.
+You can set API keys in a ``` .env``` file or set them manually.
 
-[Note] If you’re not using the ` .env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ``` .env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -129,8 +128,8 @@ if not load_dotenv():
 
 Ollama allows us to run **Deepseek-R1** (or other models) **directly on a local machine** , removing the need for cloud-based APIs.  
 - The model can be accessed via:  
-  ✅ **`ollama` command-line interface**  
-  ✅ **LangChain’s `ChatOllama` class** , enabling structured AI workflows  
+  ✅ **```ollama``` command-line interface**  
+  ✅ **LangChain’s ```ChatOllama``` class** , enabling structured AI workflows  
 - Supports multiple output formats, including **text, JSON, and multimodal outputs**  
 
 By using **Ollama** to serve Deepseek-R1, we can execute this **entire workflow locally** , ensuring **privacy, efficiency, and full control** over the research process.
@@ -189,9 +188,9 @@ Refer to [this blog post](https://www.substratus.ai/blog/calculating-gpu-memory-
 
 ## Using ChatOllama with DeepSeek-R1
 
-In this section, we'll explore how to utilize the `ChatOllama` class with the **deepseek-r1** model to generate web search queries in JSON format. Additionally, we'll delve into the use of `<think>` tags in **deepseek-r1** to structure the model's reasoning process.
+In this section, we'll explore how to utilize the ```ChatOllama``` class with the **deepseek-r1** model to generate web search queries in JSON format. Additionally, we'll delve into the use of ```<think>``` tags in **deepseek-r1** to structure the model's reasoning process.
 
-This tutorial does not cover the basics of **Ollama** and `ChatOllama` . 
+This tutorial does not cover the basics of **Ollama** and ```ChatOllama``` . 
 
 If you need more information, please refer to the following tutorial: **"/04-MODEL/10-Ollama.ipynb"**
 
@@ -249,8 +248,8 @@ To achieve optimal performance with DeepSeek-R1, [the model's authors](https://g
 
 - **Set temperature between 0.5 and 0.7** (0.6 is recommended) to ensure coherent responses and prevent repetition.
 - **Do not use system prompts.** Instead, provide all instructions within the user prompt.
-- **For mathematical problems, explicitly instruct the model** to reason step by step and format the final answer using `\boxed{}` .
-- **Encourage structured reasoning** by ensuring the model starts its response with `<think>\n` , as it may sometimes omit its reasoning process.
+- **For mathematical problems, explicitly instruct the model** to reason step by step and format the final answer using ```\boxed{}``` .
+- **Encourage structured reasoning** by ensuring the model starts its response with ```<think>\n``` , as it may sometimes omit its reasoning process.
 
 Following these recommendations will help maintain **consistency and accuracy** when using DeepSeek-R1.
 
@@ -509,18 +508,18 @@ pprint(msg.content)
      '2. **There are** \\(\\boxed{3}\\)** candies left after the distribution.**')
 </pre>
 
-### **What Are `<think>` Tags?**
-DeepSeek-R1 utilizes **structured reasoning** through `<think>` tags. These tags encapsulate the model’s internal thought process before delivering a final answer.
+### **What Are ```<think>``` Tags?**
+DeepSeek-R1 utilizes **structured reasoning** through ```<think>``` tags. These tags encapsulate the model’s internal thought process before delivering a final answer.
 
-The `<think>` tags exist because of the **way DeepSeek-R1 was trained**:
--  **Reinforcement Learning (RL) for Reasoning Tasks:** During training, the model was rewarded for explicitly stating its thought process within `<think>` tags.
+The ```<think>``` tags exist because of the **way DeepSeek-R1 was trained**:
+-  **Reinforcement Learning (RL) for Reasoning Tasks:** During training, the model was rewarded for explicitly stating its thought process within ```<think>``` tags.
 
 ---
 
-### **Handling `<think>` Tags in Outputs**
-While `<think>` tags enhance interpretability, there are cases where you may **want to remove them** for cleaner output in applications.
+### **Handling ```<think>``` Tags in Outputs**
+While ```<think>``` tags enhance interpretability, there are cases where you may **want to remove them** for cleaner output in applications.
 
-The following code is a hack to remove the `<think>` tags from the output.
+The following code is a hack to remove the ```<think>``` tags from the output.
 
 ```python
 think_output = msg.content
@@ -603,8 +602,8 @@ This tutorial introduces a **modular research agent** designed to iteratively re
 Before constructing the graph, let’s first define the configuration and state. 
 
 For the configuration,
-- `Configuration` manages customizable settings such as the number of research iterations ( `max_web_research_loops` ) and the choice of the local LLM model (e.g., `deepseek-r1:8b` ).
-- The `from_runnable_config` method allows dynamic configuration loading from environment variables or provided settings.
+- ```Configuration``` manages customizable settings such as the number of research iterations ( ```max_web_research_loops``` ) and the choice of the local LLM model (e.g., ```deepseek-r1:8b``` ).
+- The ```from_runnable_config``` method allows dynamic configuration loading from environment variables or provided settings.
 
 ```python
 import os
@@ -638,8 +637,8 @@ class Configuration:
 ```
 
 For state management, 
-- `SummaryState` keeps track of the research process, including the topic, search queries, gathered sources, and the final summary.
-- It also defines `SummaryStateInput` and `SummaryStateOutput` to structure input and output data clearly.
+- ```SummaryState``` keeps track of the research process, including the topic, search queries, gathered sources, and the final summary.
+- It also defines ```SummaryStateInput``` and ```SummaryStateOutput``` to structure input and output data clearly.
 
 ```python
 import operator
@@ -675,18 +674,18 @@ First, we’ll define the five core nodes that make up the **Ollama Deep Researc
 
 Here are the five core nodes:
 
-- `generate_query` : Generates an initial web search query based on the research topic.  
-- `web_research` : Searches the web using the generated query and retrieves relevant information.  
-- `summarize_sources` : Summarizes the gathered sources into a structured format.  
-- `reflect_on_summary` : Identifies knowledge gaps and formulates a follow-up query if needed.  
-- `finalize_summary` : Compiles all findings into a well-structured final research report.  
+- ```generate_query``` : Generates an initial web search query based on the research topic.  
+- ```web_research``` : Searches the web using the generated query and retrieves relevant information.  
+- ```summarize_sources``` : Summarizes the gathered sources into a structured format.  
+- ```reflect_on_summary``` : Identifies knowledge gaps and formulates a follow-up query if needed.  
+- ```finalize_summary``` : Compiles all findings into a well-structured final research report.  
 
 ![graph](./img/14-langgraph-ollama-deep-researcher-deepseek.png)
 
 ### Node to generate a query for web search
 
 **Generating the Search Query**  
-- The agent **constructs an optimized web search query** using `ChatOllama` in JSON format.  
+- The agent **constructs an optimized web search query** using ```ChatOllama``` in JSON format.  
 - It ensures that the generated query is structured for efficient retrieval.
 
 ```python

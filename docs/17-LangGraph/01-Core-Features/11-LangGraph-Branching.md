@@ -20,17 +20,16 @@ pre {
 # Branch Creation for Parallel Node Execution
 
 - Author: [seofield](https://github.com/seofield)
-- Design: 
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/11-LangGraph-Branching.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/11-LangGraph-Branching.ipynb)
 ## Overview
 
 Parallel execution of nodes is essential for improving the overall performance of graph-based workflows. LangGraph provides native support for parallel node execution, significantly enhancing the efficiency of workflows built with this framework.
 
-This parallelization is achieved using **fan-out** and **fan-in** mechanisms, utilizing both standard edges and `conditional_edges`.
+This parallelization is achieved using **fan-out** and **fan-in** mechanisms, utilizing both standard edges and ```conditional_edges```.
 
 ![branching-graph](./img/11-langgraph-branching-graph.png)
 
@@ -55,7 +54,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -75,9 +74,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -112,11 +111,11 @@ In parallel processing, **fan-out** and **fan-in** describe the processes of div
 In essence, **fan-out** distributes tasks, and **fan-in** gathers the results to produce the final output.
 
 
-This example illustrates a fan-out from `Node A` to `Node B` and `Node C`, followed by a fan-in to `Node D`.
+This example illustrates a fan-out from ```Node A``` to ```Node B``` and ```Node C```, followed by a fan-in to ```Node D```.
 
-In the **State**, the `reducer(add)` operator is specified. This ensures that instead of simply overwriting existing values for a specific key in the State, the values are combined or accumulated. For lists, this means appending the new list to the existing one.
+In the **State**, the ```reducer(add)``` operator is specified. This ensures that instead of simply overwriting existing values for a specific key in the State, the values are combined or accumulated. For lists, this means appending the new list to the existing one.
 
-LangGraph uses the `Annotated` type to specify reducer functions for specific keys in the State. This approach allows attaching a reducer function (e.g., `add`) to the type without changing the original type (e.g., `list`) while maintaining compatibility with type checking.
+LangGraph uses the ```Annotated``` type to specify reducer functions for specific keys in the State. This approach allows attaching a reducer function (e.g., ```add```) to the type without changing the original type (e.g., ```list```) while maintaining compatibility with type checking.
 
 ```python
 from typing import Annotated, Any
@@ -177,7 +176,7 @@ display(Image(graph.get_graph().draw_mermaid_png()))
     
 
 
-You can observe that the values added by each node are **accumulated** through the `reducer`.
+You can observe that the values added by each node are **accumulated** through the ```reducer```.
 
 ```python
 # Execute the Graph
@@ -219,7 +218,7 @@ These features enable complete control over parallel execution and exception han
 
 ## Fan-out and Fan-in of Parallel Nodes with Additional Steps
 
-The previous example demonstrated how to perform `fan-out` and `fan-in` when each path consists of a single step. But what happens when a path contains multiple steps?
+The previous example demonstrated how to perform ```fan-out``` and ```fan-in``` when each path consists of a single step. But what happens when a path contains multiple steps?
 
 ```python
 from typing import Annotated
@@ -305,7 +304,7 @@ graph.invoke({"aggregate": []})
 
 ## Conditional Branching
 
-When the fan-out is non-deterministic, you can directly use `add_conditional_edges`.
+When the fan-out is non-deterministic, you can directly use ```add_conditional_edges```.
 
 ```python
 from typing import Annotated, Sequence
@@ -367,9 +366,9 @@ builder.add_edge("e", END)
 graph = builder.compile()
 ```
 
-If there is a known "sink" node to connect to after the conditional branching, you can specify `then="node_name_to_execute"` when creating the conditional edge.
+If there is a known "sink" node to connect to after the conditional branching, you can specify ```then="node_name_to_execute"``` when creating the conditional edge.
 
-Here is a reference code snippet. When using the `then` syntax, you can add `then="e"` and omit adding explicit edge connections.
+Here is a reference code snippet. When using the ```then``` syntax, you can add ```then="e"``` and omit adding explicit edge connections.
 
 ```python
 ## Using the `then` Syntax
@@ -443,7 +442,7 @@ graph.invoke({"aggregate": [], "which": "cd"})
 
 Nodes spread out in parallel are executed as part of a single "**super-step**". Updates from each super-step are sequentially applied to the state only after the super-step is completed.
 
-If a consistent, predefined order of updates is required during a parallel super-step, the output values can be recorded in a separate field of the state with an identifying key. Then, use standard `edges` from each fan-out node to the convergence point, where a "sink" node combines these outputs.
+If a consistent, predefined order of updates is required during a parallel super-step, the output values can be recorded in a separate field of the state with an identifying key. Then, use standard ```edges``` from each fan-out node to the convergence point, where a "sink" node combines these outputs.
 
 For example, consider a scenario where you want to sort the outputs of parallel steps based on their "reliability".
 
@@ -561,9 +560,9 @@ The results from executing nodes in parallel are then sorted based on their reli
 
 **Reference**
 
-- `b`: reliability = 0.1  
-- `c`: reliability = 0.9  
-- `d`: reliability = 0.5
+- ```b```: reliability = 0.1  
+- ```c```: reliability = 0.9  
+- ```d```: reliability = 0.5
 
 ```python
 # Execute the Graph (set `which`:`bc`)

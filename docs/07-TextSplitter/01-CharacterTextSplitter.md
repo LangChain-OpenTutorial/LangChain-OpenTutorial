@@ -20,24 +20,23 @@ pre {
 # Character Text Splitter
 
 - Author: [hellohotkey](https://github.com/hellohotkey)
-- Design: 
 - Peer Review : [fastjw](https://github.com/fastjw), [heewung song](https://github.com/kofsitho87)
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/07-TextSplitter/01-CharacterTextSplitter.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/07-TextSplitter/01-CharacterTextSplitter.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/07-TextSplitter/01-CharacterTextSplitter.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/07-TextSplitter/01-CharacterTextSplitter.ipynb)
 ## Overview
 
 Text splitting is a crucial step in document processing with LangChain. 
 
-The `CharacterTextSplitter` offers efficient text chunking that provides several key benefits:
+The ```CharacterTextSplitter``` offers efficient text chunking that provides several key benefits:
 
 - **Token Limits:** Overcomes LLM context window size restrictions
 - **Search Optimization:** Enables more precise chunk-level retrieval
 - **Memory Efficiency:** Processes large documents effectively
-- **Context Preservation:** Maintains textual coherence through `chunk_overlap`
+- **Context Preservation:** Maintains textual coherence through ```chunk_overlap```
 
-This tutorial explores practical implementation of text splitting through core methods like `split_text()` and `create_documents()`, including advanced features such as metadata handling.
+This tutorial explores practical implementation of text splitting through core methods like ```split_text()``` and ```create_documents()```, including advanced features such as metadata handling.
 
 ### Table of Contents
 
@@ -57,8 +56,8 @@ This tutorial explores practical implementation of text splitting through core m
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -96,7 +95,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -117,8 +116,8 @@ load_dotenv(override=True)
 ## CharacterTextSplitter Example
 
 Read and store contents from keywords file
-* Open `./data/appendix-keywords.txt` file and read its contents.
-* Store the read contents in the `file` variable
+* Open ```./data/appendix-keywords.txt``` file and read its contents.
+* Store the read contents in the ```file``` variable
 
 ```python
 with open("./data/appendix-keywords.txt", encoding="utf-8") as f:
@@ -142,15 +141,15 @@ print(file[:500])
     Definition: Embedding is the process of converting textual data, such as words or sentences, into a low-dimensional, continuous vector. This allows computers to unders
 </pre>
 
-Create `CharacterTextSplitter` with parameters:
+Create ```CharacterTextSplitter``` with parameters:
 
 **Parameters**
 
-* `separator`: String to split text on (e.g., newlines, spaces, custom delimiters)
-* `chunk_size`: Maximum size of chunks to return
-* `chunk_overlap`: Overlap in characters between chunks
-* `length_function`: Function that measures the length of given chunks
-* `is_separator_regex`: Boolean indicating whether separator should be treated as a regex pattern
+* ```separator```: String to split text on (e.g., newlines, spaces, custom delimiters)
+* ```chunk_size```: Maximum size of chunks to return
+* ```chunk_overlap```: Overlap in characters between chunks
+* ```length_function```: Function that measures the length of given chunks
+* ```is_separator_regex```: Boolean indicating whether separator should be treated as a regex pattern
 
 ```python
 from langchain_text_splitters import CharacterTextSplitter
@@ -179,7 +178,7 @@ print(chunks[0])
 
 Demonstrate metadata handling during document creation:
 
-* `create_documents` accepts both text data and metadata lists
+* ```create_documents``` accepts both text data and metadata lists
 * Each chunk inherits metadata from its source document
 
 ```python
@@ -204,8 +203,8 @@ print(documents[0])  # Display first document with metadata
     Example: Vectors of word embeddings can be stored in a database for quick' metadata={'document': 1}
 </pre>
 
-Split text using the `split_text()` method.
-* `text_splitter.split_text(file)[0]` returns the first chunk of the split text
+Split text using the ```split_text()``` method.
+* ```text_splitter.split_text(file)[0]``` returns the first chunk of the split text
 
 ```python
 # Split the file text and return the first chunk

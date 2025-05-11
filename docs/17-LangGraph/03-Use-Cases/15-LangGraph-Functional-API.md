@@ -21,13 +21,13 @@ pre {
 
 - Author: [Yejin Park](https://github.com/ppakyeah)
 - Peer Review: 
+- Proofread : [fastjw](https://github.com/fastjw)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/15-LangGraph-Functional-API.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/15-LangGraph-Functional-API.ipynb)
 ## Overview
 
-This tutorial covers LangGraph's Functional API, focusing on workflow automation with `@entrypoint` and `@task` decorators.
+This tutorial covers LangGraph's Functional API, focusing on workflow automation with ```@entrypoint``` and ```@task``` decorators.
 
 Key features include state management, parallel processing, and human-in-the-loop capabilities.
 
@@ -52,7 +52,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -74,9 +74,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -100,7 +100,7 @@ The Functional API is a programming interface provided by LangGraph that extends
 
 ### Core Components
 The Functional API uses two primitives to define workflows:
-1. `@entrypoint` Decorator
+1. ```@entrypoint``` Decorator
 - Defines the entry point of a workflow
 - Automates state management and checkpointing
 - Manages streaming and interruption points
@@ -132,7 +132,7 @@ calculate_sum.invoke([1, 2, 3, 4, 5], config)
 
 
 
-2. `@task` Decorator
+2. ```@task``` Decorator
 - Defines units of work that can be executed asynchronously
 - Handles retry policies and error handling
 - Supports parallel processing
@@ -176,7 +176,7 @@ Long-running tasks can significantly impact application performance.
 
 The Functional API allows you to execute tasks asynchronously and in parallel, improving efficiency especially for I/O-bound operations like LLMs API calls.
 
-The `@task` decorator makes it easy to convert regular functions into asynchronous tasks.
+The ```@task``` decorator makes it easy to convert regular functions into asynchronous tasks.
 
 ```python
 from langgraph.func import task

@@ -21,10 +21,10 @@ pre {
 
 - Author: [Jaemin Hong](https://github.com/geminii01)
 - Peer Review: [Hye-yoon Jeong](https://github.com/Hye-yoonJeong), [JeongHo Shin](https://github.com/ThePurpleCollar), [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/06-LangGraph-Human-in-the-loop.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/06-LangGraph-Human-in-the-loop.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/06-LangGraph-Human-in-the-loop.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/06-LangGraph-Human-in-the-loop.ipynb)
 ## Overview
 
 This tutorial covers **Human in the loop** .
@@ -33,7 +33,7 @@ Agents are not always reliable, and human intervention may be required to ensure
 
 In some cases, you might want human approval before proceeding to confirm that everything is functioning as intended. LangGraph supports these **Human-in-the-loop** workflows. 
 
-In this tutorial, you'll learn how to use LangGraph's `interrupt_before` feature to pause execution, enabling human oversight and control.
+In this tutorial, you'll learn how to use LangGraph's ```interrupt_before``` feature to pause execution, enabling human oversight and control.
 
 ### Table of Contents
 
@@ -54,8 +54,8 @@ In this tutorial, you'll learn how to use LangGraph's `interrupt_before` feature
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -96,7 +96,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -364,9 +364,9 @@ snapshot.next
 
 
 
-The reason for the interruption is that we set `tools` in `interrupt_before` while streaming the graph, causing the process to stop before executing the `tools` node. As a result, the next node ( `.next` ) becomes `tools` .
+The reason for the interruption is that we set ```tools``` in ```interrupt_before``` while streaming the graph, causing the process to stop before executing the ```tools``` node. As a result, the next node ( ```.next``` ) becomes ```tools``` .
 
-Additionally, *in the previous tutorial* , `.next` was empty because the process had reached the final `END` node. However, with the interrupt set, `.next` is now set to `tools` .
+Additionally, *in the previous tutorial* , ```.next``` was empty because the process had reached the final ```END``` node. However, with the interrupt set, ```.next``` is now set to ```tools``` .
 
 Now, let's check the last message in the snapshot!
 
@@ -389,7 +389,7 @@ Next, let's resume the graph from the point where it was interrupted.
 
 **LangGraph** makes it easy to resume graph execution.
 
-Simply pass `None` as the `input` .
+Simply pass ```None``` as the ```input``` .
 
 ```python
 events = graph.stream(
@@ -434,9 +434,9 @@ for event in events:
 
 We used **interrupt** to enable **human intervention** in the chatbot's execution.
 
-Additionally, with the inclusion of a `checkpointer` , the graph can resume execution even after being indefinitely paused.
+Additionally, with the inclusion of a ```checkpointer``` , the graph can resume execution even after being indefinitely paused.
 
-Below is how you can use `get_state_history` to retrieve the state history.
+Below is how you can use ```get_state_history``` to retrieve the state history.
 
 By specifying the desired state from the history, you can restart execution from that point.
 
@@ -470,11 +470,11 @@ for state in graph.get_state_history(config):
     --------------------------------------------------------------------------------
 </pre>
 
-It is important to note that the `checkpointer` saves data at every step of the graph!
+It is important to note that the ```checkpointer``` saves data at every step of the graph!
 
-The desired point is stored in `to_replay` . This allows you to specify the starting point for resuming execution.
+The desired point is stored in ```to_replay``` . This allows you to specify the starting point for resuming execution.
 
-The `checkpoint_id` is stored in `to_replay.config` .
+The ```checkpoint_id``` is stored in ```to_replay.config``` .
 
 ```python
 display(to_replay.next)
@@ -491,9 +491,9 @@ display(to_replay.config)
       'checkpoint_id': '1efd8a06-ace9-6516-8002-8731d8cb463e'}}
 
 
-Using this `checkpoint_id` , LangGraph's checkpointer can load the state at that specific point. 
+Using this ```checkpoint_id``` , LangGraph's checkpointer can load the state at that specific point. 
 
-Note that the `input` must be set to `None` in this case.
+Note that the ```input``` must be set to ```None``` in this case.
 
 ```python
 for event in graph.stream(input=None, config=to_replay.config, stream_mode="values"):

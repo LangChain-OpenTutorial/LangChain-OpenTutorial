@@ -20,21 +20,20 @@ pre {
 # LangGraph ToolNode
 
 - Author: [JoonHo Kim](https://github.com/jhboyo)
-- Design: []()
 - Peer Review :
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/04-CSV-Loader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/04-CSV-Loader.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/10-LangGraph-ToolNode.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/10-LangGraph-ToolNode.ipynb)
 
 ## Overview
-In this tutorial, we will cover how to use `LangGraph`'s pre-built `ToolNode` for tool invocation.
-`ToolNode` is a `LangChain Runnable` that takes a graph state containing a list of messages as input and updates the state with the result of the tool invocation.
+In this tutorial, we will cover how to use ```LangGraph```'s pre-built ```ToolNode``` for tool invocation.
+```ToolNode``` is a ```LangChain Runnable``` that takes a graph state containing a list of messages as input and updates the state with the result of the tool invocation.
 
-It is designed to work seamlessly with `LangGraph`'s pre-built agents and can operate with any `StateGraph`, provided the state includes a messages key with an appropriate reducer.
+It is designed to work seamlessly with ```LangGraph```'s pre-built agents and can operate with any ```StateGraph```, provided the state includes a messages key with an appropriate reducer.
 
 
-Now, let’s explore how to maximize productivity using `LangGraph ToolNode`. 🚀
+Now, let’s explore how to maximize productivity using ```LangGraph ToolNode```. 🚀
 
 ### Table of Contents
 
@@ -62,8 +61,8 @@ Now, let’s explore how to maximize productivity using `LangGraph ToolNode`. �
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -108,9 +107,9 @@ package.install(
 
 
 ## Creating tools
-Before creating tools, we will build some functions to collect and fetch news from `Google News` for keyword that user input.
+Before creating tools, we will build some functions to collect and fetch news from ```Google News``` for keyword that user input.
 
-You can refer to `Creating Tools` section in [Tool Calling Agent with More LLM Models](https://langchain-opentutorial.gitbook.io/langchain-opentutorial/15-agent/04-agent-more-llms) for more details.
+You can refer to ```Creating Tools``` section in [Tool Calling Agent with More LLM Models](https://langchain-opentutorial.gitbook.io/langchain-opentutorial/15-agent/04-agent-more-llms) for more details.
 
 ```python
 from typing import List, Dict, Optional
@@ -172,15 +171,15 @@ def python_code_interpreter(code: str):
     return PythonAstREPLTool().invoke(code)
 ```
 
-Next, we will explore how to use `ToolNode` to invoke tools.
+Next, we will explore how to use ```ToolNode``` to invoke tools.
 
-`ToolNode` is initialized with a list of tools and the following arguments.
+```ToolNode``` is initialized with a list of tools and the following arguments.
 
-* `Args:`
-    * `tools`: A sequence of tools that can be invoked by the `ToolNode`.
-    * `name`: The name of the `ToolNode` in the graph. Defaults to "tools".
-    * `tags`: Optional tags to associate with the node. Defaults to "None".
-    * `handle_tool_errors`: How to handle tool errors raised by tools inside the node. Defaults to "True".
+* ```Args:```
+    * ```tools```: A sequence of tools that can be invoked by the ```ToolNode```.
+    * ```name```: The name of the ```ToolNode``` in the graph. Defaults to "tools".
+    * ```tags```: Optional tags to associate with the node. Defaults to "None".
+    * ```handle_tool_errors```: How to handle tool errors raised by tools inside the node. Defaults to "True".
 
 ```python
 from langgraph.prebuilt import ToolNode, tools_condition
@@ -194,20 +193,20 @@ tool_node = ToolNode(tools, handle_tool_errors=True)
 
 ## Calling ToolNode manually
 
-`ToolNode` operates on graph state with a list of messages.
+```ToolNode``` operates on graph state with a list of messages.
 
-`AIMessage` is used to represent a message with the role assistant. This is the response from the model, which can include text or a request to invoke tools. It could also include other media types like images, audio, or video though this is still uncommon at the moment.
-* `Args:`
-    * `content`: The content of the message. Usually a string, but can be a list of content blocks.
-    * `tool_calls`: A list of tool calls associated with the message.
-        * `name`: The name of the tool to invoke.
-        * `args`: The arguments to pass to the tool.
-        * `id`: An optional unique identifier for the message, ideally provided by the provider/model that created the message.
-        * `type`: The type of the message.
+```AIMessage``` is used to represent a message with the role assistant. This is the response from the model, which can include text or a request to invoke tools. It could also include other media types like images, audio, or video though this is still uncommon at the moment.
+* ```Args:```
+    * ```content```: The content of the message. Usually a string, but can be a list of content blocks.
+    * ```tool_calls```: A list of tool calls associated with the message.
+        * ```name```: The name of the tool to invoke.
+        * ```args```: The arguments to pass to the tool.
+        * ```id```: An optional unique identifier for the message, ideally provided by the provider/model that created the message.
+        * ```type```: The type of the message.
 
-It expects the last message in the list to be an `AIMessage` with `tool_calls` parameter.
+It expects the last message in the list to be an ```AIMessage``` with ```tool_calls``` parameter.
 
-Let’s see how to manually invoke `ToolNode`.
+Let’s see how to manually invoke ```ToolNode```.
 
 ```python
 from langchain_core.messages import AIMessage
@@ -236,9 +235,9 @@ tool_node.invoke({"messages": [message_with_single_tool_call]})
 
 
 
-Generally, there is no need to manually create an `AIMessage`, as it is automatically generated by all LangChain chat models that support tool invocation.
+Generally, there is no need to manually create an ```AIMessage```, as it is automatically generated by all LangChain chat models that support tool invocation.
 
-Additionally, by passing multiple tool invocations to the `tool_calls` parameter of an `AIMessage`, you can perform parallel tool invocations using `ToolNode`.
+Additionally, by passing multiple tool invocations to the ```tool_calls``` parameter of an ```AIMessage```, you can perform parallel tool invocations using ```ToolNode```.
 
 ```python
 # Creating an AI message object with multiple tool calls
@@ -275,11 +274,11 @@ tool_node.invoke({"messages": [message_with_multiple_tool_calls]})
 ## Using with LLMs
 
  To use chat models with tool calling, we need to first ensure that the model is aware of the available tools. 
- LangChain provides various chat models of different providers such as `OpenAI GPT`, `Anthropic Claude`, `Google Gemini` and more.
+ LangChain provides various chat models of different providers such as ```OpenAI GPT```, ```Anthropic Claude```, ```Google Gemini``` and more.
  You can visit [LangChain ChatModels](https://python.langchain.com/docs/integrations/chat/) for more details.
  
-In this tutorial, We do this by calling `.bind_tools` method on `ChatOpenAI` model.
-This can be done by calling the `.bind_tools` method on the `ChatOpenAI` model.
+In this tutorial, We do this by calling ```.bind_tools``` method on ```ChatOpenAI``` model.
+This can be done by calling the ```.bind_tools``` method on the ```ChatOpenAI``` model.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -304,7 +303,7 @@ model_with_tools.invoke(
 
 
 
-As you can see, the AI message generated by the chat model already has `tool_calls` populated, so we can just pass it directly to `ToolNode`.
+As you can see, the AI message generated by the chat model already has ```tool_calls``` populated, so we can just pass it directly to ```ToolNode```.
 
 ```python
 # Processing messages through ToolNode and generating tool-based responses from LLM model
@@ -328,9 +327,9 @@ tool_node.invoke(
 
 ## Using with Agent
 
-Next, let's explore how to use `ToolNode` within a `LangGraph`' graph.
+Next, let's explore how to use ```ToolNode``` within a ```LangGraph```' graph.
 
-We will set up an [`ReAct Agent`](https://langchain-ai.github.io/langgraph/concepts/agentic_concepts/#react-implementation)'s graph implementation. This agent takes a query as input and repeatedly invokes tools until it gathers enough information to resolve the query.
+We will set up an [```ReAct Agent```](https://langchain-ai.github.io/langgraph/concepts/agentic_concepts/#react-implementation)'s graph implementation. This agent takes a query as input and repeatedly invokes tools until it gathers enough information to resolve the query.
 
 Before we start, let's define a function to visualize the graph.
 
@@ -368,7 +367,7 @@ def visualize_graph(graph, xray=False):
         print(f"[ERROR] Visualize Graph Error: {e}")
 ```
 
-The `ToolNode` and `OpenAI` model will be used together with the tools we just defined.
+The ```ToolNode``` and ```OpenAI``` model will be used together with the tools we just defined.
 
 Let's build a graph with the following steps.
 1. Use LLM model to process messages and generate responses, return responses with tool calls.
@@ -505,6 +504,6 @@ for chunk in app.stream(
     I'm just a program, so I don't have feelings, but I'm here and ready to help you! How can I assist you today?
 </pre>
 
-`ToolNode` can also handle errors that occur during tool execution.
+```ToolNode``` can also handle errors that occur during tool execution.
 
-You can enable/disable this feature by setting `handle_tool_errors=True` (enabled by default).
+You can enable/disable this feature by setting ```handle_tool_errors=True``` (enabled by default).

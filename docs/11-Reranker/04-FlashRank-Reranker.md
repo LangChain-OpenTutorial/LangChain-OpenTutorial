@@ -20,16 +20,16 @@ pre {
 # FlashRank Reranker
 
 - Author: [Hwayoung Cha](https://github.com/forwardyoung)
-- Design: []()
 - Peer Review: []()
+- Proofread : [BokyungisaGod](https://github.com/BokyungisaGod)
+- This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/langchain-ai/langchain-academy/blob/main/module-4/sub-graph.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/11-Reranker/04-FlashRank-Reranker.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/11-Reranker/04-FlashRank-Reranker.ipynb)
 ## Overview
 
 > [FlashRank](https://github.com/PrithivirajDamodaran/FlashRank) is an ultra-lightweight and ultra-fast Python library designed to add reranking to existing search and **retrieval** pipelines. It is based on state-of-the-art (**SoTA**) **cross-encoders**.
 
-This notebook introduces the use of `FlashRank-Reranker` within the LangChain framework, showcasing how to apply reranking techniques to improve the quality of search or **retrieval** results. It provides practical code examples and explanations for integrating `FlashRank` into a LangChain pipeline, highlighting its efficiency and effectiveness. The focus is on leveraging `FlashRank`'s capabilities to enhance the ranking of outputs in a streamlined and scalable way.
+This notebook introduces the use of ```FlashRank-Reranker``` within the LangChain framework, showcasing how to apply reranking techniques to improve the quality of search or **retrieval** results. It provides practical code examples and explanations for integrating ```FlashRank``` into a LangChain pipeline, highlighting its efficiency and effectiveness. The focus is on leveraging ```FlashRank```'s capabilities to enhance the ranking of outputs in a streamlined and scalable way.
 
 ### Table of Contents
 
@@ -42,8 +42,8 @@ This notebook introduces the use of `FlashRank-Reranker` within the LangChain fr
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 # Set environment variables
@@ -56,7 +56,7 @@ set_env(
 )
 ```
 
-You can alternatively set OPENAI_API_KEY in `.env` file and load it.
+You can alternatively set OPENAI_API_KEY in ```.env``` file and load it.
 
 [Note] This is not necessary if you've already set OPENAI_API_KEY in previous steps.
 
@@ -136,7 +136,7 @@ docs = retriever.invoke(query)
 pretty_print_docs(docs)
 ```
 
-Now, let's wrap the base **retriever** with a `ContextualCompressionRetriever` and use `FlashrankRerank` as the compressor.
+Now, let's wrap the base **retriever** with a ```ContextualCompressionRetriever``` and use ```FlashrankRerank``` as the compressor.
 
 ```python
 from langchain.retrievers import ContextualCompressionRetriever

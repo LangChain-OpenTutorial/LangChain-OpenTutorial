@@ -20,19 +20,18 @@ pre {
 # OpenAI Embeddings
 
 - Author: [ro__o_jun](https://github.com/ro-jun)
-- Design: []()
 - Peer Review : [byoon](https://github.com/acho98), [liniar](https://github.com/namyoungkim)
+- Proofread : [Youngjun cho](https://github.com/choincnp)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/01-OpenAIEmbeddings.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/01-OpenAIEmbeddings.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embedding/01-OpenAIEmbeddings.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embedding/01-OpenAIEmbeddings.ipynb)
 ## Overview
 
-This tutorial explores the use of `OpenAI Text embedding` models within the `LangChain` framework.  
+This tutorial explores the use of ```OpenAI Text embedding``` models within the ```LangChain``` framework.  
 
 It showcases how to generate embeddings for text queries and documents, reduce their dimensionality using **PCA** , and visualize them in 2D for better interpretability.  
 
-By analyzing relationships between the query and documents through `cosine similarity`, it provides insights into how embeddings can enhance workflows, including **text analysis** and **data visualization**.  
+By analyzing relationships between the query and documents through ```cosine similarity```, it provides insights into how embeddings can enhance workflows, including **text analysis** and **data visualization**.  
 
 ### Table of Contents
 
@@ -56,8 +55,8 @@ By analyzing relationships between the query and documents through `cosine simil
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -97,7 +96,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-[Note] If you are using a `.env` file, proceed as follows.
+[Note] If you are using a ```.env``` file, proceed as follows.
 
 ```python
 from dotenv import load_dotenv
@@ -114,7 +113,7 @@ load_dotenv(override=True)
 
 ## Load model and set dimension
 
-Describes the `Embedding` model and dimension settings supported by OpenAI.
+Describes the ```Embedding``` model and dimension settings supported by OpenAI.
 
 ### Why Adjust Embedding Dimensions?
 - **Optimize Resources** : Shortened embeddings use less memory and compute.
@@ -158,7 +157,7 @@ This is a **description of the models** supported by OpenAI
   </tbody>
 </table>
 
-"Initialize and utilize OpenAI embedding models using `langchain_openai` package."
+"Initialize and utilize OpenAI embedding models using ```langchain_openai``` package."
 
 ```python
 from langchain_openai import OpenAIEmbeddings
@@ -176,7 +175,7 @@ from langchain_openai import OpenAIEmbeddings
 openai_embedding = OpenAIEmbeddings(model="text-embedding-3-large", dimensions=1024)
 ```
 
-Define `query` and `documents`
+Define ```query``` and ```documents```
 
 ```python
 query = "What is the Open AI's gpt embedding model?"
@@ -240,7 +239,7 @@ print("documents[1]: " + str(docs_vector[1][:5]))
 
 ## Similarity Calculation (Cosine Similarity)
 
-This code calculates the similarity between the query and the document through `Cosine Similarity` .  
+This code calculates the similarity between the query and the document through ```Cosine Similarity``` .  
 Find the documents **similar (top 3) and (bottom 3)** .
 
 ```python

@@ -20,17 +20,16 @@ pre {
 # CacheBackedEmbeddings
 
 - Author: [byoon](https://github.com/acho98)
-- Design: []()
 - Peer Review: [ro__o_jun](https://github.com/ro-jun)
+- Proofread : [Youngjun cho](https://github.com/choincnp)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-EMBEDDING/02-CacheBackedEmbeddings.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embedding/02-CacheBackedEmbeddings.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embedding/02-CacheBackedEmbeddings.ipynb)
 ## Overview
 
 Embeddings can be stored or temporarily cached to avoid recalculation.
 
-Caching embeddings can be done using `CacheBackedEmbeddings`. A cache-backed embedder is a wrapper around an embedder that caches embeddings in a key-value store. The text is hashed, and the hash is used as a key in the cache.
+Caching embeddings can be done using ```CacheBackedEmbeddings```. A cache-backed embedder is a wrapper around an embedder that caches embeddings in a key-value store. The text is hashed, and the hash is used as a key in the cache.
 
 ### Table of Contents
 
@@ -51,8 +50,8 @@ Caching embeddings can be done using `CacheBackedEmbeddings`. A cache-backed emb
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -124,15 +123,15 @@ print(os.access("./cache/", os.W_OK))  # Check if the directory is writable
 
 ## Using Embeddings with LocalFileStore (Persistent Storage)
 
-The primary supported method for initializing `CacheBackedEmbeddings` is `from_bytes_store`.  
+The primary supported method for initializing ```CacheBackedEmbeddings``` is ```from_bytes_store```.  
 
 It accepts the following parameters:
 
-- `underlying_embeddings`: The embedder is used for generating embeddings.
-- `document_embedding_cache`: One of the `ByteStore` implementations for caching document embeddings.
-- `namespace`: (Optional, default is `""`) A namespace is used for the document cache. This is utilized to avoid conflicts with other caches. For example, set it to the name of the embedding model being used.
+- ```underlying_embeddings```: The embedder is used for generating embeddings.
+- ```document_embedding_cache```: One of the ```ByteStore``` implementations for caching document embeddings.
+- ```namespace```: (Optional, default is ```""```) A namespace is used for the document cache. This is utilized to avoid conflicts with other caches. For example, set it to the name of the embedding model being used.
 
-**Note**: It is important to set the `namespace` parameter to avoid conflicts when the same text is embedded using different embedding models.
+**Note**: It is important to set the ```namespace``` parameter to avoid conflicts when the same text is embedded using different embedding models.
 
 First, let's look at an example of storing embeddings using the local file system and retrieving them with the FAISS vector store.
 
@@ -220,11 +219,11 @@ list(store.yield_keys())[:5]
 
 
 
-## Using `InMemoryByteStore` (Non-Persistent)
+## Using ```InMemoryByteStore``` (Non-Persistent)
 
-To use a different `ByteStore`, simply specify the desired `ByteStore` when creating the `CacheBackedEmbeddings`.
+To use a different ```ByteStore```, simply specify the desired ```ByteStore``` when creating the ```CacheBackedEmbeddings```.
 
-Below is an example of creating the same cached embedding object using the non-persistent `InMemoryByteStore`.
+Below is an example of creating the same cached embedding object using the non-persistent ```InMemoryByteStore```.
 
 
 

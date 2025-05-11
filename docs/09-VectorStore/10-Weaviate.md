@@ -20,71 +20,43 @@ pre {
 # Weaviate
 
 - Author: [Haseom Shin](https://github.com/IHAGI-c)
-- Design: []()
-- Peer Review: []()
+- Design: [Haseom Shin](https://github.com/IHAGI-c)
+- Peer Review: [Joonha Jeon](https://github.com/realjoonha), [Musang Kim](https://github.com/musangk), [Sohyeon Yim](https://github.com/sohyunwriter), [BokyungisaGod](https://github.com/BokyungisaGod), [Pupba](https://github.com/pupba)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/11-Fallbacks.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/11-Fallbacks.ipynb)
 
 ## Overview
 
-This comprehensive tutorial explores Weaviate, a powerful open-source vector database that enables efficient similarity search and semantic operations. Through hands-on examples, you'll learn:
+This tutorial covers how to use **Weaviate** with **LangChain** .
 
-- How to set up and configure Weaviate for production use
-- Essential operations including document indexing, querying, and deletion
-- Advanced features such as hybrid search, multi-tenancy, and batch processing
-- Integration with LangChain for sophisticated applications like RAG and QA systems
-- Best practices for managing and scaling your vector database
+[Weaviate](https://weaviate.io/) is an open-source vector database. It allows you to store data objects and vector embeddings from your favorite ML-models, and scale seamlessly into billions of data objects.
 
-Whether you're building a semantic search engine, implementing RAG systems, or developing AI-powered applications, this tutorial provides the foundational knowledge and practical examples you need to leverage Weaviate effectively.
-
-> [Weaviate](https://weaviate.io/) is an open-source vector database. It allows you to store data objects and vector embeddings from your favorite ML-models, and scale seamlessly into billions of data objects.
-
-To use this integration, you need to have a running Weaviate database instance.
+This tutorial walks you through using **CRUD** operations with the **Weaviate** **storing** , **updating** , **deleting** documents, and performing **similarity-based retrieval** .
 
 ### Table of Contents
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Credentials](#credentials)
-  - [Setting up Weaviate Cloud Services](#setting-up-weaviate-cloud-services)
-- [What is Weaviate?](#what-is-weaviate)
-- [Why Use Weaviate?](#why-use-weaviate)
-- [Initialization](#initialization)
-  - [Creating Collections in Weaviate](#creating-collections-in-weaviate)
-  - [Delete Collection](#delete-collection)
-  - [List Collections](#list-collections)
-  - [Data Preprocessing](#data-preprocessing)
-  - [Document Preprocessing Function](#document-preprocessing-function)
-- [Manage vector store](#manage-vector-store)
-  - [Add items to vector store](#add-items-to-vector-store)
-  - [Delete items from vector store](#delete-items-from-vector-store)
-- [Finding Objects by Similarity](#finding-objects-by-similarity)
-  - [Step 1: Preparing Your Data](#step-1-preparing-your-data)
-  - [Step 2: Perform the search](#step-2-perform-the-search)
-  - [Quantify Result Similarity](#quantify-result-similarity)
-- [Search mechanism](#search-mechanism)
-- [Persistence](#persistence)
-- [Multi-tenancy](#multi-tenancy)
-- [Retriever options](#retriever-options)
-- [Use with LangChain](#use-with-langchain)
-  - [Question Answering with Sources](#question-answering-with-sources)
-  - [Retrieval-Augmented Generation](#retrieval-augmented-generation)
+- [What is Weaviate?](#what-is-weaviate?)
+- [Prepare Data](#Prepare-Data)
+- [Setting up Weaviate](#setting-up-weaviate)
+- [Document Manager](#document-manager)
 
 
 ### References
 - [Langchain-Weaviate](https://python.langchain.com/docs/integrations/providers/weaviate/)
 - [Weaviate Documentation](https://weaviate.io/developers/weaviate)
 - [Weaviate Introduction](https://weaviate.io/developers/weaviate/introduction)
----
+----
 
 ## Environment Setup
 
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -97,22 +69,15 @@ from langchain_opentutorial import package
 
 package.install(
     [
-        "openai",
         "langsmith",
-        "langchain",
-        "tiktoken",
-        "langchain-weaviate",
-        "langchain-openai",
+        "langchain-core",
+        "python-dotenv",
+        "weaviate-client",
     ],
     verbose=False,
     upgrade=False,
 )
 ```
-
-<pre class="custom">
-    [notice] A new release of pip is available: 24.2 -> 25.0
-    [notice] To update, run: pip install --upgrade pip
-</pre>
 
 ```python
 # Set environment variables
@@ -134,9 +99,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set the required API keys in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -151,884 +116,494 @@ load_dotenv(override=True)
 
 
 
-## Credentials
+Please write down what you need to set up the Vectorstore here.
 
-There are three main ways to connect to Weaviate:
+## Prepare Data
 
-1. **Local Connection**: Connect to a Weaviate instance running locally through Docker
-2. **Weaviate Cloud(WCD)**: Use Weaviate's managed cloud service
-3. **Custom Deployment**: Deploy Weaviate on Kubernetes or other custom configurations
+This section guides you through the **data preparation process** .
 
-For this notebook, we'll use Weaviate Cloud (WCD) as it provides the easiest way to get started without any local setup.
+This section includes the following components:
 
-### Setting up Weaviate Cloud Services
+- Data Introduction
 
-1. First, sign up for a free account at [Weaviate Cloud Console](https://console.weaviate.cloud)
-2. Create a new cluster
-3. Get your API key
-4. Set API key
-5. Connect to your WCD cluster
+- Preprocess Data
 
-#### 1. Weaviate Signup
-![Weaviate Cloud Console](./img/10-weaviate-credentials-01.png)
 
-#### 2. Create Cluster
-![Weaviate Cloud Console](./img/10-weaviate-credentials-02.png)
-![Weaviate Cloud Console](./img/10-weaviate-credentials-03.png)
+### Introduce Data
 
-#### 3. Get API Key
-**If you using gRPC, please copy the gRPC URL**
+In this tutorial, we will use the fairy tale **📗 The Little Prince** in PDF format as our data.
 
-![Weaviate Cloud Console](./img/10-weaviate-credentials-04.png)
+This material complies with the **Apache 2.0 license** .
 
-#### 4. Set API Key
+The data is used in a text (.txt) format converted from the original PDF.
+
+You can view the data at the link below.
+- [Data Link](https://huggingface.co/datasets/sohyunwriter/the_little_prince)
+
+### Preprocessing Data
+
+In this tutorial section, we will preprocess the text data from The Little Prince and convert it into a list of ```LangChain Document``` objects with metadata. 
+
+Each document chunk will include a ```title``` field in the metadata, extracted from the first line of each section.
+
+```python
+from langchain.schema import Document
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+import re
+from typing import List
+
+def preprocessing_data(content: str) -> List[Document]:
+    # 1. Split the text by double newlines to separate sections
+    blocks = content.split("\n\n")
+
+    # 2. Initialize the text splitter
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=500,  # Maximum number of characters per chunk
+        chunk_overlap=50,  # Overlap between chunks to preserve context
+        separators=["\n\n", "\n", " "],  # Order of priority for splitting
+    )
+
+    documents = []
+
+    # 3. Loop through each section
+    for block in blocks:
+        lines = block.strip().splitlines()
+        if not lines:
+            continue
+
+        # Extract title from the first line using square brackets [ ]
+        first_line = lines[0]
+        title_match = re.search(r"\[(.*?)\]", first_line)
+        title = title_match.group(1).strip() if title_match else ""
+
+        # Remove the title line from content
+        body = "\n".join(lines[1:]).strip()
+        if not body:
+            continue
+
+        # 4. Chunk the section using the text splitter
+        chunks = text_splitter.split_text(body)
+
+        # 5. Create a LangChain Document for each chunk with the same title metadata
+        for chunk in chunks:
+            documents.append(Document(page_content=chunk, metadata={"title": title}))
+
+    print(f"Generated {len(documents)} chunked documents.")
+
+    return documents
 ```
-WEAVIATE_API_KEY="YOUR_WEAVIATE_API_KEY"
-WEAVIATE_URL="YOUR_WEAVIATE_CLUSTER_URL"
+
+```python
+# Load the entire text file
+with open("./data/the_little_prince.txt", "r", encoding="utf-8") as f:
+    content = f.read()
+
+# Preprocessing Data
+
+docs = preprocessing_data(content=content)
 ```
 
-#### 5. Connect to your WCD cluster
+<pre class="custom">Generated 262 chunked documents.
+</pre>
+
+## Setting up Weaviate
+
+This part walks you through the initial setup of **Weaviate** .
+
+This section includes the following components:
+
+- Load Embedding Model
+
+- Load Weaviate Client
+
+### Load Embedding Model
+
+In the **Load Embedding Model** section, you'll learn how to load an embedding model.
+
+This tutorial uses **OpenAI's** **API-Key** for loading the model.
+
+*💡 If you prefer to use another embedding model, see the instructions below.*
+- [Embedding Models](https://python.langchain.com/docs/integrations/text_embedding/)
 
 ```python
 import os
 from langchain_openai import OpenAIEmbeddings
-from utils.weaviate_vectordb import WeaviateDB
 
-weaviate_url = os.environ.get("WEAVIATE_URL")
-weaviate_api_key = os.environ.get("WEAVIATE_API_KEY")
-openai_api_key = os.environ.get("OPENAI_API_KEY")
-
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-weaviate_db = WeaviateDB(url=weaviate_url, api_key=weaviate_api_key, openai_api_key=openai_api_key, embeddings=embeddings)
-client = weaviate_db.connect()
-
-print(client.is_ready())
+embedding = OpenAIEmbeddings(model="text-embedding-3-large")
 ```
 
-<pre class="custom">True
+### Load Weaviate Client
+
+In the **Load Weaviate Client** section, we cover how to load the **database client object** using the **Python SDK** for **Weaviate** .
+- [Python SDK Docs](https://weaviate.io/developers/weaviate/client-libraries/python)
+
+```python
+import weaviate
+from weaviate.classes.init import Auth
+
+# Create Database Client Object Function
+def get_db_client():
+    """
+    Initializes and returns a VectorStore client instance.
+
+    This function loads configuration (e.g., API key, host) from environment
+    variables or default values and creates a client object to interact
+    with the Weaviate Python SDK.
+
+    Returns:
+        client:ClientType - An instance of the Weaviate client.
+
+    Raises:
+        ValueError: If required configuration is missing.
+    """
+    weaviate_api_key = os.environ.get("WEAVIATE_API_KEY")
+    weaviate_url = os.environ.get("WEAVIATE_URL")
+    openai_api_key = os.environ.get("OPENAI_API_KEY")
+
+    client = weaviate.connect_to_weaviate_cloud(
+        cluster_url=weaviate_url,
+        auth_credentials=Auth.api_key(weaviate_api_key),
+        headers={"X-OpenAI-Api-key": openai_api_key},
+    )
+
+    return client
+```
+
+```python
+# Get DB Client Object
+client = get_db_client()
+```
+
+<pre class="custom">/Users/sohyun/Library/Caches/pypoetry/virtualenvs/langchain-opentutorial-FtaFqYLT-py3.11/lib/python3.11/site-packages/weaviate/warnings.py:133: DeprecationWarning: Dep005: You are using weaviate-client version 4.10.4. The latest version is 4.14.1.
+                Consider upgrading to the latest version. See https://weaviate.io/developers/weaviate/client-libraries/python for details.
+      warnings.warn(
 </pre>
 
-## What is Weaviate?
+## Document Manager
 
-Weaviate is a powerful open-source vector database that revolutionizes how we store and search data. It combines traditional database capabilities with advanced machine learning features, allowing you to:
+To support the **Langchain-Opentutorial** , we implemented a custom set of **CRUD** functionalities for VectorDBs. 
 
-- Weaviate is an open source [vector database](https://weaviate.io/blog/what-is-a-vector-database).
-- Weaviate allows you to store and retrieve data objects based on their semantic properties by indexing them with [vectors](./concepts/vector-index.md).
-- Weaviate can be used stand-alone (aka _bring your vectors_) or with a variety of [modules](./modules/index.md) that can do the vectorization for you and extend the core capabilities.
-- Weaviate has a [GraphQL-API](./api/graphql/index.md) to access your data easily.
-- Weaviate is fast (check our [open source benchmarks](./benchmarks/index.md)).
+The following operations are included:
 
-> 💡 **Key Feature** : Weaviate achieves millisecond-level query performance, making it suitable for production environments.
+- ```upsert``` : Update existing documents or insert if they don’t exist
 
-## Why Use Weaviate?
+- ```upsert_parallel``` : Perform upserts in parallel for large-scale data
 
-Weaviate stands out for several reasons:
+- ```similarity_search``` : Search for similar documents based on embeddings
 
-1. **Versatility** : Supports multiple media types (text, images, etc.)
-2. **Advanced Features** :
-   - Semantic Search
-   - Question-Answer Extraction
-   - Classification
-   - Custom ML Model Integration
-3. **Production-Ready** : Built in Go for high performance and scalability
-4. **Developer-Friendly** : Multiple access methods through GraphQL, REST, and various client libraries
+- ```delete``` : Remove documents based on filter conditions
 
+Each of these features is implemented as class methods specific to each VectorDB.
 
-## Initialization
-Before initializing our vector store, let's connect to a Weaviate collection. If one named index_name doesn't exist, it will be created.
+In this tutorial, you can easily utilize these methods to interact with your VectorDB.
 
-### Creating Collections in Weaviate
+*We plan to continuously expand the functionality by adding more common operations in the future.*
 
-The `create_collection` function establishes a new collection in Weaviate, configuring it with specified properties and vector settings. This foundational operation requires six key parameters:
+### Create Instance
 
-**Required Parameters:**
-- `client` : Weaviate client instance for database connection
-- `collection_name` : Unique identifier for your collection
-- `description` : Detailed description of the collection's purpose
-- `properties` : List of property definitions for data schema
-- `vectorizer` : Configuration for vector embedding generation
-- `metric` : Distance metric for similarity calculations
+First, we create an instance of the **Weaviate** helper class to use its CRUD functionalities.
 
-**Advanced Configuration Options:**
-- For custom distance metrics: Utilize the `VectorDistances` class
-- For alternative vectorization: Leverage the `Configure.Vectorizer` class
-
-**Example Usage:**
-```python
-properties = [
-    Property(name="text", data_type=DataType.TEXT),
-    Property(name="title", data_type=DataType.TEXT)
-]
-vectorizer = Configure.Vectorizer.text2vec_openai()
-create_collection(client, "Documents", "Document storage", properties, vectorizer)
-```
-
-> **Note:** Choose your distance metric and vectorizer carefully as they significantly impact search performance and accuracy.
-
-Now let's use the `create_collection` function to create the collection we'll use in this tutorial.
+This class is initialized with the **Weaviate Python SDK client instance** and the **embedding model instance** , both of which were defined in the previous section.
 
 ```python
-from weaviate.classes.config import Property, DataType, Configure
+from utils.weaviate import WeaviateDocumentManager
 
-collection_name = "BookChunk"  # change if desired
-description = "A chunk of a book's content"
-vectorizer = Configure.Vectorizer.text2vec_openai(
-    model="text-embedding-3-large"
-)  # You can select other vectorizer
-metric = "dot"  # You can select other distance metric
-properties = [
-    Property(
-        name="text", data_type=DataType.TEXT, description="The content of the text"
-    ),
-    Property(
-        name="order",
-        data_type=DataType.INT,
-        description="The order of the chunk in the book",
-    ),
-    Property(
-        name="title", data_type=DataType.TEXT, description="The title of the book"
-    ),
-    Property(
-        name="author", data_type=DataType.TEXT, description="The author of the book"
-    ),
-    Property(
-        name="source", data_type=DataType.TEXT, description="The source of the book"
-    ),
-]
-
-weaviate_db.create_collection(
-    client, collection_name, description, properties, vectorizer, metric
+crud_manager = WeaviateDocumentManager(
+    client, collection_name="tutorial_collection", embeddings=embedding
 )
 ```
 
-<pre class="custom">Collection 'BookChunk' created successfully.
+<pre class="custom">[Weaviate] Collection 'tutorial_collection' exists
 </pre>
 
-### List Collections
-
-Lists all collections in Weaviate, providing a comprehensive view of your database schema and configurations. The `list_collections` function helps you inspect and manage your Weaviate instance's structure.
-
-**Key Information Returned:**
-- Collection names
-- Collection descriptions
-- Property configurations
-- Data types for each property
-
-> **Note:** This operation is particularly useful for database maintenance, debugging, and documentation purposes.
-
-
-```python
-weaviate_db.list_collections(client)
-```
-
-<pre class="custom">Collections (indexes) in the Weaviate schema:
-    - Collection name: BookChunk
-      Description: A chunk of a book's content
-      Properties:
-        - Name: text, Type: DataType.TEXT
-        - Name: order, Type: DataType.INT
-        - Name: title, Type: DataType.TEXT
-        - Name: author, Type: DataType.TEXT
-        - Name: source, Type: DataType.TEXT
+    /Users/sohyun/project/LangChain-OpenTutorial/09-VectorStore/utils/vectordbinterface.py:76: DeprecationWarning: Retrievers must implement abstract `_get_relevant_documents` method instead of `get_relevant_documents`
+      class LightCustomRetriever(BaseRetriever):
     
-</pre>
+
+Now you can use the following **CRUD** operations with the ```crud_manager``` instance.
+
+These instance allow you to easily manage documents in your **Weaviate** .
+
+### Upsert Document
+
+**Update** existing documents or **insert** if they don’t exist
+
+**✅ Args**
+
+- ```texts``` : Iterable[str] – List of text contents to be inserted/updated.
+
+- ```metadatas``` : Optional[List[Dict]] – List of metadata dictionaries for each text (optional).
+
+- ```ids``` : Optional[List[str]] – Custom IDs for the documents. If not provided, IDs will be auto-generated.
+
+- ```**kwargs``` : Extra arguments for the underlying vector store.
+
+**🔄 Return**
+
+- None
 
 ```python
-print(weaviate_db.lookup_collection(collection_name))
-```
+from uuid import uuid4
 
-<pre class="custom"><weaviate.Collection config={
-      "name": "BookChunk",
-      "description": "A chunk of a book's content",
-      "generative_config": null,
-      "inverted_index_config": {
-        "bm25": {
-          "b": 0.75,
-          "k1": 1.2
-        },
-        "cleanup_interval_seconds": 60,
-        "index_null_state": false,
-        "index_property_length": false,
-        "index_timestamps": false,
-        "stopwords": {
-          "preset": "en",
-          "additions": null,
-          "removals": null
-        }
-      },
-      "multi_tenancy_config": {
-        "enabled": false,
-        "auto_tenant_creation": false,
-        "auto_tenant_activation": false
-      },
-      "properties": [
-        {
-          "name": "text",
-          "description": "The content of the text",
-          "data_type": "text",
-          "index_filterable": true,
-          "index_range_filters": false,
-          "index_searchable": true,
-          "nested_properties": null,
-          "tokenization": "word",
-          "vectorizer_config": {
-            "skip": false,
-            "vectorize_property_name": true
-          },
-          "vectorizer": "text2vec-openai"
-        },
-        {
-          "name": "order",
-          "description": "The order of the chunk in the book",
-          "data_type": "int",
-          "index_filterable": true,
-          "index_range_filters": false,
-          "index_searchable": false,
-          "nested_properties": null,
-          "tokenization": null,
-          "vectorizer_config": {
-            "skip": false,
-            "vectorize_property_name": true
-          },
-          "vectorizer": "text2vec-openai"
-        },
-        {
-          "name": "title",
-          "description": "The title of the book",
-          "data_type": "text",
-          "index_filterable": true,
-          "index_range_filters": false,
-          "index_searchable": true,
-          "nested_properties": null,
-          "tokenization": "word",
-          "vectorizer_config": {
-            "skip": false,
-            "vectorize_property_name": true
-          },
-          "vectorizer": "text2vec-openai"
-        },
-        {
-          "name": "author",
-          "description": "The author of the book",
-          "data_type": "text",
-          "index_filterable": true,
-          "index_range_filters": false,
-          "index_searchable": true,
-          "nested_properties": null,
-          "tokenization": "word",
-          "vectorizer_config": {
-            "skip": false,
-            "vectorize_property_name": true
-          },
-          "vectorizer": "text2vec-openai"
-        },
-        {
-          "name": "source",
-          "description": "The source of the book",
-          "data_type": "text",
-          "index_filterable": true,
-          "index_range_filters": false,
-          "index_searchable": true,
-          "nested_properties": null,
-          "tokenization": "word",
-          "vectorizer_config": {
-            "skip": false,
-            "vectorize_property_name": true
-          },
-          "vectorizer": "text2vec-openai"
-        }
-      ],
-      "references": [],
-      "replication_config": {
-        "factor": 1,
-        "async_enabled": false,
-        "deletion_strategy": "NoAutomatedResolution"
-      },
-      "reranker_config": null,
-      "sharding_config": {
-        "virtual_per_physical": 128,
-        "desired_count": 1,
-        "actual_count": 1,
-        "desired_virtual_count": 128,
-        "actual_virtual_count": 128,
-        "key": "_id",
-        "strategy": "hash",
-        "function": "murmur3"
-      },
-      "vector_index_config": {
-        "quantizer": null,
-        "cleanup_interval_seconds": 300,
-        "distance_metric": "dot",
-        "dynamic_ef_min": 100,
-        "dynamic_ef_max": 500,
-        "dynamic_ef_factor": 8,
-        "ef": -1,
-        "ef_construction": 128,
-        "filter_strategy": "sweeping",
-        "flat_search_cutoff": 40000,
-        "max_connections": 32,
-        "skip": false,
-        "vector_cache_max_objects": 1000000000000
-      },
-      "vector_index_type": "hnsw",
-      "vectorizer_config": {
-        "vectorizer": "text2vec-openai",
-        "model": {
-          "baseURL": "https://api.openai.com",
-          "model": "text-embedding-3-large"
-        },
-        "vectorize_collection_name": true
-      },
-      "vectorizer": "text2vec-openai",
-      "vector_config": null
-    }>
-</pre>
-
-### Data Preprocessing
-
-Before storing documents in Weaviate, it's essential to preprocess them into manageable chunks. This section demonstrates how to effectively prepare your documents using the `RecursiveCharacterTextSplitter` for optimal vector storage and retrieval.
-
-**Key Preprocessing Steps:**
-- Text chunking for better semantic representation
-- Metadata assignment for enhanced searchability
-- Document structure optimization
-- Batch preparation for efficient storage
-
-> **Note:** While this example uses `RecursiveCharacterTextSplitter`, choose your text splitter based on your specific content type and requirements. The chunk size and overlap parameters significantly impact search quality and performance.
-
-```python
-# This is a long document we can split up.
-with open("./data/the_little_prince.txt",encoding='utf-8') as f:
-    raw_text = f.read()
-```
-
-```python
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-
-text_splitter = RecursiveCharacterTextSplitter(
-    # Set a really small chunk size, just to show.
-    chunk_size=300,
-    chunk_overlap=40,
-    length_function=len,
-    is_separator_regex=False,
-)
-
-split_docs = text_splitter.create_documents([raw_text])
-
-print(split_docs[:5])
-```
-
-<pre class="custom">[Document(metadata={}, page_content='The Little Prince\nWritten By Antoine de Saiot-Exupery (1900〜1944)'), Document(metadata={}, page_content='[ Antoine de Saiot-Exupery ]'), Document(metadata={}, page_content='Over the past century, the thrill of flying has inspired some to perform remarkable feats of daring. For others, their desire to soar into the skies led to dramatic leaps in technology. For Antoine de Saint-Exupéry, his love of aviation inspired stories, which have touched the hearts of millions'), Document(metadata={}, page_content='have touched the hearts of millions around the world.'), Document(metadata={}, page_content='Born in 1900 in Lyons, France, young Antoine was filled with a passion for adventure. When he failed an entrance exam for the Naval Academy, his interest in aviation took hold. He joined the French Army Air Force in 1921 where he first learned to fly a plane. Five years later, he would leave the')]
-</pre>
-
-### Document Preprocessing Function
-
-The `preprocess_documents` function transforms pre-split documents into a format suitable for Weaviate storage. This utility function handles both document content and metadata, ensuring proper organization of your data.
-
-**Function Parameters:**
-- `split_docs` : List of LangChain Document objects containing page content and metadata
-- `metadata` : Optional dictionary of additional metadata to include with each chunk
-
-**Processing Steps:**
-- Iterates through Document objects
-- Assigns sequential order numbers
-- Combines document metadata with additional metadata
-- Formats data for Weaviate ingestion
-
-> **Best Practice:** When preprocessing documents, always maintain consistent metadata structure across your collection. This ensures efficient querying and filtering capabilities later.
-
-```python
-from typing import List, Dict
-from langchain_core.documents import Document
-
-
-def preprocess_documents(
-    split_docs: List[Document], metadata: Dict[str, str] = None
-) -> List[Dict[str, Dict[str, object]]]:
-    """
-    Processes a list of pre-split documents into a format suitable for storing in Weaviate.
-
-    :param split_docs: List of LangChain Document objects (each containing page_content and metadata).
-    :param metadata: Additional metadata to include in each chunk (e.g., title, source).
-    :return: A list of dictionaries, each representing a chunk in the format:
-             {'properties': {'text': ..., 'order': ..., ...metadata}}
-    """
-    processed_chunks = []
-    texts = []
-    metadatas = []
-    # Iterate over Document objects
-    for idx, doc in enumerate(split_docs, start=1):
-        # Extract text from page_content and include metadata
-        chunk_data = {"text": doc.page_content, "order": idx}
-        # Combine with metadata from Document and additional metadata if provided
-        if metadata:
-            chunk_data.update(metadata)
-        if doc.metadata:
-            chunk_data.update(doc.metadata)
-
-        # Format for Weaviate
-        processed_chunks.append(chunk_data)
-        texts.append(doc.page_content)
-        metadatas.append(metadata)
-
-    return processed_chunks, texts, metadatas
-
-
-metadata = {
-    "title": "The Little Prince",
-    "author": "Antoine de Saint-Exupéry",
-    "source": "Original Text",
+args = {
+    "texts": [doc.page_content for doc in docs[:2]],
+    "metadatas": [doc.metadata for doc in docs[:2]],
+    "ids": [str(uuid4()) for _ in docs[:2]],
+    "show_progress": True,
+    "text_key": "text",
 }
 
-processed_chunks, texts, metadatas = preprocess_documents(split_docs, metadata=metadata)
-
-processed_chunks[:5]
+crud_manager.upsert(**args);
 ```
 
+<pre class="custom">Upserted 1/2
+    Upserted 2/2
+</pre>
 
+### Upsert Parallel Document
 
+Perform **upserts** in **parallel** for large-scale data
 
-<pre class="custom">[{'text': 'The Little Prince\nWritten By Antoine de Saiot-Exupery (1900〜1944)',
-      'order': 1,
-      'title': 'The Little Prince',
-      'author': 'Antoine de Saint-Exupéry',
-      'source': 'Original Text'},
-     {'text': '[ Antoine de Saiot-Exupery ]',
-      'order': 2,
-      'title': 'The Little Prince',
-      'author': 'Antoine de Saint-Exupéry',
-      'source': 'Original Text'},
-     {'text': 'Over the past century, the thrill of flying has inspired some to perform remarkable feats of daring. For others, their desire to soar into the skies led to dramatic leaps in technology. For Antoine de Saint-Exupéry, his love of aviation inspired stories, which have touched the hearts of millions',
-      'order': 3,
-      'title': 'The Little Prince',
-      'author': 'Antoine de Saint-Exupéry',
-      'source': 'Original Text'},
-     {'text': 'have touched the hearts of millions around the world.',
-      'order': 4,
-      'title': 'The Little Prince',
-      'author': 'Antoine de Saint-Exupéry',
-      'source': 'Original Text'},
-     {'text': 'Born in 1900 in Lyons, France, young Antoine was filled with a passion for adventure. When he failed an entrance exam for the Naval Academy, his interest in aviation took hold. He joined the French Army Air Force in 1921 where he first learned to fly a plane. Five years later, he would leave the',
-      'order': 5,
-      'title': 'The Little Prince',
-      'author': 'Antoine de Saint-Exupéry',
-      'source': 'Original Text'}]</pre>
+**✅ Args**
 
+- ```texts``` : Iterable[str] – List of text contents to be inserted/updated.
 
+- ```metadatas``` : Optional[List[Dict]] – List of metadata dictionaries for each text (optional).
 
-## Manage vector store
-Once you have created your vector store, we can interact with it by adding and deleting different items.
+- ```ids``` : Optional[List[str]] – Custom IDs for the documents. If not provided, IDs will be auto-generated.
 
-### Add Items to Vector Store
+- ```batch_size``` : int – Number of documents per batch (default: 32).
 
-Weaviate provides flexible methods for adding documents to your vector store. This section explores two efficient approaches: standard insertion and parallel batch processing, each optimized for different use cases.
+- ```workers``` : int – Number of parallel workers (default: 10).
 
-**Standard Insertion**
+- ```**kwargs``` : Extra arguments for the underlying vector store.
 
-Best for smaller datasets or when processing order is important:
-- Sequential document processing
-- Automatic UUID generation
-- Built-in duplicate handling
-- Real-time progress tracking
+**🔄 Return**
 
-**Parallel Batch Processing**
-
-Optimized for large-scale document ingestion:
-- Multi-threaded processing
-- Configurable batch sizes
-- Concurrent execution
-- Enhanced throughput
-
-**Configuration Options:**
-
-- `batch_size` : Control memory usage and processing chunks
-- `max_workers` : Adjust concurrent processing threads
-- `unique_key` : Define document identification field
-- `show_progress` : Monitor ingestion progress
-
-**Performance Tips:**
-
-- For datasets < 1000 documents: Use standard insertion
-- For datasets > 1000 documents: Consider parallel processing
-- Monitor memory usage when increasing batch size
-- Adjust worker count based on available CPU cores
-
-> **Best Practice:** Choose your ingestion method based on dataset size and system resources. Start with conservative batch sizes and gradually optimize based on performance metrics.
+- None
 
 ```python
-from weaviate.util import generate_uuid5
+from uuid import uuid4
 
-def generate_ids(collection_name: str, unique_values: List[str]):
-  ids = []
+args = {
+    "texts": [doc.page_content for doc in docs],
+    "metadatas": [doc.metadata for doc in docs],
+    "ids": [str(uuid4()) for _ in docs],
+    "batch_size": 30,
+    "workers": 10,
+    "show_progress": True,
+    "text_key": "text",
+}
 
-  for unique_value in unique_values:
-    ids.append(generate_uuid5(collection_name, unique_value))
-  return ids
-
-ids = generate_ids(collection_name, [str(processed_chunk["order"]) for processed_chunk in processed_chunks])
+crud_manager.upsert_parallel(**args);
 ```
+
+<pre class="custom">Upserted 30/262 documents
+    Upserted 60/262 documents
+    Upserted 90/262 documents
+    Upserted 120/262 documents
+    Upserted 150/262 documents
+    Upserted 180/262 documents
+    Upserted 210/262 documents
+    Upserted 240/262 documents
+    [Weaviate] 262 Documents Insert Complete
+</pre>
+
+### Similarity Search
+
+Search for **similar documents** based on **embeddings** .
+
+This method uses **"cosine similarity"** .
+
+
+**✅ Args**
+
+- ```query``` : str – The text query for similarity search.
+
+- ```k``` : int – Number of top results to return (default: 10).
+
+```**kwargs``` : Additional search options (e.g., filters).
+
+**🔄 Return**
+
+- ```results``` : List[Document] – A list of LangChain Document objects ranked by similarity.
 
 ```python
-import time
-
-start_time = time.time()
-# Example usage
-results = weaviate_db.upsert(
-    texts=texts,
-    metadatas=metadatas,
-    ids=ids,
-    collection_name=collection_name,
-    batch_size=100,
-    show_progress=True,
-)
-
-end_time = time.time()
-print(f"\nProcessing complete")
-print(f"Number of successfully processed documents: {len(results)}")
-print(f"Total elapsed time: {end_time - start_time:.2f} seconds")
+# Search by Query
+results = crud_manager.search(query="What is essential is invisible to the eye.", k=3)
+for idx, doc in enumerate(results):
+    print(f"Rank {idx} | Title : {doc.metadata['title']}")
+    print(f"Contents : {doc.page_content}")
+    print(f"Metadata: {doc.metadata}")
+    print(f"Similarity Distance: {doc.metadata['distance']}")
+    print()
 ```
 
-<pre class="custom">문서 처리 중 오류 발생 (ID: 8e5d8d25-c745-5628-91cc-72f035859618): Object was not added! Unexpected status code: 503, with response body: None.
-    Processed batch 1/5
-    Processed batch 2/5
-    Processed batch 3/5
-    Processed batch 4/5
-    Processed batch 5/5
+<pre class="custom">Rank 0 | Title : Chapter 21
+    Contents : And he went back to meet the fox. 
+    "Goodbye," he said. 
+    "Goodbye," said the fox. "And now here is my secret, a very simple secret: It is only with the heart that one can see rightly; what is essential is invisible to the eye." 
+    "What is essential is invisible to the eye," the little prince repeated, so that he would be sure to remember.
+    "It is the time you have wasted for your rose that makes your rose so important."
+    Metadata: {'title': 'Chapter 21', 'uuid': '4476d736-4090-4da1-abf3-216fb62f03b9', 'distance': 0.4915975332260132}
+    Similarity Distance: 0.4915975332260132
     
-    Processing complete
-    Number of successfully processed documents: 457
-    Total elapsed time: 214.33 seconds
+    Rank 1 | Title : Chapter 24
+    Contents : "Yes," I said to the little prince. "The house, the stars, the desert-- what gives them their beauty is something that is invisible!" 
+    "I am glad," he said, "that you agree with my fox."
+    Metadata: {'title': 'Chapter 24', 'uuid': '329c3f94-f5f5-48bb-9712-fda3ce36ffe3', 'distance': 0.5046807527542114}
+    Similarity Distance: 0.5046807527542114
+    
+    Rank 2 | Title : Chapter 25
+    Contents : "The men where you live," said the little prince, "raise five thousand roses in the same garden-- and they do not find in it what they are looking for." 
+    "They do not find it," I replied. 
+    "And yet what they are looking for could be found in one single rose, or in a little water." 
+    "Yes, that is true," I said. 
+    And the little prince added: 
+    "But the eyes are blind. One must look with the heart..."
+    Metadata: {'title': 'Chapter 25', 'uuid': '45b8fd3e-f78b-4e27-99a4-cfd4b867b059', 'distance': 0.5776596665382385}
+    Similarity Distance: 0.5776596665382385
+    
 </pre>
-
-```python
-import time
-
-start_time = time.time()
-
-results = weaviate_db.upsert_parallel(
-    texts=texts,
-    metadatas=metadatas,
-    ids=ids,
-    collection_name=collection_name,
-    text_key="text",
-)
-
-end_time = time.time()
-print(f"\nProcessing complete")
-print(f"Number of successfully processed documents: {len(results)}")
-print(f"Total elapsed time: {end_time - start_time:.2f} seconds")
-```
-
-<pre class="custom">
-    Processing complete
-    Number of successfully processed documents: 458
-    Total elapsed time: 8.07 seconds
-</pre>
-
-### Search items from Weaviate
-
-You can search items from `weaviate` by filter
-
-```python
-weaviate_db.search(
-    query="What is the little prince about?",
-    filters={"author": "Antoine de Saint-Exupéry"},
-    k=2,
-    collection_name=collection_name,
-    show_progress=True,
-)
-```
-
-
-
-
-<pre class="custom">[Document(metadata={'title': 'The Little Prince', 'author': 'Antoine de Saint-Exupéry', 'source': 'Original Text', 'order': 9, 'uuid': 'c78af9d2-00b1-5637-9904-f925cb8e2107'}, page_content='To console himself, he drew upon his experiences over the Saharan desert to write and illustrate what would become his most famous book, The Little Prince (1943). Mystical and enchanting, this small book has fascinated both children and adults for decades. In the book, a pilot is stranded in the'),
-     Document(metadata={'title': 'The Little Prince', 'order': 10, 'source': 'Original Text', 'author': 'Antoine de Saint-Exupéry', 'uuid': '00d8fa75-c17d-5d21-8820-0175c0d461d1'}, page_content='In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little prince discovers the true meaning of life. At the end of his conversation with the Little Prince, the aviator')]</pre>
-
-
-
-### Delete items from Weaviate
-
-You can delete items from `weaviate` by filter
-
-First, let's search for documents that contain the text `Hum! Hum!` in the `text` property.
-
-```python
-weaviate_db.keyword_search(
-    query="Hum! Hum!",
-    filters={"author": "Antoine de Saint-Exupéry"},
-    k=2,
-    collection_name=collection_name,
-    show_progress=True,
-)
-```
-
-
-
-
-<pre class="custom">[Document(metadata={'title': 'The Little Prince', 'order': 199, 'source': 'Original Text', 'author': 'Antoine de Saint-Exupéry', 'uuid': 'bef162c8-9707-5016-b1b4-3fe66a35f32b'}, page_content='"Hum! Hum!" replied the king; and before saying anything else he consulted a bulky almanac. "Hum! Hum! That will be about-- about-- that will be this evening about twenty minutes to eight. And you will see how well I am obeyed."'),
-     Document(metadata={'title': 'The Little Prince', 'order': 185, 'source': 'Original Text', 'author': 'Antoine de Saint-Exupéry', 'uuid': 'dd0f094c-35e4-5fbd-b24c-8a638b06cb77'}, page_content='"Hum! Hum!" replied the king. "Then I-- I order you sometimes to yawn and sometimes to--"\nHe sputtered a little, and seemed vexed.')]</pre>
-
-
-
-Now let's delete the document with the filter applied.
-
-```python
-weaviate_db.delete(collection_name=collection_name, ids=None, filters={"author": "Antoine de Saint-Exupéry"})
-```
-
-
-
-
-<pre class="custom">True</pre>
-
-
-
-Let's verify that the document was deleted properly.
-
-```python
-weaviate_db.keyword_search(
-    query="Hum! Hum!",
-    filters={"author": "Antoine de Saint-Exupéry"},
-    k=2,
-    collection_name=collection_name,
-    show_progress=True,
-)
-```
-
-
-
-
-<pre class="custom">[]</pre>
-
-
-
-Great job, now let's dive into Similarity Search with Langchain Vector Store.
-
-----
-
-## Finding Objects by Similarity
-
-Weaviate allows you to find objects that are semantically similar to your query. Let's walk through a complete example, from importing data to executing similarity searches.
-
-### Step 1: Preparing Your Data
-
-Before we can perform similarity searches, we need to populate our Weaviate instance with data. We'll start by loading and chunking a text file into manageable pieces.
-
-> 💡 **Tip** : Breaking down large texts into smaller chunks helps optimize vector search performance and relevance.
-
-```python
-from langchain_openai import OpenAIEmbeddings
-from langchain_weaviate.vectorstores import WeaviateVectorStore
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-
-vector_store = WeaviateVectorStore(
-    client=client, index_name=collection_name, embedding=embeddings, text_key="text"
-)
-
-vector_store.add_documents(split_docs[:5])
-```
-
-
-
-
-<pre class="custom">['6b892c6d-7f7c-4687-a6de-b27029724070',
-     '45107ac6-4dfe-4cd5-a020-9ccc208aa012',
-     '25503fea-c128-49d5-9e1d-a0ef6c5529f9',
-     '64410acb-3f7e-4762-a656-1e0f661f9f7d',
-     '28abbe7e-56d0-48a0-962b-ad06b0c9b14f']</pre>
-
-
-
-### Step 2: Perform the search
-
-We can now perform a similarity search. This will return the most similar documents to the query text, based on the embeddings stored in Weaviate and an equivalent embedding generated from the query text.
-
-```python
-from utils.weaviate_vectordb import WeaviateSearch
-
-query = "What is the little prince about?"
-searcher = WeaviateSearch(vector_store)
-docs = searcher.similarity_search(query, k=1)
-
-for i, doc in enumerate(docs):
-    print(f"\nDocument {i+1}:")
-    print(doc.page_content)
-```
-
-<pre class="custom">
-    Document 1:
-    The Little Prince
-    Written By Antoine de Saiot-Exupery (1900〜1944)
-</pre>
-
-You can also add filters, which will either include or exclude results based on the filter conditions. (See [more filter examples](https://weaviate.io/developers/weaviate/search/filters).)
-
-It is also possible to provide `k` , which is the upper limit of the number of results to return.
 
 ```python
 from weaviate.classes.query import Filter
 
-filter_query = Filter.by_property("text").equal("In the book, a pilot is")
-
-searcher.similarity_search(
-    query=query,
-    filter_query=filter_query,
-    k=1,
+# Filter Search
+results = crud_manager.search(
+    query="Which asteroid did the little prince come from?",
+    k=3,
+    filters=Filter.by_property("title").equal("Chapter 4"),
 )
+for idx, doc in enumerate(results):
+    print(f"Rank {idx} | Title : {doc.metadata['title']}")
+    print(f"Contents : {doc.page_content}")
+    print(f"Metadata: {doc.metadata}")
+    print(f"Similarity Distance: {doc.metadata['distance']}")
+    print()
 ```
 
-
-
-
-<pre class="custom">[]</pre>
-
-
-
-### Quantify Result Similarity
-
-When performing similarity searches, you might want to know not just which documents are similar, but how similar they are. Weaviate provides this information through a relevance score.
-> 💡 Tip: The relevance score helps you understand the relative similarity between search results.
-
-```python
-docs = searcher.similarity_search_with_score(query, k=5)
-
-for doc in docs:
-    print(f"{doc[1]:.3f}", ":", doc[0].page_content)
-```
-
-<pre class="custom">1.000 : The Little Prince
-    Written By Antoine de Saiot-Exupery (1900〜1944)
-    0.391 : [ Antoine de Saiot-Exupery ]
-    0.333 : Over the past century, the thrill of flying has inspired some to perform remarkable feats of daring. For others, their desire to soar into the skies led to dramatic leaps in technology. For Antoine de Saint-Exupéry, his love of aviation inspired stories, which have touched the hearts of millions
-    0.164 : Born in 1900 in Lyons, France, young Antoine was filled with a passion for adventure. When he failed an entrance exam for the Naval Academy, his interest in aviation took hold. He joined the French Army Air Force in 1921 where he first learned to fly a plane. Five years later, he would leave the
-    0.000 : have touched the hearts of millions around the world.
-</pre>
-
-## Search mechanism
-
-`similarity_search` uses Weaviate's [hybrid search](https://weaviate.io/developers/weaviate/api/graphql/search-operators#hybrid).
-
-A hybrid search combines a vector and a keyword search, with `alpha` as the weight of the vector search. The `similarity_search` function allows you to pass additional arguments as kwargs. See this [reference doc](https://weaviate.io/developers/weaviate/api/graphql/search-operators#hybrid) for the available arguments.
-
-So, you can perform a pure keyword search by adding `alpha=0` as shown below:
-
-```python
-docs = searcher.similarity_search(query, alpha=0)
-docs[0]
-```
-
-
-
-
-<pre class="custom">Document(metadata={'title': None, 'author': None, 'source': None, 'order': None}, page_content='The Little Prince\nWritten By Antoine de Saiot-Exupery (1900〜1944)')</pre>
-
-
-
-## Persistence
-
-Any data added through `langchain-weaviate` will persist in Weaviate according to its configuration. 
-
-WCS instances, for example, are configured to persist data indefinitely, and Docker instances can be set up to persist data in a volume. Read more about [Weaviate's persistence](https://weaviate.io/developers/weaviate/configuration/persistence).
-
-## Multi-tenancy
-
-[Multi-tenancy](https://weaviate.io/developers/weaviate/concepts/data#multi-tenancy) allows you to have a high number of isolated collections of data, with the same collection configuration, in a single Weaviate instance. This is great for multi-user environments such as building a SaaS app, where each end user will have their own isolated data collection.
-
-To use multi-tenancy, the vector store need to be aware of the `tenant` parameter. 
-
-So when adding any data, provide the `tenant` parameter as shown below.
-
-```python
-# 2. Create a vector store with a specific tenant
-vector_store_with_tenant = WeaviateVectorStore.from_documents(
-    docs, embeddings, client=client, tenant="tenant1"  # specify the tenant name
-)
-```
-
-<pre class="custom">2025-Feb-08 12:03 AM - langchain_weaviate.vectorstores - INFO - Tenant tenant1 does not exist in index LangChain_faa4f5a05fab42fba487b3487000b232. Creating tenant.
-</pre>
-
-```python
-results = vector_store_with_tenant.similarity_search(
-    query, tenant="tenant1"  # use the same tenant name
-)
-
-for doc in results:
-    print(doc.page_content)
-```
-
-<pre class="custom">The Little Prince
-    Written By Antoine de Saiot-Exupery (1900〜1944)
-</pre>
-
-```python
-vector_store_with_tenant = WeaviateVectorStore.from_documents(
-    docs, embeddings, client=client, tenant="tenant1", mt=True
-)
-```
-
-<pre class="custom">2025-Feb-08 12:03 AM - langchain_weaviate.vectorstores - INFO - Tenant tenant1 does not exist in index LangChain_c255d8854e9146c28d3698df6bb51d46. Creating tenant.
-</pre>
-
-And when performing queries, provide the `tenant` parameter also.
-
-```python
-vector_store_with_tenant.similarity_search(query, tenant="tenant1")
-```
-
-
-
-
-<pre class="custom">[Document(metadata={'title': None, 'author': None, 'source': None, 'order': None}, page_content='The Little Prince\nWritten By Antoine de Saiot-Exupery (1900〜1944)')]</pre>
-
-
-
-## Retriever options
-
-Weaviate can also be used as a retriever
-
-### Maximal marginal relevance search (MMR)
-
-In addition to using similaritysearch  in the retriever object, you can also use `mmr`
-
-```python
-retriever = vector_store.as_retriever(search_type="mmr")
-retriever.invoke(query)[0]
-```
-
-<pre class="custom">Failed to multipart ingest runs: langsmith.utils.LangSmithRateLimitError: Rate limit exceeded for https://api.smith.langchain.com/runs/multipart. HTTPError('429 Client Error: Too Many Requests for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Monthly unique traces usage limit exceeded"}')trace=10200441-130b-4dc2-94d8-0c74fcfa107c,id=10200441-130b-4dc2-94d8-0c74fcfa107c
-</pre>
-
-
-
-
-    Document(metadata={'title': None, 'author': None, 'source': None, 'order': None}, page_content='The Little Prince\nWritten By Antoine de Saiot-Exupery (1900〜1944)')
-
-
-
-    Failed to multipart ingest runs: langsmith.utils.LangSmithRateLimitError: Rate limit exceeded for https://api.smith.langchain.com/runs/multipart. HTTPError('429 Client Error: Too Many Requests for url: https://api.smith.langchain.com/runs/multipart', '{"detail":"Monthly unique traces usage limit exceeded"}')trace=10200441-130b-4dc2-94d8-0c74fcfa107c,id=10200441-130b-4dc2-94d8-0c74fcfa107c
+<pre class="custom">Rank 0 | Title : Chapter 4
+    Contents : I have serious reason to believe that the planet from which the little prince came is the asteroid known as B-612. This asteroid has only once been seen through the telescope. That was by a Turkish astronomer, in 1909. 
+    (picture)
+    On making his discovery, the astronomer had presented it to the International Astronomical Congress, in a great demonstration. But he was in Turkish costume, and so nobody would believe what he said.
+    Grown-ups are like that...
+    Metadata: {'title': 'Chapter 4', 'uuid': 'f06392b8-f2d2-4edd-b256-4198c17b1335', 'distance': 0.33773601055145264}
+    Similarity Distance: 0.33773601055145264
     
+    Rank 1 | Title : Chapter 4
+    Contents : - the narrator speculates as to which asteroid from which the little prince came　　
+    I had thus learned a second fact of great importance: this was that the planet the little prince came from was scarcely any larger than a house!
+    Metadata: {'title': 'Chapter 4', 'uuid': 'fa672b51-ccd0-488b-8a9d-ec16a2398136', 'distance': 0.3647916316986084}
+    Similarity Distance: 0.3647916316986084
+    
+    Rank 2 | Title : Chapter 4
+    Contents : Just so, you might say to them: "The proof that the little prince existed is that he was charming, that he laughed, and that he was looking for a sheep. If anybody wants a sheep, that is a proof that he exists." And what good would it do to tell them that? They would shrug their shoulders, and treat you like a child. But if you said to them: "The planet he came from is Asteroid B-612," then they would be convinced, and leave you in peace from their questions.
+    Metadata: {'title': 'Chapter 4', 'uuid': 'd27c848d-97d4-4230-8a3c-de4f2c78d507', 'distance': 0.5127066373825073}
+    Similarity Distance: 0.5127066373825073
+    
+</pre>
 
-### Delete Collection
+### As_retrever
 
-Managing collections in Weaviate includes the ability to remove them when they're no longer needed. The `delete_collection` function provides a straightforward way to remove collections from your Weaviate instance.
+The ```as_retriever()``` method creates a LangChain-compatible retriever wrapper.
 
-**Function Signature:**
-- `client` : Weaviate client instance for database connection
-- `collection_name` : Name of the collection to be deleted
+This function allows a ```DocumentManager``` class to return a retriever object by wrapping the internal ```search()``` method, while staying lightweight and independent from full LangChain ```VectorStore``` dependencies.
 
-**Advanced Operations:**
-For batch operations or managing multiple collections, you can use the `delete_all_collections()` function, which removes all collections from your Weaviate instance.
+The retriever obtained through this function can be used the same as the existing LangChain retriever and is **compatible with LangChain Pipeline(e.g. RetrievalQA,ConversationalRetrievalChain,Tool,...)**.
 
-> **Important:** Collection deletion is permanent and cannot be undone. Always ensure you have appropriate backups before deleting collections in production environments.
+**✅ Args**
+
+- ```search_fn``` : Callable - The function used to retrieve relevant documents. Typically this is ```self.search``` from a ```DocumentManager``` instance.
+
+- ```search_kwargs``` : Optional[Dict] - A dictionary of keyword arguments passed to ```search_fn```, such as ```k``` for top-K results or metadata filters.
+
+**🔄 Return**
+
+- ```LightCustomRetriever``` :BaseRetriever - A lightweight LangChain-compatible retriever that internally uses the given ```search_fn``` and ```search_kwargs```.
 
 ```python
-# weaviate_db.delete_all_collections(client)    # if you want to delete all collections, uncomment this line
-weaviate_db.delete_collection(client, collection_name)
+ret = crud_manager.as_retriever(
+    search_fn=crud_manager.search,
+    search_kwargs={
+        "k": 3,
+        "filters": Filter.by_property("title").equal("Chapter 5"),
+    },
+)
 ```
 
-<pre class="custom">Deleted index: BookChunk
+```python
+ret.invoke("Which asteroid did the little prince come from?")
+```
+
+
+
+
+<pre class="custom">[Document(metadata={'title': 'Chapter 5', 'uuid': '518b958b-a645-4ed2-8f16-3fcccb005329', 'distance': 0.5090157389640808}, page_content='So, as the little prince described it to me, I have made a drawing of that planet. I do not much like to take the tone of a moralist. But the danger of the baobabs is so little understood, and such considerable risks would be run by anyone who might get lost on an asteroid, that for once I am breaking through my reserve. "Children," I say plainly, "watch out for the baobabs!"'),
+     Document(metadata={'title': 'Chapter 5', 'uuid': '76618ef2-c13b-4ab0-b8d1-f1d641c729d8', 'distance': 0.5463582873344421}, page_content='Indeed, as I learned, there were on the planet where the little prince lived-- as on all planets-- good plants and bad plants. In consequence, there were good seeds from good plants, and bad seeds from bad plants. But seeds are invisible. They sleep deep in the heart of the earth‘s darkness, until some one among them is seized with the desire to awaken. Then this little seed will stretch itself and begin-- timidly at first-- to push a charming little sprig inoffensively upward toward the sun.'),
+     Document(metadata={'title': 'Chapter 5', 'uuid': 'f8098593-28c8-45d4-9215-fc9e2062fda6', 'distance': 0.5707676410675049}, page_content='"It is a question of discipline," the little prince said to me later on. "When you‘ve finished your own toilet in the morning, then it is time to attend to the toilet of your planet, just so, with the greatest care. You must see to it that you pull up regularly all the baobabs, at the very first moment when they can be distinguished from the rosebushes which they resemble so closely in their earliest youth. It is very tedious work," the little prince added, "but very easy."')]</pre>
+
+
+
+### Delete Document
+
+Remove documents based on filter conditions
+
+**✅ Args**
+
+- ```ids``` : Optional[List[str]] – List of document IDs to delete. If None, deletion is based on filter.
+
+- ```filters``` : Optional[Dict] – Dictionary specifying filter conditions (e.g., metadata match).
+
+- ```**kwargs``` : Any additional parameters.
+
+**🔄 Return**
+
+- None
+
+```python
+# Delete by ids
+ids = [
+    "fe6bfb27-4785-4105-b24a-7a69a45252ee",
+    "4ca818c7-e95b-4af0-8f7c-3f1638f72a39",
+    "b3364a5a-51a8-4076-80df-a9f28d38be61",
+    "33193a48-dde9-4aa3-9818-c0a3f7381a9a",
+]  # The 'ids' value you want to delete
+crud_manager.delete(ids=ids);
+```
+
+<pre class="custom">[Weaviate] 0 document(s) deleted by ID
 </pre>
+
+```python
+# Delete by ids with filters
+ids = [
+    "b0e85aca-ab8a-4a59-a56b-5ef437ff0e53",
+    "29d9e56e-b4e5-4898-9be9-badc2c294295",
+    "1554250f-04ed-45b0-b4ac-b639f858d3ad",
+    "b539aade-848a-4a54-bc8f-bc5387db9d46",
+]  # The `ids` value corresponding to chapter 6
+crud_manager.delete(ids=ids, filters={"title": "chapter 6"});
+```
+
+<pre class="custom">[Weaviate] 0 document(s) deleted by ID+filter
+</pre>
+
+```python
+# Delete All
+crud_manager.delete()
+```
+
+<pre class="custom">[Weaviate] Deleted collection: tutorial_collection
+</pre>
+
+
+
+
+    True
+
+
+
+```python
+client.close()
+```

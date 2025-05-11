@@ -21,11 +21,11 @@ pre {
 
 - Author: [Erika Park](https://www.linkedin.com/in/yeonseo-park-094193198/)
 - Designer: [Erika Park](https://www.linkedin.com/in/yeonseo-park-094193198/)
-- Peer Review: 
-- Proofread:
+- Proofread : [jishin86](https://github.com/jishin86)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/05-Using-OpenAIAPI-MultiModal.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/05-Using-OpenAIAPI-MultiModal.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/01-VectorStoreRetriever.ipynb)
+[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/01-VectorStoreRetriever.ipynb)
 
 ## Overview
 This tutorial provides a comprehensive guide to building and optimizing a **VectorStore-backed retriever** using LangChain. It covers the foundational steps of creating a vector store with FAISS(Facebook AI Similarity Search) and explores advanced retrieval strategies for improving search accuracy and efficiency.
@@ -75,8 +75,8 @@ This tutorial aims to explore and optimize the VectorStore → Relevant Chunks R
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions, and utilities for tutorials. 
-- You can checkout out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions, and utilities for tutorials. 
+- You can checkout out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -121,7 +121,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -185,12 +185,12 @@ db = FAISS.from_documents(split_docs, embeddings)
     Created a chunk of size 376, which is longer than the specified 300
 </pre>
 
-📌 **1. Initializing and Using VectorStoreRetriever (`as_retriever` )**
+📌 **1. Initializing and Using VectorStoreRetriever (```as_retriever``` )**
 
-The `as_retriever` method allows you to convert a vector database into a retriever, enabling efficient document search and retrieval from the vector store.
+The ```as_retriever``` method allows you to convert a vector database into a retriever, enabling efficient document search and retrieval from the vector store.
 
 **How It Works**:
-* The `as_retriever()` method transforms a vector store (like FAISS) into a retriever object, making it compatible with LangChain's retrieval workflows.
+* The ```as_retriever()``` method transforms a vector store (like FAISS) into a retriever object, making it compatible with LangChain's retrieval workflows.
 * This retriever can then be directly used with RAG pipelines or combined with Large Language Models (LLMs) for building intelligent search systems.
 
 ```python
@@ -200,48 +200,48 @@ retriever = db.as_retriever()
 
 **Advanced Retriever Configuration**
 
-The `as_retriever` method allows you to configure advanced retrieval strategies, such as **similarity search**, **MMR (Maximal Marginal Relevance)**, and **similarity score threshold-based filtering**.
+The ```as_retriever``` method allows you to configure advanced retrieval strategies, such as **similarity search**, **MMR (Maximal Marginal Relevance)**, and **similarity score threshold-based filtering**.
 
 
 **Parameters:**
 
-- `**kwargs` : Keyword arguments passed to the retrieval function:
-   - `search_type` : Specifies the search method.
-     - `"similarity"` : Returns the most relevant documents based on cosine similarity.
-     - `"mmr"` : Utilizes the Maximal Marginal Relevance algorithm, balancing **relevance** and **diversity**.
-     - `"similarity_score_threshold"` : Returns documents with a similarity score above a specified threshold.
-   - `search_kwargs` : Additional search options for fine-tuning results:
-     - `k` : Number of documents to return (default: `4` ).
-     - `score_threshold` : Minimum similarity score for the `"similarity_score_threshold"` search type (e.g., `0.8` ).
-     - `fetch_k` : Number of documents initially retrieved during an MMR search (default: `20` ).
-     - `lambda_mult` : Controls diversity in MMR results (`0` = maximum diversity, `1` = maximum relevance, default: `0.5` ).
-     - `filter` : Metadata filtering for selective document retrieval.
+- ```**kwargs``` : Keyword arguments passed to the retrieval function:
+   - ```search_type``` : Specifies the search method.
+     - ```"similarity"``` : Returns the most relevant documents based on cosine similarity.
+     - ```"mmr"``` : Utilizes the Maximal Marginal Relevance algorithm, balancing **relevance** and **diversity**.
+     - ```"similarity_score_threshold"``` : Returns documents with a similarity score above a specified threshold.
+   - ```search_kwargs``` : Additional search options for fine-tuning results:
+     - ```k``` : Number of documents to return (default: ```4``` ).
+     - ```score_threshold``` : Minimum similarity score for the ```"similarity_score_threshold"``` search type (e.g., ```0.8``` ).
+     - ```fetch_k``` : Number of documents initially retrieved during an MMR search (default: ```20``` ).
+     - ```lambda_mult``` : Controls diversity in MMR results (```0``` = maximum diversity, ```1``` = maximum relevance, default: ```0.5``` ).
+     - ```filter``` : Metadata filtering for selective document retrieval.
 
 
  **Return Value:**
 
-- `VectorStoreRetriever`: An initialized retriever object that can be directly queried for document search tasks.
+- ```VectorStoreRetriever```: An initialized retriever object that can be directly queried for document search tasks.
 
 
 **Notes:**
-- Supports multiple search strategies (`similarity` , `MMR` , `similarity_score_threshold` ).
+- Supports multiple search strategies (```similarity``` , ```MMR``` , ```similarity_score_threshold``` ).
 - MMR improves result diversity while preserving relevance by reducing redundancy in results.
 - Metadata filtering enables selective document retrieval based on document properties.
-- The `tags` parameter can be used to label retrievers for better organization and easier identification.
+- The ```tags``` parameter can be used to label retrievers for better organization and easier identification.
 
  **Cautions:**
 - Diversity Control with MMR:
-  - Adjust both `fetch_k` (number of documents initially retrieved) and `lambda_mult` (diversity control factor) carefully for optimal balance.
-  - `lambda_mult`
+  - Adjust both ```fetch_k``` (number of documents initially retrieved) and ```lambda_mult``` (diversity control factor) carefully for optimal balance.
+  - ```lambda_mult```
     - Lower values (< 0.5) → Prioritize diversity.
     - Higher values (> 0.5) → Prioritize relevance.
-  - set `fetch_k` higher than `k` for effective diversity control.
+  - set ```fetch_k``` higher than ```k``` for effective diversity control.
 - Threshold Settings: 
-  - Using a high `score_threshold` (e.g., 0.95) can lead to zero results.
+  - Using a high ```score_threshold``` (e.g., 0.95) can lead to zero results.
 - Metadata Filtering: 
   - Ensure the metadata structure is well-defined before applying filters.
 - Balanced Configuration:
-  - Maintain a proper balance between `search_type` and `search_kwargs` settings for optimal retrieval performance.
+  - Maintain a proper balance between ```search_type``` and ```search_kwargs``` settings for optimal retrieval performance.
 
 
 ```python
@@ -278,9 +278,9 @@ for doc in results:
     Related Keywords: Vector Search, Machine Learning, Database Optimization
 </pre>
 
-### Retriever's `invoke()` Method
+### Retriever's ```invoke()``` Method
 
-The `invoke()` method is the primary entry point for interacting with a Retriever. It is used to search and retrieve relevant documents based on a given query.
+The ```invoke()``` method is the primary entry point for interacting with a Retriever. It is used to search and retrieve relevant documents based on a given query.
 
 **How It Works** :
 1. Query Submission: A user query is provided as input.
@@ -289,28 +289,28 @@ The `invoke()` method is the primary entry point for interacting with a Retrieve
 4. Results Return: The method returns a list of relevant document chunks.
 
  **Parameters:**
-- `input` (Required):
+- ```input``` (Required):
    - The query string provided by the user.
    - The query is converted into a vector and compared with stored document vectors for similarity-based retrieval.
 
-- `config` (Optional):
+- ```config``` (Optional):
    - Allows for fine-grained control over the retrieval process.
    - Can be used to specify **tags, metadata insertion, and search strategies**.
 
-- `**kwargs` (Optional):
-   - Enables direct passing of `search_kwargs` for advanced configuration.
+- ```**kwargs``` (Optional):
+   - Enables direct passing of ```search_kwargs``` for advanced configuration.
    - Example options include:
-     - `k` : Number of documents to return.
-     - `score_threshold` : Minimum similarity score for a document to be included.
-     - `fetch_k` : Number of documents initially retrieved in MMR searches.
+     - ```k``` : Number of documents to return.
+     - ```score_threshold``` : Minimum similarity score for a document to be included.
+     - ```fetch_k``` : Number of documents initially retrieved in MMR searches.
 
 
  **Return Value:**
-- `List[Document]`:
+- ```List[Document]```:
    - Returns a list of document objects containing the retrieved text and metadata.
    - Each document object includes:
-     - `page_content` : The main content of the document.
-     - `metadata` : Associated metadata with the document (e.g., source, tags).
+     - ```page_content``` : The main content of the document.
+     - ```metadata``` : Associated metadata with the document (e.g., source, tags).
 
 
 **Usage Example 1: Basic Usage (Synchronous Search)**
@@ -335,7 +335,7 @@ for doc in docs:
     =========================================================
 </pre>
 
-**Usage Example 2: Search with Options** ( `search_kwargs` )
+**Usage Example 2: Search with Options** ( ```search_kwargs``` )
 
 ```python
 # search options: top 5 results with a similarity score ≥ 0.7
@@ -356,7 +356,7 @@ for doc in docs:
     =========================================================
 </pre>
 
-**Usage Example 3: Using** `config` **and** `**kwargs` **(Advanced Configuration)**
+**Usage Example 3: Using** ```config``` **and** ```**kwargs``` **(Advanced Configuration)**
 
 ```python
 from langchain_core.runnables.config import RunnableConfig
@@ -427,10 +427,10 @@ Unlike basic similarity-based searches that return the most relevant documents b
 2. Diversity: Ensures the retrieved documents are distinct from each other to avoid repetitive results.
 
  **Key Parameters:**
-- `search_type="mmr"`: Activates the MMR retrieval strategy.  
-- `k`: The number of documents returned after applying diversity filtering(default: `4`).  
-- `fetch_k`: Number of documents initially retrieved before applying diversity filtering (default: `20`).  
-- `lambda_mult`: Diversity control factor (`0 = max diversity` , `1 = max relevance` , default: `0.5`).
+- ```search_type="mmr"```: Activates the MMR retrieval strategy.  
+- ```k```: The number of documents returned after applying diversity filtering(default: ```4```).  
+- ```fetch_k```: Number of documents initially retrieved before applying diversity filtering (default: ```20```).  
+- ```lambda_mult```: Diversity control factor (```0 = max diversity``` , ```1 = max relevance``` , default: ```0.5```).
 
 ```python
 # MMR Retriever Configuration (Balancing Relevance and Diversity)
@@ -480,8 +480,8 @@ for idx, doc in enumerate(docs):
 
 **Key Features:**
 - Relevance Filtering: Returns only documents with a similarity score above the specified threshold.
-- Configurable Precision: The threshold is adjustable using the `score_threshold` parameter.
-- Search Type Activation: Enabled by setting `search_type="similarity_score_threshold"` .
+- Configurable Precision: The threshold is adjustable using the ```score_threshold``` parameter.
+- Search Type Activation: Enabled by setting ```search_type="similarity_score_threshold"``` .
 
 This search method is ideal for tasks requiring **highly precise** results, such as fact-checking or answering technical queries.
 
@@ -541,12 +541,12 @@ else:
     ============================================================
 </pre>
 
-### Configuring `top_k` (Adjusting the Number of Returned Documents)
+### Configuring ```top_k``` (Adjusting the Number of Returned Documents)
 
-- The parameter `k` specifies the number of documents returned during a vector search. It determines how many of the **top-ranked** documents (based on similarity score) will be retrieved from the vector database.
+- The parameter ```k``` specifies the number of documents returned during a vector search. It determines how many of the **top-ranked** documents (based on similarity score) will be retrieved from the vector database.
 
-- The number of documents retrieved can be adjusted by setting the `k` value within the `search_kwargs`.  
-- For example, setting `k=1` will return only the **top 1 most relevant document** based on similarity.
+- The number of documents retrieved can be adjusted by setting the ```k``` value within the ```search_kwargs```.  
+- For example, setting ```k=1``` will return only the **top 1 most relevant document** based on similarity.
 
 ```python
 # Retriever Configuration (Return Only the Top 1 Document)
@@ -580,19 +580,19 @@ else:
     ============================================================
 </pre>
 
-## Dynamic Configuration (Using `ConfigurableField` )
+## Dynamic Configuration (Using ```ConfigurableField``` )
 
-The `ConfigurableField` feature in LangChain allows for **dynamic adjustment** of search configurations, providing flexibility during query execution.
+The ```ConfigurableField``` feature in LangChain allows for **dynamic adjustment** of search configurations, providing flexibility during query execution.
 
 **Key Features:**
 - Runtime Search Configuration: Adjust search settings without modifying the core retriever setup.
 - Enhanced Traceability: Assign unique identifiers, names, and descriptions to each parameter for improved readability and debugging.
-- Flexible Control with `config`: Search configurations can be passed dynamically using the `config` parameter as a dictionary.
+- Flexible Control with ```config```: Search configurations can be passed dynamically using the ```config``` parameter as a dictionary.
 
 
 **Use Cases:**
-- Switching Search Strategies: Dynamically adjust the search type (e.g., `"similarity"`, `"mmr"` ).
-- Real-Time Parameter Adjustments: Modify search parameters like `k` , `score_threshold` , and `fetch_k` during query execution.
+- Switching Search Strategies: Dynamically adjust the search type (e.g., ```"similarity"```, ```"mmr"``` ).
+- Real-Time Parameter Adjustments: Modify search parameters like ```k``` , ```score_threshold``` , and ```fetch_k``` during query execution.
 - Experimentation: Easily test different search strategies and parameter combinations without rewriting code.
 
 ```python
@@ -613,7 +613,7 @@ retriever = db.as_retriever(search_kwargs={"k": 1}).configurable_fields(
 )
 ```
 
-The following examples demonstrate how to apply dynamic search settings using `ConfigurableField` in LangChain.
+The following examples demonstrate how to apply dynamic search settings using ```ConfigurableField``` in LangChain.
 
 
 ```python
@@ -729,8 +729,8 @@ Using different models for queries and documents can improve retrieval accuracy 
 - Document (Passage) Embedding Model: Optimized for longer text spans with richer context.
   
 For instance, **Upstage Embeddings** provides the capability to use distinct models for:  
-- Query Embeddings (`solar-embedding-1-large-query`)  
-- Document (Passage) Embeddings (`solar-embedding-1-large-passage`)  
+- Query Embeddings (```solar-embedding-1-large-query```)  
+- Document (Passage) Embeddings (```solar-embedding-1-large-passage```)  
 
 In such cases, the query is embedded using the query embedding model, while the documents are embedded using the document embedding model. 
 
@@ -742,7 +742,7 @@ In such cases, the query is embedded using the query embedding model, while the 
    - Go to the menu bar, select "Dashboards", then navigate to "API Keys".
 
 - Generate API Key:  
-   - Click **"Create new key"** → Enter name your key (e.g., `LangChain-Tutorial`) 
+   - Click **"Create new key"** → Enter name your key (e.g., ```LangChain-Tutorial```) 
 
 - Copy & Store Safely:  
    - Copy the generated key and keep it secure.  

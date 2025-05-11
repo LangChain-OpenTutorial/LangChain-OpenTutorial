@@ -53,8 +53,8 @@ This tutorial covers an example of generating a synthetic dataset using RAG. Typ
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -95,7 +95,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -369,8 +369,8 @@ answer
 
 ### SyntheticGenerator
 
-Based on the above tutorial, I have written it as a single class called `SyntheticGenerator()`.  
-The overall flow is the same as the tutorial, and it can be used by executing the `run()` method. By specifying the desired path in save_path, the generated data will be saved as a CSV file, with each (Context, Query, Answer) triple-pair stored in a single row.
+Based on the above tutorial, I have written it as a single class called ```SyntheticGenerator()```.  
+The overall flow is the same as the tutorial, and it can be used by executing the ```run()``` method. By specifying the desired path in save_path, the generated data will be saved as a CSV file, with each (Context, Query, Answer) triple-pair stored in a single row.
 
 ```python
 class SyntheticGenerator():

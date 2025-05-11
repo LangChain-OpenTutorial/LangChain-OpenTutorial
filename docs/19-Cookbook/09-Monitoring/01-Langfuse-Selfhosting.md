@@ -20,11 +20,12 @@ pre {
 # Langfuse Selfhosting
 
 - Author: [JeongGi Park](https://github.com/jeongkpa)
-- Design: []()
 - Peer Review: 
+- Proofread : [frimer](https://github.com/brian604)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/07-LCEL-Interface.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/07-LCEL-Interface.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/09-Monitoring/01-Langfuse-Selfhosting.ipynb)
+[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/09-Monitoring/01-Langfuse-Selfhosting.ipynb)
 
 ## Overview
 In this tutorial, you’ll learn how to run Langfuse locally using Docker Compose and integrate it with your LLM-based applications (e.g., those built with LangChain). Langfuse provides comprehensive tracking and observability for:
@@ -62,8 +63,8 @@ By the end of this tutorial, you’ll have a local Langfuse instance running on 
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 set environment variables is in .env.
 
@@ -136,7 +137,7 @@ This will download the Langfuse repository to your local machine. and move into 
 
 ## Start Langfuse with Docker Compose
 
-Inside the `langfuse` directory, simply run:
+Inside the ```langfuse``` directory, simply run:
 
 ```bash
 docker compose up

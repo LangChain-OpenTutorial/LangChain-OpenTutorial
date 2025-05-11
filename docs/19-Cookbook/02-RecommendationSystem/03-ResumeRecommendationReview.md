@@ -20,12 +20,11 @@ pre {
 # ResumeRecommendationReview
 
 - Author: [Ilgyun Jeong](https://github.com/johnny9210)
-- Design:
 - Peer Review: [Jaehun Choi](https://github.com/ash-hun), [Dooil Kwak](https://github.com/back2zion)
+- Proofread  : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/02-RecommendationSystem/03-ResumeRecommendationReview.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/02-RecommendationSystem/03-ResumeRecommendationReview.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/02-RecommendationSystem/03-ResumeRecommendationReview.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/02-RecommendationSystem/03-ResumeRecommendationReview.ipynb)
 ## Overview
 
 The ResumeRecommendationReview system is a comprehensive solution designed to simplify and enhance the job application process for individuals seeking corporate positions. The system is divided into two main components, each tailored to address key challenges faced by job seekers:
@@ -84,8 +83,8 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 **[Note]**
 
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 
 ```python
@@ -185,9 +184,9 @@ Text Splitting Configuration
 Set up configurations to divide the extracted text into manageable sizes, ensuring smooth processing:
 
 Parameter Descriptions:
-- `chunk_size`: The maximum length of each text chunk, ensuring the text is divided into manageable sections.
-- `chunk_overlap`: The length of overlapping text between chunks, providing continuity and context for downstream tasks.
-- `separators`: The delimiters used to split the text, such as line breaks or punctuation, to optimize the splitting process.
+- ```chunk_size```: The maximum length of each text chunk, ensuring the text is divided into manageable sections.
+- ```chunk_overlap```: The length of overlapping text between chunks, providing continuity and context for downstream tasks.
+- ```separators```: The delimiters used to split the text, such as line breaks or punctuation, to optimize the splitting process.
 
 ```python
 text_splitter = RecursiveCharacterTextSplitter(
@@ -223,7 +222,7 @@ parser = PydanticOutputParser(pydantic_object=ResumeSection)
 
 Analyzing Interests in Resumes
 
-The `analyze_interests` function is designed to extract and summarize the key areas of interest and research focus from a resume. It uses a **Large Language Model (LLM)** to process the resume text and provide a concise summary, helping to identify the candidate's academic and professional interests effectively.
+The ```analyze_interests``` function is designed to extract and summarize the key areas of interest and research focus from a resume. It uses a **Large Language Model (LLM)** to process the resume text and provide a concise summary, helping to identify the candidate's academic and professional interests effectively.
 
 Purpose
 - Extracts **main areas of interest** and **research focus** from the provided resume text.
@@ -252,7 +251,7 @@ def analyze_interests(resume_text: str, llm) -> str:
 
 Analyzing Career Fit in Resumes
 
-The `analyze_career_fit` function evaluates a candidate's resume to recommend the most suitable job roles along with their respective fit scores. By leveraging a **Large Language Model (LLM)**, this function identifies key areas of expertise and rates the candidate's suitability for various technical positions.
+The ```analyze_career_fit``` function evaluates a candidate's resume to recommend the most suitable job roles along with their respective fit scores. By leveraging a **Large Language Model (LLM)**, this function identifies key areas of expertise and rates the candidate's suitability for various technical positions.
 
 Purpose
 - Recommends **job roles** based on the candidate's skills, research background, and career trajectory.
@@ -291,7 +290,7 @@ def analyze_career_fit(resume_text: str, llm) -> Dict[str, float]:
 
 Processing Resumes to Extract Key Job-Related Information
 
-The `process_resume` function analyzes a resume file, extracting and processing key information relevant to job applications. It combines **text extraction**, **interest analysis**, and **career fit evaluation** to generate structured, weighted insights from the resume.
+The ```process_resume``` function analyzes a resume file, extracting and processing key information relevant to job applications. It combines **text extraction**, **interest analysis**, and **career fit evaluation** to generate structured, weighted insights from the resume.
 
 ### Function Overview
 
@@ -444,7 +443,7 @@ def process_resume(file_path, target_job_title=None):
 
 Resume Processing Example
 
-Here's an example of how to use the `process_resume` function to extract structured data from a resume:
+Here's an example of how to use the ```process_resume``` function to extract structured data from a resume:
 
 ```python
 process_resume("../data/joannadrummond-cv.pdf")
@@ -484,14 +483,14 @@ LinkedIn Data Preprocessing
 
 This step involves loading job posting data and extracting only the necessary details. The dataset used for this tutorial is sourced from **Kaggle**: [arshkon/linkedin-job-postings](https://www.kaggle.com/arshkon/linkedin-job-postings).
 
-- `company_name`: The name of the company offering the job posting.
-- `title`: The title of the job being offered.
-- `description`: A detailed description of the job, including responsibilities, qualifications, and expectations.
-- `max_salary`: The maximum salary offered for the position.
-- `med_salary`: The median salary for the position, providing an average range for the offered pay.
-- `min_salary`: The minimum salary offered for the position.
-- `skills_desc`: A list or summary of the required or preferred skills for the position.
-- `work_type`: The type of work arrangement, such as full-time, part-time, remote, or hybrid.
+- ```company_name```: The name of the company offering the job posting.
+- ```title```: The title of the job being offered.
+- ```description```: A detailed description of the job, including responsibilities, qualifications, and expectations.
+- ```max_salary```: The maximum salary offered for the position.
+- ```med_salary```: The median salary for the position, providing an average range for the offered pay.
+- ```min_salary```: The minimum salary offered for the position.
+- ```skills_desc```: A list or summary of the required or preferred skills for the position.
+- ```work_type```: The type of work arrangement, such as full-time, part-time, remote, or hybrid.
 
 Purpose of These Columns
 These selected columns are essential for processing job posting data. They allow the system to:
@@ -504,7 +503,7 @@ Efficient CSV Reading with Encoding Detection
 
 This function provides a robust way to read CSV files by dynamically handling encoding issues. CSV files often come in various encodings, and incorrect encoding can cause errors when reading the file. The function attempts to read the file with the most common encodings and falls back to a detection library if necessary.
 
-Function: `read_csv_with_encoding`
+Function: ```read_csv_with_encoding```
 
  **Purpose**
 To efficiently read a CSV file while handling potential encoding issues, ensuring compatibility with a wide range of file formats.
@@ -514,17 +513,17 @@ To efficiently read a CSV file while handling potential encoding issues, ensurin
 1. **Attempt to Read with UTF-8**:  
    The function first tries to read the file using UTF-8 encoding, which is the most commonly used encoding.
    - If successful, the function returns the loaded DataFrame.
-   - If a `UnicodeDecodeError` occurs, it proceeds to the next step.
+   - If a ```UnicodeDecodeError``` occurs, it proceeds to the next step.
 
-2. **Encoding Detection with `chardet`**:  
-   If UTF-8 fails, the function uses the `chardet` library to detect the file's encoding:
+2. **Encoding Detection with ```chardet```**:  
+   If UTF-8 fails, the function uses the ```chardet``` library to detect the file's encoding:
    - Reads the first 10KB of the file for faster detection.
    - Extracts the detected encoding from the result.
 
 3. **Retry with Detected Encoding**:  
    The function attempts to read the file again using the detected encoding:
    - If successful, the DataFrame is returned.
-   - If another `UnicodeDecodeError` occurs, it falls back to a common encoding.
+   - If another ```UnicodeDecodeError``` occurs, it falls back to a common encoding.
 
 4. **Fallback to CP949**:  
    If both UTF-8 and the detected encoding fail, the function defaults to **CP949** encoding, commonly used for files in East Asian languages like Korean.
@@ -572,7 +571,7 @@ Text Cleaning Function
 
 Here’s a utility function designed to clean and preprocess text data for better consistency and quality:
 
-If there are any `null` values in the company name field, those entries are excluded. (While other fields may also have `null` values, this step focuses only on excluding records with `null` in the company name.)
+If there are any ```null``` values in the company name field, those entries are excluded. (While other fields may also have ```null``` values, this step focuses only on excluding records with ```null``` in the company name.)
 
 ```python
 def clean_text(text):
@@ -605,7 +604,7 @@ linkedin_df["work_type"] = linkedin_df["work_type"].fillna("Not specified")
 
 Processing Job Postings Data
 
-The `process_job_postings` function integrates and processes job information from a LinkedIn dataset to create structured documents for analysis or recommendation purposes.
+The ```process_job_postings``` function integrates and processes job information from a LinkedIn dataset to create structured documents for analysis or recommendation purposes.
 
 This function takes a DataFrame of LinkedIn job postings and processes each entry into a standardized format, combining relevant details like company name, job title, required skills, and salary information.
 
@@ -663,9 +662,9 @@ job_documents = process_job_postings(linkedin_df)
 Using ChromaDB for Storing and Retrieving Resume and Job Posting Data
 In this section, we will explore how to use ChromaDB to store resume and job posting data as vector representations and perform similarity-based searches.
 
-What is `ChromaDB`?
+What is ```ChromaDB```?
 
-`ChromaDB` is a vector database that allows text data to be stored as embeddings, enabling efficient similarity-based searches. In our Resume Recommendation System, ChromaDB is used for the following purposes:
+```ChromaDB``` is a vector database that allows text data to be stored as embeddings, enabling efficient similarity-based searches. In our Resume Recommendation System, ChromaDB is used for the following purposes:
 
 - Vectorizing Text: Converting resume and job posting text into vector representations.
 - Efficient Similarity Search: Performing fast searches based on the similarity of embeddings.
@@ -679,9 +678,9 @@ Before starting, import the necessary libraries:
 
 Roles of Each Library:
 
-- `langchain_community.vectorstores`: Provides integration with ChromaDB.
-- `langchain_openai`: Enables the use of OpenAI embedding models.
-- `chromadb`: Provides vector database functionality.
+- ```langchain_community.vectorstores```: Provides integration with ChromaDB.
+- ```langchain_openai```: Enables the use of OpenAI embedding models.
+- ```chromadb```: Provides vector database functionality.
 
 ```python
 from langchain_community.vectorstores import Chroma
@@ -694,9 +693,9 @@ Initializing ChromaDB
 Set up ChromaDB and create collections:
 
 Why Use PersistentClient?
-- `Permanent Data Storage`: Ensures that data is not lost when the application or session ends.
-- `Data Persistence Across Sessions`: Allows the system to retain data for use in future queries without requiring re-upload or re-processing.
-- `Ease of Backup and Recovery`: Provides a reliable way to save and restore data for robustness and fault tolerance.
+- ```Permanent Data Storage```: Ensures that data is not lost when the application or session ends.
+- ```Data Persistence Across Sessions```: Allows the system to retain data for use in future queries without requiring re-upload or re-processing.
+- ```Ease of Backup and Recovery```: Provides a reliable way to save and restore data for robustness and fault tolerance.
 
 ```python
 client = chromadb.PersistentClient(path="../data/chromadb")
@@ -1305,14 +1304,14 @@ print_evaluation_results(metrics, recommended_jobs)
 This section outlines the implementation of a system that uses a **Large Language Model (LLM)** to evaluate resumes by comparing them against job descriptions. The system provides actionable insights to improve resumes and assists in aligning candidates’ qualifications with job requirements.
 ---
 
-What is `LLM-as-a-Judge`?
+What is ```LLM-as-a-Judge```?
 
-The `LLM-as-a-Judge` system leverages the advanced reasoning and natural language understanding capabilities of an LLM to serve as an impartial evaluator in the hiring process. By acting as a "judge," the LLM compares a candidate’s resume to job requirements, evaluates their alignment, and provides actionable feedback.
+The ```LLM-as-a-Judge``` system leverages the advanced reasoning and natural language understanding capabilities of an LLM to serve as an impartial evaluator in the hiring process. By acting as a "judge," the LLM compares a candidate’s resume to job requirements, evaluates their alignment, and provides actionable feedback.
 
-Key features of the `LLM-as-a-Judge` system include:
-- `Contextual Understanding`: It comprehends detailed job descriptions and resumes beyond simple keyword matching, enabling nuanced evaluations.  
-- `Feedback Generation`: Provides insights into the candidate's strengths and areas for improvement.  
-- `Decision Support`: Assists hiring managers or applicants by generating a recommendation on the candidate's suitability for the role.
+Key features of the ```LLM-as-a-Judge``` system include:
+- ```Contextual Understanding```: It comprehends detailed job descriptions and resumes beyond simple keyword matching, enabling nuanced evaluations.  
+- ```Feedback Generation```: Provides insights into the candidate's strengths and areas for improvement.  
+- ```Decision Support```: Assists hiring managers or applicants by generating a recommendation on the candidate's suitability for the role.
 
 This system bridges the gap between human evaluation and automated analysis, ensuring more accurate and tailored results in the recruitment process.
 
@@ -1320,12 +1319,12 @@ This system bridges the gap between human evaluation and automated analysis, ens
 
 Functionalities
 
-The `LLM-as-a-Judge` system provides the following functionalities:
+The ```LLM-as-a-Judge``` system provides the following functionalities:
 
-- `Detailed Analysis`: Analyzes resumes and job requirements in detail, identifying key qualifications and expectations.  
-- `Alignment Evaluation`: Assesses how well the candidate's skills and experiences match the job requirements.  
-- `Strengths and Improvement Areas`: Identifies the candidate's strengths and offers suggestions for improvement.  
-- `Role Suitability Recommendation`: Provides a final recommendation on whether the candidate is a good fit for the role.  
+- ```Detailed Analysis```: Analyzes resumes and job requirements in detail, identifying key qualifications and expectations.  
+- ```Alignment Evaluation```: Assesses how well the candidate's skills and experiences match the job requirements.  
+- ```Strengths and Improvement Areas```: Identifies the candidate's strengths and offers suggestions for improvement.  
+- ```Role Suitability Recommendation```: Provides a final recommendation on whether the candidate is a good fit for the role.  
 
 ---
 
@@ -1333,34 +1332,34 @@ The `LLM-as-a-Judge` system provides the following functionalities:
 ## Key Components
 
 ### 1. **CriterionEvaluation**
-The `CriterionEvaluation` class evaluates individual aspects of the resume based on predefined criteria:  
-- **`score`** (`int`): A score from 1 to 5 representing the performance for a specific criterion.  
-- **`reasoning`** (`str`): A detailed explanation of why the score was assigned.  
-- **`evidence`** (`List[str]`): Specific elements from the resume that support the evaluation.  
-- **`suggestions`** (`List[str]`): Targeted recommendations for improving the evaluated area.
+The ```CriterionEvaluation``` class evaluates individual aspects of the resume based on predefined criteria:  
+- **```score```** (```int```): A score from 1 to 5 representing the performance for a specific criterion.  
+- **```reasoning```** (```str```): A detailed explanation of why the score was assigned.  
+- **```evidence```** (```List[str]```): Specific elements from the resume that support the evaluation.  
+- **```suggestions```** (```List[str]```): Targeted recommendations for improving the evaluated area.
 
 ---
 
 ### 2. **DetailedEvaluation**
-The `DetailedEvaluation` class provides a comprehensive evaluation of the resume by aggregating results across multiple criteria:  
-- **`technical_fit`**: Assessment of technical skills and their relevance to the job.  
-- **`experience_relevance`**: Evaluation of how well the candidate’s work experience aligns with the role.  
-- **`industry_knowledge`**: Examination of the candidate’s understanding of the target industry.  
-- **`education_qualification`**: Review of academic background and certifications.  
-- **`soft_skills`**: Analysis of interpersonal and communication skills.  
-- **`overall_score`** (`int`): A total score (0-100) summarizing the resume's performance.  
-- **`key_strengths`** (`List[str]`): Highlights of the resume's strongest areas.  
-- **`improvement_areas`** (`List[str]`): Areas requiring enhancement for better alignment with the job.  
-- **`final_recommendation`** (`str`): A conclusion on the candidate’s suitability for the position.
+The ```DetailedEvaluation``` class provides a comprehensive evaluation of the resume by aggregating results across multiple criteria:  
+- **```technical_fit```**: Assessment of technical skills and their relevance to the job.  
+- **```experience_relevance```**: Evaluation of how well the candidate’s work experience aligns with the role.  
+- **```industry_knowledge```**: Examination of the candidate’s understanding of the target industry.  
+- **```education_qualification```**: Review of academic background and certifications.  
+- **```soft_skills```**: Analysis of interpersonal and communication skills.  
+- **```overall_score```** (```int```): A total score (0-100) summarizing the resume's performance.  
+- **```key_strengths```** (```List[str]```): Highlights of the resume's strongest areas.  
+- **```improvement_areas```** (```List[str]```): Areas requiring enhancement for better alignment with the job.  
+- **```final_recommendation```** (```str```): A conclusion on the candidate’s suitability for the position.
 
 ---
 
 ### 3. **LLMJudge**
-The `LLMJudge` class uses an LLM to evaluate resumes against job descriptions by analyzing criteria such as technical fit, experience relevance, and soft skills.  
+The ```LLMJudge``` class uses an LLM to evaluate resumes against job descriptions by analyzing criteria such as technical fit, experience relevance, and soft skills.  
 - **Responsibilities**:  
   - Processes resume text and job information.  
   - Uses a structured prompt to guide the LLM in scoring and providing feedback.  
-  - Outputs a `DetailedEvaluation` object containing scores, evidence, and suggestions.  
+  - Outputs a ```DetailedEvaluation``` object containing scores, evidence, and suggestions.  
 - **Features**:  
   - Dynamic prompt generation for precise LLM instructions.  
   - Predefined evaluation criteria with customizable weights and descriptions.
@@ -1368,14 +1367,14 @@ The `LLMJudge` class uses an LLM to evaluate resumes against job descriptions by
 ---
 
 ### 4. **ResumeEvaluationSystem**
-The `ResumeEvaluationSystem` orchestrates the entire resume evaluation process, from text extraction to generating improvement reports.  
+The ```ResumeEvaluationSystem``` orchestrates the entire resume evaluation process, from text extraction to generating improvement reports.  
 - **Responsibilities**:  
   - Processes resumes to extract clean text for analysis.  
   - Selects the most relevant jobs for evaluation based on similarity scores.  
   - Generates detailed reports summarizing the evaluation and suggestions.  
 - **Methods**:  
-  - **`evaluate_with_recommendations`**: Evaluates a resume against the top `n` recommended jobs.  
-  - **`format_evaluation_report`**: Converts the `DetailedEvaluation` object into a readable report.  
+  - **```evaluate_with_recommendations```**: Evaluates a resume against the top ```n``` recommended jobs.  
+  - **```format_evaluation_report```**: Converts the ```DetailedEvaluation``` object into a readable report.  
 
 ---
 
@@ -1806,33 +1805,33 @@ The system provides actionable suggestions to optimize resumes for specific job 
 Key Components
 
 1. **EnhancementSuggestion Model**
-The `EnhancementSuggestion` model defines the structure for improvement suggestions:
-- **`section`**: The specific resume section being improved (e.g., "Skills" or "Work Experience").
-- **`current_content`**: The original content of the section.
-- **`improved_content`**: The suggested improvement for the section.
-- **`explanation`**: A detailed explanation of why the improvement is recommended.
+The ```EnhancementSuggestion``` model defines the structure for improvement suggestions:
+- **```section```**: The specific resume section being improved (e.g., "Skills" or "Work Experience").
+- **```current_content```**: The original content of the section.
+- **```improved_content```**: The suggested improvement for the section.
+- **```explanation```**: A detailed explanation of why the improvement is recommended.
 
 ---
 
 2. **ResumeEnhancement Model**
-The `ResumeEnhancement` model provides a holistic improvement report:
-- **`improvements`**: A list of section-specific suggestions.
-- **`keyword_optimization`**: Suggested keywords to include in the resume for optimization.
-- **`general_suggestions`**: Overall suggestions for structure and presentation.
-- **`action_items`**: Practical, actionable items for the candidate to implement.
+The ```ResumeEnhancement``` model provides a holistic improvement report:
+- **```improvements```**: A list of section-specific suggestions.
+- **```keyword_optimization```**: Suggested keywords to include in the resume for optimization.
+- **```general_suggestions```**: Overall suggestions for structure and presentation.
+- **```action_items```**: Practical, actionable items for the candidate to implement.
 
 ---
 
 3. **ResumeEnhancementSystem**
-The `ResumeEnhancementSystem` class uses an LLM to analyze resumes and generate detailed, job-specific improvement suggestions. This system:
+The ```ResumeEnhancementSystem``` class uses an LLM to analyze resumes and generate detailed, job-specific improvement suggestions. This system:
 - Accepts the resume text, job information, and evaluation results as inputs.
-- Produces a structured output aligning with the `ResumeEnhancement` model.
+- Produces a structured output aligning with the ```ResumeEnhancement``` model.
 - Focuses on realistic, actionable improvements tailored to the target job.
 
 4. **IntegratedResumeSystem**
-The `IntegratedResumeSystem` combines evaluation and enhancement processes into a seamless workflow:
-- **Step 1**: The `ResumeEvaluationSystem` evaluates the resume against job requirements, providing initial scoring and feedback.
-- **Step 2**: The `ResumeEnhancementSystem` builds upon the evaluation results to generate actionable suggestions for improvement.
+The ```IntegratedResumeSystem``` combines evaluation and enhancement processes into a seamless workflow:
+- **Step 1**: The ```ResumeEvaluationSystem``` evaluates the resume against job requirements, providing initial scoring and feedback.
+- **Step 2**: The ```ResumeEnhancementSystem``` builds upon the evaluation results to generate actionable suggestions for improvement.
 - **Step 3**: A comprehensive improvement report is created, highlighting section-specific improvements, keyword optimizations, and general suggestions.
 
 ---
@@ -2084,7 +2083,7 @@ class IntegratedResumeSystem:
 
 Excute Evaluation
 
-you can choose how many jobs you want to evaluate by changing the `top_n` value.
+you can choose how many jobs you want to evaluate by changing the ```top_n``` value.
 
 ```python
 # Resume file path

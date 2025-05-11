@@ -21,18 +21,17 @@ pre {
 
 - Author: [Hye-yoon Jeong](https://github.com/Hye-yoonJeong)
 - Peer Review: 
-- Proofread:
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/04-LangGraph-Agent-With-Memory.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/04-LangGraph-Agent-With-Memory.ipynb)
 ## Overview
 
 This tutorial covers how to add an **in-memory checkpoint saver** to an agent. 
 
 An **in-memory checkpoint saver** enables an agent to store previous interactions, allowing the agent to engage in multi-turn conversations in a coherent manner.
 
-Also in this tutorial, we use `ToolNode` and `tools_condition` prebuilt in `LangGraph` instead of a customized tool node.
+Also in this tutorial, we use ```ToolNode``` and ```tools_condition``` prebuilt in ```LangGraph``` instead of a customized tool node.
 
 ### Table of Contents
 
@@ -55,7 +54,7 @@ Setting up your environment is the first step. See the [Environment Setup guide]
 
 **[Note]**
 
-`langchain-opentutorial` is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials. Check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+```langchain-opentutorial``` is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials. Check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -125,12 +124,12 @@ set_env(
 
 Without a memory to remember the **context**, an agent cannot engage in multi-turn interactions.
 
-In this tutorial, we use LangGraph's `MemorySaver`, which stores checkpoints in memory.
+In this tutorial, we use LangGraph's ```MemorySaver```, which stores checkpoints in memory.
 
-By providing a `checkpointer` during graph compilation and a `thread_id` when calling a graph, the state is **automatically saved** after each step. The `thread_id` acts as a key for continuous graph execution.
+By providing a ```checkpointer``` during graph compilation and a ```thread_id``` when calling a graph, the state is **automatically saved** after each step. The ```thread_id``` acts as a key for continuous graph execution.
 
-Steps to use `MemorySaver`:
-1) Create a `MemorySaver` checkpointer.
+Steps to use ```MemorySaver```:
+1) Create a ```MemorySaver``` checkpointer.
 
 ```python
 from langgraph.checkpoint.memory import MemorySaver
@@ -210,7 +209,7 @@ graph_builder.add_edge("chatbot", END)
 
 
 
-3) Compile the graph with the `checkpointer`.
+3) Compile the graph with the ```checkpointer```.
 
 ```python
 # Compile a graph builder
@@ -281,12 +280,12 @@ visualize_graph(graph)
     
 
 
-## Configuration with `RunnableConfig`
+## Configuration with ```RunnableConfig```
 
-Define a `RunnableConfig` object and set the `recursion_limit` and `thread_id` properties.
+Define a ```RunnableConfig``` object and set the ```recursion_limit``` and ```thread_id``` properties.
 
-- `recursion_limit`: The maximum number of nodes the graph can visit. Exceeding this limit will trigger a `RecursionError`.
-- `thread_id`: An ID to distinguish different sessions.
+- ```recursion_limit```: The maximum number of nodes the graph can visit. Exceeding this limit will trigger a ```RecursionError```.
+- ```thread_id```: An ID to distinguish different sessions.
 
 ```python
 from langchain_core.runnables import RunnableConfig
@@ -325,7 +324,7 @@ for event in graph.stream({"messages": [("user", question)]}, config=config):
     Yes, your name is Hannah! How can I assist you today?
 </pre>
 
-Modify the `thread_id` in the `RunnableConfig` to see if the agent remembers the previous conversation.
+Modify the ```thread_id``` in the ```RunnableConfig``` to see if the agent remembers the previous conversation.
 
 ```python
 config = RunnableConfig(
@@ -349,12 +348,12 @@ for event in graph.stream({"messages": [("user", question)]}, config=config):
 
 ## Inspecting State Snapshots
 
-A checkpoint (`snapshot`) stores:
+A checkpoint (```snapshot```) stores:
  - the current state values
  - corresponding config
  - The **next** node to process (empty at the end).
 
-Call `get_state(config)` to see a graph's `state` for a certain config.
+Call ```get_state(config)``` to see a graph's ```state``` for a certain config.
 
 ```python
 config = RunnableConfig(
@@ -375,7 +374,7 @@ snapshot
 
 
 
-You can access the **configuration** with `snapshot.config`.
+You can access the **configuration** with ```snapshot.config```.
 
 ```python
 # Configuration of the snapshot
@@ -391,7 +390,7 @@ snapshot.config
 
 
 
-You can access the **saved states** with `snapshot.value`.
+You can access the **saved states** with ```snapshot.value```.
 
 ```python
 # Values saved in the snapshot
@@ -408,7 +407,7 @@ snapshot.values
 
 
 
-You can use `snapshot.next` to see which **node** will be processed next. In this case, `snapshot.next` is empty since the graph reaches the **END** node.
+You can use ```snapshot.next``` to see which **node** will be processed next. In this case, ```snapshot.next``` is empty since the graph reaches the **END** node.
 
 ```python
 # Next node
@@ -422,7 +421,7 @@ snapshot.next
 
 
 
-Define custom functions to view the complete contents of `snapshot` and its metadata (`snapshot.metadata`).
+Define custom functions to view the complete contents of ```snapshot``` and its metadata (```snapshot.metadata```).
 
 ```python
 import json

@@ -20,12 +20,11 @@ pre {
 # Sending Requests to Remote Graph Server
 
 - Author: [Yoonji Oh](https://github.com/samdaseuss)
-- Design:
 - Peer Review:
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/08-Serving/02-SendingRequestsToRemoteGraphServer.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/08-Serving/02-SendingRequestsToRemoteGraphServer.ipynb)
 ## Overview
 In this tutorial, we will learn how to launch an application server and send Python requests to Remote Graph.
 
@@ -62,8 +61,8 @@ Let's get started!
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -108,7 +107,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 **[Note]** This is not necessary if you've already set the required API keys in previous steps.
 
@@ -182,15 +181,15 @@ Please visit the project repository to prepare the code.
 - [Chat-Langchain](https://github.com/langchain-ai/chat-langchain/tree/langserve)
 
 There are essential environment variables that must be set before running the code.
-* `OPENAI_API_KEY`: your_secret_key_here
-* `LANGCHAIN_TRACING_V2`: "true"
-* `LANGCHAIN_PROJECT`: langserve-launch-example
-* `LANGCHAIN_API_KEY`: your_secret_key_here
-* `FIREWORKS_API_KEY`: your_secret_here
-* `WEAVIATE_API_KEY`: your_secret_key_here
-* `WEAVIATE_URL`: https://your-weaviate-instance.com(or https://weaviate.io/developers/weaviate/connections/connect-cloud)
-* `WEAVIATE_INDEX_NAME`: your_index_name
-* `RECORD_MANAGER_DB_URL`: your_db_url (e.g.  postgresql://postgres:[YOUR_DB_PASSWORD]@db.daxpgrzsg.supabase.co:5432/postgres)
+* ```OPENAI_API_KEY```: your_secret_key_here
+* ```LANGCHAIN_TRACING_V2```: "true"
+* ```LANGCHAIN_PROJECT```: langserve-launch-example
+* ```LANGCHAIN_API_KEY```: your_secret_key_here
+* ```FIREWORKS_API_KEY```: your_secret_here
+* ```WEAVIATE_API_KEY```: your_secret_key_here
+* ```WEAVIATE_URL```: https://your-weaviate-instance.com(or https://weaviate.io/developers/weaviate/connections/connect-cloud)
+* ```WEAVIATE_INDEX_NAME```: your_index_name
+* ```RECORD_MANAGER_DB_URL```: your_db_url (e.g.  postgresql://postgres:[YOUR_DB_PASSWORD]@db.daxpgrzsg.supabase.co:5432/postgres)
 
 
 Run the following command to start the server locally.
@@ -775,10 +774,10 @@ thread_state
 This code explains how to use a remote graph (RemoteGraph) as a subgraph of another graph. Here's a summary of the main points:
 
 1. Setting up the remote graph:
-   - Import a graph deployed on a remote server as a `RemoteGraph`.
+   - Import a graph deployed on a remote server as a ```RemoteGraph```.
 
 2. Creating the parent graph:
-   - Use `StateGraph` to create a new graph.
+   - Use ```StateGraph``` to create a new graph.
    - This graph manages message states.
 
 3. Adding the remote graph as a subnode:

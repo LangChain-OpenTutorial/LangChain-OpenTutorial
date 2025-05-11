@@ -20,12 +20,11 @@ pre {
 # A Long-Term Memory Agent
 
 - Author: [byoon](https://github.com/acho98)
-- Design: []()
 - Peer Review: 
+- Proofread : [hong-seongmin](https://github.com/hong-seongmin)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-EMBEDDING/02-CacheBackedEmbeddings.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/17-LangGraph-LongTermMemoryAgent.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/17-LangGraph-LongTermMemoryAgent.ipynb)
 ## Overview
 This tutorial explains how to implement an agent with long-term memory capabilities using LangGraph. The agent can store, retrieve, and use memories to enhance its interactions with users.
 
@@ -69,8 +68,8 @@ By using long-term memory, the agent can provide more personalized and context-a
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -265,9 +264,9 @@ prompt = ChatPromptTemplate.from_messages(
 ```
 
 The purpose of each function is as follows:
-- `agent()`: Generates a response using GPT-4o with recalled memories and tool integration.
-- `load_memories()`: Retrieves relevant past memories based on the conversation history.
-- `route_tools()`: Determines whether to use tools or end the conversation based on the last message.
+- ```agent()```: Generates a response using GPT-4o with recalled memories and tool integration.
+- ```load_memories()```: Retrieves relevant past memories based on the conversation history.
+- ```route_tools()```: Determines whether to use tools or end the conversation based on the last message.
 
 ```python
 model = ChatOpenAI(model_name="gpt-4o")
@@ -379,7 +378,7 @@ def pretty_print_stream_chunk(chunk):
         print("\n")
 ```
 
-Note: we're specifying `user_id` to save memories for a given user.
+Note: we're specifying ```user_id``` to save memories for a given user.
 
 ```python
 config = {"configurable": {"user_id": "1", "thread_id": "1"}}
@@ -579,10 +578,10 @@ So far, we have stored memories as simple text, like "John loves pizza". This fo
 
 However, if your application would benefit from other storage options—such as a graph database—we can modify the system to store memories in a more structured way.
 
-Below, we update the `save_recall_memory` tool to accept a list of "knowledge triples" (3-part structures with a subject, predicate, and object), which can be stored in a knowledge graph. The model will then generate these structured representations when using its tools.
+Below, we update the ```save_recall_memory``` tool to accept a list of "knowledge triples" (3-part structures with a subject, predicate, and object), which can be stored in a knowledge graph. The model will then generate these structured representations when using its tools.
 
-For now, we continue using the same vector database, but `save_recall_memory` and `search_recall_memories` can be further modified to work with a graph database.  
-At this stage, we only need to update the `save_recall_memory` tool.
+For now, we continue using the same vector database, but ```save_recall_memory``` and ```search_recall_memories``` can be further modified to work with a graph database.  
+At this stage, we only need to update the ```save_recall_memory``` tool.
 
 ```python
 recall_vector_store = InMemoryVectorStore(OpenAIEmbeddings())

@@ -20,11 +20,12 @@ pre {
 # HuggingFace Pipeline
 
 - Author: [Sunworl Kim](https://github.com/sunworl)
-- Design: 
 - Peer Review: [effort-type](https://github.com/effort-type), [sunworl](https://github.com/sunworl), [ivybae](https://github.com/ivybae)
+- Proofread : [frimer](https://github.com/brian604)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/08-HuggingFace-Pipelines.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/08-HuggingFace-Pipelines.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/09-HuggingFace-Pipelines.ipynb)
+[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/09-HuggingFace-Pipelines.ipynb)
 
 
 ## Overview
@@ -68,8 +69,8 @@ By specifying parameters for the device, it also implements execution on a GPU d
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -121,7 +122,7 @@ if not load_dotenv():
 
 ## Hugging Face Local Pipelines
 
-The Hugging Face models can be run locally through the `HuggingFacePipeline` class.
+The Hugging Face models can be run locally through the ```HuggingFacePipeline``` class.
 
 The [Hugging Face model Hub](https://huggingface.co/models) hosts over 120k models, 20k datasets, and 50k demo apps (Spaces) on its online platform, all of which are open-source and publicly available, allowing people to easily collaborate and build ML together.
 
@@ -129,7 +130,7 @@ These can be used in LangChain either by calling them through this local pipelin
 
 To use this, you should have the [transformers python package](https://pypi.org/project/transformers/) installed, as well as [PyTorch](https://pytorch.org/get-started/locally/).
 
-Additionally, you may install `xformers` for a more memory-efficient attention implementation.
+Additionally, you may install ```xformers``` for a more memory-efficient attention implementation.
 
 ```python
 !pip install -qU transformers
@@ -161,16 +162,16 @@ os.environ["HF_HOME"] = "./cache/"
 
 ## Model Loading
 
-Models can be loaded by specifying model parameters using the method `from_model_id`.
+Models can be loaded by specifying model parameters using the method ```from_model_id```.
 
 
-- The `langchain-opentutorial` class is used to load a pre-trained model from Hugging Face.
+- The ```langchain-opentutorial``` class is used to load a pre-trained model from Hugging Face.
 
-- The `from_model_id` method is used to specify the `microsoft/Phi-3-mini-4k-instruct` model and set the task to "text-generation".
+- The ```from_model_id``` method is used to specify the ```microsoft/Phi-3-mini-4k-instruct``` model and set the task to "text-generation".
 
-- The `pipeline_kwargs` parameter is used to limit the maximum number of tokens to be generated to 64.
+- The ```pipeline_kwargs``` parameter is used to limit the maximum number of tokens to be generated to 64.
 
-- The loaded model is assigned to the `hf` variable, which can be used to perform text generation tasks.
+- The loaded model is assigned to the ```hf``` variable, which can be used to perform text generation tasks.
 
 The model used: https://huggingface.co/microsoft/Phi-3-mini-4k-instruct
 
@@ -192,19 +193,19 @@ hf = HuggingFacePipeline.from_model_id(
     Device set to use cpu
     
 
-You can also load by directly passing an existing `transformers` pipeline.
+You can also load by directly passing an existing ```transformers``` pipeline.
 
 The text ageneration model is implemented using HuggingFacePipeline.
 
 
-- `AutoTokenizer` and `AutoModelForCausalLM` are used to load the `microsoft/Phi-3-mini-4k-instruct` model and tokenizer.
+- ```AutoTokenizer``` and ```AutoModelForCausalLM``` are used to load the ```microsoft/Phi-3-mini-4k-instruct``` model and tokenizer.
 
-- The `pipeline` function is used to create a "text-generation" pipeline, setting up the model and tokenizer. The maximum number of generated tokens is limited to 64.
+- The ```pipeline``` function is used to create a "text-generation" pipeline, setting up the model and tokenizer. The maximum number of generated tokens is limited to 64.
 
-- The `HuggingFacePipeline` class is used to create an `hf` object, and the generated pipeline is passed to it.
+- The ```HuggingFacePipeline``` class is used to create an ```hf``` object, and the generated pipeline is passed to it.
 
 
-Using this created `hf` object, you can perform text generation for a given prompt.
+Using this created ```hf``` object, you can perform text generation for a given prompt.
 
 ```python
 from langchain_huggingface import HuggingFacePipeline
@@ -234,11 +235,11 @@ hf = HuggingFacePipeline(pipeline=pipe)
 
 ## Usage of Gated Model
 
-The `Gated Model` is a model that can be used under a license agreement from Hugging Face.
+The ```Gated Model``` is a model that can be used under a license agreement from Hugging Face.
 
 You must first visit the model page and agree to the terms before obtaining a Hugging Face token.
 
-Below is an example of how to use the `Gated` Model. You need to specify the Hugging Face token as shown below.
+Below is an example of how to use the ```Gated``` Model. You need to specify the Hugging Face token as shown below.
 
 ```python
 from langchain_huggingface import HuggingFacePipeline
@@ -292,11 +293,11 @@ for token in hf_llm.stream("What is the capital of France?"):
 Once the model is loaded into memory, you can configure it with prompts to form a chain.
 
 
-- A prompt template defining the question and answer format is created using the `PromptTemplate` class.
+- A prompt template defining the question and answer format is created using the ```PromptTemplate``` class.
 
-- Create a `chain` object by connecting the `prompt` object and the `hf` object in a pipeline.
+- Create a ```chain``` object by connecting the ```prompt``` object and the ```hf``` object in a pipeline.
 
-- Call the `chain.invoke()` method to generate and output an answer for the given question.
+- Call the ```chain.invoke()``` method to generate and output an answer for the given question.
 
 ```python
 from huggingface_hub import login
@@ -343,25 +344,25 @@ print(
 
 ## GPU Inference
 
-When running on a GPU, you can specify the `device=n` parameter to place the model on a specific device.
+When running on a GPU, you can specify the ```device=n``` parameter to place the model on a specific device.
 
-The default value is `-1`, which means inference is performed on the CPU.
+The default value is ```-1```, which means inference is performed on the CPU.
 
-If you have multiple GPUs or if the model is too large for a single GPU, you can specify `device_map="auto"`.
+If you have multiple GPUs or if the model is too large for a single GPU, you can specify ```device_map="auto"```.
 
 In this case, the [Accelerate](https://huggingface.co/docs/accelerate/index) library is required and is used to automatically determine how to load the model weights.
 
-*Caution*: `device` and `device_map` should not be specified together, as this can cause unexpected behavior.
+*Caution*: ```device``` and ```device_map``` should not be specified together, as this can cause unexpected behavior.
 
 
 
-- Load the `gpt2` model using `HuggingFacePipeline` and set the `device` parameter to 0 to run it on the GPU.
+- Load the ```gpt2``` model using ```HuggingFacePipeline``` and set the ```device``` parameter to 0 to run it on the GPU.
 
-- Limit the maximum number of tokens to be generated to 64 using the `pipeline_kwargs` parameter.
+- Limit the maximum number of tokens to be generated to 64 using the ```pipeline_kwargs``` parameter.
 
-- Connect the `prompt` and `gpu_llm` in a pipeline to create the `gpu_chain`.
+- Connect the ```prompt``` and ```gpu_llm``` in a pipeline to create the ```gpu_chain```.
 
-- Call the `gpu_chain.invoke()` method to generate and output an answer for the given question.
+- Call the ```gpu_chain.invoke()``` method to generate and output an answer for the given question.
 
 ```python
 gpu_llm = HuggingFacePipeline.from_model_id(
@@ -400,13 +401,13 @@ print(gpu_chain.invoke({"question": question}))
 When running on a GPU device, you can perform inference in batch mode on the GPU.
 
 
-- Load the `microsoft/Phi-3-mini-4k-instruct` model using `HuggingFacePipeline` and set it to run on the GPU.
+- Load the ```microsoft/Phi-3-mini-4k-instruct``` model using ```HuggingFacePipeline``` and set it to run on the GPU.
 
-- When creating the `gpu_llm`, set the `batch_size` to 2, `temperature` to 0, and `max_length` to 64.
+- When creating the ```gpu_llm```, set the ```batch_size``` to 2, ```temperature``` to 0, and ```max_length``` to 64.
 
-- Connect the `prompt` and `gpu_llm` in a pipeline to create the `gpu_chain`, and set the end token to "\n\n".
+- Connect the ```prompt``` and ```gpu_llm``` in a pipeline to create the ```gpu_chain```, and set the end token to "\n\n".
 
-- Use `gpu_chain.batch()` to generate answers in parallel for the `questions` in the questions.
+- Use ```gpu_chain.batch()``` to generate answers in parallel for the ```questions``` in the questions.
 
 - Wrap each answer with <answer> tags and separate each answer with a line break.
 

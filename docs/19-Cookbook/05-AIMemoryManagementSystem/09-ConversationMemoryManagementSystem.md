@@ -20,21 +20,20 @@ pre {
 # ConversationMemoryManagementSystem
 
 - Author: [syshin0116](https://github.com/syshin0116)
-- Design: 
 - Peer Review:
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/05-AIMemoryManagementSystem/09-ConversationMemoryManagementSystem.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/05-AIMemoryManagementSystem/09-ConversationMemoryManagementSystem.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/05-AIMemoryManagementSystem/09-ConversationMemoryManagementSystem.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/05-AIMemoryManagementSystem/09-ConversationMemoryManagementSystem.ipynb)
 ## Overview
 
 In modern AI systems, **memory management** is essential for crafting **personalized and context-aware** user experiences. Without the ability to recall prior messages, an AI assistant would quickly become repetitive and less engaging. This updated code demonstrates a robust approach to handling both **short-term** and **long-term** memory in a conversational setting, by integrating:
 
-- A central **Configuration** class for managing runtime parameters (such as `user_id` and model name)
-- An `upsert_memory` function for **storing** or **updating** user data in a memory store
-- A `call_model` function that **retrieves** context-relevant memories and incorporates them into the system prompt for the model
-- A `store_memory` function that **persists** newly identified memories and tool calls
-- A `StateGraph` that orchestrates the entire conversation flow, connecting nodes like `call_model` and `store_memory` to streamline user interactions
+- A central **Configuration** class for managing runtime parameters (such as ```user_id``` and model name)
+- An ```upsert_memory``` function for **storing** or **updating** user data in a memory store
+- A ```call_model``` function that **retrieves** context-relevant memories and incorporates them into the system prompt for the model
+- A ```store_memory``` function that **persists** newly identified memories and tool calls
+- A ```StateGraph``` that orchestrates the entire conversation flow, connecting nodes like ```call_model``` and ```store_memory``` to streamline user interactions
 
 By leveraging these components, your conversation agent can maintain **deep context** over multiple turns, provide more accurate and engaging responses, and seamlessly update its memory when new information arises. This design illustrates a scalable way to build conversational AI systems that dynamically **remember**, **reason**, and **respond** according to user needs.
 
@@ -70,7 +69,7 @@ In LangGraph, long-term memory is implemented as part of a **persistent data lay
 2. **Memory Retrieval**: Mechanisms to fetch relevant memories based on the current conversation context.
 3. **Memory Updates**: Processes to modify or append new data to existing memory entries when user information evolves.
 
-By linking long-term memory with `call_model` and `store_memory` functions, the system can ensure that the language model has access to **relevant, long-term context**. This makes interactions more coherent and reduces repetitive queries.
+By linking long-term memory with ```call_model``` and ```store_memory``` functions, the system can ensure that the language model has access to **relevant, long-term context**. This makes interactions more coherent and reduces repetitive queries.
 
 #### Challenges with Long-term Memory
 
@@ -105,7 +104,7 @@ By linking long-term memory with `call_model` and `store_memory` functions, the 
     - Go back to earlier states (“time travel”) to debug or create alternative paths
 4. Ecosystem & Customization
     
-    - `LangGraph` v0.2 offers separate checkpointer libraries (e.g., `MemorySaver`, `SqliteSaver`, `PostgresSaver`)
+    - ```LangGraph``` v0.2 offers separate checkpointer libraries (e.g., ```MemorySaver```, ```SqliteSaver```, ```PostgresSaver```)
     - Easily build or adapt custom solutions for specific databases or workflows
 
 ## Table of Contents
@@ -133,8 +132,8 @@ By linking long-term memory with `call_model` and `store_memory` functions, the 
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -173,7 +172,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -201,7 +200,7 @@ nest_asyncio.apply()
 
 ## Define System Prompt and Configuration
 
-This section introduces the `SYSTEM_PROMPT` and the **Configuration** class. They are essential for setting up the system’s behavior and managing environment variables (for example, choosing which language model to use). You can think of **Configuration** as the single source of truth for any settings your application might need.
+This section introduces the ```SYSTEM_PROMPT``` and the **Configuration** class. They are essential for setting up the system’s behavior and managing environment variables (for example, choosing which language model to use). You can think of **Configuration** as the single source of truth for any settings your application might need.
 
 ```python
 # Define simple system prompt template used by the chatbot.
@@ -254,9 +253,9 @@ class Configuration:
         return cls(**{k: v for k, v in values.items() if v})
 ```
 
-## Initialize `LLM` and Define **State** Class
+## Initialize ```LLM``` and Define **State** Class
 
-In this part, we configure the `ChatOpenAI` model (using `model` and `temperature` settings) and introduce a **State** class. The **State** class holds the conversation messages, ensuring that **context** is retained and can be easily passed around. This lays the **foundation** for a conversational agent that genuinely “remembers” what has been said.
+In this part, we configure the ```ChatOpenAI``` model (using ```model``` and ```temperature``` settings) and introduce a **State** class. The **State** class holds the conversation messages, ensuring that **context** is retained and can be easily passed around. This lays the **foundation** for a conversational agent that genuinely “remembers” what has been said.
 
 ```python
 # Import and initialize the OpenAI-based LLM
@@ -295,7 +294,7 @@ def split_model_and_provider(fully_specified_name: str) -> dict:
 
 ## Memory Upsert Function
 
-Here, we focus on the `upsert_memory` function. This function is responsible for storing or updating (**upserting**) user-specific data. By preserving user context across conversations—like interests, preferences, or corrections—you can give your application a more **persistent and personalized** feel.
+Here, we focus on the ```upsert_memory``` function. This function is responsible for storing or updating (**upserting**) user-specific data. By preserving user context across conversations—like interests, preferences, or corrections—you can give your application a more **persistent and personalized** feel.
 
 ```python
 import uuid
@@ -343,8 +342,8 @@ async def upsert_memory(
 
 Next, we implement two important functions for our conversation flow:
 
-1. `call_model`: Takes the current conversation **State**, retrieves relevant memories, and then sends them along with user messages to the LLM.
-2. `store_memory`: Processes the model’s **tool calls**—in this case, requests to store data—and updates the memory store accordingly.
+1. ```call_model```: Takes the current conversation **State**, retrieves relevant memories, and then sends them along with user messages to the LLM.
+2. ```store_memory```: Processes the model’s **tool calls**—in this case, requests to store data—and updates the memory store accordingly.
 
 By combining these two functions, the model not only uses past **context** but also augments it with new information in real time.
 
@@ -418,9 +417,9 @@ async def store_memory(state: State, config: RunnableConfig, *, store: BaseStore
 
 Since our memory agent handles both **retrieving past information** and **storing new memories**, we need to establish conditions that guide the system through these steps dynamically.
 
-The function `route_message` is responsible for evaluating the **latest message** and deciding whether to:
+The function ```route_message``` is responsible for evaluating the **latest message** and deciding whether to:
 
-- **Store a new memory**: If the AI generates a response that includes **tool calls**, meaning it intends to save new information about the user, we direct the flow to `store_memory`.
+- **Store a new memory**: If the AI generates a response that includes **tool calls**, meaning it intends to save new information about the user, we direct the flow to ```store_memory```.
 - **Finish the process**: If there are no tool calls, we end the conversation turn.
 
 
@@ -438,9 +437,9 @@ def route_message(state: State):
     return END
 ```
 
-## Build and Execute `StateGraph`
+## Build and Execute ```StateGraph```
 
-In this section, we construct a `StateGraph` to define the flow of the conversation. We specify which node (for instance, `call_model`) leads to which next step (for example, `store_memory`). Once the graph is set, we run sample conversations to see how the system **dynamically** manages user input, retrieves relevant memories, and updates them when necessary.
+In this section, we construct a ```StateGraph``` to define the flow of the conversation. We specify which node (for instance, ```call_model```) leads to which next step (for example, ```store_memory```). Once the graph is set, we run sample conversations to see how the system **dynamically** manages user input, retrieves relevant memories, and updates them when necessary.
 
 ```python
 # Initialize and define the StateGraph, specifying nodes and edges for conversation flow
@@ -481,7 +480,7 @@ display(
 
 ## Verify Results and View Stored Memories
 
-Finally, we examine the **stored memories** to confirm that our system has correctly captured user’s context. You can look into the final conversation state (using `graph.get_state`) and see how messages and memories have been organized. This is a great point to do some **debugging** if anything seems amiss, ensuring that your memory mechanism works just as intended.
+Finally, we examine the **stored memories** to confirm that our system has correctly captured user’s context. You can look into the final conversation state (using ```graph.get_state```) and see how messages and memories have been organized. This is a great point to do some **debugging** if anything seems amiss, ensuring that your memory mechanism works just as intended.
 
 ```python
 # Prepare a sample conversation to test the memory agent

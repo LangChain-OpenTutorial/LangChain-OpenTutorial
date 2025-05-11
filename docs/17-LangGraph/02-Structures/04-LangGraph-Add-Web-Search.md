@@ -23,12 +23,11 @@ pre {
 - Author: [Sun Hyoung Lee](https://github.com/LEE1026icarus)
 - Design: [LeeYuChul](https://github.com/LeeYuChul)
 - Peer Review :
-- Proofread:
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/04-UpstageEmbeddings.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/04-UpstageEmbeddings.ipynb)
-
-## Overview
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/04-LangGraph-Add-Web-Search.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/04-LangGraph-Add-Web-Search.ipynb)
+## Overview  
 
 **Steps**
 
@@ -47,7 +46,7 @@ pre {
 - [Overview](#overview)
 - [Environement Setup](#environment-setup)
 - [Creating a Basic PDF-Based Retrieval Chain](#creating-a-basic-pdf-based-retrieval-chain)
-- [State Definition](#state-definition)
+- [GraphState](#GraphState)
 - [Node Definition](#node-definition)
 - [Adding Search Node](#adding-search-node)
 - [Edges](#edges)
@@ -64,8 +63,8 @@ pre {
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
  **[Note]** 
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [ `langchain-opentutorial` ](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [ ```langchain-opentutorial``` ](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 
 ```python
@@ -91,9 +90,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -138,10 +137,10 @@ pdf_retriever = pdf.retriever
 pdf_chain = pdf.chain
 ```
 
-## State Definition
-`State` : Defines the shared state between nodes in a Graph. 
+## GraphState
+```GraphState``` : Defines the shared state between nodes in a Langgraph. 
 
-Typically uses the `TypedDict` format.
+Typically uses the ```TypedDict``` format.
 
 This time, we're adding relevance check results to the State.
 
@@ -162,11 +161,11 @@ class GraphState(TypedDict):
 
 ## Node Definition
 
-- `Nodes` : These are nodes that process each step. They are typically implemented as Python functions. Both input and output are State values.
+- ```Nodes``` : These are **nodes** that process each step. They are typically implemented as Python functions. Both input and output are ```state``` values.
 
 **Note**
 
-- Receives a `State` as input, performs the defined logic, and returns an updated `State`.
+- Receives a ```state``` as input, performs the defined logic, and returns an updated ```State```.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -243,9 +242,9 @@ def is_relevant(state: GraphState) -> GraphState:
 
 ## Adding Search Node
 
-This time, we'll perform a Web Search using the `TavilySearch` tool.
+This time, we'll perform a Web Search using the ```TavilySearch``` tool.
 
-Below is an example using the `TavilySearch` tool.
+Below is an example using the ```TavilySearch``` tool.
 
 ```python
 from rag.tavily import TavilySearch
@@ -294,7 +293,7 @@ def web_search(state: GraphState) -> GraphState:
 
 ## Edges
 
-- `Edges` : Python functions that determine the next `Node` to execute based on the current `State` .
+- **```Edges```** : Python functions that determine the next ```Node``` to execute based on the current ```state``` .
 
 There are various types such as regular edges and conditional edges.
 
@@ -355,11 +354,11 @@ visualize_graph(app)
 
 ## Graph Execution
 
-- The `config` parameter passes configuration information needed for graph execution.
-- `recursion_limit` : Sets the maximum number of recursions during graph execution.
-- `inputs` : Passes the input information needed for graph execution.
+- The ```config``` parameter passes configuration information needed for graph execution.
+- ```recursion_limit``` : Sets the maximum number of recursions during graph execution.
+- ```inputs``` : Passes the input information needed for graph execution.
 
-If the `relevance_check` of the search results fails, it performs a search and provides web search results.
+If the ```relevance_check``` of the search results fails, it performs a search and provides web search results.
 
 ```python
 from langchain_core.runnables import RunnableConfig

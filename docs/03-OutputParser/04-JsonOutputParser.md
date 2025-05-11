@@ -19,13 +19,12 @@ pre {
 
 # JsonOutputParser
 
-- Author: [Ash-hun](https://github.com/ash-hun)
-- Design: 
-- Peer Review : [Jeongeun Lim](https://www.linkedin.com/in/jeongeun-lim-808978188/), [brian604](https://github.com/brian604)
+- Author: [Jaehun Choi](https://github.com/ash-hun)
+- Peer Review : [Jeongeun Lim](https://www.linkedin.com/in/jeongeun-lim-808978188/), [frimer](https://github.com/brian604)
+- Proofread : [BokyungisaGod](https://github.com/BokyungisaGod)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/04-JsonOutputParser.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/04-JsonOutputParser.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/04-JsonOutputParser.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/04-JsonOutputParser.ipynb)
 ## Overview
 
 This tutorial covers the implementation of the ```JsonOutputParser```.

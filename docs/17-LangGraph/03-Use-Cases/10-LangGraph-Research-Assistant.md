@@ -22,13 +22,13 @@ pre {
 - Author: [Secludor](https://github.com/Secludor)
 - Design: [LeeYuChul](https://github.com/LeeYuChul)
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/10-LangGraph-Research-Assistant.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/10-LangGraph-Research-Assistant.ipynb)
 ## Overview
 
-Research is often a labor-intensive task delegated to analysts, but AI holds tremendous potential to revolutionize this process. This tutorial explores **how to construct a customized AI-powered research and report generation workflow** using `LangGraph`, incorporating key concepts from Stanford's STORM framework.
+Research is often a labor-intensive task delegated to analysts, but AI holds tremendous potential to revolutionize this process. This tutorial explores **how to construct a customized AI-powered research and report generation workflow** using ```LangGraph```, incorporating key concepts from Stanford's STORM framework.
 
 ### Why This Approach?
 The STORM methodology has demonstrated significant improvements in research quality through two key innovations:
@@ -82,7 +82,7 @@ A customized AI-based [research and report generation](https://jxnl.co/writing/2
 ### References
 
 - [research and report generation](https://jxnl.co/writing/2024/06/05/predictions-for-the-future-of-rag/#reports-over-rag)
-- [LangGraph `Send()`](https://langchain-ai.github.io/langgraph/concepts/low_level/#send)
+- [LangGraph ```Send()```](https://langchain-ai.github.io/langgraph/concepts/low_level/#send)
 - [LangGraph - Multi-Agent](https://langchain-ai.github.io/langgraph/concepts/multi_agent/#custom-multi-agent-workflow)
 ----
 
@@ -94,7 +94,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -120,9 +120,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -153,23 +153,23 @@ set_env(
 
 ## Utilities
 
-These are brief descriptions of the modules from `langchain-opentutorial` used for practice.
+These are brief descriptions of the modules from ```langchain-opentutorial``` used for practice.
 
-### `visualize_graph`
+### ```visualize_graph```
 for visualizing graph structure
 
-### `random_uuid` , `invoke_graph`
-- `random_uuid` : for generating a random UUID (Universally Unique Identifier) and returns it as a string.
-- `invoke_graph` : for streaming and displays the results of executing a CompiledStateGraph instance in a visually appealing format. 
+### ```random_uuid``` , ```invoke_graph```
+- ```random_uuid``` : for generating a random UUID (Universally Unique Identifier) and returns it as a string.
+- ```invoke_graph``` : for streaming and displays the results of executing a CompiledStateGraph instance in a visually appealing format. 
 
-### `TabilySearch`
+### ```TabilySearch```
 
 This code defines a tool for performing search queries using the Tavily Search API. It includes input validation, formatting of search results, and the ability to customize search parameters.
 **Methods** :
-- `__init__` : Initializes the TavilySearch instance, setting up the API client and input parameters.
-- `_run` : Implements the base tool's run method, calling the search method and returning results.
-- `search` : Performs the actual search using the Tavily API, taking various optional parameters to customize the query. It formats the output based on user preferences.
-- `get_search_context` : Retrieves relevant context based on a search query, returning a JSON string that includes search results formatted as specified.
+- ```__init__``` : Initializes the TavilySearch instance, setting up the API client and input parameters.
+- ```_run``` : Implements the base tool's run method, calling the search method and returning results.
+- ```search``` : Performs the actual search using the Tavily API, taking various optional parameters to customize the query. It formats the output based on user preferences.
+- ```get_search_context``` : Retrieves relevant context based on a search query, returning a JSON string that includes search results formatted as specified.
 
 ## Analysts Generation : Human in the Loop
 **Analyst Generation** : Create and review analysts using Human-In-The-Loop.
@@ -364,8 +364,8 @@ visualize_graph(graph)
 **Graph Components**
 
 - **Nodes**
-    - `create_analysts`: Generates analyst personas based on the research topic
-    - `human_feedback`: Checkpoint for receiving user input and feedback
+    - ```create_analysts```: Generates analyst personas based on the research topic
+    - ```human_feedback```: Checkpoint for receiving user input and feedback
 
 - **Edges**
     - Initial flow from START to analyst creation
@@ -373,9 +373,9 @@ visualize_graph(graph)
     - Conditional path back to analyst creation based on feedback
 
 - **Features**
-    - Memory persistence using `MemorySaver`
+    - Memory persistence using ```MemorySaver```
     - Breakpoints before human feedback collection
-    - Visual representation of workflow through `visualize_graph`
+    - Visual representation of workflow through ```visualize_graph```
 
 This graph structure enables an iterative research process with human oversight and feedback integration.
 
@@ -438,7 +438,7 @@ invoke_graph(graph, inputs, config)
     ==================================================
 </pre>
 
-When `__interrupt__` is displayed, the system is ready to receive human feedback. At this point, you can retrieve the current state and provide feedback to guide the analyst generation process.
+When ```__interrupt__``` is displayed, the system is ready to receive human feedback. At this point, you can retrieve the current state and provide feedback to guide the analyst generation process.
 
 ```python
 # Get current graph state
@@ -451,7 +451,7 @@ print(state.next)
 <pre class="custom">('human_feedback',)
 </pre>
 
-To inject human feedback into the graph, we use the `update_state` method with the following key components:
+To inject human feedback into the graph, we use the ```update_state``` method with the following key components:
 
 ```python
 # Update graph state with human feedback
@@ -474,13 +474,13 @@ graph.update_state(
 
 
 **Key Parameters**
-- `config` : Configuration object containing graph settings
-- `human_analyst_feedback` : Key for storing feedback content
-- `as_node` : Specifies the node that will process the feedback
+- ```config``` : Configuration object containing graph settings
+- ```human_analyst_feedback``` : Key for storing feedback content
+- ```as_node``` : Specifies the node that will process the feedback
 
-**[Note]** : Assigning `None` as input triggers the graph to continue its execution from the last checkpoint. This is particularly useful when you want to resume processing after providing human feedback.
+**[Note]** : Assigning ```None``` as input triggers the graph to continue its execution from the last checkpoint. This is particularly useful when you want to resume processing after providing human feedback.
 
-(Continue) To resume the graph execution after the `__interrupt__` :
+(Continue) To resume the graph execution after the ```__interrupt__``` :
 
 ```python
 # Continue execution
@@ -502,7 +502,7 @@ invoke_graph(graph, None, config)
     ==================================================
 </pre>
 
-When `__interrupt__` appears again, you have two options: 
+When ```__interrupt__``` appears again, you have two options: 
 
 - Option 1: Provide Additional Feedback
     - You can provide more feedback to further refine the analyst personas using the same method as before
@@ -584,16 +584,16 @@ print(final_state.next)
 </pre>
 
 **Key Components**
-- `final_state`: Contains the final state of the graph execution.
-- `analysts`: List of generated analyst personas.
-- `final_state.next`: Empty tuple indicating workflow completion.
+- ```final_state```: Contains the final state of the graph execution.
+- ```analysts```: List of generated analyst personas.
+- ```final_state.next```: Empty tuple indicating workflow completion.
 
 The output will display each analyst's complete persona information, including their name, role, affiliation, and description, followed by a separator line. The empty tuple printed at the end confirms that the graph execution has completed successfully.
 
 ## Interview Execution
 
-### Define Classes and `question_generation` Node
-Let's implement the interview execution components with proper state management and `question_generation` Node:
+### Define Classes and ```question_generation``` Node
+Let's implement the interview execution components with proper state management and ```question_generation``` Node:
 
 ```python
 import operator
@@ -653,7 +653,7 @@ def generate_question(state: InterviewState):
 ```
 
 **State Management**
-- `InterviewState` tracks conversation turns, context, and interview content.
+- ```InterviewState``` tracks conversation turns, context, and interview content.
 - Annotated context list allows for document accumulation.
 - Maintains analyst persona and report sections.
 
@@ -671,9 +671,9 @@ Experts collect information in parallel from multiple sources to answer question
 
 They can utilize various tools such as web document scraping, VectorDB, web search, and Wikipedia search.
 
-We'll focus on two main tools: **`Tavily`** for web search and **`ArxivRetriever`** for academic papers.
+We'll focus on two main tools: **```Tavily```** for web search and **```ArxivRetriever```** for academic papers.
 
-`Tavily Search`
+```Tavily Search```
 - Real-time web search capabilities
 - Configurable result count and content depth
 - Structured output formatting
@@ -688,7 +688,7 @@ from langchain_opentutorial.tools.tavily import TavilySearch
 tavily_search = TavilySearch(max_results=3)
 ```
 
-`ArxivRetriever`
+```ArxivRetriever```
 - Access to academic papers and research
 - Full document retrieval
 - Comprehensive metadata access
@@ -1151,7 +1151,7 @@ print(formatted_search_docs)
 
 ### Defining Search Tool Nodes
 
-The code implements two main search tool nodes for gathering research information: web search via `Tavily` and academic paper search via `ArXiv`. Here's a breakdown of the key components:
+The code implements two main search tool nodes for gathering research information: web search via ```Tavily``` and academic paper search via ```ArXiv```. Here's a breakdown of the key components:
 
 ```python
 from langchain_core.messages import SystemMessage
@@ -1229,9 +1229,9 @@ def search_arxiv(state: InterviewState):
 - Metadata Integration: Comprehensive metadata inclusion for academic papers
 - State Management: Maintains conversation context through InterviewState
 
-### Define `generate_answer`, `save_interview`, `route_messages`, `write_section` Nodes
+### Define ```generate_answer```, ```save_interview```, ```route_messages```, ```write_section``` Nodes
 
-- The `generate_answer` node is responsible for creating expert responses during the interview process.
+- The ```generate_answer``` node is responsible for creating expert responses during the interview process.
 
 ```python
 from langchain_core.messages import get_buffer_string
@@ -1285,7 +1285,7 @@ def generate_answer(state: InterviewState):
     return {"messages": [answer]}
 ```
 
-- `save_interview`
+- ```save_interview```
 
 ```python
 def save_interview(state: InterviewState):
@@ -1301,8 +1301,8 @@ def save_interview(state: InterviewState):
     return {"interview": interview}
 ```
 
-### Define `generate_answer`, `save_interview`, `route_messages`, `write_section` Nodes
-- `route_messages`
+### Define ```generate_answer```, ```save_interview```, ```route_messages```, ```write_section``` Nodes
+- ```route_messages```
 
 ```python
 def route_messages(state: InterviewState, name: str = "expert"):
@@ -1331,7 +1331,7 @@ def route_messages(state: InterviewState, name: str = "expert"):
     return "ask_question"
 ```
 
-- The `write_section` function and its associated instructions implement a structured report generation system.
+- The ```write_section``` function and its associated instructions implement a structured report generation system.
 
 ```python
 section_writer_instructions = """You are an expert technical writer. 
@@ -3274,7 +3274,7 @@ print(interview_graph.get_state(config).values["sections"][0])
     [5] https://zilliz.com/blog/advancing-llms-native-advanced-modular-rag-approaches  
 </pre>
 
-### Parallel Interviewing by `map-reduce`
+### Parallel Interviewing by ```map-reduce```
 Here's how to implement parallel interviews using map-reduce in LangGraph:
 
 ```python
@@ -3303,10 +3303,10 @@ class ResearchGraphState(TypedDict):
     final_report: str
 ```
 
-Let me explain how the `Send()` function is used in LangGraph for parallel interview execution:
+Let me explain how the ```Send()``` function is used in LangGraph for parallel interview execution:
 
 **Reference**
-- [LangGraph `Send()`](https://langchain-ai.github.io/langgraph/concepts/low_level/#send)
+- [LangGraph ```Send()```](https://langchain-ai.github.io/langgraph/concepts/low_level/#send)
 
 ```python
 from langgraph.constants import Send
@@ -3632,7 +3632,7 @@ invoke_graph(graph, inputs, config)
     ==================================================
 </pre>
 
-Let's add `human_feedback` to customize the analyst team and continue the graph execution:
+Let's add ```human_feedback``` to customize the analyst team and continue the graph execution:
 
 ```python
 # Add new analyst with human feedback

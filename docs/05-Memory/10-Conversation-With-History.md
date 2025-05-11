@@ -21,15 +21,17 @@ pre {
 
 - Author: [3dkids](https://github.com/3dkids), [Joonha Jeon](https://github.com/realjoonha)
 - Peer Review : [Teddy Lee](https://github.com/teddylee777), [Shinar12](https://github.com/Shinar12), [Kenny Jung](https://www.linkedin.com/in/kwang-yong-jung), [Sunyoung Park (architectyou)](https://github.com/Architectyou)
+- Proofread : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/10-Conversation-With-History.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/10-Conversation-With-History.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/10-Conversation-With-History.ipynb)
+[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/10-Conversation-With-History.ipynb)
 
 ## Overview
 
-This tutorial covers how to create a multi-turn `Chain` that remembers previous conversations, using LangChain.<br>
-It includes managing conversation history, defining a `ChatPromptTemplate`, and utilizing an LLM for chain creation.<br>
-The conversation history is managed using `chat_history`.
+This tutorial covers how to create a multi-turn ```Chain``` that remembers previous conversations, using LangChain.<br>
+It includes managing conversation history, defining a ```ChatPromptTemplate```, and utilizing an LLM for chain creation.<br>
+The conversation history is managed using ```chat_history```.
 
 
 
@@ -52,8 +54,8 @@ The conversation history is managed using `chat_history`.
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -89,7 +91,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-Alternatively, environment variables can also be set using a `.env` file.
+Alternatively, environment variables can also be set using a ```.env``` file.
 
 **[Note]**
 
@@ -103,7 +105,7 @@ load_dotenv()
 
 ## Creating a Chain that Remembers Previous Conversations
 
-`MessagesPlaceholder` is a class in LangChain used to handle conversation history. It is primarily utilized in chatbots or multi-turn conversation systems to store and reuse previous conversation content.
+```MessagesPlaceholder``` is a class in LangChain used to handle conversation history. It is primarily utilized in chatbots or multi-turn conversation systems to store and reuse previous conversation content.
 
 ### Key Roles  
 **Inserting Conversation History** :  
@@ -111,13 +113,13 @@ load_dotenv()
 - This allows the model to understand the context of the conversation and generate appropriate responses.  
 
 **Managing Variables** :  
-- Manages conversation history within the prompt using a specific key (e.g., `chat_history`).  
+- Manages conversation history within the prompt using a specific key (e.g., ```chat_history```).  
 - It is linked to a user-defined variable name.  
 
 ### Usage  
-`MessagesPlaceholder(variable_name="chat_history")`  
-- Here, `chat_history` is the variable name where conversation history is stored.  
-- As the conversation progresses, `chat_history` is continually updated with pairs of questions and responses.
+```MessagesPlaceholder(variable_name="chat_history")```  
+- Here, ```chat_history``` is the variable name where conversation history is stored.  
+- As the conversation progresses, ```chat_history``` is continually updated with pairs of questions and responses.
 
 
 ```python
@@ -149,12 +151,12 @@ llm = ChatOpenAI(model_name="gpt-4o")
 chain = prompt | llm | StrOutputParser()
 ```
 
-## Creating a Chain to Record Conversations (`chain_with_history`)
+## Creating a Chain to Record Conversations (```chain_with_history```)
 
 In this step, we create a system that manages **session-based conversation history** and generates an **executable chain**.
 
-- **Conversation History Management** : The `store` dictionary saves and retrieves conversation history (`ChatMessageHistory`) by session ID. If a session does not exist, a new one is created.  
-- **Chain Execution** : `RunnableWithMessageHistory` combines conversation history and the chain to generate responses based on user questions and conversation history. This structure is designed to effectively manage multi-turn conversations.
+- **Conversation History Management** : The ```store``` dictionary saves and retrieves conversation history (```ChatMessageHistory```) by session ID. If a session does not exist, a new one is created.  
+- **Chain Execution** : ```RunnableWithMessageHistory``` combines conversation history and the chain to generate responses based on user questions and conversation history. This structure is designed to effectively manage multi-turn conversations.
 
 
 ```python
@@ -222,7 +224,7 @@ chain_with_history.invoke(
 
 
 
-Below is a case where a new session is created when the `session_id` is different.
+Below is a case where a new session is created when the ```session_id``` is different.
 
 ```python
 chain_with_history.invoke(

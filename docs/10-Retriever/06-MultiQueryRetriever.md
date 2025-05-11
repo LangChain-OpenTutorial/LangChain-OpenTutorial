@@ -20,16 +20,14 @@ pre {
 # MultiQueryRetriever
 
 - Author: [hong-seongmin](https://github.com/hong-seongmin)
-- Design: 
-- Peer Review: 
+- Peer Review:
+- Proofread : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain OpenTutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/06-MultiQueryRetriever.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/06-MultiQueryRetriever.ipynb)
-
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/06-MultiQueryRetriever.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/06-MultiQueryRetriever.ipynb)
 ## Overview
 
-`MultiQueryRetriever` offers a thoughtful approach to improving distance-based vector database retrieval by generating diverse queries with the help of an LLM. 
+```MultiQueryRetriever``` offers a thoughtful approach to improving distance-based vector database retrieval by generating diverse queries with the help of an LLM.
 
 This method simplifies the retrieval process, minimizes the need for manual prompt adjustments, and aims to provide more nuanced and comprehensive results.
 
@@ -37,13 +35,13 @@ This method simplifies the retrieval process, minimizes the need for manual prom
   Distance-based vector search is a technique that identifies documents with embeddings similar to a query embedding based on their 'distance' in a high-dimensional space. However, subtle variations in query details or embedding representations can occasionally make it challenging to fully capture the intended meaning, which might affect the search results.
 
 - **Streamlined Prompt Tuning**  
-  `MultiQueryRetriever` reduces the complexity of prompt tuning by utilizing an LLM to automatically generate multiple queries from different perspectives for a single input. This helps minimize the effort required for manual adjustments or prompt engineering.
+  ```MultiQueryRetriever``` reduces the complexity of prompt tuning by utilizing an LLM to automatically generate multiple queries from different perspectives for a single input. This helps minimize the effort required for manual adjustments or prompt engineering.
 
 - **Broader Document Retrieval**  
   Each generated query is used to perform a search, and the unique documents retrieved from all queries are combined. This approach helps uncover a wider range of potentially relevant documents, increasing the chances of retrieving valuable information.
 
 - **Improved Search Robustness**  
-  By exploring a question from multiple perspectives through diverse queries, `MultiQueryRetriever` addresses some of the limitations of distance-based searches. This approach can better account for nuanced differences and deeper meanings in the data, leading to more contextually relevant and well-rounded results.
+  By exploring a question from multiple perspectives through diverse queries, ```MultiQueryRetriever``` addresses some of the limitations of distance-based searches. This approach can better account for nuanced differences and deeper meanings in the data, leading to more contextually relevant and well-rounded results.
 
 ### Table of Contents
 
@@ -59,13 +57,16 @@ This method simplifies the retrieval process, minimizes the need for manual prom
 
 ---
 
+
 ## Environment Setup
 
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+
 
 ```python
 %%capture --no-stderr
@@ -103,11 +104,12 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-Alternatively, environment variables can also be set using a `.env` file.
+Alternatively, environment variables can also be set using a ```.env``` file.
 
 **[Note]**
 
 - This is not necessary if you've already set the environment variables in the previous step.
+
 
 ```python
 # Configuration file to manage API keys as environment variables
@@ -126,9 +128,10 @@ load_dotenv()
 
 ## Building a Vector Database
 
-Vector databases enable efficient retrieval of relevant documents by embedding text data into a high-dimensional vector space. 
+Vector databases enable efficient retrieval of relevant documents by embedding text data into a high-dimensional vector space.
 
 This example demonstrates creating a simple vector database using LangChain, which involves loading and splitting a document, generating embeddings with OpenAI, and performing a search query to retrieve contextually relevant information.
+
 
 ```python
 # Build a sample vector DB
@@ -195,7 +198,7 @@ for idx, doc in enumerate(relevant_docs, start=1):
 
 ## Usage
 
-Simply specify the LLM to be used in `MultiQueryRetriever` and pass the query, and the retriever will handle the rest.
+Simply specify the LLM to be used in ```MultiQueryRetriever``` and pass the query, and the retriever will handle the rest.
 
 
 ```python
@@ -215,9 +218,9 @@ multiquery_retriever = MultiQueryRetriever.from_llm(  # Initialize the MultiQuer
 
 Below is code that you can run to debug the intermediate process of generating multiple queries.
 
-First, we retrieve the `"langchain.retrievers.multi_query"` logger.
+First, we retrieve the ```langchain.retrievers.multi_query``` logger.
 
-This is done using the `logging.getLogger` method. Then, we set the logger's log level to `INFO`, so that only log messages at the `INFO` level or above are printed.
+This is done using the ```logging.getLogger``` method. Then, we set the logger's log level to ```INFO```, so that only log messages at the ```INFO``` level or above are printed.
 
 
 ```python
@@ -228,9 +231,9 @@ logging.basicConfig()
 logging.getLogger("langchain.retrievers.multi_query").setLevel(logging.INFO)
 ```
 
-This code uses the `invoke` method of the `retriever_from_llm` object to search for documents relevant to the given `question`.
+This code uses the ```invoke``` method of the ```retriever_from_llm``` object to search for documents relevant to the given ```question```.
 
-The retrieved documents are stored in the variable `relevant_docs`, and checking the length of this variable lets you see how many relevant documents were found.
+The retrieved documents are stored in the variable ```relevant_docs```, and checking the length of this variable lets you see how many relevant documents were found.
 
 Through this process, you can effectively locate information related to the user's question and assess how much of it is available.
 
@@ -265,8 +268,8 @@ print(relevant_docs[0].page_content)
 
 ## How to Use the LCEL Chain
 
-- Define a custom prompt, then create a `Chain` with that prompt.
-- When the `Chain` receives a user question (in the following example), it generates 5 questions, and returns the 5 generated questions separated by '\n'.
+- Define a custom prompt, then create a ```Chain``` with that prompt.
+- When the ```Chain``` receives a user question (in the following example), it generates 5 questions, and returns the 5 generated questions separated by '\n'.
 
 
 ```python
@@ -312,7 +315,8 @@ print(multi_queries)
     Could you provide an overview of the LangChain framework's architecture and its primary features?  
 </pre>
 
-You can pass the previously created `Chain` to the `MultiQueryRetriever` to perform retrieval.
+You can pass the previously created ```Chain``` to the ```MultiQueryRetriever``` to perform retrieval.
+
 
 ```python
 multiquery_retriever = MultiQueryRetriever.from_llm(
@@ -320,7 +324,8 @@ multiquery_retriever = MultiQueryRetriever.from_llm(
 )
 ```
 
-Use the `MultiQueryRetriever` to search documents and check the results.
+Use the ```MultiQueryRetriever``` to search documents and check the results.
+
 
 ```python
 # Result

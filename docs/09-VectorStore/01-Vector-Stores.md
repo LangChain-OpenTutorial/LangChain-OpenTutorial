@@ -20,8 +20,7 @@ pre {
 # Vector Stores
 
 - Author: [Youngin Kim](https://github.com/Normalist-K)
-- Design: 
-- Peer Review: 
+- Peer Review: [ro__o_jun](https://github.com/ro-jun)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
@@ -174,12 +173,12 @@ These vector stores are integral in building applications that require efficient
 | Vector Store             | Delete by ID | Filtering | Search by Vector | Search with Score | Async | Passes Standard Tests | Multi Tenancy | IDs in Add Documents |
 |--------------------------|:------------:|:---------:|:----------------:|:-----------------:|:-----:|:---------------------:|:-------------:|:--------------------:|
 | Chroma                   |      ✅      |     ✅    |        ✅        |         ✅        |  ✅   |          ❌           |       ❌       |          ❌          |
-| FAISS                    |      ✅      |     ✅    |        ✅        |         ✅        |  ✅   |          ❌           |       ❌       |          ❌          |
+| Faiss                    |      ✅      |     ✅    |        ✅        |         ✅        |  ✅   |          ❌           |       ❌       |          ❌          |
 | Pinecone                 |      ✅      |     ✅    |        ✅        |         ❌        |  ✅   |          ❌           |       ❌       |          ❌          |
 | Qdrant                   |      ✅      |     ✅    |        ✅        |         ✅        |  ✅   |          ❌           |       ❌       |          ❌          |
 | Elasticsearch            |      ✅      |     ✅    |        ✅        |         ✅        |  ✅   |          ❌           |       ❌       |          ❌          |
-| MongoDB                  |      ✅      |     ✅    |        ✅        |         ✅        |  ✅   |          ❌           |       ❌       |          ❌          |
-| pgvector (PostgreSQL)    |      ✅      |     ✅    |        ✅        |         ✅        |  ✅   |          ❌           |       ❌       |          ❌          |
+| MongoDB-Atlas (MongoDB)                 |      ✅      |     ✅    |        ✅        |         ✅        |  ✅   |          ❌           |       ❌       |          ❌          |
+| PGVector (PostgreSQL)    |      ✅      |     ✅    |        ✅        |         ✅        |  ✅   |          ❌           |       ❌       |          ❌          |
 | Neo4j                    |      ✅      |     ✅    |        ✅        |         ✅        |  ✅   |          ❌           |       ❌       |          ✅          |
 | Weaviate                 |      ✅      |     ✅    |        ✅        |         ✅        |  ✅   |          ❌           |       ✅       |          ❌          |
 | Milvus                   |      ✅      |     ✅    |        ❌        |         ✅        |  ✅   |          ❌           |       ❌       |          ❌          |

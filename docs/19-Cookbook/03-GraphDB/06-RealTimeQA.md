@@ -20,15 +20,14 @@ pre {
 # Real-Time GraphRAG QA
 
 - Author: [Jongcheol Kim](https://github.com/greencode-99)
-- Design: 
 - Peer Review: [Heesun Moon](https://github.com/MoonHeesun), [Taylor(Jihyun Kim)](https://github.com/Taylor0819)
+- Proofread  : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/03-GraphDB/06-RealTimeQA.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/03-GraphDB/06-RealTimeQA.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/03-GraphDB/06-RealTimeQA.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/03-GraphDB/06-RealTimeQA.ipynb)
 ## Overview
 
-This tutorial provides **GraphRAG QA** functionality that extracts knowledge from PDF documents and enables natural language queries through a **Neo4j graph database**. After users upload PDF documents, they are processed using **OpenAI's GPT models** (e.g., `gpt-4o`) to extract entities and relationships.
+This tutorial provides **GraphRAG QA** functionality that extracts knowledge from PDF documents and enables natural language queries through a **Neo4j graph database**. After users upload PDF documents, they are processed using **OpenAI's GPT models** (e.g., ```gpt-4o```) to extract entities and relationships.
 
 The extracted information is stored in a **Neo4j graph database**. Users can then interact with the graph in real-time by asking natural language questions, which are converted into **Cypher queries** to retrieve answers from the graph.
 
@@ -36,7 +35,7 @@ The extracted information is stored in a **Neo4j graph database**. Users can the
 ### Features
 
 - **Real-time GraphRAG:** Enables real-time knowledge extraction from documents and supports interactive querying.
-- **Modular and Configurable:** Users can set up their own credentials for `OpenAI` and `Neo4j`.
+- **Modular and Configurable:** Users can set up their own credentials for ```OpenAI``` and ```Neo4j```.
 - **Natural Language Interface:** Ask questions in plain English and get answers from the graph database.
 
 
@@ -64,8 +63,8 @@ The extracted information is stored in a **Neo4j graph database**. Users can the
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -130,16 +129,16 @@ load_dotenv(override=True)
 
 This tutorial uses Neo4j and Neo4j Sandbox for graph database construction.
  
-`Neo4j Sandbox` is an online graph database that allows you to easily build a **free cloud-based Neo4j instance**, allowing you to experiment with graph databases in the cloud environment without local installation.
+```Neo4j Sandbox``` is an online graph database that allows you to easily build a **free cloud-based Neo4j instance**, allowing you to experiment with graph databases in the cloud environment without local installation.
 
 [Note] 
 Neo4j can be set up in several different ways:
 
-1. [`Neo4j Desktop`](https://neo4j.com/docs/operations-manual/current/installation/) :  A desktop application for local development
+1. [```Neo4j Desktop```](https://neo4j.com/docs/operations-manual/current/installation/) :  A desktop application for local development
 
-2. [`Neo4j Sandbox` ](https://neo4j.com/sandbox/) : A free, cloud-based platform for working with graph databases
+2. [```Neo4j Sandbox``` ](https://neo4j.com/sandbox/) : A free, cloud-based platform for working with graph databases
 
-3. [`Docker` ](https://neo4j.com/docs/operations-manual/current/docker/) : Run Neo4j in a container using the official Neo4j Docker image
+3. [```Docker``` ](https://neo4j.com/docs/operations-manual/current/docker/) : Run Neo4j in a container using the official Neo4j Docker image
 
 ### Setup Neo4j Sandbox
 - Go to Neo4j Sandbox and click the "+ New Project" button. Select your desired dataset to create a database.
@@ -197,7 +196,7 @@ graph = connect_to_neo4j()
 
 Here's how we process PDF documents and extract text from them.
 
-First, we use `PyPDFLoader` to load the PDF file and split it into individual pages. Then, we use `RecursiveCharacterTextSplitter` to break these pages down into manageable chunks. We set each chunk to be 200 characters long, with a 40-character overlap between chunks to maintain smooth transitions and context.
+First, we use ```PyPDFLoader``` to load the PDF file and split it into individual pages. Then, we use ```RecursiveCharacterTextSplitter``` to break these pages down into manageable chunks. We set each chunk to be 200 characters long, with a 40-character overlap between chunks to maintain smooth transitions and context.
 
 Once all the splitting work is complete, we begin our text cleanup process. For each piece of document, we remove any newline characters and include source information so we can track where the content originated. All of this cleaned-up information gets neatly organized into a list of Document objects.
 
@@ -233,12 +232,12 @@ def process_pdf(file_path):
 Here's how to transform extracted text into a graph structure using our transformation function.
 
 First, we initialize the graph database by clearing any existing nodes and relationships. We then define a set of allowed nodes and their permitted relationships:
-- `Allowed nodes` : ["Device", "PowerSource", "OperatingSystem", "ConnectionStatus", "Software", "Action"]
-- `Permitted relationships` : ["USES_POWER", "OPERATES_ON", "HAS_STATUS", "REQUIRES", "PERFORMS"]
+- ```Allowed nodes``` : ["Device", "PowerSource", "OperatingSystem", "ConnectionStatus", "Software", "Action"]
+- ```Permitted relationships``` : ["USES_POWER", "OPERATES_ON", "HAS_STATUS", "REQUIRES", "PERFORMS"]
 
-For demonstration purposes, these nodes and relationships were defined using the `gpt-4o` model.
+For demonstration purposes, these nodes and relationships were defined using the ```gpt-4o``` model.
 
-We then create a graph transformer using `LLMGraphTransformer` and configure it with our defined nodes and relationships. To keep things simple, we set both node and relationship properties to false. This transformer takes our document chunks and converts them into graph documents, which are then added to our Neo4j database along with their source information.
+We then create a graph transformer using ```LLMGraphTransformer``` and configure it with our defined nodes and relationships. To keep things simple, we set both node and relationship properties to false. This transformer takes our document chunks and converts them into graph documents, which are then added to our Neo4j database along with their source information.
 
 This whole process transforms our text data into a structured graph format, making it much easier to query and analyze relationships between different entities in our documents.
 
@@ -286,18 +285,18 @@ def transform_to_graph(docs, graph):
 ## QA Chain Setup
 
 
-Here's how to create a powerful question-answering chain using the `GraphCypherQAChain`.
+Here's how to create a powerful question-answering chain using the ```GraphCypherQAChain```.
 
-First, we create a custom prompt template that helps generate Cypher queries. This template is quite comprehensive - it includes all the available relationship types in our database like `MENTIONS`, `PERFORMS`, `USES_POWER`, `HAS_STATUS`, `OPERATES_ON`, and `REQUIRES`. It also provides an example query structure to ensure proper formatting and includes a placeholder where we'll insert the user's question.
+First, we create a custom prompt template that helps generate Cypher queries. This template is quite comprehensive - it includes all the available relationship types in our database like ```MENTIONS```, ```PERFORMS```, ```USES_POWER```, ```HAS_STATUS```, ```OPERATES_ON```, and ```REQUIRES```. It also provides an example query structure to ensure proper formatting and includes a placeholder where we'll insert the user's question.
 
-Once we have our template ready, we create a `GraphCypherQAChain` with several important configurations:
-- We use our configured `llm` for query generation
-- We connect it to our `graph` database
-- We incorporate our `cypher_prompt` template
-- We enable `verbose` mode for detailed logging
-- We set `return_intermediate_steps` to see what's happening under the hood
-- We set `allow_dangerous_requests` to true for handling complex queries
-- We limit our results to the top 3 matches with `top_k`
+Once we have our template ready, we create a ```GraphCypherQAChain``` with several important configurations:
+- We use our configured ```llm``` for query generation
+- We connect it to our ```graph``` database
+- We incorporate our ```cypher_prompt``` template
+- We enable ```verbose``` mode for detailed logging
+- We set ```return_intermediate_steps``` to see what's happening under the hood
+- We set ```allow_dangerous_requests``` to true for handling complex queries
+- We limit our results to the top 3 matches with ```top_k```
 
 This whole setup creates a **powerful chain** that can take **natural language questions** from users, convert them into **proper Cypher queries**, and fetch relevant answers from our graph database. It's like having a translator that converts human questions into database language and back again.
 
@@ -427,13 +426,13 @@ def setup_qa_chain(graph):
 
 Here's how this function combines a **graph database query** with an **LLM fallback** to provide answers efficiently.
 
-First, it searches the graph database using a `Cypher query`. It looks for `Document` nodes connected via `MENTIONS` relationships that contain the question's keyword in their text. This is the primary way the function tries to find answers.
+First, it searches the graph database using a ```Cypher query```. It looks for ```Document``` nodes connected via ```MENTIONS``` relationships that contain the question's keyword in their text. This is the primary way the function tries to find answers.
 
 If the first query doesn't return a result, it splits the question into individual words and searches using each word as a keyword. This approach helps when a single keyword doesn't match exactly but parts of the question might.
 
 The function includes several fallback mechanisms:
-- If no answer is found in the database, the question is passed to an `LLM`
-- The `LLM` processes the query and generates an answer independently
+- If no answer is found in the database, the question is passed to an ```LLM```
+- The ```LLM``` processes the query and generates an answer independently
 - The entire process is wrapped in a try-except block for smooth error handling
 - Users receive friendly error messages if something goes wrong
 
@@ -482,7 +481,7 @@ def ask_question(qa, question):
 
 Here's a practical example.
 - I used the following document for this demonstration.
-- Please download the document using the link below and save it to the `data` folder.
+- Please download the document using the link below and save it to the ```data``` folder.
 
 **Document Details**
 - Document Name: **Lenovo Combined Mouse User Guide**

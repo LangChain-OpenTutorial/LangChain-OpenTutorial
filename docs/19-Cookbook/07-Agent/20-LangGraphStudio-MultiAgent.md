@@ -20,19 +20,18 @@ pre {
 # LangGraphStudio - MultiAgent
 
 - Author: [Taylor(Jihyun Kim)](https://github.com/Taylor0819)
-- Design: 
 - Peer Review: 
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/20-LangGraphStudio-MultiAgent.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/20-LangGraphStudio-MultiAgent.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/20-LangGraphStudio-MultiAgent.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/20-LangGraphStudio-MultiAgent.ipynb)
 
 
 ## Overview
 
-This notebook demonstrates how to build a **Multi-agent workflow** by integrating `LangChain` with `LangGraph Studio`, allowing you to orchestrate multiple specialized agents for gathering, analyzing, and synthesizing information. In this tutorial, we focus on researching a specific person, their professional background, and the company they work for, as well as generating relevant follow-up questions or interview prompts.
+This notebook demonstrates how to build a **Multi-agent workflow** by integrating ```LangChain``` with ```LangGraph Studio```, allowing you to orchestrate multiple specialized agents for gathering, analyzing, and synthesizing information. In this tutorial, we focus on researching a specific person, their professional background, and the company they work for, as well as generating relevant follow-up questions or interview prompts.
 
-By visualizing this agent workflow in `LangGraph Studio`, you can easily debug, modify, and extend the pipeline. Each agent’s output can be inspected step by step, making it straightforward to add new components or adjust the process flow.
+By visualizing this agent workflow in ```LangGraph Studio```, you can easily debug, modify, and extend the pipeline. Each agent’s output can be inspected step by step, making it straightforward to add new components or adjust the process flow.
 
 ![Langgraph Studio](./img/20-LangGraphStudio-MultiAgent-01.png)
 
@@ -56,8 +55,8 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 **[Note]** 
 
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 
 ```python
@@ -99,7 +98,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `ANTHROPIC_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```ANTHROPIC_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -119,24 +118,24 @@ load_dotenv(override=True)
 
 ## What is LangGraph Studio
 
-`LangGraph Studio` offers a new way to develop LLM applications by providing a specialized agent IDE that enables visualization, interaction, and debugging of complex agentic applications.
+```LangGraph Studio``` offers a new way to develop LLM applications by providing a specialized agent IDE that enables visualization, interaction, and debugging of complex agentic applications.
 
-With visual graphs and the ability to edit the state, you can better understand agent workflows and iterate faster. `LangGraph Studio` integrates with LangSmith so you can collaborate with teammates to debug failure modes.
+With visual graphs and the ability to edit the state, you can better understand agent workflows and iterate faster. ```LangGraph Studio``` integrates with LangSmith so you can collaborate with teammates to debug failure modes.
 
 To use LangGraph Studio, make sure you have a [project with a LangGraph app](https://langchain-ai.github.io/langgraph/cloud/deployment/setup/) set up.
 
-The desktop application only supports `macOS`. Other users can run a local LangGraph server and use the `web studio`. 
+The desktop application only supports ```macOS```. Other users can run a local LangGraph server and use the ```web studio```. 
 
-We also depend on `Docker Engine` to be running, currently we only support the following runtimes:
+We also depend on ```Docker Engine``` to be running, currently we only support the following runtimes:
 
 - [Docker Desktop](https://docs.docker.com/engine/install/)
 - [Orbstack](https://orbstack.dev/)
 
 LangGraph Studio requires Docker-compose version 2.22.0+ or higher. 
 
-Please make sure you have `Docker Desktop` or `Orbstack` installed and running before continuing.
+Please make sure you have ```Docker Desktop``` or ```Orbstack``` installed and running before continuing.
 
-In this tutorial, we have installed and are using `Docker Desktop` as our container runtime environment.
+In this tutorial, we have installed and are using ```Docker Desktop``` as our container runtime environment.
 
 
 ![Using LangGraph Studio](./img/20-LangGraphStudio-MultiAgent-02.png)
@@ -146,42 +145,42 @@ In this tutorial, we have installed and are using `Docker Desktop` as our contai
 Our system implements a sophisticated multi-agent workflow, organized into four main categories:
 
 ### 1. Personal Information Research 👤
-- **Query Generator** (`generate_queries`)
+- **Query Generator** (```generate_queries```)
   - Role: Generates search queries based on personal information (name, email, company)
   - Output: Set of optimized search queries
 
-- **Personal Researcher** (`research_person`)
+- **Personal Researcher** (```research_person```)
   - Role: Performs web searches using generated queries
   - Output: Summary of key information about the target person
 
 ### 2. Project Analysis 📊
-- **Project Query Generator** (`extract_project_queries`)
+- **Project Query Generator** (```extract_project_queries```)
   - Role: Analyzes personal research notes to identify project-related queries
   - Output: Project-focused search queries
 
-- **Project Researcher** (`research_projects`)
+- **Project Researcher** (```research_projects```)
   - Role: Collects and analyzes project information
   - Output: Detailed project information and insights
 
 ### 3. Company Research 🏢
-- **Company Query Generator** (`generate_queries_for_company`)
+- **Company Query Generator** (```generate_queries_for_company```)
   - Role: Creates customized search queries for gathering company information
   - Output: Company-related optimized search queries
 
-- **Company Researcher** (`research_company`)
+- **Company Researcher** (```research_company```)
   - Role: Gathers company background and context information
   - Output: Comprehensive company profile
 
 ### 4. Integration & Analysis 🔄
-- **Information Integrator** (`combine_notes`)
+- **Information Integrator** (```combine_notes```)
   - Role: Integrates all research results (personal, projects, company)
   - Output: Consolidated comprehensive report
 
-- **Question Generator** (`generate_questions`)
+- **Question Generator** (```generate_questions```)
   - Role: Generates interview questions based on integrated data
   - Output: Set of customized interview questions
 
-- **Quality Controller** (`reflection`)
+- **Quality Controller** (```reflection```)
   - Role: Reviews data completeness and identifies areas for improvement
   - Output: Quality report and additional research needs
 
@@ -1275,21 +1274,21 @@ await astream_graph(graph, input_data, config)
 
 ### Jupyter Notebook Code Cell Extractor
 
-This script converts `Jupyter Notebook` cells into a `Python script` with the following features:
+This script converts ```Jupyter Notebook``` cells into a ```Python script``` with the following features:
 1. Converts pip install magic commands into executable Python code
 2. Removes or comments out visualization-related code
 3. Handles cell deduplication
 4. Processes cells up to the graph compilation
 5. Maintains code organization and readability
 
-This conversion is necessary because `LangGraph Studio` requires Python `(.py) file`s for execution. This script helps transform our tutorial notebook into the correct format while maintaining all functionality.
+This conversion is necessary because ```LangGraph Studio``` requires Python ```(.py) file```s for execution. This script helps transform our tutorial notebook into the correct format while maintaining all functionality.
 
 Key Features:
 - Automatic package installation code generation
 - Cell content deduplication
 - Selective cell processing
 - Magic command handling
-- Proper formatting for `LangGraph Studio` compatibility
+- Proper formatting for ```LangGraph Studio``` compatibility
 
 ```python
 import json
@@ -1383,8 +1382,8 @@ extract_code_cells(notebook_file, output_file)
 **Connection Options**
 There are two ways to connect your local agent to LangGraph Studio:
 
-- [Development Server](https://langchain-ai.github.io/langgraph/concepts/langgraph_studio/#development-server-with-web-ui): Python package, all platforms, `no Docker`
-- [LangGraph Desktop](https://langchain-ai.github.io/langgraph/concepts/langgraph_studio/#desktop-app): `Application`, `Mac only`, `requires Docker`
+- [Development Server](https://langchain-ai.github.io/langgraph/concepts/langgraph_studio/#development-server-with-web-ui): Python package, all platforms, ```no Docker```
+- [LangGraph Desktop](https://langchain-ai.github.io/langgraph/concepts/langgraph_studio/#desktop-app): ```Application```, ```Mac only```, ```requires Docker```
 
 In this guide we will cover how to use the development server as that is generally an easier and better experience.
 
@@ -1399,9 +1398,9 @@ Currently, the desktop application only supports only macOS. Other users can [ru
 
 First, you will need to setup your application in the proper format. This means defining a langgraph.json file which contains paths to your agent(s). See [this guide](https://langchain-ai.github.io/langgraph/concepts/application_structure/) for information on how to do so.
 
-Please make sure that all the required files for running LangGraph Studio are located in the `langgraph_studio` folder.
+Please make sure that all the required files for running LangGraph Studio are located in the ```langgraph_studio``` folder.
 
-For this example, we will use this example [repository](https://github.com/langchain-ai/langgraph-example) here which uses a `requirements.txt` file for dependencies:
+For this example, we will use this example [repository](https://github.com/langchain-ai/langgraph-example) here which uses a ```requirements.txt``` file for dependencies:
 
 ```bash
 └── langgraph_studio 
@@ -1411,7 +1410,7 @@ For this example, we will use this example [repository](https://github.com/langc
     └── requirements.txt
 ```
 
-As previously mentioned, we are using `Docker Desktop` , so please download it, launch the app, and make sure the Docker engine is running. Then, in `LangGraph Studio` , open the langgraph_studio folder.
+As previously mentioned, we are using ```Docker Desktop``` , so please download it, launch the app, and make sure the Docker engine is running. Then, in ```LangGraph Studio``` , open the langgraph_studio folder.
 
 ![LangGraph Studio Setup](./img/20-LangGraphStudio-MultiAgent-03.png)
 

@@ -21,11 +21,11 @@ pre {
 
 - Author: [Heeah Kim](https://github.com/yellowGangneng)
 - Peer Review: [Yongdam Kim](https://github.com/dancing-with-coffee), [syshin0116](https://github.com/syshin0116)
+- Proofread  : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-AcademicSearchSystem.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-AcademicSearchSystem.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/04-GraphRAG/07-AcademicSearchSystem.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/04-GraphRAG/07-AcademicSearchSystem.ipynb)
 ## Overview
 
 This tutorial involves loading an open academic publication dataset called *OpenAlex* into a Graph DB named *Neo4J*.
@@ -96,8 +96,8 @@ However, in this tutorial, we will focus solely on the topic of **Academic Searc
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -140,7 +140,7 @@ set_env(
 )
 ```
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -205,15 +205,15 @@ Shall we dive into the main content now?
 
 Let's prepare the Data. As mentioned earlier, we will use the **OpenAlex**, an open academic publication dataset.
 OpenAlex data describes academic entities and how these entities are interconnected. The data properties provided include:
-- `Works`
-- `Authors`
-- `Scores`
-- `Institutions`
-- `Topics`
-- `Publishers`
-- `Funders`
+- ```Works```
+- ```Authors```
+- ```Scores```
+- ```Institutions```
+- ```Topics```
+- ```Publishers```
+- ```Funders```
 
-Among these, we will focus on handling the following data properties: `Works`, `Authors`, `Institutions`, `Topics`
+Among these, we will focus on handling the following data properties: ```Works```, ```Authors```, ```Institutions```, ```Topics```
 
 ### Data Structure
 
@@ -231,41 +231,41 @@ For more detailed information about Graph properties, please refer to the [offic
 Let us now explore the nodes and relationships of the data we will construct.
 
 **Node**
-- `Works`: These are academic documents such as journal articles, books, datasets, and theses.
-    - `display_name`: The title of the academic document.
-    - `cited_by_count`: The number of times the document has been cited.
-    - `language`: The language in which the document is written.
-    - `publication_year`: The year the document was published.
-    - `type`: The type of the document.
-    - `license`: The license under which the document is published.
-    - `url`: The URL where the document is available.
+- ```Works```: These are academic documents such as journal articles, books, datasets, and theses.
+    - ```display_name```: The title of the academic document.
+    - ```cited_by_count```: The number of times the document has been cited.
+    - ```language```: The language in which the document is written.
+    - ```publication_year```: The year the document was published.
+    - ```type```: The type of the document.
+    - ```license```: The license under which the document is published.
+    - ```url```: The URL where the document is available.
 <br>
 <br>
-- `Authors`: Information about the authors who wrote the academic documents.
-  - `display_name`: The name of the author.
-  - `orcid`: The author's ORCID. (ORCID is a global and unique ID for authors.)
-  - `works_count`: The number of documents the author has worked on.
+- ```Authors```: Information about the authors who wrote the academic documents.
+  - ```display_name```: The name of the author.
+  - ```orcid```: The author's ORCID. (ORCID is a global and unique ID for authors.)
+  - ```works_count```: The number of documents the author has worked on.
 <br>
 <br>
-- `Topics`: Subjects related to the documents.
-  - `display_name`: The title of the topic.
-  - `description`: A description of the topic.
+- ```Topics```: Subjects related to the documents.
+  - ```display_name```: The title of the topic.
+  - ```description```: A description of the topic.
 <br>
 <br>
-- `Institutions`: The institutions to which the authors were affiliated. It is included in the Authors data.
-  - `display_name`: The name of the institution.
-  - `ror`: The ROR (Research Organization Registry) ID of the institution.
-  - `country_code`: The country where the institution is located.
+- ```Institutions```: The institutions to which the authors were affiliated. It is included in the Authors data.
+  - ```display_name```: The name of the institution.
+  - ```ror```: The ROR (Research Organization Registry) ID of the institution.
+  - ```country_code```: The country where the institution is located.
 
 **Relationship**
-- `Works` <- `WROTE` - `Authors`: The relationship between an author and the documents they have written.
-  - `author_position` The author's position in the authorship list (e.g., first author, second author).
+- ```Works``` <- ```WROTE``` - ```Authors```: The relationship between an author and the documents they have written.
+  - ```author_position``` The author's position in the authorship list (e.g., first author, second author).
 
-- `Works` - `ASSOCIATION` -> `Topics`: The relationship between documents and topics.
-  - `score` The relevance score indicating how strongly the document is related to the topic.
+- ```Works``` - ```ASSOCIATION``` -> ```Topics```: The relationship between documents and topics.
+  - ```score``` The relevance score indicating how strongly the document is related to the topic.
 
-- `Authors` - `AFFILIATED` -> `Institutions`: The relationship between authors and the institutions with which they were affiliated.
-  - `years` The years during which the author was affiliated with the institution.
+- ```Authors``` - ```AFFILIATED``` -> ```Institutions```: The relationship between authors and the institutions with which they were affiliated.
+  - ```years``` The years during which the author was affiliated with the institution.
 
 <br>For more detailed information about **OpenAlex** Entities, please refer to the [official website](https://docs.openalex.org/api-entities/entities-overview).
 
@@ -388,34 +388,34 @@ As always, a single line of code is often easier to understand than ten lines of
 
 Let's analyze the Cypher declared above, line by line. We will omit explanations for duplicated forms of code.
 
-- `CALL apoc.load.json('"+ file+ "')`
-  - Read the JSON files. At this time, the **APOC** module is required. In the case of the docker compose provided above, it will be automatically installed through `NEO4J_PLUGINS=['apoc']`.
+- ```CALL apoc.load.json('"+ file+ "')```
+  - Read the JSON files. At this time, the **APOC** module is required. In the case of the docker compose provided above, it will be automatically installed through ```NEO4J_PLUGINS=['apoc']```.
 <br>
 <br>
-- `YIELD value`
-  - Returns the `value` obtained by reading the JSON file.
+- ```YIELD value```
+  - Returns the ```value``` obtained by reading the JSON file.
 <br>
 <br>
-- `UNWIND value.authorships as authorships`
-  - By separating the `authorships` list within the `value` object, each item is individually processed as `authorships` objects with an alias assigned through `as`.
+- ```UNWIND value.authorships as authorships```
+  - By separating the ```authorships``` list within the ```value``` object, each item is individually processed as ```authorships``` objects with an alias assigned through ```as```.
 <br>
 <br>
-- `WITH value, authorships, author, topics, field, domain`
-  - Variables obtained through `YIELD` and `UNWIND` are passed to the next part of the query, making them available for subsequent operations.
+- ```WITH value, authorships, author, topics, field, domain```
+  - Variables obtained through ```YIELD``` and ```UNWIND``` are passed to the next part of the query, making them available for subsequent operations.
 <br>
 <br>
 - `MERGE (w:Works {id: value.id}) \
   SET w.display_name = coalesce(value.display_name, '')\
   ...`
-  - The `MERGE` clause is used to match or create a node with the `Works` label that has a unique `id` property matching `value.id`. If a node with the corresponding `id` already exists, it matches that node; otherwise, it creates a new node.
-  - The `SET` clause updates the `display_name` property of the `Works` node. The `coalesce` function ensures that `value.display_name` is replaced with an empty string (`''`) if it is `null`.
+  - The ```MERGE``` clause is used to match or create a node with the ```Works``` label that has a unique ```id``` property matching ```value.id```. If a node with the corresponding ```id``` already exists, it matches that node; otherwise, it creates a new node.
+  - The ```SET``` clause updates the ```display_name``` property of the ```Works``` node. The ```coalesce``` function ensures that ```value.display_name``` is replaced with an empty string (```''```) if it is ```null```.
 <br>
 <br>
-- `MERGE (a)-[:WROTE{author_position: authorships.author_position}]->(w)`
-    - The `MERGE` clause is used to match or create a relationship between nodes `a` and `w`. Just like with nodes, if the same relationship already exists, it matches or creates it, and if it does not exist, it creates a new relationship.
-    - This relationship has the `WROTE` label and includes the `author_position` property. This property is set to the value of `authorships.author_position`.
+- ```MERGE (a)-[:WROTE{author_position: authorships.author_position}]->(w)```
+    - The ```MERGE``` clause is used to match or create a relationship between nodes ```a``` and ```w```. Just like with nodes, if the same relationship already exists, it matches or creates it, and if it does not exist, it creates a new relationship.
+    - This relationship has the ```WROTE``` label and includes the ```author_position``` property. This property is set to the value of ```authorships.author_position```.
 
-The **nodes** and **relationships** for `Authors` and `Topics` will be constructed in a similar manner, so the explanation will be omitted.
+The **nodes** and **relationships** for ```Authors``` and ```Topics``` will be constructed in a similar manner, so the explanation will be omitted.
 
 ```python
 for file in work_files:
@@ -515,7 +515,7 @@ Now, let us integrate the generated graph with the LLM to build a Q&A system.
 ### Using the default QA chain
 
 First, let's make use of the default QA Chain provided by langchain.<br>
-`GraphCypherQAChain` is a function that *generates Cypher queries* and *facilitates question-answering about graphs* 
+```GraphCypherQAChain``` is a function that *generates Cypher queries* and *facilitates question-answering about graphs* 
 <br>by having a pre-declared chain, making it convenient to use.
 
 <br><center><img src='./assets/07-academic-search-system-05.png' alt='GraphCypherQAChain' style="width:50%; height:50%"></center>
@@ -525,7 +525,7 @@ As can be seen from the above picture, the model operates the LLM once to genera
 <br>then runs the GraphDB with the generated query, and operates the LLM once again to generate an appropriate response 
 <br>to the user's query based on the executed results.
 
-Let's implement a simple QA service using the `GraphCypherQAChain` function.
+Let's implement a simple QA service using the ```GraphCypherQAChain``` function.
 
 ```python
 from langchain_neo4j import GraphCypherQAChain, Neo4jGraph

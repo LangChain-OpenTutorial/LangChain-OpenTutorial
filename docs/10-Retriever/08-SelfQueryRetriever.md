@@ -20,18 +20,17 @@ pre {
 # Self-querying
 - Author: [Hye-yoon Jeong](https://github.com/Hye-yoonJeong)
 - Peer Review: 
-- Proofread:
+- Proofread : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/08-SelfQueryRetriever.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/08-SelfQueryRetriever.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/08-SelfQueryRetriever.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/08-SelfQueryRetriever.ipynb)
 ## Overview
 
-`SelfQueryRetriever` is a retriever equipped with the capability to generate and resolve queries autonomously.
+```SelfQueryRetriever``` is a retriever equipped with the capability to generate and resolve queries autonomously.
 
-`SelfQueryRetriever` converts the natural language input provided by the user into a **structured query** using a **query-constructing LLM chain** . This **structured query** is then used to retrieve documents from the **vector store** .
+```SelfQueryRetriever``` converts the natural language input provided by the user into a **structured query** using a **query-constructing LLM chain** . This **structured query** is then used to retrieve documents from the **vector store** .
 
-Through this process, `SelfQueryRetriever` goes beyond merely comparing the user's input query with the content of stored documents semantically, and **extracts filters on the metadata** from the user's query and executes those filters to retrieve relevant documents.
+Through this process, ```SelfQueryRetriever``` goes beyond merely comparing the user's input query with the content of stored documents semantically, and **extracts filters on the metadata** from the user's query and executes those filters to retrieve relevant documents.
 
 The list of **self-querying retrievers** supported by LangChain can be found [here](https://python.langchain.com/docs/integrations/retrievers/self_query).
 
@@ -53,8 +52,8 @@ The list of **self-querying retrievers** supported by LangChain can be found [he
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -173,13 +172,13 @@ vectorstore = Chroma.from_documents(
 
 ## SelfQueryRetriever
 
-To instantiate the `retriever` , you need to define **metadata fields** and **a brief description of the document contents** in advance using the `AttributeInfo` class.
+To instantiate the ```retriever``` , you need to define **metadata fields** and **a brief description of the document contents** in advance using the ```AttributeInfo``` class.
 
 In this example, the metadata for cosmetic products is defined as follows:
 
-- `category` : String type, represents the category of the cosmetic product and takes one of the following values: ['Skincare', 'Makeup', 'Cleansers', 'Sunscreen'].
-- `year` : Integer type, represents the year the cosmetic product was released.
-- `user_rating` : Float type, represents the user rating in the range of 1 to 5.
+- ```category``` : String type, represents the category of the cosmetic product and takes one of the following values: ['Skincare', 'Makeup', 'Cleansers', 'Sunscreen'].
+- ```year``` : Integer type, represents the year the cosmetic product was released.
+- ```user_rating``` : Float type, represents the user rating in the range of 1 to 5.
 
 ```python
 from langchain.chains.query_constructor.schema import AttributeInfo
@@ -204,12 +203,12 @@ metadata_field_info = [
 ]
 ```
 
-Create `retriever` object with `SelfQueryRetriever.from_llm` method.
+Create ```retriever``` object with ```SelfQueryRetriever.from_llm``` method.
 
-- `llm`: Large language model
-- `vectorstore`: Vector store
-- `document_contents`: Description of the contents of the documents
-- `metadata_field_info`: Metadata field information
+- ```llm```: Large language model
+- ```vectorstore```: Vector store
+- ```document_contents```: Description of the contents of the documents
+- ```metadata_field_info```: Metadata field information
 
 ```python
 from langchain.retrievers.self_query.base import SelfQueryRetriever
@@ -227,7 +226,7 @@ retriever = SelfQueryRetriever.from_llm(
 )
 ```
 
-Now, let's test this `SelfQueryRetriever` with some example queries.
+Now, let's test this ```SelfQueryRetriever``` with some example queries.
 
 ```python
 # Self-query retrieval
@@ -268,7 +267,7 @@ retriever.invoke("Please recommend products in the Sunscreen category.")
 
 
 
-`SelfQueryRetriever` can also be used to retrieve items with two or more conditions.
+```SelfQueryRetriever``` can also be used to retrieve items with two or more conditions.
 
 ```python
 # Self-query retrieval
@@ -284,9 +283,9 @@ retriever.invoke(
 
 
 
-You can also specify **the number of documents to retrieve** using the argument `k` when using `SelfQueryRetriever` .
+You can also specify **the number of documents to retrieve** using the argument ```k``` when using ```SelfQueryRetriever``` .
 
-This can be done by passing `enable_limit=True` to the constructor.
+This can be done by passing ```enable_limit=True``` to the constructor.
 
 ```python
 retriever = SelfQueryRetriever.from_llm(
@@ -299,7 +298,7 @@ retriever = SelfQueryRetriever.from_llm(
 )
 ```
 
-There are 3 products released in 2023, but by setting the value of `k` to 2, only 2 products are retrieved.
+There are 3 products released in 2023, but by setting the value of ```k``` to 2, only 2 products are retrieved.
 
 ```python
 # Self-query retrieval
@@ -314,7 +313,7 @@ retriever.invoke("Please recommend products released in 2023.")
 
 
 
-However, you can also limit the number of search results by directly specifying the number of search results in the query without explicitly specifying `search_kwargs` in the code.
+However, you can also limit the number of search results by directly specifying the number of search results in the query without explicitly specifying ```search_kwargs``` in the code.
 
 ```python
 retriever = SelfQueryRetriever.from_llm(
@@ -351,9 +350,9 @@ retriever.invoke("Please recommend 2 products released in 2023.")
 
 ## Query Constructor Chain
 
-To see what happens internally and to have more custom control, we can construct a `retriever` from scratch.
+To see what happens internally and to have more custom control, we can construct a ```retriever``` from scratch.
 
-First, we need to create a `query_constructor` chain that generates structured queries. Here, we use the `get_query_constructor_prompt` function to retrieve the prompt that helps constructing queries.
+First, we need to create a ```query_constructor``` chain that generates structured queries. Here, we use the ```get_query_constructor_prompt``` function to retrieve the prompt that helps constructing queries.
 
 ```python
 from langchain.chains.query_constructor.base import (
@@ -374,7 +373,7 @@ output_parser = StructuredQueryOutputParser.from_components()
 query_constructor = prompt | llm | output_parser
 ```
 
-To check the content of the prompt, use the `prompt.format` method to pass the string `"dummy question"` to the `query` parameter and print the result.
+To check the content of the prompt, use the ```prompt.format``` method to pass the string ```"dummy question"``` to the ```query``` parameter and print the result.
 
 ```python
 # Print prompt
@@ -510,7 +509,7 @@ print(prompt.format(query="dummy question"))
     
 </pre>
 
-Call the `query_constructor.invoke` method to process the given query.
+Call the ```query_constructor.invoke``` method to process the given query.
 
 ```python
 query_output = query_constructor.invoke(
@@ -535,7 +534,7 @@ query_output.filter.arguments
 
 
 
-The core component of a `SelfQueryRetriever` is the **query constructor** . To build an effective retrieval system, it is essential to ensure that the **query constructor** is well defined.
+The core component of a ```SelfQueryRetriever``` is the **query constructor** . To build an effective retrieval system, it is essential to ensure that the **query constructor** is well defined.
 
 To achieve this, you need to adjust the **prompt**, **examples within the prompt**, and **attribute descriptions** .
 
@@ -543,7 +542,7 @@ To achieve this, you need to adjust the **prompt**, **examples within the prompt
 
 You can also create a structured query using the **structured query translator** .
 
-**Structured query translator** converts a query into metadata filters compatible with the syntax of the vector store with `StructuredQuery` object.
+**Structured query translator** converts a query into metadata filters compatible with the syntax of the vector store with ```StructuredQuery``` object.
 
 ```python
 from langchain.retrievers.self_query.chroma import ChromaTranslator
@@ -555,7 +554,7 @@ retriever = SelfQueryRetriever(
 )
 ```
 
-Use the `retriever.invoke` method to generate an answer for the given question.
+Use the ```retriever.invoke``` method to generate an answer for the given question.
 
 ```python
 retriever.invoke(

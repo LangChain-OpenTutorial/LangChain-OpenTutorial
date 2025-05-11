@@ -21,14 +21,13 @@ pre {
 
 - Author: [Hye-yoon Jeong](https://github.com/Hye-yoonJeong)
 - Peer Review: 
-- Proofread:
+- Proofread : [BokyungisaGod](https://github.com/BokyungisaGod)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/07-CSV-Excel-Agent.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/07-CSV-Excel-Agent.ipynb)
 ## Overview
 
-This tutorial covers how to create an agent that performs analysis on the `Pandas` DataFrame loaded from CSV or Excel files. The agent generates `Pandas` queries to analyze the dataset.
+This tutorial covers how to create an agent that performs analysis on the ```Pandas``` DataFrame loaded from CSV or Excel files. The agent generates ```Pandas``` queries to analyze the dataset.
 
 ### Table of Contents
 
@@ -46,8 +45,8 @@ This tutorial covers how to create an agent that performs analysis on the `Panda
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can check out the [`langchain-opentutorial` ](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can check out the [```langchain-opentutorial``` ](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -222,9 +221,9 @@ df.head()
 
 ## Create an Analysis Agent
 
-Define an agent to analyze the data loaded from CSV or Excel files using `create_pandas_dataframe_agent` . 
+Define an agent to analyze the data loaded from CSV or Excel files using ```create_pandas_dataframe_agent``` . 
 
-This agent needs a `PythonAstREPLTool` to execute Python codes. Also, a custom function is defined to print the intermediate steps of the agent execution.
+This agent needs a ```PythonAstREPLTool``` to execute Python codes. Also, a custom function is defined to print the intermediate steps of the agent execution.
 
 ```python
 from langchain_experimental.tools import PythonAstREPLTool

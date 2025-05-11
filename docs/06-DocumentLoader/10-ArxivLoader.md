@@ -20,17 +20,16 @@ pre {
 # Arxiv Loader
 
 - Author: [Sunyoung Park (architectyou)](https://github.com/architectyou)
-- Design: 
 - Peer Review : [ppakyeah](https://github.com/ppakyeah)
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/11-ArxivLoader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/11-ArxivLoader.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/10-ArxivLoader.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/10-ArxivLoader.ipynb)
 
 
 ## Overview
 
-[`arXiv`](https://arxiv.org/) is an open access archive for 2 million scholarly articles in the fields of physics, 
+[```arXiv```](https://arxiv.org/) is an open access archive for 2 million scholarly articles in the fields of physics, 
 
 mathematics, computer science, quantitative biology, quantitative finance, statistics, electrical engineering and systems 
 
@@ -39,9 +38,9 @@ science, and economics.
 [API Documentation](https://api.python.langchain.com/en/latest/document_loaders/langchain_community.document_loaders.arxiv.ArxivLoader.html#langchain_community.document_loaders.arxiv.ArxivLoader)
 
 
-To access the Arxiv document loader, you need to install `arxiv`, `PyMuPDF` and `langchain-community` integration packages.
+To access the Arxiv document loader, you need to install ```arxiv```, ```PyMuPDF``` and ```langchain-community``` integration packages.
 
-`PyMuPDF` converts PDF files downloaded from arxiv.org into text format.
+```PyMuPDF``` converts PDF files downloaded from arxiv.org into text format.
 
 
 ### Table of Contents
@@ -66,8 +65,8 @@ To access the Arxiv document loader, you need to install `arxiv`, `PyMuPDF` and 
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -99,7 +98,7 @@ package.install(
 You can make arxiv loader instance to load documents from arxiv.org.
 
 Initialize with search query to find documents in the Arixiv.org.
-Supports all arguments of `ArxivAPIWrapper` .
+Supports all arguments of ```ArxivAPIWrapper``` .
 
 ```python
 from langchain_community.document_loaders import ArxivLoader
@@ -114,7 +113,7 @@ loader = ArxivLoader(
 
 ### Load
 
-Use `Load` method to load documents from arxiv.org with `ArxivLoader` instance.
+Use ```Load``` method to load documents from arxiv.org with ```ArxivLoader``` instance.
 
 ```python
 # Print the first document's content and metadata
@@ -131,11 +130,11 @@ print(docs[0].metadata)
     {'Published': '2023-11-15', 'Title': 'Contrastive Chain-of-Thought Prompting', 'Authors': 'Yew Ken Chia, Guizhen Chen, Luu Anh Tuan, Soujanya Poria, Lidong Bing', 'Summary': 'Despite the success of chain of thought in enhancing language model\nreasoning, the underlying process remains less well understood. Although\nlogically sound reasoning appears inherently crucial for chain of thought,\nprior studies surprisingly reveal minimal impact when using invalid\ndemonstrations instead. Furthermore, the conventional chain of thought does not\ninform language models on what mistakes to avoid, which potentially leads to\nmore errors. Hence, inspired by how humans can learn from both positive and\nnegative examples, we propose contrastive chain of thought to enhance language\nmodel reasoning. Compared to the conventional chain of thought, our approach\nprovides both valid and invalid reasoning demonstrations, to guide the model to\nreason step-by-step while reducing reasoning mistakes. To improve\ngeneralization, we introduce an automatic method to construct contrastive\ndemonstrations. Our experiments on reasoning benchmarks demonstrate that\ncontrastive chain of thought can serve as a general enhancement of\nchain-of-thought prompting.', 'entry_id': 'http://arxiv.org/abs/2311.09277v1', 'published_first_time': '2023-11-15', 'comment': None, 'journal_ref': None, 'doi': None, 'primary_category': 'cs.CL', 'categories': ['cs.CL'], 'links': ['http://arxiv.org/abs/2311.09277v1', 'http://arxiv.org/pdf/2311.09277v1']}
 </pre>
 
-- If `load_all_available_meta` is False, only partial metadata is displayed, not the complete metadata.
+- If ```load_all_available_meta``` is False, only partial metadata is displayed, not the complete metadata.
 
 ### Lazy Load
 
-When loading large amounts of documents, If you can perform downstream tasks on a subset of all loaded documents, you can `lazy_load` documents one at a time to minimize memory usage.
+When loading large amounts of documents, If you can perform downstream tasks on a subset of all loaded documents, you can ```lazy_load``` documents one at a time to minimize memory usage.
 
 ```python
 docs = []
@@ -172,7 +171,7 @@ len(docs)
 
 ### Asynchronous Load
 
-Use `aload` method to load documents from arxiv.org asynchronously.
+Use ```aload``` method to load documents from arxiv.org asynchronously.
 
 ```python
 docs = await loader.aload()
@@ -190,7 +189,7 @@ print(docs[0].metadata)
 
 ## Use Summaries of Articles as Docs
 
-Use `get_summaries_as_docs` method to get summaries of articles as docs.
+Use ```get_summaries_as_docs``` method to get summaries of articles as docs.
 
 ```python
 from langchain_community.document_loaders import ArxivLoader

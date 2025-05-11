@@ -20,12 +20,11 @@ pre {
 # Multi Agent Structures (2)
 
 - Author: [Sungchul Kim](https://github.com/rlatjcj)
-- Design:
 - Peer Review:
+- Proofread  : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/09-LangGraph-Multi-Agent-Structures-02.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/09-LangGraph-Multi-Agent-Structures-02.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/09-LangGraph-Multi-Agent-Structures-02.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/09-LangGraph-Multi-Agent-Structures-02.ipynb)
 ## Overview
 
 In this tutorial, we will explore the existing **supervisor with tool-calling** , **hierarchical** , and **custom multi-agent workflow** structures, following [the previous tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/08-LangGraph-Multi-Agent-Structures-01.ipynb).
@@ -59,8 +58,8 @@ In this tutorial, we will explore the existing **supervisor with tool-calling** 
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -107,7 +106,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -274,11 +273,11 @@ visualize_graph(graph, xray=True)
 
 ## Custom Multi-Agent Workflow
 
-In this architecture we add individual agents as graph nodes and define the order in which agents are called ahead of time, in a custom workflow. In `LangGraph` the workflow can be defined in two ways: **Explicit control flow (normal edges)** , **Dynamic control flow (`Command`)** .
+In this architecture we add individual agents as graph nodes and define the order in which agents are called ahead of time, in a custom workflow. In ```LangGraph``` the workflow can be defined in two ways: **Explicit control flow (normal edges)** , **Dynamic control flow (```Command```)** .
 
 ### Explicit control flow using normal edges
 
-`LangGraph` allows you to explicitly define the control flow of your application (i.e. the sequence of how agents communicate) explicitly, via normal graph edges. This is the most deterministic variant of this architecture above — we always know which agent will be called next ahead of time.
+```LangGraph``` allows you to explicitly define the control flow of your application (i.e. the sequence of how agents communicate) explicitly, via normal graph edges. This is the most deterministic variant of this architecture above — we always know which agent will be called next ahead of time.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -313,9 +312,9 @@ visualize_graph(graph)
     
 
 
-### Dynamic control flow using `Command`
+### Dynamic control flow using ```Command```
 
-In `LangGraph` you can allow LLMs to decide parts of your application control flow. This can be achieved by using `Command` . A special case of this is a supervisor tool-calling architecture. In that case, the tool-calling LLM powering the supervisor agent will make decisions about the order in which the tools (agents) are being called.
+In ```LangGraph``` you can allow LLMs to decide parts of your application control flow. This can be achieved by using ```Command``` . A special case of this is a supervisor tool-calling architecture. In that case, the tool-calling LLM powering the supervisor agent will make decisions about the order in which the tools (agents) are being called.
 
 ```python
 from langchain_core.tools import tool

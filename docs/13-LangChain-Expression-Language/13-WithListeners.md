@@ -20,19 +20,18 @@ pre {
 # WithListeners
 
 - Author: [Donghak Lee](https://github.com/stsr1284)
-- Design:
 - Peer Review:
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/13-WithListeners.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/13-WithListeners.ipynb)
 ## Overview
 
-This tutorial covers the implementation and usage of `with_listeners()` in `Runnable`.
+This tutorial covers the implementation and usage of ```with_listeners()``` in ```Runnable```.
 
-`with_listeners()` binds lifecycle listeners to a Runnable, returning a new Runnable. This allows you to connect event listeners to the data flow, enabling tracking, analysis, and debugging during execution.
+```with_listeners()``` binds lifecycle listeners to a Runnable, returning a new Runnable. This allows you to connect event listeners to the data flow, enabling tracking, analysis, and debugging during execution.
 
-The `with_listeners()` function provides the ability to add event listeners to a Runnable object. Listeners are functions that are called when specific events occur, such as start, end, or error.
+The ```with_listeners()``` function provides the ability to add event listeners to a Runnable object. Listeners are functions that are called when specific events occur, such as start, end, or error.
 
 This function is useful in the following scenarios:
 
@@ -61,8 +60,8 @@ This function is useful in the following scenarios:
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -102,7 +101,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -115,9 +114,9 @@ load_dotenv(override=True)
 
 ## with_listeners
 
-`with_listeners()` takes a list of listener functions and returns a new `Runnable` object. Listener functions respond to start, end, and error events.
+```with_listeners()``` takes a list of listener functions and returns a new ```Runnable``` object. Listener functions respond to start, end, and error events.
 
-Using event listeners allows you to observe the data flow, and you can flexibly register them using `with_listeners()`.
+Using event listeners allows you to observe the data flow, and you can flexibly register them using ```with_listeners()```.
 
 Here is an example implementation of the function.
 
@@ -179,7 +178,7 @@ chain.invoke("Hello, World!")
 
 
 
-You can also register events in the chain of LCEL using `with_listeners()`.
+You can also register events in the chain of LCEL using ```with_listeners()```.
 
 ```python
 def chainStart(runObj):
@@ -270,9 +269,9 @@ await concurrentRuns()
 
 ## RootListenersTracer
 
-You can directly bind `RootListenersTracer` to a Runnable using `RunnableBinding` to register event listeners. This is the internal code of `with_listeners()`.
+You can directly bind ```RootListenersTracer``` to a Runnable using ```RunnableBinding``` to register event listeners. This is the internal code of ```with_listeners()```.
 
-`RootListenersTracer` calls listeners on run start, end, and error.
+```RootListenersTracer``` calls listeners on run start, end, and error.
 
 ```python
 from langchain_core.tracers.root_listeners import RootListenersTracer
@@ -327,7 +326,7 @@ model_with_listeners.invoke("Tell me the founding year of Google")
 
 
 ### Using tracers without LCEL
-You can directly use `on_llm_start()` and `on_llm_end()` of `RootListenersTracer` to handle events.
+You can directly use ```on_llm_start()``` and ```on_llm_end()``` of ```RootListenersTracer``` to handle events.
 
 ```python
 from langchain_core.tracers.schemas import Run

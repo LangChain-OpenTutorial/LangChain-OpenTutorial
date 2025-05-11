@@ -20,19 +20,18 @@ pre {
 # Excel File Loading in LangChain
 
 - Author: [Hwayoung Cha](https://github.com/forwardyoung)
-- Design: []()
 - Peer Review :
+- Proofread : [Youngjun cho](https://github.com/choincnp)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/05-Excel-Loader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/05-Excel-Loader.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/05-ExcelLoader.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/05-ExcelLoader.ipynb)
 ## Overview
 
-This tutorial covers the process of loading and handling `Microsoft Excel` files in `LangChain` .
+This tutorial covers the process of loading and handling ```Microsoft Excel``` files in ```LangChain``` .
 
-It focuses on two primary methods: `UnstructuredExcelLoader` for raw text extraction and `DataFrameLoader` for structured data processing.
+It focuses on two primary methods: ```UnstructuredExcelLoader``` for raw text extraction and ```DataFrameLoader``` for structured data processing.
 
-The guide aims to help developers effectively integrate Excel data into their `LangChain` projects, covering both basic and advanced usage scenarios.
+The guide aims to help developers effectively integrate Excel data into their ```LangChain``` projects, covering both basic and advanced usage scenarios.
 
 ### Table of Contents
 
@@ -47,8 +46,8 @@ The guide aims to help developers effectively integrate Excel data into their `L
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -70,13 +69,13 @@ package.install(
 )
 ```
 
-## `UnstructuredExcelLoader`
+## ```UnstructuredExcelLoader```
 
-`UnstructuredExcelLoader` is used to load `Microsoft Excel` files.
+```UnstructuredExcelLoader``` is used to load ```Microsoft Excel``` files.
 
-This loader works with both `.xlsx` and `.xls` files.
+This loader works with both ```.xlsx``` and ```.xls``` files.
 
-When the loader is used in `mode="elements"` , an HTML representation of the Excel file is provided under the `text_as_html` key in the document metadata.
+When the loader is used in ```mode="elements"``` , an HTML representation of the Excel file is provided under the ```text_as_html``` key in the document metadata.
 
 ```python
 # install
@@ -102,7 +101,7 @@ print(len(docs))
 
 This confirms that one document has been loaded.
 
-The `page_content` contains the data from each row, while the `text_as_html` in the `metadata` stores the data in HTML format.
+The ```page_content``` contains the data from each row, while the ```text_as_html``` in the ```metadata``` stores the data in HTML format.
 
 ```python
 # Print the document
@@ -116,9 +115,9 @@ print(docs[0].metadata["text_as_html"][:1000])
 
 ![text_as_html](./img/05-excel-loader-text-as-html.png)
 
-## `DataFrameLoader`
+## ```DataFrameLoader```
 
-- Similar to CSV files, we can load Excel files by using the `read_excel()` function to create a `pandas.DataFrame`, and then load it.
+- Similar to CSV files, we can load Excel files by using the ```read_excel()``` function to create a ```pandas.DataFrame```, and then load it.
 
 ```python
 import pandas as pd

@@ -20,15 +20,14 @@ pre {
 # Parent Document Retriever
 
 - Author: [Yun Eun](https://github.com/yuneun92)
-- Design:
 - Peer Review:
+- Proofread : [jishin86](https://github.com/jishin86)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/05-ParentDocumentRetriever.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/05-ParentDocumentRetriever.ipynb)
 ## Overview
 
-This tutorial focuses on the `ParentDocumentRetriever` implementation, a tool designed to balance document search and chunking.
+This tutorial focuses on the ```ParentDocumentRetriever``` implementation, a tool designed to balance document search and chunking.
 
 When splitting documents for search, two competing needs arise:
 
@@ -37,11 +36,11 @@ When splitting documents for search, two competing needs arise:
 
 > How It Works
 
-`ParentDocumentRetriever` manages this balance by:
+```ParentDocumentRetriever``` manages this balance by:
 
 1. Splitting documents into small searchable chunks
 2. Maintaining connections to parent documents via IDs
-3. Loading multiple files through `TextLoader` objects
+3. Loading multiple files through ```TextLoader``` objects
 
 > Benefits
 
@@ -62,8 +61,8 @@ When splitting documents for search, two competing needs arise:
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -112,7 +111,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -160,9 +159,9 @@ docs
 
 ## Full Document Retrieval
 
-In this mode, we aim to search through complete documents. Therefore, we'll only specify the `child_splitter`.
+In this mode, we aim to search through complete documents. Therefore, we'll only specify the ```child_splitter```.
 
-Later, we'll also specify the `parent_splitter` to compare the results.
+Later, we'll also specify the ```parent_splitter``` to compare the results.
 
 ```python
 # Define Child Splitter with chunk size
@@ -183,9 +182,9 @@ retriever = ParentDocumentRetriever(
 )
 ```
 
-Documents are added using the `retriever.add_documents(docs, ids=None)` function:
-* If `ids` is `None`, they will be automatically generated.
-* Setting `add_to_docstore=False` prevents duplicate document additions. However, `ids` values are required to check for duplicates.
+Documents are added using the ```retriever.add_documents(docs, ids=None)``` function:
+* If ```ids``` is ```None```, they will be automatically generated.
+* Setting ```add_to_docstore=False``` prevents duplicate document additions. However, ```ids``` values are required to check for duplicates.
 
 ```python
 # Add documents to the retriever. 'docs' is a list of documents, and 'ids' is a list of unique document identifiers.
@@ -194,7 +193,7 @@ retriever.add_documents(docs, ids=None, add_to_docstore=True)
 
 This code should return two keys because we added two documents.
 
-- Convert the keys returned by the `store` object's `yield_keys()` method into a list.
+- Convert the keys returned by the ```store``` object's ```yield_keys()``` method into a list.
 
 ```python
 # Return all keys from the store as a list.
@@ -212,7 +211,7 @@ Let's try calling the vector store search function.
 
 Since we are storing small chunks, we should see small chunks returned in the search results.
 
-Perform similarity search using the `similarity_search` method of the vectorstore object.
+Perform similarity search using the ```similarity_search``` method of the vectorstore object.
 
 ```python
 # Perform similarity search
@@ -227,7 +226,7 @@ print(sub_docs[0].page_content)
 
 Now let's search through the entire retriever. In this process, since it **returns the documents** containing the small chunks, relatively larger documents will be returned.
 
-Use the `invoke()` method of the `retriever` object to retrieve documents related to the query.
+Use the ```invoke()``` method of the ```retriever``` object to retrieve documents related to the query.
 
 ```python
 # Retrieve and fetch documents
@@ -273,10 +272,10 @@ In this case, what we actually want to do is first split the raw document into l
 
 Then we index the small chunks, but search for larger chunks during retrieval (though still not the entire document).
 
-- Use `RecursiveCharacterTextSplitter` to create parent and child documents.
+- Use ```RecursiveCharacterTextSplitter``` to create parent and child documents.
 
-    - Parent documents have `chunk_size` set to 1000.
-    - Child documents have `chunk_size` set to 200, creating smaller sizes than the parent documents.
+    - Parent documents have ```chunk_size``` set to 1000.
+    - Child documents have ```chunk_size``` set to 200, creating smaller sizes than the parent documents.
 
 
 
@@ -297,13 +296,13 @@ vectorstore = Chroma(
 store = InMemoryStore()
 ```
 
-This is the code to initialize `ParentDocumentRetriever`:
-* The `vectorstore` parameter specifies the vector store that stores document vectors.
-* The `docstore` parameter specifies the document store that stores document data.
-* The `child_splitter` parameter specifies the document splitter used to split child documents.
-* The `parent_splitter` parameter specifies the document splitter used to split parent documents.
+This is the code to initialize ```ParentDocumentRetriever```:
+* The ```vectorstore``` parameter specifies the vector store that stores document vectors.
+* The ```docstore``` parameter specifies the document store that stores document data.
+* The ```child_splitter``` parameter specifies the document splitter used to split child documents.
+* The ```parent_splitter``` parameter specifies the document splitter used to split parent documents.
 
-`ParentDocumentRetriever` handles hierarchical document structures, separately splitting and storing parent and child documents. This allows effective use of both parent and child documents during retrieval.
+```ParentDocumentRetriever``` handles hierarchical document structures, separately splitting and storing parent and child documents. This allows effective use of both parent and child documents during retrieval.
 
 ```python
 retriever = ParentDocumentRetriever(
@@ -318,7 +317,7 @@ retriever = ParentDocumentRetriever(
 )
 ```
 
-Add docs to the `retriever` object. This adds new documents to the set of documents that `retriever` can search through.
+Add docs to the ```retriever``` object. This adds new documents to the set of documents that ```retriever``` can search through.
 
 ```python
 # Add documents to the retriever
@@ -349,7 +348,7 @@ print(sub_docs[0].page_content)
 <pre class="custom">Word2Vec
 </pre>
 
-Now let's use the `invoke()` method of the `retriever` object to search for documents.
+Now let's use the ```invoke()``` method of the ```retriever``` object to search for documents.
 
 ```python
 # Retrieve and fetch documents

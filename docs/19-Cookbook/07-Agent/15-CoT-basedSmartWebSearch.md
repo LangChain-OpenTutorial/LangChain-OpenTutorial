@@ -20,16 +20,15 @@ pre {
 # CoT Based Smart Web Search
 
 - Author: [syshin0116](https://github.com/syshin0116)
-- Design: 
 - Peer Review: 
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/15-CoT-basedSmartWebSearch.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/15-CoT-basedSmartWebSearch.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/15-CoT-basedSmartWebSearch.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/15-CoT-basedSmartWebSearch.ipynb)
 ## Overview
 This tutorial demonstrates a chain-of-thought (**CoT**) based smart web search approach designed to build a **plan-and-execute** style QA chatbot. The system breaks down complex user queries into a sequence of actionable steps such as **search**, **extraction**, **reasoning**, and **response generation**. It leverages large language models to perform each task, ensuring that every phase of the process is handled efficiently and accurately.
 
-Throughout the tutorial, you will learn how to set up your environment, install the necessary packages, and define key data models using **`Pydantic`**. These models enforce a structured workflow by representing each task step (e.g., **search**, **think**, and **respond**) and by specifying how references and final outputs should be formatted in Markdown.
+Throughout the tutorial, you will learn how to set up your environment, install the necessary packages, and define key data models using **```Pydantic```**. These models enforce a structured workflow by representing each task step (e.g., **search**, **think**, and **respond**) and by specifying how references and final outputs should be formatted in Markdown.
 
 The workflow is composed of multiple nodes, each responsible for a specific phase of the processing pipeline. You will see how the system:
 
@@ -49,7 +48,7 @@ A key aspect of this tutorial is the integration of **asynchronous execution**, 
 - **Modular Workflow**: Separates the process into distinct nodes (planning, searching, extracting, reasoning, responding).  
 - **Asynchronous Execution**: Enables real-time monitoring and concurrency for improved performance.  
 - **Dynamic Task Routing**: Adapts the processing sequence based on the current state, ensuring each node is executed as needed.  
-- **Robust Data Modeling**: Uses `Pydantic` to ensure consistent data structures and type safety.
+- **Robust Data Modeling**: Uses ```Pydantic``` to ensure consistent data structures and type safety.
 
 ### Table of Contents
 
@@ -76,29 +75,12 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
 %pip install langchain-opentutorial
 ```
-
-# Install required packages
-from langchain_opentutorial import package
-
-package.install(
-    [
-        "langsmith",
-        "langchain",
-        "langchain_core",
-        "langchain-anthropic",
-        "langchain_community",
-        "langchain_text_splitters",
-        "langchain_openai",
-    ],
-    verbose=False,
-    upgrade=False,
-)
 
 ```python
 # Install required packages
@@ -133,7 +115,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -161,12 +143,12 @@ nest_asyncio.apply()
 
 ## Data Models and Type Definitions
 
-This section establishes the foundations for the entire tutorial by defining the key data structures using `Pydantic`. Our workflow relies on these models to ensure consistent information flow:
+This section establishes the foundations for the entire tutorial by defining the key data structures using ```Pydantic```. Our workflow relies on these models to ensure consistent information flow:
 
-- `TaskStep` tracks a single step (either *search*, *think*, or *respond*).  
-- `TaskSteps` holds a list of such steps.  
-- `SearchQuries`, `KeyInformation`, and `SearchResultData` model how we handle web search queries and their results.  
-- `Reference`and `FinalResponse` describe how we finalize and format the output response, including references.
+- **TaskStep** tracks a single step (either ```search```, ```think```, or ```respond```).  
+- **TaskSteps** holds a list of such steps.  
+- **SearchQuries**, **KeyInformation**, and **SearchResultData** model how we handle web search queries and their results.  
+- **Reference** and **FinalResponse** describe how we finalize and format the output response, including references.
 
 Using these data models enforces structure, making the entire process easier to debug and maintain.
 
@@ -271,8 +253,8 @@ In this part, two distinct state models are defined: one for the overall agent a
 
 We use two different states:
 
-1. `AgentState`: Represents the overall flow of the conversation, including steps, search results, think results, and the final answer.  
-2. `WorkerState`: Manages the current task at a more granular level (e.g., one node’s execution).
+1. **AgentState** : Represents the overall flow of the conversation, including steps, search results, think results, and the final answer.  
+2. **WorkerState** : Manages the current task at a more granular level (e.g., one node’s execution).
 
 This separation improves modularity and makes it simpler to track local vs. global information during a workflow run.
 
@@ -301,10 +283,10 @@ class WorkerState(TypedDict):
 ```
 
 ### Initialize Chat Models and Search Tool
-We initialize two `ChatOpenAI` models:
+We initialize two ```ChatOpenAI``` models:
 
-- smart model: A more capable model (e.g., `gpt-4o`) used for planning or complex reasoning.  
-- fast model: A lighter model (e.g., `gpt-4o-mini`) used for simpler tasks or when we prioritize speed.
+- smart model: A more capable model (e.g., ```gpt-4o```) used for planning or complex reasoning.  
+- fast model: A lighter model (e.g., ```gpt-4o-mini```) used for simpler tasks or when we prioritize speed.
 
 This allows you to balance quality versus cost and speed. For instance, plan generation might use **smart model**, while quick lookups or shorter tasks might use **fast model**.
 
@@ -376,7 +358,7 @@ Current date: {datetime.now().strftime("%Y-%m-%d")}.
 
 ### Search Node
 
-This node handles external web search. It receives the step’s description, produces multiple queries, and calls the `TavilySearchResults` tool to get results. Each result is then summarized or filtered, before being passed on to the rest of the pipeline.
+This node handles external web search. It receives the step’s description, produces multiple queries, and calls the ```TavilySearchResults``` tool to get results. Each result is then summarized or filtered, before being passed on to the rest of the pipeline.
 
 1. Generate multiple queries (to cover different angles).  
 2. Perform the searches asynchronously.  
@@ -492,8 +474,7 @@ async def collect_search_results_node(
 
 ### Think Node
 
-We optionally refine and analyze the data gathered from the search. If the user’s query is more complex, we insert a *think step* that leverages **fast_model** (or **smart_model**) to process the intermediate data. This can produce more concise or better-structured information to pass on to the final respond phase.
-
+We optionally refine and analyze the data gathered from the search. If the user’s query is more complex, we insert a *think step* that leverages ```fast_model``` (or ```smart_model```) to process the intermediate data. This can produce more concise or better-structured information to pass on to the final respond phase.
 
 ```python
 async def think_node(state: WorkerState, config: RunnableConfig):
@@ -621,14 +602,14 @@ Think Results:
 This portion of the tutorial shows how to:
 
 1. Decide which step should execute next (the task router).  
-2. Build our entire workflow as a graph, using the `StateGraph` class.  
+2. Build our entire workflow as a graph, using the **StateGraph** class.  
 3. Visualize the graph to confirm all nodes connect properly.  
 
 Combining these elements provides a clear flow from plan → search → optional think → respond, with conditionals for concurrency.
 
 ### Task Router Function
 
-The router examines all pending steps. If we find one or more search steps (marked pending), we dispatch them concurrently using the `Send` object. If no search steps remain, we look for think or respond steps. When none remain, we conclude by returning `END`.
+The router examines all pending steps. If we find one or more search steps (marked pending), we dispatch them concurrently using the ```Send``` object. If no search steps remain, we look for think or respond steps. When none remain, we conclude by returning ```END```.
 
 This ensures the system adapts dynamically: if a step is done, it moves on to the next relevant step without manual intervention.
 
@@ -681,7 +662,7 @@ def task_router(state):
 
 ### Build Workflow Graph
 
-We add nodes to the workflow using `.add_node(...)`, specify the start node (plan_steps_node), and link them with `.add_edge(...)` or `.add_conditional_edges(...)`. Then we compile with a `MemorySaver` checkpoint mechanism (optional) to track states.
+We add nodes to the workflow using ```.add_node(...)```, specify the start node (plan_steps_node), and link them with ```.add_edge(...)``` or ```.add_conditional_edges(...)```. Then we compile with a ```MemorySaver``` checkpoint mechanism (optional) to track states.
 
 Graph-based logic clarifies how each node transitions to the next, whether conditionally or directly.
 
@@ -738,7 +719,7 @@ visualize_graph(graph)
 
 
     
-![png](./img/output_33_0.png)
+![png](./img/output_32_0.png)
     
 
 
@@ -755,7 +736,7 @@ Finally, we show how to examine the final state—looking at the produced Markdo
 
 ### Streaming Graph Execution
 
-We define `astream_graph(...)` to retrieve and print updates during the run. Each node’s outputs appear in real time, letting you monitor progress and debug problems such as missing data or infinite loops.
+We define ```astream_graph(...)``` to retrieve and print updates during the run. Each node’s outputs appear in real time, letting you monitor progress and debug problems such as missing data or infinite loops.
 
 ```python
 from typing import Any, Dict, List, Callable
@@ -806,7 +787,7 @@ async def astream_graph(
 
 ### Configure and Run Workflow Graph
 
-We create a `config`, store it in `memory` if needed, and supply the user’s query. The asynchronous execution triggers each node in the correct order.
+We create a ```config```, store it in ```memory``` if needed, and supply the user’s query. The asynchronous execution triggers each node in the correct order.
 
 ```python
 # Configuration

@@ -21,33 +21,33 @@ pre {
 
 - Author: [YooKyung Jeon](https://github.com/sirena1)
 - Peer Review:
+- Proofread : [Yun Eun](https://github.com/yuneun92)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/10-Multi_modal_RAG-GPT-4o.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/10-Multi_modal_RAG-GPT-4o.ipynb)
 ## Overview
 
 Many documents contain a mix of different content types, including text and images.
 
 However, in most RAG applications, the information contained in images is lost.
 
-With the advent of multimodal LLMs like GPT-4V and GPT4o, it is worth considering how to utilize images in RAG:
+With the advent of multimodal LLMs like GPT-4V and GPT-4o, it is worth considering how to utilize images in RAG:
 
-`Option 1:`
+**Option 1:**
 
 - Use multimodal embedding (such as [CLIP](https://openai.com/research/clip)) to embed images and text.
 - Search for both using similarity search.
 - Pass the original image and text fragments to the multimodal LLM to synthesize the answers.
 
-`Option 2:`
+**Option 2:**
 
-- Generate text summaries from images using multimodal LLMs (e.g. GPT-4V, GPT4o, [LLaVA](https://llava-vl.github.io/), [FUYU-8b](https://www.adept.ai/blog/fuyu-8b)).
+- Generate text summaries from images using multimodal LLMs (e.g. GPT-4V, GPT-4o, [LLaVA](https://llava-vl.github.io/), [FUYU-8b](https://www.adept.ai/blog/fuyu-8b)).
 - Embed and search for text.
 - Pass text fragments to LLMs to synthesize answers.
 
-`Option 3:`
+**Option 3:**
 
-- Generate text summaries from images using multimodal LLMs (e.g. GPT-4V, GPT4o, [LLaVA](https://llava-vl.github.io/), [FUYU-8b](https://www.adept.ai/blog/fuyu-8b)).
+- Generate text summaries from images using multimodal LLMs (e.g. GPT-4V, GPT-4o, [LLaVA](https://llava-vl.github.io/), [FUYU-8b](https://www.adept.ai/blog/fuyu-8b)).
 - Embed and retrieve the image summary with a reference to the original image.
 - Pass the original image and text fragment to a multimodal LLM to synthesize answers.
 
@@ -75,8 +75,8 @@ With the advent of multimodal LLMs like GPT-4V and GPT4o, it is worth considerin
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -147,24 +147,26 @@ load_dotenv(override=True)
 
 ## Package
 
-To use `unstructured`, the system requires `poppler` ([Installation Guide](https://pdf2image.readthedocs.io/en/latest/installation.html)) and `tesseract` ([Installation Guide](https://tesseract-ocr.github.io/tessdoc/Installation.html)).
+To use ```unstructured```, the system requires ```poppler``` ([Installation Guide](https://pdf2image.readthedocs.io/en/latest/installation.html)) and ```tesseract``` ([Installation Guide](https://tesseract-ocr.github.io/tessdoc/Installation.html)).
 
-**[Note]** `Option 2` is suitable when multimodal LLMs cannot be used for answer synthesis (e.g., due to cost or other limitations).
+**[Note]** **Option 2** is suitable when multimodal LLMs cannot be used for answer synthesis (e.g., due to cost or other limitations).
 
 
 ## Data Loading
 
+Before processing PDFs, it's essential to distinguish between text and images for accurate extraction.
+
 ### Splitting PDF Text and Images
 
-Using `partition_pdf` provided by [Unstructured](https://unstructured-io.github.io/unstructured/introduction.html#key-concepts), you can extract text and images.
+Using ```partition_pdf``` provided by [Unstructured](https://unstructured-io.github.io/unstructured/introduction.html#key-concepts), you can extract text and images.
 
 To extract images, use the following:
 
-`extract_images_in_pdf=True`
+```extract_images_in_pdf=True```
 
 If you want to process only text:
 
-`extract_images_in_pdf=False`
+```extract_images_in_pdf=False```
 
 
 ```python
@@ -179,8 +181,6 @@ from langchain_text_splitters import CharacterTextSplitter
 from unstructured.partition.pdf import partition_pdf
 
 # Extracting Elements from a PDF
-
-
 def extract_pdf_elements(path, fname):
     """
     Extract images, tables, and text snippets from a PDF file.
@@ -200,8 +200,6 @@ def extract_pdf_elements(path, fname):
 
 
 # Categorize elements by type
-
-
 def categorize_elements(raw_pdf_elements):
     """
     Categorize elements extracted from a PDF into tables and text.
@@ -244,11 +242,11 @@ len(texts_4k_token)
 
 ## Multi-Vector Search Engine
 
-Using the [multi-vector-retriever](https://python.langchain.com/docs/modules/data_connection/retrievers/multi_vector#summary), you can index summaries of images (and/or text, tables) while retrieving the original images (along with the original text or tables).
+Using the [multi-vector-retriever](https://python.langchain.com/docs/how_to/multi_vector/), you can index summaries of images (and/or text, tables) while retrieving the original images (along with the original text or tables).
 
 ### Text and Table Summarization
 
-To generate summaries for tables and optionally text, we will use `GPT-4-turbo`.
+To generate summaries for tables and optionally text, we will use ```GPT-4-turbo```.
 
 If you are working with large chunk sizes (e.g., 4k token chunks as set above), text summarization is recommended.
 
@@ -261,8 +259,6 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
 # Create a summary of a text element
-
-
 def generate_text_summaries(texts, tables, summarize_texts=False):
     """
     Text element summary
@@ -306,7 +302,7 @@ text_summaries, table_summaries = generate_text_summaries(
 
 ### Image Summarization
 
-We will use `GPT-4o` to generate summaries for images.
+We will use ```GPT-4o``` to generate summaries for images.
 
 - The images are passed as base64-encoded data.
 
@@ -389,21 +385,21 @@ len(image_summaries)
 
 ### Adding to the Vector Store
 
-To add the original documents and their summaries to the [Multi Vector Retriever](https://python.langchain.com/docs/modules/data_connection/retrievers/multi_vector#summary):
+To add the original documents and their summaries to the [Multi Vector Retriever](https://python.langchain.com/docs/how_to/multi_vector/):
 
-- Store the original text, tables, and images in the `docstore`.
-- Save text summaries, table summaries, and image summaries in the `vectorstore` for efficient semantic search.
+- Store the original text, tables, and images in the ```docstore```.
+- Save text summaries, table summaries, and image summaries in the ```vectorstore``` for efficient semantic search.
 
 
 Explaining the Process of Creating a Multi-Vector Search Engine for Indexing and Retrieving Various Data Types (Text, Tables, Images)
 
-- Initialize the storage layer using `InMemoryStore`.
-- Create a `MultiVectorRetriever` to index summarized data but configure it to return the original text or images.
-- Include the process of adding summaries and original data for each data type (text, tables, images) to the `vectorstore` and `docstore`:
-  - Generate a unique `doc_id` for each document.
-  - Add the summarized data to the `vectorstore` and store the original data along with the `doc_id` in the `docstore`.
+- Initialize the storage layer using ```InMemoryStore```.
+- Create a ```MultiVectorRetriever``` to index summarized data but configure it to return the original text or images.
+- Include the process of adding summaries and original data for each data type (text, tables, images) to the ```vectorstore``` and ```docstore```:
+  - Generate a unique ```doc_id``` for each document.
+  - Add the summarized data to the ```vectorstore``` and store the original data along with the ```doc_id``` in the ```docstore```.
 - Check conditions to ensure that only non-empty summaries are added for each data type.
-- Use the `Chroma` vector store to index summaries and generate embeddings using the `OpenAIEmbeddings` function.
+- Use the ```Chroma``` vector store to index summaries and generate embeddings using the ```OpenAIEmbeddings``` function.
 - The resulting multi-vector search engine indexes summaries for various data types and ensures that original data is returned during searches.
 
 ```python
@@ -483,9 +479,11 @@ retriever_multi_vector_img = create_multi_vector_retriever(
 
 ## RAG
 
+Effectively retrieving relevant documents is a crucial step in enhancing response accuracy.
+
 ### Building the Retriever
 
-The retrieved documents must be assigned to the correct sections of the GPT-4o prompt template.
+The retrieved documents must be assigned to the correct sections of the ```GPT-4o``` prompt template.
 
 
 The following describes how to process Base64-encoded images and text and use them to construct a multimodal question-answering (QA) chain:
@@ -494,7 +492,7 @@ The following describes how to process Base64-encoded images and text and use th
 - Resize the Base64-encoded image to the given dimensions.
 - Separate Base64-encoded images and text from a document set.
 - Use the separated images and text to construct messages that will serve as inputs to the multimodal QA chain. This process involves creating messages that include image URLs and text information.
-- Construct the multimodal QA chain. This chain generates responses to questions based on the provided image and text information. The model used is `ChatOpenAI`, specifically the `gpt-4o` model.
+- Construct the multimodal QA chain. This chain generates responses to questions based on the provided image and text information. The model used is ```ChatOpenAI```, specifically the ```gpt-4o``` model.
 
 This process outlines the implementation of a multimodal QA system that leverages both image and text data to generate responses to questions. It includes Base64 encoding and decoding for image data, image resizing, and the integration of image and text information to produce responses.
 
@@ -701,7 +699,7 @@ plt_img_base64(img_base64_list[2])
 
 Here is the corresponding summary, which we embedded for similarity search.
 
-It is quite reasonable that this image was retrieved based on its similarity to the summary of our `query`.
+It is quite reasonable that this image was retrieved based on its similarity to the summary of our ```query```.
 
 
 ```python

@@ -20,12 +20,11 @@ pre {
 # HuggingFace Local
 
 - Author: [Min-su Jung](https://github.com/effort-type)
-- Design: 
 - Peer Review : [HyeonJong Moon](https://github.com/hj0302), [sunworl](https://github.com/sunworl)
+- Proofread : [frimer](https://github.com/brian604)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/07-HuggingFaceLocal.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/07-HuggingFaceLocal.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/08-HuggingFaceLocal.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/08-HuggingFaceLocal.ipynb)
 ## Overview  
 
 This tutorial covers how to use **Hugging Face's open-source models** in a **local environment**, instead of relying on **paid API models** such as OpenAI, Claude, or Gemini.  
@@ -40,7 +39,7 @@ This tutorial covers how to use **Hugging Face's open-source models** in a **loc
     - Requires significant computational resources (e.g., **GPU/TPU**).  
     - Fine-tuning and inference require substantial time and resources.  
 
-In this tutorial, we will create a simple example using `HuggingFacePipeline` to **run an LLM locally using the `model_id` of a publicly available model**.  
+In this tutorial, we will create a simple example using ```HuggingFacePipeline``` to **run an LLM locally using the ```model_id``` of a publicly available model**.  
 
 Note: Since this tutorial runs on a CPU, performance may be slower.
 
@@ -66,8 +65,8 @@ Note: Since this tutorial runs on a CPU, performance may be slower.
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -124,9 +123,9 @@ load_dotenv(override=True)
 
 ### Set Download Path for Hugging Face Models/Tokenizers
 
-Set the download path for Hugging Face models/tokenizers using the `os.environ["HF_HOME"]` environment variable.
+Set the download path for Hugging Face models/tokenizers using the ```os.environ["HF_HOME"]``` environment variable.
 
-- Configure it to download Hugging Face models/tokenizers to a desired local path, ex) `./cache/`
+- Configure it to download Hugging Face models/tokenizers to a desired local path, ex) ```./cache/```
 
 ```python
 import os
@@ -136,10 +135,10 @@ os.environ["HF_HOME"] = "./cache/"
 
 ### Hugging Face Model Configuration and Response Generation
 
-Assign the repo ID of the Hugging Face model to the `repo_id` variable.
+Assign the repo ID of the Hugging Face model to the ```repo_id``` variable.
 
-- `microsoft/Phi-3-mini-4k-instruct` Model: https://huggingface.co/microsoft/Phi-3-mini-4k-instruct
-- Use `invoke()` to generate a response using the Hugging Face model.
+- ```microsoft/Phi-3-mini-4k-instruct``` Model: https://huggingface.co/microsoft/Phi-3-mini-4k-instruct
+- Use ```invoke()``` to generate a response using the Hugging Face model.
 
 ```python
 from langchain_huggingface import HuggingFacePipeline
@@ -174,10 +173,10 @@ llm.invoke("Hugging Face is")
 
 ### Prompt Template and Chain Creation
 
-Create a chain using the LLM model with `LCEL (LangChain Expression Language)` syntax.
+Create a chain using the LLM model with ```LCEL (LangChain Expression Language)``` syntax.
 
-- Use `PromptTemplate.from_template()` to create a prompt instructing the model to summarize the given input text.
-- Use LCEL syntax, such as `prompt | llm`, to build a chain where the LLM generates a response based on the created prompt.
+- Use ```PromptTemplate.from_template()``` to create a prompt instructing the model to summarize the given input text.
+- Use LCEL syntax, such as ```prompt | llm```, to build a chain where the LLM generates a response based on the created prompt.
 
 ```python
 %%time
