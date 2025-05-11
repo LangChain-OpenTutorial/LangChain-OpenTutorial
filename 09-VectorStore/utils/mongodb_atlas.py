@@ -222,12 +222,15 @@ class MongoDBAtlasCRUDManager(DocumentManager):
         """
         Update documents that match the filter or insert new documents.
         """
+
+        if metadatas is None:
+            metadatas = [{}]*len(texts)
         for i, text in enumerate(texts):
             embeded = self.embedding_function.embed_documents([text])
             doc = {
                 "page_content": text,
                 "embedding": embeded,
-                "metadata": metadatas[i] if metadatas else {},
+                **metadatas[i]
             }
             if ids:
                 self.update_one_by_filter(
@@ -289,7 +292,7 @@ class MongoDBAtlasCRUDManager(DocumentManager):
         with ThreadPoolExecutor(max_workers=workers) as executor:
             for i in range(0, len(texts), batch_size):
                 texts_batch = texts[i : i + batch_size]
-                metadatas_batch = metadatas[i : i + batch_size] if metadatas else []
+                metadatas_batch = metadatas[i : i + batch_size] if metadatas else [{}]*len(batch_size)
                 ids_batch = ids[i : i + batch_size] if ids else None
 
                 embeddings = get_embeddings_parallel(texts_batch)
@@ -297,7 +300,7 @@ class MongoDBAtlasCRUDManager(DocumentManager):
                     {
                         "page_content": text,
                         "embedding": embeddings[j],
-                        "metadata": metadatas_batch[j] if metadatas_batch else {},
+                        **metadatas_batch[j],
                     }
                     for j, text in enumerate(texts_batch)
                 ]
@@ -310,9 +313,9 @@ class MongoDBAtlasCRUDManager(DocumentManager):
                 futures.append(future)
 
             for future in as_completed(futures):
-                future.result()
+                continue
 
-    def search(self, query: str, k: int = 4, **kwargs: Any) -> List[Document]:
+    def search(self, query: str, k: int = 4, filters=None, **kwargs: Any) -> List[Document]:
         """Retrieve the top `k` most relevant documents.
         Converts the input query into an embedding using `embedding_function`.
 
@@ -325,10 +328,9 @@ class MongoDBAtlasCRUDManager(DocumentManager):
         Returns:
             List[Document]: A list of documents that best match the query.
         """
-        query_vector = self.embedding_function(query)
+        query_vector = self.embedding_function.embed_query(query)
         vector_index = kwargs.get("vector_index")
-        pipeline = [
-            {
+        vector_search_args = {
                 "$vectorSearch": {
                     "index": vector_index,
                     "path": "embedding",
@@ -337,6 +339,11 @@ class MongoDBAtlasCRUDManager(DocumentManager):
                     "limit": k,
                 }
             }
+        if filters is not None:
+            vector_search_args['$vectorSearch']["filter"] = filters
+        pipeline = [
+            vector_search_args,
+            {"$set": {"score": {"$meta": "vectorSearchScore"}}}
         ]
         return list(self.collection.aggregate(pipeline))
 
