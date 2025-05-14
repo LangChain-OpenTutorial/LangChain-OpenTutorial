@@ -21,10 +21,10 @@ pre {
 
 - Author: [Junseong Kim](https://www.linkedin.com/in/%EC%A4%80%EC%84%B1-%EA%B9%80-591b351b2/)
 - Peer Review: 
+- Proofread : [BokyungisaGod](https://github.com/BokyungisaGod)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/02-CommaSeparatedListOutputParser.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/02-CommaSeparatedListOutputParser.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/09-MakeReport-Using-RAG-Websearching-Imagegeneration-Agent.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/09-MakeReport-Using-RAG-Websearching-Imagegeneration-Agent.ipynb)
 ## Overview
 In this tutorial, we showcase how to use **three different agents** in LangChain to create a comprehensive report. Specifically, we combine:
 
@@ -66,8 +66,8 @@ By the end of this tutorial, you will learn how to:
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -114,9 +114,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env `file and load it. 
+You can alternatively set ```OPENAI_API_KEY``` in ```.env ```file and load it. 
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -143,7 +143,7 @@ We will demonstrate how each agent can be combined to generate a streaming repor
 
 ### Adding a Web Searching Agent
 
-Below, we import a sample tool `TavilySearchResults` for performing web searches. 
+Below, we import a sample tool ```TavilySearchResults``` for performing web searches. 
 This will serve as our **Web Searching Agent** to gather real-time information 
 based on user queries.
 
@@ -151,9 +151,9 @@ To use the Tavily Search API, you need to obtain an API key.
 
 - You can obtain your API key by visiting the following link: [Tavily Search API Registration](https://app.tavily.com/home).
 
-You can set `TAVILY_API_KEY` in `.env` file and load it. 
+You can set ```TAVILY_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `TAVILY_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```TAVILY_API_KEY``` in previous steps.
 
 ```python
 import os
@@ -238,7 +238,7 @@ retriever_tool = create_retriever_tool(
 
 ### Adding a DALL·E Tool for Image Generation
 
-Below, we set up the **Image Generation Agent** using `DallEAPIWrapper`. 
+Below, we set up the **Image Generation Agent** using ```DallEAPIWrapper```. 
 This allows our pipeline to generate images based on text prompts 
 and integrate them into the final report.
 
@@ -307,7 +307,7 @@ tools
 
 ### Creating a Prompt and Agent
 
-Here, we create a `ChatPromptTemplate` and a `LangChain` agent to handle 
+Here, we create a ```ChatPromptTemplate``` and a ```LangChain``` agent to handle 
 LLM calls and tool usage. We store each session’s chat history in a dictionary 
 to maintain context across multiple steps.
 

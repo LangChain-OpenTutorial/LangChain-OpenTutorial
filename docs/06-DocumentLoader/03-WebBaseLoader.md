@@ -22,19 +22,19 @@ pre {
 - Author: [Kane](https://github.com/HarryKane11)
 - Design: [Kane](https://github.com/HarryKane11)
 - Peer Review : [JoonHo Kim](https://github.com/jhboyo), [Sunyoung Park (architectyou)](https://github.com/Architectyou)
+- Author: [Yejin Park](https://github.com/ppakyeah)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/08-WebBaseLoader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/08-WebBaseLoader.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/03-WebBaseLoader.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/03-WebBaseLoader.ipynb)
 ## Overview
 
-`WebBaseLoader` is a specialized document loader in LangChain designed for processing web-based content. 
+```WebBaseLoader``` is a specialized document loader in LangChain designed for processing web-based content. 
 
-It leverages the `BeautifulSoup4` library to parse web pages effectively, offering customizable parsing options through `SoupStrainer` and additional `bs4` parameters.
+It leverages the ```BeautifulSoup4``` library to parse web pages effectively, offering customizable parsing options through ```SoupStrainer``` and additional ```bs4``` parameters.
 
-This tutorial demonstrates how to use `WebBaseLoader` to:
+This tutorial demonstrates how to use ```WebBaseLoader``` to:
 1. Load and parse web documents effectively
-2. Customize parsing behavior using `BeautifulSoup` options
+2. Customize parsing behavior using ```BeautifulSoup``` options
 3. Handle different web content structures flexibly.
 
 ### Table of Contents 
@@ -58,8 +58,8 @@ This tutorial demonstrates how to use `WebBaseLoader` to:
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -81,13 +81,13 @@ package.install(
 
 ## Load Web-based documents
 
-`WebBaseLoader` is a loader designed for loading web-based documents.
+```WebBaseLoader``` is a loader designed for loading web-based documents.
 
-It uses the `bs4` library to parse web pages.
+It uses the ```bs4``` library to parse web pages.
 
 Key Features:
-- Uses `bs4.SoupStrainer` to specify elements to parse.
-- Accepts additional arguments for `bs4.SoupStrainer` through the `bs_kwargs` parameter.
+- Uses ```bs4.SoupStrainer``` to specify elements to parse.
+- Accepts additional arguments for ```bs4.SoupStrainer``` through the ```bs_kwargs``` parameter.
 
 For more details, refer to the API documentation.
 
@@ -127,7 +127,7 @@ docs[0]
 
 
 
-To bypass SSL authentication errors, you can set the `“verify”` option.
+To bypass SSL authentication errors, you can set the ```“verify”``` option.
 
 ```python
 # Bypass SSL certificate verification
@@ -209,14 +209,14 @@ print(docs[1].page_content[:500])
     In other words, there appears to be a link between data center proxi
 </pre>
 
-## Load Multiple URLs Concurrently with `alazy_load()`
+## Load Multiple URLs Concurrently with ```alazy_load()```
 
 You can speed up the process of scraping and parsing multiple URLs by using asynchronous loading. This allows you to fetch documents concurrently, improving efficiency while adhering to rate limits.
 
 ### Key Points:
-- **Rate Limit** : The `requests_per_second` parameter controls how many requests are made per second. In this example, it's set to 1 to avoid overloading the server.
-- **Asynchronous Loading** : The `alazy_load()` function is used to load documents asynchronously, enabling faster processing of multiple URLs.
-- **Jupyter Notebook Compatibility** : If running in Jupyter Notebook, `nest_asyncio` is required to handle asynchronous tasks properly.
+- **Rate Limit** : The ```requests_per_second``` parameter controls how many requests are made per second. In this example, it's set to 1 to avoid overloading the server.
+- **Asynchronous Loading** : The ```alazy_load()``` function is used to load documents asynchronously, enabling faster processing of multiple URLs.
+- **Jupyter Notebook Compatibility** : If running in Jupyter Notebook, ```nest_asyncio``` is required to handle asynchronous tasks properly.
 
 The code below demonstrates how to configure and load documents asynchronously:
 
@@ -253,7 +253,7 @@ docs
 
 ## Load XML Documents
 
-`WebBaseLoader` can process XML files by specifying a different `BeautifulSoup` parser. This is particularly useful when working with structured XML content like sitemaps or government data.
+```WebBaseLoader``` can process XML files by specifying a different ```BeautifulSoup``` parser. This is particularly useful when working with structured XML content like sitemaps or government data.
 
 ### Basic XML Loading
 
@@ -276,7 +276,7 @@ docs = loader.load()
 
 ### Memory-Efficient Loading
 
-For handling large documents, `WebBaseLoader` provides two memory-efficient loading methods:
+For handling large documents, ```WebBaseLoader``` provides two memory-efficient loading methods:
 
 1. lazy_load() - loads one page at a time
 2. alazy_load() - asynchronous page loading for better performance
@@ -331,10 +331,10 @@ print(pages[0].metadata)
 
 Sometimes you may need to use proxies to bypass IP blocking.
 
-To use a proxy, you can pass a proxy dictionary to the loader (and its underlying `requests` library).
+To use a proxy, you can pass a proxy dictionary to the loader (and its underlying ```requests``` library).
 
 ### ⚠️ Warning:
-- Replace `{username}`, `{password}`, and `proxy.service.com` with your actual proxy credentials and server information.
+- Replace ```{username}```, ```{password}```, and ```proxy.service.com``` with your actual proxy credentials and server information.
 - Without a valid proxy configuration, errors such as **ProxyError** or **AuthenticationError** may occur.
 
 ```python
@@ -352,11 +352,11 @@ loader = WebBaseLoader(
 docs = loader.load()
 ```
 
-## Simple Web Content Loading with `MarkItDown`
+## Simple Web Content Loading with ```MarkItDown```
 
-Unlike `WebBaseLoader` which uses `BeautifulSoup4` for sophisticated HTML parsing, `MarkItDown` provides a naive but simpler approach to web content loading. It directly fetches web content using HTTP requests and transfrom it into markdown format without detailed parsing capabilities.
+Unlike ```WebBaseLoader``` which uses ```BeautifulSoup4``` for sophisticated HTML parsing, ```MarkItDown``` provides a naive but simpler approach to web content loading. It directly fetches web content using HTTP requests and transfrom it into markdown format without detailed parsing capabilities.
 
-Below is a basic example of loading web content using `MarkItDown`:
+Below is a basic example of loading web content using ```MarkItDown```:
 
 ```python
 from markitdown import MarkItDown

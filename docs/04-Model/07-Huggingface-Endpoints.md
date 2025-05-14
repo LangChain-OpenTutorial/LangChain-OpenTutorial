@@ -20,11 +20,12 @@ pre {
 # Huggingface Endpoints
 
 - Author: [Sooyoung](https://github.com/sooyoung-wind)
-- Design: 
 - Peer Review : [effort-type](https://github.com/effort-type), [Ivy Bae](https://github.com/ivybae)
+- Proofread : [frimer](https://github.com/brian604)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/06-Huggingface-Endpoints.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/06-Huggingface-Endpoints.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/07-Huggingface-Endpoints.ipynb)
+[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/07-Huggingface-Endpoints.ipynb)
 
 ## Overview
 
@@ -59,8 +60,8 @@ You can learn the following topics:
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -133,16 +134,16 @@ Below is a link to the Hugging Face LLM leaderboard, Model List, LogicKor. For m
   LogicKor Leaderboard's link is for the leaderboard of Korean models. As the model performance increased, it has been archived due to meaningless scores as of October 17, 2024. However, you can find the best-performing Korean models.
 
 ## Using Hugging Face Endpoints
-To use Hugging Face Endpoints, install the `huggingface_hub` package in Python.  
-We previously installed `huggingface_hub` through `langchain-opentutorial`. However, if you need to install it separately, you can do so by running the `pip install huggingface_hub` command.
+To use Hugging Face Endpoints, install the ```huggingface_hub``` package in Python.  
+We previously installed ```huggingface_hub``` through ```langchain-opentutorial```. However, if you need to install it separately, you can do so by running the ```pip install huggingface_hub``` command.
 
 To use the Hugging Face endpoint, you need an API token key. If you don't have a huggingface token follwing this [here](#Obtaining-a-Huggingface-Token).
 
-If you have already set the token in `HUGGINGFACEHUB_API_TOKEN`, the API token is automatically recognized.
+If you have already set the token in ```HUGGINGFACEHUB_API_TOKEN```, the API token is automatically recognized.
 
 **OR**
 
-You can use `from huggingface_hub import login`.
+You can use ```from huggingface_hub import login```.
 
 ```python
 import os
@@ -168,7 +169,7 @@ Below is an example of how to access the Inference API.
 - [Serverless Endpoints](https://huggingface.co/docs/api-inference/index)
 - [Inference Endpoints](https://huggingface.co/docs/inference-endpoints/index)
 
-First of all, create a simple prompt using `PromptTemplate`
+First of all, create a simple prompt using ```PromptTemplate```
 
 ```python
 from langchain_core.prompts import PromptTemplate
@@ -183,8 +184,8 @@ prompt = PromptTemplate.from_template(template)
 ```
 
 **[Note]** 
-- In this example, the model used is `microsoft/Phi-3-mini-4k-instruct`  
-- If you want change aother model, assign the HuggingFace model's repository ID to the variable `repo_id`.  
+- In this example, the model used is ```microsoft/Phi-3-mini-4k-instruct```  
+- If you want change aother model, assign the HuggingFace model's repository ID to the variable ```repo_id```.  
 - link : https://huggingface.co/microsoft/Phi-3-mini-4k-instruct
 
 ```python
@@ -222,7 +223,7 @@ For enterprise workloads, it is recommended to use [Inference Endpoints - Dedica
 
 These resources also include ongoing support, guaranteed uptime, and options like AutoScaling.
 
-- Set the Inference Endpoint URL to the `hf_endpoint_url` variable.
+- Set the Inference Endpoint URL to the ```hf_endpoint_url``` variable.
 
 **[Note]**
 - This [address](https://api-inference.huggingface.co/models/Qwen/QwQ-32B-Preview) is not a Dedicated Endpoint but rather a public endpoint provided by Hugging Face. Because Dedicated Endpoints are a paid service, a public endpoint was used for this example.

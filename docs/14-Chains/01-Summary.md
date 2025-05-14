@@ -21,11 +21,10 @@ pre {
 
 - Author: [Erika Park](https://www.linkedin.com/in/yeonseo-park-094193198/)
 - Peer Review: 
-- Proofread:
+- Proofread : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/05-Using-OpenAIAPI-MultiModal.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/05-Using-OpenAIAPI-MultiModal.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/14-Chains/01-Summary.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/14-Chains/01-Summary.ipynb)
 ## Overview
 
 ### Key Summarization Techniques
@@ -48,11 +47,11 @@ In this tutorial, we will explore various document summarization techniques, dis
 A central question when building a summarizer is: How should the document be presented to the LLM's context window? <br>
 The primary approaches include:
 
-1. `Stuff` (Full Input): Placing the entire document into the context window at once. Simple but limited when handling long documents.
+1. ```Stuff``` (Full Input): Placing the entire document into the context window at once. Simple but limited when handling long documents.
 
-2. `Map-Reduce` (Chunk and Merge): Splitting the document into multiple chunks, summarizing each chunk, and then merging the results into a final summary. Useful for handling large datasets.
+2. ```Map-Reduce``` (Chunk and Merge): Splitting the document into multiple chunks, summarizing each chunk, and then merging the results into a final summary. Useful for handling large datasets.
 
-3. `Refine` (Sequential Improvement): Processing the document sequentially and refining the summary by merging previous summaries with new content, making it effective for detailed summarization needs.
+3. ```Refine``` (Sequential Improvement): Processing the document sequentially and refining the summary by merging previous summaries with new content, making it effective for detailed summarization needs.
 
 By the end of this tutorial, you will understand how to use these techniques effectively and choose the right method for your specific summarization scenarios.
 
@@ -89,8 +88,8 @@ _Please copy the downloaded file to the data folder for practice._
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions, and utilities for tutorials. 
-- You can checkout out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions, and utilities for tutorials. 
+- You can checkout out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -136,7 +135,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -157,9 +156,9 @@ load_dotenv(override=True)
 
 ## Stuff
 
-The `stuff documents chain` (where "stuff" means "to fill" or "for filling") is the simplest type of document chain. It takes a list of documents, inserts them all into the prompt, and then sends that prompt to the LLM.
+The ```stuff documents chain``` (where "stuff" means "to fill" or "for filling") is the simplest type of document chain. It takes a list of documents, inserts them all into the prompt, and then sends that prompt to the LLM.
 
-In other words, the `context` input directly receives `Document` objects. When using a retriever to search a vector_store, it returns a `List[Document]`. This chain automatically converts the documents into a format suitable for the LLM without requiring manual conversion to strings.
+In other words, the ```context``` input directly receives ```Document``` objects. When using a retriever to search a vector_store, it returns a ```List[Document]```. This chain automatically converts the documents into a format suitable for the LLM without requiring manual conversion to strings.
 
 This chain is suitable for applications where documents are small, and only a few are passed in most calls.
 
@@ -353,7 +352,7 @@ map_prompt.pretty_print()
 map_chain = map_prompt | llm | StrOutputParser()
 ```
 
-Generate summaries for each document using `batch()` processing
+Generate summaries for each document using ```batch()``` processing
 
 ```python
 # Extract key content for a document
@@ -717,7 +716,7 @@ refine_llm = ChatOpenAI(
 refine_chain = refine_prompt | refine_llm | StrOutputParser()
 ```
 
-The following code demonstrates how to create a `map_refine_chain` that combines both the map and refine stages into a single, streamlined process for document summarization.
+The following code demonstrates how to create a ```map_refine_chain``` that combines both the map and refine stages into a single, streamlined process for document summarization.
 
 ```python
 from langchain_core.runnables import chain
@@ -857,15 +856,15 @@ The **Chain of Density** approach offers a structured and effective way to impro
 
 **Input Parameter**
 
-- `content_category` : The type of content being summarized (e.g., article, video transcript, blog post, research paper). Default: Article
+- ```content_category``` : The type of content being summarized (e.g., article, video transcript, blog post, research paper). Default: Article
 
-- `content`: The content to be summarized.
+- ```content```: The content to be summarized.
 
-- `entity_range`: The range of entities to be selected from the content and included in the summary. Default: 1-3
+- ```entity_range```: The range of entities to be selected from the content and included in the summary. Default: 1-3
 
-- `max_words`: The maximum number of words included in the summary per iteration. Default: 80
+- ```max_words```: The maximum number of words included in the summary per iteration. Default: 80
 
-- `iterations`: The number of entity densification rounds. The total number of summaries generated will be **iterations + 1**. For an 80-word summary, 3 rounds are ideal. For longer summaries, 4-5 rounds may be suitable, and adjusting the `entity_range` (e.g., 1-4) can further optimize the results. Default: 3
+- ```iterations```: The number of entity densification rounds. The total number of summaries generated will be **iterations + 1**. For an 80-word summary, 3 rounds are ideal. For longer summaries, 4-5 rounds may be suitable, and adjusting the ```entity_range``` (e.g., 1-4) can further optimize the results. Default: 3
 
 The code below creates a summarization chain using the **Chain of Density (CoD)** prompt, designed to progressively enhance the summary by increasing entity density while keeping the summary length constant.
 
@@ -1008,7 +1007,7 @@ print(content)
 
 The code below demonstrates how to perform **partial JSON streaming** where each streamed chunk is a list of JSON dictionaries with additional entities added progressively. 
 
-To avoid simply concatenating outputs and instead overwrite previous chunks with each update, a carriage return (`\r`) is used.
+To avoid simply concatenating outputs and instead overwrite previous chunks with each update, a carriage return (```\r```) is used.
 
 ```python
 import textwrap
@@ -1170,9 +1169,9 @@ len(texts)
 
 
 
-Splitting a Single Text into Multiple Documents Using `RecursiveCharacterTextSplitter`
+Splitting a Single Text into Multiple Documents Using ```RecursiveCharacterTextSplitter```
 
-* The `RecursiveCharacterTextSplitter` is used to divide a single text into multiple smaller documents while preserving logical breaks, such as sentences or paragraphs.
+* The ```RecursiveCharacterTextSplitter``` is used to divide a single text into multiple smaller documents while preserving logical breaks, such as sentences or paragraphs.
 
 ```python
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -1236,8 +1235,8 @@ vectors = embeddings.embed_documents(split_docs)
 **2. Perform K-Means Clustering**
 
 * K-means clustering is applied to group the documents into a specified number of clusters.
-* `KMeans` is used to cluster the document vectors.
-* The `random_state` parameter ensures reproducibility.
+* ```KMeans``` is used to cluster the document vectors.
+* The ```random_state``` parameter ensures reproducibility.
 
 ```python
 from sklearn.cluster import KMeans
@@ -1312,7 +1311,7 @@ plt.show()
 
 
 Explanation:
-- `TSNE` reduces the dimensionality of the document vectors for visualization purposes.
+- ```TSNE``` reduces the dimensionality of the document vectors for visualization purposes.
 - Each point represents a document, colored by its cluster label.
 
 **4. Select Representative Documents from Each Cluster**
@@ -1348,7 +1347,7 @@ Explanation:
 
 **5. Convert Selected Documents to LangChain Document Format**
 
-- The selected documents are converted to LangChain's `Document` format for compatibility with the summarization chain.
+- The selected documents are converted to LangChain's ```Document``` format for compatibility with the summarization chain.
 
 ```python
 from langchain_core.documents import Document

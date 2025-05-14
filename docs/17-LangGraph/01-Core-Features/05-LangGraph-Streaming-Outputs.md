@@ -20,12 +20,11 @@ pre {
 # LangGraph Streaming Outputs
 
 - Author: [hong-seongmin](https://github.com/hong-seongmin)
-- Design: 
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain OpenTutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/06-MultiQueryRetriever.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/06-MultiQueryRetriever.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/05-LangGraph-Streaming-Outputs.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/05-LangGraph-Streaming-Outputs.ipynb)
 
 ## Overview
 
@@ -63,8 +62,8 @@ This approach allows developers to observe and interact with each graph processi
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -104,7 +103,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-Alternatively, environment variables can also be set using a `.env` file.
+Alternatively, environment variables can also be set using a ```.env``` file.
 
 **[Note]**
 
@@ -127,7 +126,7 @@ load_dotenv(override=True)
 
 ## Step-by-step Streaming Output with LangGraph
 
-This time, we'll take a closer look at the `stream()` output function in LangGraph.
+This time, we'll take a closer look at the ```stream()``` output function in LangGraph.
 
 LangGraph's streaming output function provides the ability to stream each step of the graph.
 
@@ -243,31 +242,31 @@ display(
 
 ## The stream Method of StateGraph
 
-The `stream` method provides the ability to stream graph steps for a single input.
+The ```stream``` method provides the ability to stream graph steps for a single input.
 
 **Parameters**
-- `input` (`Union[dict[str, Any], Any]` ) : Input to the graph
-- `config` (`Optional[RunnableConfig]` ) : Execution configuration
-- `stream_mode` (`Optional[Union[StreamMode, list[StreamMode]]]` ) : Output streaming mode
-- `output_keys` (`Optional[Union[str, Sequence[str]]]` ) : Keys to stream
-- `interrupt_before` (`Optional[Union[All, Sequence[str]]]` ) : Nodes to interrupt before execution
-- `interrupt_after` (`Optional[Union[All, Sequence[str]]]` ) : Nodes to interrupt after execution
-- `debug` (`Optional[bool]` ) : Whether to output debug information
-- `subgraphs` (`bool`) : Whether to stream subgraphs
+- ```input``` (```Union[dict[str, Any], Any]``` ) : Input to the graph
+- ```config``` (```Optional[RunnableConfig]``` ) : Execution configuration
+- ```stream_mode``` (```Optional[Union[StreamMode, list[StreamMode]]]``` ) : Output streaming mode
+- ```output_keys``` (```Optional[Union[str, Sequence[str]]]``` ) : Keys to stream
+- ```interrupt_before``` (```Optional[Union[All, Sequence[str]]]``` ) : Nodes to interrupt before execution
+- ```interrupt_after``` (```Optional[Union[All, Sequence[str]]]``` ) : Nodes to interrupt after execution
+- ```debug``` (```Optional[bool]``` ) : Whether to output debug information
+- ```subgraphs``` (```bool```) : Whether to stream subgraphs
 
 **Returns**
-- `Iterator[Union[dict[str, Any], Any]]` : Outputs from each step of the graph. The output format depends on `stream_mode` .
+- ```Iterator[Union[dict[str, Any], Any]]``` : Outputs from each step of the graph. The output format depends on ```stream_mode``` .
 
 **Key Features**
 1. Processes graph execution in a streaming manner according to the given configuration
-2. Supports various streaming modes (`values` , `updates` , `debug`)
+2. Supports various streaming modes (```values``` , ```updates``` , ```debug```)
 3. Manages callbacks and error handling
 4. Handles recursion limits and interruption conditions
 
 **Streaming Modes**
-- `values` : Outputs the current state values at each step
-- `updates` : Outputs only state updates at each step
-- `debug` : Outputs debug events at each step
+- ```values``` : Outputs the current state values at each step
+- ```updates``` : Outputs only state updates at each step
+- ```debug``` : Outputs debug events at each step
 
 ```python
 from langchain_core.runnables import RunnableConfig
@@ -286,7 +285,7 @@ config = RunnableConfig(
 )
 ```
 
-We set up the `config` and proceed with streaming output.
+We set up the ```config``` and proceed with streaming output.
 
 ```python
 for event in graph.stream(input=input, config=config):
@@ -342,12 +341,12 @@ for event in graph.stream(input=input, config=config):
 
 ## Advanced Streaming Options
 
-Advanced streaming options in LangGraph allow for more fine-grained control over how graph execution outputs are handled. By configuring parameters like `output_keys`, `stream_mode`, `interrupt_before`, and `interrupt_after`, users can tailor the streaming behavior to their specific debugging and monitoring needs.
+Advanced streaming options in LangGraph allow for more fine-grained control over how graph execution outputs are handled. By configuring parameters like ```output_keys```, ```stream_mode```, ```interrupt_before```, and ```interrupt_after```, users can tailor the streaming behavior to their specific debugging and monitoring needs.
 
 
 ### The output_keys Option
 
-The `output_keys` option is used to specify which keys to stream.
+The ```output_keys``` option is used to specify which keys to stream.
 
 You can specify it in list format, and it must be one of the keys defined in **channels**.
 
@@ -470,21 +469,21 @@ for event in graph.stream(
 
 ### The stream_mode Option
 
-The `stream_mode` option is used to specify the streaming output mode.
+The ```stream_mode``` option is used to specify the streaming output mode.
 
-- `values`: Outputs the current state values at each step
-- `updates`: Outputs only state updates at each step (default)
+- ```values```: Outputs the current state values at each step
+- ```updates```: Outputs only state updates at each step (default)
 
 ### stream_mode = "values"
 
-In `values` mode, the current state values of each step are output.
+In ```values``` mode, the current state values of each step are output.
 
 **Note**
 
-`event.items()`
+```event.items()```
 
-- `key`: Key of the State
-- `value`: The value corresponding to the key of the State
+- ```key```: Key of the State
+- ```value```: The value corresponding to the key of the State
 
 ```python
 # Question
@@ -549,16 +548,16 @@ for event in graph.stream(
 
 ### stream_mode = "updates"
 
-In `updates` mode, only the updated State for each step is output.
+In ```updates``` mode, only the updated State for each step is output.
 
 - The output is a dictionary whose key is the node name, and values are the updated outputs.
 
 **Note**
 
-`event.items()`
+```event.items()```
 
-- `key`: The node name
-- `value`: The output of that node in dictionary form (it can have multiple key-value pairs).
+- ```key```: The node name
+- ```value```: The output of that node in dictionary form (it can have multiple key-value pairs).
 
 ```python
 # Question
@@ -614,10 +613,10 @@ for event in graph.stream(
 
 ### The interrupt_before and interrupt_after Options
 
-The `interrupt_before` and `interrupt_after` options are used to specify when to interrupt streaming.
+The ```interrupt_before``` and ```interrupt_after``` options are used to specify when to interrupt streaming.
 
-- `interrupt_before`: Interrupt streaming before the specified node
-- `interrupt_after`: Interrupt streaming after the specified node
+- ```interrupt_before```: Interrupt streaming before the specified node
+- ```interrupt_after```: Interrupt streaming after the specified node
 
 
 ```python

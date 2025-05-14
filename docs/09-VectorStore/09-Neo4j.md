@@ -17,37 +17,33 @@ pre {
 
 </style>
 
-# Neo4j Vector Index
+# Neo4j
 
-- Author: [Jongho](https://github.com/XaviereKU)
-- Design: 
-- Peer Review: 
+- Author: [Jongho Lee](https://github.com/XaviereKU)
+- Peer Review: [HyeonJong Moon](https://github.com/hj0302), [Haseom Shin](https://github.com/IHAGI-c), [Sohyeon Yim](https://github.com/sohyunwriter)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
 
 ## Overview
+
+This tutorial covers how to use ```Neo4j``` with **LangChain** .
+
 ```Neo4j``` is a graph database backed by vector store and can be deployed locally or on cloud.
 
-In this tutorial we utilize its ability to store vectors only, and deal with its real ability, graph database, later.
+To fully utilize ```Neo4j```, you need to learn about ```Cypher```, declarative query language.
 
-To encode data into vector, we use ```OpenAIEmbedding```, but you can use any embedding you want.
-
-Furthermore, you need to note that you should read about ```Cypher```, declarative query language for ```Neo4j```, to fully utilize ```Neo4j```.
-
-We use some Cypher queries but will not go deeply. You can visit Cypher official document web site in References.
-
-For more information, visit [Neo4j](https://neo4j.com/).
+This tutorial walks you through using **CRUD** operations with the ```Neo4j``` **storing** , **updating** , **deleting** documents, and performing **similarity-based retrieval** .
 
 ### Table of Contents
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Setup Neo4j](#setup-neo4j)
-- [Credentials](#credentials)
-- [Initialization](#initialization)
-- [Manage vector store](#manage-vector-store)
-- [Similarity search](#similarity-search)
+- [What is Neo4j?](#what-is-neo4j?)
+- [Prepare Data](#prepare-data)
+- [Setting up Neo4j](#setting-up-neo4j)
+- [Document Manager](#document-manager)
+
 
 ### References
 
@@ -66,7 +62,6 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 **[Note]**
 - ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
 - You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
-- We built the ```Neo4jDocumentManager``` class from Python SDK of ```Neo4j```. LangChain supports ```Neo4j``` vector store class but it lacks some methods like ```delete```. You can check these methods in neo4j_interface.py in utils directory.
 
 ```python
 %%capture --no-stderr
@@ -111,9 +106,9 @@ set_env(
         "LANGCHAIN_TRACING_V2": "true",
         "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
         "LANGCHAIN_PROJECT": "Neo4j",
-        "NEO4J_URI": "Your Neo4j URI",
-        "NEO4J_USERNAME": "Your Neo4j username",
-        "NEO4J_PASSWORD": "Your Neo4j password",
+        "NEO4J_URI": "Your Neo4j Aura URI",
+        "NEO4J_USERNAME": "Your Neo4j Aura Username",
+        "NEO4J_PASSWORD": "Your Neo4j Aura Password",
     }
 )
 ```
@@ -126,7 +121,6 @@ You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
 ```python
-# Load API keys from .env file
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
@@ -135,555 +129,486 @@ load_dotenv(override=True)
 
 
 
-<pre class="custom">False</pre>
+<pre class="custom">True</pre>
 
 
 
-## Setup Neo4j
+### Setup Neo4j
 We have two options to start with: cloud or local deployment.
 
 In this tutorial, we will use the cloud service called ```Aura```, provided by ```Neo4j```.
 
 We will also describe how to deploy ```Neo4j``` using ```Docker```.
 
-### Getting started with Aura
-You can create a new **Neo4j Aura** account on the [Neo4j](https://neo4j.com/) official website.
+* **Getting started with Aura**
+  
+  You can create a new **Neo4j Aura** account on the [Neo4j](https://neo4j.com/) official website.
 
-Visit the website and click "Get Started" Free at the top right.
+  Visit the website and click "Get Started" Free at the top right.
 
-Once you have signed in, you will see a button, **Create instance**, and after that, you will see your username and password.
+  Once you have signed in, you will see a button, **Create instance**, and after that, you will see your username and password.
 
-To get your API key, click **Download and continue** to download a .txt file that contains the API key to connect your **NEO4j Aura** .
+  To get your API key, click **Download and continue** to download a .txt file that contains the API key to connect your **NEO4j Aura** .
 
-### Getting started with Docker
-Here is the description for how to run ```Neo4j``` using ```Docker```.
+* **Getting started with Docker**
 
-To run **Neo4j container** , use the following command.
-```
-docker run \
-    -itd \
-    --publish=7474:7474 --publish=7687:7687 \
-    --volume=$HOME/neo4j/data:/data \
-    --env=NEO4J_AUTH=none \
-    --name neo4j \
-    neo4j
-```
+  Here is the description for how to run ```Neo4j``` using ```Docker```.
 
-You can visit **Neo4j Docker installation** reference to check more detailed information.
+  To run **Neo4j container** , use the following command.
+  ```
+  docker run \
+      -itd \
+      --publish=7474:7474 --publish=7687:7687 \
+      --volume=$HOME/neo4j/data:/data \
+      --env=NEO4J_AUTH=none \
+      --name neo4j \
+      neo4j
+  ```
+
+  You can visit **Neo4j Docker installation** reference to check more detailed information.
 
 **[NOTE]**
 * ```Neo4j``` also supports native deployment on macOS, Windows and Linux. Visit the **Neo4j Official Installation guide** reference for more details.
 * The ```Neo4j community edition``` only supports one database.
 
-## Credentials
-Now, if you successfully create your own account for Aura, you will get your ```NEO4J_URI```, ```NEO4J_USERNAME```, ```NEO4J_USERPASSWORD```.
+## What is Neo4j?
 
-Add it to environmental variable above or your ```.env``` file.
+```Neo4j``` is a native graph database, which means it represents data as nodes and edges.
+
+* Nodes
+  * ```label```: tag to represent node role in a domain.
+  * ```property```: key-value pairs, e.g. name-John.
+
+* Edges
+  * Represents relationship between two nodes.
+  * Directional, which means it has start and end node.
+  * ```property```: like nodes, edge can have properties.
+
+* NoSQL
+  * Neo4j does not require predefined schema allowing flexible data modeling.
+  
+* ```Cypher```
+  * ```Neo4j``` uses ```Cypher```, a declarative query language, to interact with the database.
+  * ```Cypher``` expression resembles how humans think about relationships.
+
+## Prepare Data
+
+This section guides you through the **data preparation process** .
+
+This section includes the following components:
+
+- Data Introduction
+
+- Preprocess Data
+
+
+### Introduce Data
+
+In this tutorial, we will use the fairy tale **📗 The Little Prince** in PDF format as our data.
+
+This material complies with the **Apache 2.0 license** .
+
+The data is used in a text (.txt) format converted from the original PDF.
+
+You can view the data at the link below.
+- [Data Link](https://huggingface.co/datasets/sohyunwriter/the_little_prince)
+
+### Preprocessing Data
+
+In this tutorial section, we will preprocess the text data from The Little Prince and convert it into a list of ```LangChain Document``` objects with metadata. 
+
+Each document chunk will include a ```title``` field in the metadata, extracted from the first line of each section.
+
+```python
+from langchain.schema import Document
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+import re
+from typing import List
+
+
+def preprocessing_data(content: str) -> List[Document]:
+    # 1. Split the text by double newlines to separate sections
+    blocks = content.split("\n\n")
+
+    # 2. Initialize the text splitter
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=500,  # Maximum number of characters per chunk
+        chunk_overlap=50,  # Overlap between chunks to preserve context
+        separators=["\n\n", "\n", " "],  # Order of priority for splitting
+    )
+
+    documents = []
+
+    # 3. Loop through each section
+    for block in blocks:
+        lines = block.strip().splitlines()
+        if not lines:
+            continue
+
+        # Extract title from the first line using square brackets [ ]
+        first_line = lines[0]
+        title_match = re.search(r"\[(.*?)\]", first_line)
+        title = title_match.group(1).strip() if title_match else None
+
+        # Remove the title line from content
+        body = "\n".join(lines[1:]).strip()
+        if not body:
+            continue
+
+        # 4. Chunk the section using the text splitter
+        chunks = text_splitter.split_text(body)
+
+        # 5. Create a LangChain Document for each chunk with the same title metadata
+        for chunk in chunks:
+            documents.append(Document(page_content=chunk, metadata={"title": title}))
+
+    print(f"Generated {len(documents)} chunked documents.")
+
+    return documents
+```
+
+```python
+# Load the entire text file
+with open("./data/the_little_prince.txt", "r", encoding="utf-8") as f:
+    content = f.read()
+
+# Preprocessing Data
+
+docs = preprocessing_data(content=content)
+```
+
+<pre class="custom">Generated 262 chunked documents.
+</pre>
+
+## Setting up Neo4j
+
+This part walks you through the initial setup of ```Neo4j``` .
+
+This section includes the following components:
+
+- Load Embedding Model
+
+- Load ```Neo4j``` Client
+
+- Create Index
+
+### Load Embedding Model
+
+In the **Load Embedding Model** section, you'll learn how to load an embedding model.
+
+This tutorial uses **OpenAI's** **API-Key** for loading the model.
+
+*💡 If you prefer to use another embedding model, see the instructions below.*
+- [Embedding Models](https://python.langchain.com/docs/integrations/text_embedding/)
 
 ```python
 import os
+from langchain_openai import OpenAIEmbeddings
+
+embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+```
+
+### Load Neo4j Client
+
+In the **Load ```Neo4j``` Client** section, we cover how to load the **database client object** using the **Python SDK** for ```Neo4j``` .
+- [Neo4j Python SDK Docs](https://neo4j.com/docs/api/python-driver/current/index.html)
+
+```python
 import time
 import neo4j
 
-# set uri, username, password
+
+# Create Database Client Object Function
+
+
+def get_db_client(uri, username, password):
+    """
+
+    Initializes and returns a VectorStore client instance.
+
+
+    This function loads configuration (e.g., API key, host) from environment
+
+    variables or default values and creates a client object to interact
+
+    with the Neo4j Python SDK.
+
+
+    Returns:
+
+        client:ClientType - An instance of the Neo4j client.
+
+
+    Raises:
+
+        ValueError: If required configuration is missing.
+
+    """
+
+    client = neo4j.GraphDatabase.driver(uri=uri, auth=(username, password))
+
+    return client
+```
+
+```python
+# Get DB Client Object
 uri = os.getenv("NEO4J_URI")
 username = os.getenv("NEO4J_USERNAME")
 password = os.getenv("NEO4J_PASSWORD")
 
-# Connect to Neo4j client
-client = neo4j.GraphDatabase.driver(uri=uri, auth=(username, password))
+client = get_db_client(uri, username, password)
 ```
-
-## Initialization
-If you are successfully connected to **Neo4j Aura**, some basic indexes are already created.
-
-But, in this tutorial we will create a new index and add items(nodes) to it.
-
-To do this, we now look at how to manage indexes.
-
-To manage indexes, we will see how to:
-* List indexes
-* Create a new index
-* Delete an index
-
-### Define ```Neo4jIndexManager```
-
-**Neo4j** uses **Cypher** , which is similar to an SQL query.
-
-So, when you try to list indexes you have, you need to use **Cypher** . 
-
-But as a tutorial, to make it easier, we defined a class to manager indexes.
-
-```python
-from utils.neo4j_interface import Neo4jIndexManager
-
-indexManger = Neo4jIndexManager(client)
-```
-
-### List Indexs
-Before create a new index, let's check indexes already in the ```Neo4j``` database
-
-```python
-# get name list of indexes
-names = indexManger.list_indexes()
-
-print(names)
-```
-
-<pre class="custom">['index_343aff4e', 'index_f7700477']
-</pre>
 
 ### Create Index
+If you are successfully connected to **Neo4j Aura**, some basic indexes are already created.
 
-Now, we will create a new index.
-
-This can be done by calling the ```create_index``` method, which will return an object connected to the newly created index.
-
-If an index exists with the same name, the method will print out a notification.
-
-When creating a new index, we must provide an embedding object or the dimension of vector, along with a ```metric``` to use for similarity search.
-
-If the index created successfully or already exists, the ```create_index``` method will return a ```Neo4jDocumentManager``` object that can add, delete, search or scroll through items in the index.
-
-In this tutorial we will pass ```OpenAIEmbeddings``` when creating a new index.
-
-
-**[ NOTE ]**
-- If you pass the dimension of a vector instead of an embedding object, it must match the dimension of the embeded vector of the embedding model that you choose.
-- An embedding object must have ```embed_query``` and ```embed_documents``` methods.
-- The ```metric``` parameter is used to set distance metric for similarity search. ```Neo4j``` supports **cosine** and **euclidean** distance.
+But, in this tutorial we will create a new index with ```Neo4jIndexManager``` class.
 
 ```python
-# Initialize OpenAIEmbeddings
-from langchain_openai import OpenAIEmbeddings
+from utils.neo4j import Neo4jIndexManager
 
-embeddings = OpenAIEmbeddings()
+#  Create IndexManager Object
+indexManger = Neo4jIndexManager(client)
 
-# set index_name and node_label
+# Create A New Index
 index_name = "tutorial_index"
 node_label = "tutorial_node"
 
 # create a new index
 try:
     tutorial_index = indexManger.create_index(
-        embeddings, index_name=index_name, metric="cosine", node_label=node_label
+        embedding, index_name=index_name, metric="cosine", node_label=node_label
     )
 except Exception as e:
     print("Index creation failed due to")
     print(type(e))
     print(str(e))
-
-# check name list of indexes
-names = indexManger.list_indexes()
-print()
-print(f"Indexes in database: {names}")
 ```
 
-<pre class="custom">Created index information
-    ('Index name: tutorial_index', 'Node label: tutorial_node', 'Similarity metric: COSINE', 'Embedding dimension: 1536', 'Embedding node property: embedding', 'Text node property: text')
-    Index creation successful. Return Neo4jDBManager object.
-    
-    Indexes in database: ['index_343aff4e', 'index_f7700477', 'tutorial_index']
-</pre>
-
-### Delete Index
-
-We can delete a specific index by calling the ```delete_index``` method.
-
-Delete ```tutorial_index``` that we created above, and then recreate for later use.
-
-```python
-# delete index
-indexManger.delete_index("tutorial_index")
-
-# print name list of indexes
-names = indexManger.list_indexes()
-if "tutorial_index" not in names:
-    print("Index deleted succesfully ")
-    print(f"Indexes in database: {names}")
-    print()
-
-# recreate the tutorial_index
-tutorial_index = indexManger.create_index(
-    embedding=embeddings, index_name="tutorial_index", node_label="tutorial_node"
-)
-```
-
-<pre class="custom">Index deleted succesfully 
-    Indexes in database: ['index_343aff4e', 'index_f7700477']
-    
+<pre class="custom">Index with name tutorial_index already exists.
+    Returning Neo4jDBManager object.
     Created index information
-    ('Index name: tutorial_index', 'Node label: tutorial_node', 'Similarity metric: COSINE', 'Embedding dimension: 1536', 'Embedding node property: embedding', 'Text node property: text')
+    ('Index name: tutorial_index', 'Node label: tutorial_node', 'Similarity metric: COSINE', 'Embedding dimension: 3072', 'Embedding node property: embedding', 'Text node property: text')
     Index creation successful. Return Neo4jDBManager object.
+    Index creation failed due to
+    <class 'NameError'>
+    name 'Neo4jCRUDManager' is not defined
 </pre>
 
-### Select Embedding model
+## Document Manager
 
-We can also change embedding model.
+To support the **Langchain-Opentutorial** , we implemented a custom set of **CRUD** functionalities for VectorDBs. 
 
-In this subsection, we will use ```text-embedding-3-large``` model to create a new index.
+The following operations are included:
+
+- ```upsert``` : Update existing documents or insert if they don’t exist
+
+- ```upsert_parallel``` : Perform upserts in parallel for large-scale data
+
+- ```similarity_search``` : Search for similar documents based on embeddings
+
+- ```delete``` : Remove documents based on filter conditions
+
+Each of these features is implemented as class methods specific to each VectorDB.
+
+In this tutorial, you can easily utilize these methods to interact with your VectorDB.
+
+*We plan to continuously expand the functionality by adding more common operations in the future.*
+
+### Create Instance
+
+First, we create an instance of the ```Neo4j``` helper class to use its CRUD functionalities.
+
+This class is initialized with the **```Neo4j``` Python SDK client instance**, **index name** and the **embedding model instance** , both of which were defined in the previous section.
 
 ```python
-import getpass
-import os
+from utils.neo4j import Neo4jDocumentManager
 
-if not os.environ.get("OPENAI_API_KEY"):
-    os.environ["OPENAI_API_KEY"] = getpass.getpass("Enter API key for OpenAI: ")
-
-from langchain_openai import OpenAIEmbeddings
-
-embeddings_large = OpenAIEmbeddings(model="text-embedding-3-large")
-```
-
-```python
-# create new index
-tutorial_index_2 = indexManger.create_index(
-    embedding=embeddings_large,
-    index_name="tutorial_index_2",
-    metric="cosine",
-    node_label="tutorial_node_2",
+crud_manager = Neo4jDocumentManager(
+    client=client, index_name="tutorial_index", embedding=embedding
 )
 ```
 
-<pre class="custom">Created index information
-    ('Index name: tutorial_index_2', 'Node label: tutorial_node_2', 'Similarity metric: COSINE', 'Embedding dimension: 3072', 'Embedding node property: embedding', 'Text node property: text')
-    Index creation successful. Return Neo4jDBManager object.
-</pre>
+Now you can use the following **CRUD** operations with the ```crud_manager``` instance.
 
-### Data Preprocessing
+These instance allow you to easily manage documents in your ```Neo4j``` .
 
-The following describes the preprocessing process for general documents.
+### Upsert Document
 
-- Extract **metadata** from documents.
-- Filter documents by minimum length.
-  
-- Determine whether to use ```basename```. The default is ```False```.
-  - The ```basename``` denotes the last value of the filepath.
-  - For example, **document.pdf** will be the ```basename``` for the filepath **./data/document.pdf** .
+**Update** existing documents or **insert** if they don’t exist
 
-```python
-# This is a long document we can split up.
-data_path = "./data/the_little_prince.txt"
-with open(data_path, encoding="utf8") as f:
-    raw_text = f.read()
-```
+**✅ Args**
 
-```python
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+- ```texts``` : Iterable[str] – List of text contents to be inserted/updated.
 
-# define text splitter
-text_splitter = RecursiveCharacterTextSplitter(
-    # Set a really small chunk size, just to show.
-    chunk_size=100,
-    chunk_overlap=20,
-    length_function=len,
-    is_separator_regex=False,
-)
+- ```metadatas``` : Optional[List[Dict]] – List of metadata dictionaries for each text (optional).
 
-# split raw text by splitter.
-split_docs = text_splitter.create_documents([raw_text])
+- ```ids``` : Optional[List[str]] – Custom IDs for the documents. If not provided, IDs will be auto-generated.
 
-# print one of documents to check its structure
-print(split_docs[0])
-```
+- ```**kwargs``` : Extra arguments for the underlying vector store.
 
-<pre class="custom">page_content='The Little Prince
-    Written By Antoine de Saiot-Exupery (1900〜1944)'
-</pre>
+**🔄 Return**
 
-Now we preprocess split document to extract author, page, and source metadata while formatting the data to store it into ```Neo4j```
-
-```python
-# define document preprocessor
-def preprocess_documents(
-    split_docs, metadata_keys, min_length, use_basename=False, **kwargs
-):
-    metadata = kwargs
-
-    if use_basename:
-        assert metadata.get("source", None) is not None, "source must be provided"
-        metadata["source"] = metadata["source"].split("/")[-1]
-
-    result_docs = []
-    for idx, doc in enumerate(split_docs):
-        if len(doc.page_content) < min_length:
-            continue
-        for k in metadata_keys:
-            doc.metadata.update({k: metadata.get(k, "")})
-        doc.metadata.update({"page": idx + 1})
-        result_docs.append(doc)
-
-    return result_docs
-```
-
-```python
-# preprocess raw documents
-processed_docs = preprocess_documents(
-    split_docs=split_docs,
-    metadata_keys=["source", "page", "author"],
-    min_length=5,
-    use_basename=True,
-    source=data_path,
-    author="Saiot-Exupery",
-)
-
-# print one of preprocessed document to chekc its structure
-print(processed_docs[0])
-```
-
-<pre class="custom">page_content='The Little Prince
-    Written By Antoine de Saiot-Exupery (1900〜1944)' metadata={'source': 'the_little_prince.txt', 'page': 1, 'author': 'Saiot-Exupery'}
-</pre>
-
-## Manage vector store
-Once you have created your vector store, you can interact with it by adding and deleting different items.
-
-Also, you can scroll through data from the store using a filter or a ```Cypher``` query.
-
-### Connect to index
-To add, delete, search, or scroll items, we need to initialize an object that is connected to the index we are operating on.
-
-We will connect to ```tutorial_index```. Recall that we used basic ```OpenAIEmbedding``` as a embedding function, and thus we need to pass it when we initialize ```index_manager``` object.
-
-Remember that we can also get ```Neo4jDocumentManager``` object when creating an index, but this time we call it directly to get a ```Neo4jDocumentManager``` object.
-
-```python
-# import Neo4jDocumentManager
-from utils.neo4j_interface import Neo4jDocumentManager
-
-# connect to tutorial_index
-index_manager = Neo4jDocumentManager(
-    client=client, index_name="tutorial_index", embedding=embeddings
-)
-```
-
-
-### Add items to vector store
-
-We can add items to our vector store by using the ```upsert_documents``` or ```upsert_documents_parallel``` method.
-
-If you pass IDs along with documents, then IDs will be used. However if you do not pass IDs, they will be generated based ```page_content``` using **MD5** hash function.
-
-Basically, ```upsert_document``` and ```upsert_document_parallel``` methods perform an upsert, not insert, based on **ID** of the item.
-
-So if you provided an ID and want to update the data, you must use the same id that you provided at first upsertion.
-
-We will upsert data to the index, ```tutorial_index```, using the ```upsert_documents``` method for the first half, and with ```upsert_documents_parallel``` for the second half.
+- None
 
 ```python
 from uuid import uuid4
 
-# get texts and metadatas from processed documents
-texts = [p.page_content for p in processed_docs]
-metadatas = [p.metadata for p in processed_docs]
+# Create ID for each document
+ids = [str(uuid4()) for _ in docs]
 
-# make manual ids for each processed documents
-uuids = [str(uuid4()) for _ in range(len(processed_docs))]
+args = {
+    "texts": [doc.page_content for doc in docs[:2]],
+    "metadatas": [doc.metadata for doc in docs[:2]],
+    "ids": ids[:2],
+    # Add additional parameters if you need
+}
 
-# Get total number of documents
-total_number = len(processed_docs)
-print("Number of documents:", total_number)
+crud_manager.upsert(**args)
 ```
 
-<pre class="custom">Number of documents: 1359
-</pre>
+### Upsert Parallel Document
+
+Perform **upserts** in **parallel** for large-scale data
+
+**✅ Args**
+
+- ```texts``` : Iterable[str] – List of text contents to be inserted/updated.
+
+- ```metadatas``` : Optional[List[Dict]] – List of metadata dictionaries for each text (optional).
+
+- ```ids``` : Optional[List[str]] – Custom IDs for the documents. If not provided, IDs will be auto-generated.
+
+- ```batch_size``` : int – Number of documents per batch (default: 32).
+
+- ```workers``` : int – Number of parallel workers (default: 10).
+
+- ```**kwargs``` : Extra arguments for the underlying vector store.
+
+**🔄 Return**
+
+- None
 
 ```python
-%%time
-# upsert documents
-upsert_result = index_manager.upsert(
+from uuid import uuid4
+
+args = {
+    "texts": [doc.page_content for doc in docs],
+    "metadatas": [doc.metadata for doc in docs],
+    "ids": ids,
+    # Add additional parameters if you need
+}
+
+crud_manager.upsert_parallel(**args)
+```
+
+### Similarity Search
+
+Search for **similar documents** based on **embeddings** .
+
+This method uses **"cosine similarity"** .
+
+
+**✅ Args**
+
+- ```query``` : str – The text query for similarity search.
+
+- ```k``` : int – Number of top results to return (default: 10).
+
+```**kwargs``` : Additional search options (e.g., filters).
+
+**🔄 Return**
+
+- ```results``` : List[Document] – A list of LangChain Document objects ranked by similarity.
+
+```python
+# Search by query
+results = crud_manager.search(query="What is essential is invisible to the eye.", k=3)
+for idx, result in enumerate(results):
+    print(f"Rank {idx+1}")
+    print(f"Contents : {result['text']}")
+    print(f"Metadata: {result['metadata']}")
+    print(f"Similarity Score: {result['score']}")
+    print()
+```
+
+<pre class="custom">Rank 1
+    Contents : And he went back to meet the fox. 
+    "Goodbye," he said. 
+    "Goodbye," said the fox. "And now here is my secret, a very simple secret: It is only with the heart that one can see rightly; what is essential is invisible to the eye." 
+    "What is essential is invisible to the eye," the little prince repeated, so that he would be sure to remember.
+    "It is the time you have wasted for your rose that makes your rose so important."
+    Metadata: {'id': '148b9b3f-2231-4ebd-86d8-6aa841c4ac1b', 'title': 'Chapter 21', 'embedding': None}
+    Similarity Score: 0.755
     
-    texts=texts[:total_number//2], metadatas=metadatas[:total_number//2], ids=uuids[:total_number//2]
-)
-```
-
-<pre class="custom">CPU times: total: 3.88 s
-    Wall time: 7.31 s
+    Rank 2
+    Contents : "Yes," I said to the little prince. "The house, the stars, the desert-- what gives them their beauty is something that is invisible!" 
+    "I am glad," he said, "that you agree with my fox."
+    Metadata: {'id': '62df5e3c-2668-4f5c-96ea-23c5b7a38351', 'title': 'Chapter 24', 'embedding': None}
+    Similarity Score: 0.748
+    
+    Rank 3
+    Contents : "The men where you live," said the little prince, "raise five thousand roses in the same garden-- and they do not find in it what they are looking for." 
+    "They do not find it," I replied. 
+    "And yet what they are looking for could be found in one single rose, or in a little water." 
+    "Yes, that is true," I said. 
+    And the little prince added: 
+    "But the eyes are blind. One must look with the heart..."
+    Metadata: {'id': 'ff93762d-6bde-44f4-b3d2-c6dc466b46a8', 'title': 'Chapter 25', 'embedding': None}
+    Similarity Score: 0.711
+    
 </pre>
+
+### Delete Document
+
+Remove documents based on filter conditions
+
+**✅ Args**
+
+- ```ids``` : Optional[List[str]] – List of document IDs to delete. If None, deletion is based on filter.
+
+- ```filters``` : Optional[Dict] – Dictionary specifying filter conditions (e.g., metadata match).
+
+- ```**kwargs``` : Any additional parameters.
+
+**🔄 Return**
+
+- Boolean
 
 ```python
-%%time
-# upsert documents parallel
-upsert_parallel_result = index_manager.upsert_parallel(
-    texts = texts[total_number//2 :],
-    metadatas = metadatas[total_number//2:],
-    ids = uuids[total_number//2:],
-    batch_size=32,
-    max_workers=8
-)
+# Delete by ids
+ids = ids[:5]  # The 'ids' value you want to delete
+crud_manager.delete(ids=ids)
 ```
 
-<pre class="custom">CPU times: total: 4.47 s
-    Wall time: 6.01 s
-</pre>
+
+
+
+<pre class="custom">True</pre>
+
+
 
 ```python
-result = upsert_result + upsert_parallel_result
-
-# check number of ids upserted
-print(len(result))
-
-# check manual ids are the same as output ids
-print("Manual Ids == Output Ids:", sorted(result) == sorted(uuids))
+# Delete by ids with filters
+filters = {"page": 6}
+crud_manager.delete(filters={"title": "chapter 6"})
 ```
 
-<pre class="custom">1359
-    Manual Ids == Output Ids: True
-</pre>
 
-### Scroll items from vector store
-Since we have added some items to our first vector store, named ```tutorial_index``` , we can scroll items from the vector store.
 
-This can be done by calling the ```scroll``` method.
 
-When we scroll items from the vector store, we can pass ```ids``` or ```filters``` to get items that we want, or just call ```scroll``` to get ```k```(*default: 10*) items.
+<pre class="custom">True</pre>
 
-We can get embedded vector values of each items by set ```include_embedding``` True.
 
-Also, by setting ```meta_keys```, we can get metadata that we want. If not set, all metadats, except embeddings, will be returned.
 
 ```python
-# Do scroll without ids or filters
-result1 = tutorial_index.scroll()
-
-# print the number of items scrolled and first item that returned.
-print(f"Number of items scrolled: {len(result1)}")
-print(result1[0])
+# Delete All
+crud_manager.delete()
 ```
 
-<pre class="custom">Number of items scrolled: 10
-    {'id': '92eaae3a-ff0b-4a87-a823-1c512edbaf77', 'author': 'Saiot-Exupery', 'text': 'The Little Prince\nWritten By Antoine de Saiot-Exupery (1900〜1944)', 'source': 'the_little_prince.txt', 'page': 1}
-</pre>
-
-```python
-# Do scroll with filter
-result2 = tutorial_index.scroll(filters={"page": [1, 2, 3]})
-
-# print the number of items scrolled and all items that returned.
-print(f"Number of items scrolled: {len(result2)}")
-for r in result2:
-    print(r)
-```
-
-<pre class="custom">Number of items scrolled: 3
-    {'id': '92eaae3a-ff0b-4a87-a823-1c512edbaf77', 'author': 'Saiot-Exupery', 'text': 'The Little Prince\nWritten By Antoine de Saiot-Exupery (1900〜1944)', 'source': 'the_little_prince.txt', 'page': 1}
-    {'id': '7bea13ca-a5f8-4e03-888e-24018d7e72b5', 'author': 'Saiot-Exupery', 'text': '[ Antoine de Saiot-Exupery ]', 'source': 'the_little_prince.txt', 'page': 2}
-    {'id': '40a3d3b0-2052-42b6-b870-089d9519ef96', 'author': 'Saiot-Exupery', 'text': 'Over the past century, the thrill of flying has inspired some to perform remarkable feats of', 'source': 'the_little_prince.txt', 'page': 3}
-</pre>
-
-```python
-# Do scroll with ids
-result3 = tutorial_index.scroll(ids=uuids[:3])
-
-# print the number of items scrolled and all items that returned.
-print(f"Number of items scrolled: {len(result3)}")
-for r in result3:
-    print(r)
-```
-
-<pre class="custom">Number of items scrolled: 3
-    {'id': '92eaae3a-ff0b-4a87-a823-1c512edbaf77', 'author': 'Saiot-Exupery', 'text': 'The Little Prince\nWritten By Antoine de Saiot-Exupery (1900〜1944)', 'source': 'the_little_prince.txt', 'page': 1}
-    {'id': '7bea13ca-a5f8-4e03-888e-24018d7e72b5', 'author': 'Saiot-Exupery', 'text': '[ Antoine de Saiot-Exupery ]', 'source': 'the_little_prince.txt', 'page': 2}
-    {'id': '40a3d3b0-2052-42b6-b870-089d9519ef96', 'author': 'Saiot-Exupery', 'text': 'Over the past century, the thrill of flying has inspired some to perform remarkable feats of', 'source': 'the_little_prince.txt', 'page': 3}
-</pre>
-
-```python
-# Do scroll with selected meta keys and only 3 items.
-result4 = tutorial_index.scroll(meta_keys=["page"], k=3)
-
-# print the number of items scrolled and all items that returned.
-print(f"Number of items scrolled: {len(result4)}")
-for r in result4:
-    print(r)
-```
-
-<pre class="custom">Number of items scrolled: 3
-    {'page': 1}
-    {'page': 2}
-    {'page': 3}
-</pre>
-
-### Delete items from vector store
-
-We can delete nodes using filter or IDs with the ```delete_node``` method.
 
 
-For example, we will delete **the first page** (```page``` 1) of the little prince and then try to scroll it.
 
-```python
-# define filter
-filters = {"page": 1, "author": "Saiot-Exupery"}
+<pre class="custom">True</pre>
 
-# call delete_node method
-result = tutorial_index.delete(filters=filters)
-print(result)
-```
 
-<pre class="custom">True
-</pre>
-
-```python
-# Check if item is deleted
-result = tutorial_index.scroll(filters={"page": 1, "author": "Saiot-Exupery"})
-
-print(len(result))
-```
-
-<pre class="custom">0
-</pre>
-
-Now you can delete 5 items using ```ids```.
-
-```python
-# delete item by ids
-ids = uuids[1:6]
-
-# call delete_node method
-result = tutorial_index.delete(ids=ids)
-print(result)
-```
-
-<pre class="custom">True
-</pre>
-
-```python
-# Check if items are deleted
-result = tutorial_index.scroll(ids=uuids[1:6])
-
-print(len(result))
-```
-
-<pre class="custom">0
-</pre>
-
-## Similarity search
-Since ```Neo4j``` supports a vector database, you can also do similarity search.
-
-**Similarity** is calculated by the metric you set when you creating the index to search.
-
-In this tutorial we will search items on ```tutorial_index``` , which use the **cosine** metric.
-
-To do search, we call the ```search``` method.
-
-```python
-# do search. top_k is the number of documents in the result
-res_with_text = tutorial_index.search(
-    query="Does the little prince have a friend?", top_k=5
-)
-
-# print out top 2 results
-print("RESULT BY RAW QUERY")
-for i in range(2):
-    print(res_with_text[i])
-```
-
-<pre class="custom">RESULT BY RAW QUERY
-    {'text': '"My friend the fox--" the little prince said to me.', 'metadata': {'id': 'adf282b0-3efc-418c-8f9d-a48ae8052ba8', 'author': 'Saiot-Exupery', 'source': 'the_little_prince.txt', 'page': 1087, 'embedding': None}, 'score': 0.947}
-    {'text': 'And the little prince asked himself:', 'metadata': {'id': 'd058a8a1-6440-4dff-837b-75976b71dc76', 'author': 'Saiot-Exupery', 'source': 'the_little_prince.txt', 'page': 492, 'embedding': None}, 'score': 0.946}
-</pre>
-
-That's all!
-
-You now know the basics of using ```Neo4j```.
-
-If you want to do more advanced tasks, please refer to the official ```Neo4j```  API documents and official Python SDK of ```Neo4j``` API documents.

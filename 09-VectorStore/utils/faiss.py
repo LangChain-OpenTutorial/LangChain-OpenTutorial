@@ -1,5 +1,5 @@
-from utils.vectordbinterface import DocumentManager
-from utils.vectordbinterface import Iterable, Any, Optional, List, Dict
+from utils.base import DocumentManager
+from utils.base import Iterable, Any, Optional, List, Dict
 from langchain_core.documents import Document
 import faiss
 import numpy as np
@@ -8,17 +8,17 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Dict, List, Optional, Any, Iterable
 
 
-class FaissCRUDManager(DocumentManager):
+class FaissDocumentManager(DocumentManager):
     def __init__(
         self, dim: int = 768, embedding: Optional[Any] = None, **kwargs
     ) -> None:
         """
-        FAISS 벡터 데이터베이스 매니저 초기화
+        Initialize FAISS vector database manager
         
         Args:
-            dim: 임베딩 벡터의 차원
-            embedding: 선택적 임베딩 함수
-            **kwargs: 추가 인자들
+            dim: Dimension of embedding vectors
+            embedding: Optional embedding function
+            **kwargs: Additional arguments
         """
         super().__init__()
         self.dim = dim
@@ -38,13 +38,13 @@ class FaissCRUDManager(DocumentManager):
         **kwargs: Any,
     ) -> None:
         """
-        텍스트를 임베딩하고 FAISS 인덱스에 추가
+        Embed texts and add them to FAISS index
         
         Args:
-            texts: 문서 또는 텍스트
-            metadatas: 메타데이터
-            ids: 고유 ID, None이면 자동 생성
-            **kwargs: 추가 매개변수
+            texts: Documents or texts
+            metadatas: Metadata
+            ids: Unique IDs, auto-generated if None
+            **kwargs: Additional parameters
         """
         texts_list = list(texts)
         
@@ -86,15 +86,15 @@ class FaissCRUDManager(DocumentManager):
         **kwargs: Any,
     ) -> None:
         """
-        텍스트를 병렬로 처리하여 임베딩하고 FAISS 인덱스에 추가
+        Process texts in parallel, embed them and add to FAISS index
         
         Args:
-            texts: 문서 또는 텍스트
-            metadatas: 메타데이터
-            ids: 고유 ID, None이면 자동 생성
-            batch_size: 배치 크기
-            workers: 작업자 수
-            **kwargs: 추가 매개변수
+            texts: Documents or texts
+            metadatas: Metadata
+            ids: Unique IDs, auto-generated if None
+            batch_size: Size of each batch
+            workers: Number of workers
+            **kwargs: Additional parameters
         """
         texts_list = list(texts)
         total = len(texts_list)
@@ -119,15 +119,15 @@ class FaissCRUDManager(DocumentManager):
 
     def search(self, query: str, k: int = 10, **kwargs: Any) -> List[Dict]:
         """
-        쿼리와 가장 유사한 문서 검색
+        Search for documents most similar to the query
         
         Args:
-            query: 검색 쿼리
-            k: 반환할 결과 수
-            **kwargs: 필터링 옵션
+            query: Search query
+            k: Number of results to return
+            **kwargs: Filtering options
         
         Returns:
-            유사한 문서 리스트
+            List of similar documents
         """
         if not self.document_store:  
             return []
@@ -179,15 +179,15 @@ class FaissCRUDManager(DocumentManager):
         **kwargs: Any,
     ) -> bool:
         """
-        인덱스에서 문서 삭제
+        Delete documents from the index
         
         Args:
-            ids: 삭제할 문서의 ID 목록
-            filters: 삭제할 문서를 필터링하는 조건
-            **kwargs: 추가 매개변수
+            ids: List of document IDs to delete
+            filters: Conditions to filter documents for deletion
+            **kwargs: Additional parameters
             
         Returns:
-            성공 여부를 나타내는 불리언 값
+            Boolean indicating success
         """
         if filters and not ids:
             ids_to_delete = []
@@ -228,5 +228,5 @@ class FaissCRUDManager(DocumentManager):
                 
                 return True
             except Exception as e:
-                print(f"FAISS 삭제 오류: {e}")
+                print(f"FAISS deletion error: {e}")
                 return False

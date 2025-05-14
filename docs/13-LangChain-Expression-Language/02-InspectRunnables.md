@@ -21,12 +21,12 @@ pre {
 
 - Author: [ranian963](https://github.com/ranian963)
 - Peer Review: []()
+- Proofread : [Yun Eun](https://github.com/yuneun92)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/02-InspectRunnables.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/02-InspectRunnables.ipynb)
 ## Overview
-In this tutorial, we introduce how to **inspect** and visualize various components (including the graph structure) of a `Runnable` chain. Understanding the underlying graph structure can help diagnose and optimize complex chain flows.
+In this tutorial, we introduce how to **inspect** and visualize various components (including the graph structure) of a ```Runnable``` chain. Understanding the underlying graph structure can help diagnose and optimize complex chain flows.
 
 ### Table of Contents
 - [Overview](#overview)
@@ -47,8 +47,8 @@ In this tutorial, we introduce how to **inspect** and visualize various componen
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -88,9 +88,9 @@ set_env(
 )
 ```
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -100,7 +100,7 @@ load_dotenv(override=True)
 
 ## Introduction to Inspecting Runnables
 
-LangChain `Runnable` objects can be composed into pipelines, commonly referred to as **chains** or **flows**. After setting up a `runnable`, you might want to **inspect its structure** to see what's happening under the hood.
+LangChain ```Runnable``` objects can be composed into pipelines, commonly referred to as **chains** or **flows**. After setting up a ```runnable```, you might want to **inspect its structure** to see what's happening under the hood.
 
 By inspecting these, you can:
 - Understand the sequence of transformations and data flows.

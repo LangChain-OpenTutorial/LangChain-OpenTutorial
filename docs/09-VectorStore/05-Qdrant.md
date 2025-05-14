@@ -19,61 +19,40 @@ pre {
 
 # Qdrant
 
-- Author: [HyeonJong Moon](https://github.com/hj0302)
-- Design: 
-- Peer Review: 
+- Author: [HyeonJong Moon](https://github.com/hj0302), [Pupba](#https://github.com/pupba)
+- Peer Review: [liniar](https://github.com/namyoungkim), [hellohotkey](https://github.com/hellohotkey), [Sohyeon Yim](https://github.com/sohyunwriter)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/langchain-ai/langchain-academy/blob/main/module-4/sub-graph.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/09-VectorStore/05-Qdrant.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/09-VectorStore/05-Qdrant.ipynb)
 
 ## Overview
 
-This notebook demonstrates how to utilize the features related to the `Qdrant` vector database.
+This tutorial covers how to use **Qdrant****Qdrant** with **LangChain** .
 
-[`Qdrant`](https://python.langchain.com/docs/integrations/vectorstores/qdrant/) is an open-source vector similarity search engine designed to store, search, and manage high-dimensional vectors with additional payloads. It offers a production-ready service with a user-friendly API, suitable for applications such as semantic search, recommendation systems, and more.
+**Qdrant** is a high-performance, open-source vector database that stands out with advanced filtering, payload indexing, and native support for hybrid (vector + keyword) search.
 
-**Qdrant's architecture** is optimized for efficient vector similarity searches, employing advanced indexing techniques like **Hierarchical Navigable Small World (HNSW)** graphs to enable fast and scalable retrieval of relevant data.
-
+This tutorial walks you through using **CRUD** operations with the **Qdrant** **storing** , **updating** , **deleting** documents, and performing **similarity-based retrieval** .
 
 ### Table of Contents
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [Credentials](#credentials)
-- [Installation](#installation)
-- [Initialization](#initialization)
-- [Manage Vector Store](#manage-vector-store)
-  - [Create a Collection](#create-a-collection)
-  - [List Collections](#list-collections)
-  - [Delete a Collection](#delete-a-collection)
-  - [Add Items to the Vector Store](#add-items-to-the-vector-store)
-  - [Delete Items from the Vector Store](#delete-items-from-the-vector-store)
-  - [Upsert Items to Vector Store (Parallel)](#upsert-items-to-vector-store-parallel)
-- [Query Vector Store](#query-vector-store)
-  - [Query Directly](#query-directly)
-  - [Similarity Search with Score](#similarity-search-with-score)
-  - [Query by Turning into Retriever](#query-by-turning-into-retriever)
-  - [Search with Filtering](#search-with-filtering)
-  - [Delete with Filtering](#delete-with-filtering)
-  - [Filtering and Updating Records](#filtering-and-updating-records)
+- [What is Qdrant?](#what-is-qdrant?)
+- [Prepare Data](#Prepare-Data)
+- [Setting up Qdrant](#Setting-up-Qdrant)
+- [Document Manager](#document-manager)
+
 
 ### References
-
-- [LangChain Qdrant Reference](https://python.langchain.com/docs/integrations/vectorstores/qdrant/)
-- [Qdrant Official Reference](https://qdrant.tech/documentation/frameworks/langchain/)
-- [Qdrant Install Reference](https://qdrant.tech/documentation/guides/installation/)
-- [Qdrant Cloud Reference](https://cloud.qdrant.io)
-- [Qdrant Cloud Quickstart Reference](https://qdrant.tech/documentation/quickstart-cloud/)
 ----
 
 ## Environment Setup
 
-Set up the environment. You may refer to Environment Setup for more details.
+Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
-[Note]
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+**[Note]**
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -87,21 +66,14 @@ from langchain_opentutorial import package
 package.install(
     [
         "langsmith",
-        "langchain_openai",
-        "langchain_qdrant",
-        "qdrant_client",
-        "langchain_core",
-        "fastembed",
+        "langchain-core",
+        "python-dotenv",
+        "qdrant-client",
     ],
     verbose=False,
     upgrade=False,
 )
 ```
-
-<pre class="custom">
-    [notice] A new release of pip is available: 24.3.1 -> 25.0.1
-    [notice] To update, run: pip install --upgrade pip
-</pre>
 
 ```python
 # Set environment variables
@@ -109,13 +81,13 @@ from langchain_opentutorial import set_env
 
 set_env(
     {
-        "OPEN_API_KEY": "",
-        "QDRANT_API_KEY": "",
-        "QDRANT_URL": "",
+        "OPENAI_API_KEY": "",
         "LANGCHAIN_API_KEY": "",
-        "LANGCHAIN_TRACING_V2": "true",
+        "LANGCHAIN_TRACING_V2": "false",
         "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
         "LANGCHAIN_PROJECT": "Qdrant",
+        "QDRANT_API_KEY": "",
+        "QDRANT_URL": "",
     }
 )
 ```
@@ -123,9 +95,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
-**[Note]** If you are using a `.env` file, proceed as follows.
+[Note] This is not necessary if you've already set the required API keys in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -140,792 +112,458 @@ load_dotenv(override=True)
 
 
 
-## **Credentials**
+## What is Qdrant?
 
-Create a new account or sign in to your existing one, and generate an API key for use in this notebook.
+![qdrant-logo](./img/05-qdrant-logo.png)
 
-1. **Log in to Qdrant Cloud** : Go to the [Qdrant Cloud](https://cloud.qdrant.io) website and log in using your email, Google account, or GitHub account.
+Qdrant is an open-source vector database and similarity search engine built in Rust, designed to handle high-dimensional vector data efficiently.
 
-2. **Create a Cluster** : After logging in, navigate to the **"Clusters"** section and click the **"Create"** button. Choose your desired configurations and region, then click **"Create"** to start building your cluster. Once the cluster is created, an API key will be generated for you.
+It provides a production-ready service with a user-friendly API for storing, searching, and managing vectors along with additional payload data.
 
-3. **Retrieve and Store Your API Key** : When your cluster is created, you will receive an API key. Ensure you save this key in a secure location, as you will need it later. If you lose it, you will have to generate a new one.
+### Key Features
 
-4. **Manage API Keys** : To create additional API keys or manage existing ones, go to the **"Access Management"** section in the Qdrant Cloud dashboard and select *"Qdrant Cloud API Keys"* Here, you can create new keys or delete existing ones.
+- **High Performance** : Built in Rust for speed and reliability, handling billions of vectors with low latency.  
 
-```
-QDRANT_API_KEY="YOUR_QDRANT_API_KEY"
-```
+- **Advanced Filtering** : Supports complex filtering with JSON payloads, enabling precise searches based on metadata.  
 
-## **Installation**
+- **Hybrid Search** : Combines vector similarity with keyword-based filtering for enhanced search capabilities.  
 
-There are several main options for initializing and using the **Qdrant** vector store:
+- **Scalable Deployment** : Offers cloud-native scalability with options for on-premise, cloud, and hybrid deployments.  
 
-- **Local Mode** : This mode doesn't require a separate server.
-    - **In-memory storage** (data is not persisted)
-    - **On-disk storage** (data is saved to your local machine)
-- **Docker Deployments** : You can run **Qdrant** using **Docker**.
-- **Qdrant Cloud** : Use **Qdrant** as a managed cloud service.
+- **Multi-language Support** : Provides client libraries for Python, JavaScript/TypeScript, Go, and more.  
 
-For detailed instructions, see the [installation instructions](https://qdrant.tech/documentation/guides/installation/).
+## Prepare Data
 
-### In-Memory
+This section guides you through the **data preparation process** .
 
-For simple tests or quick experiments, you might choose to store data directly in memory. This means the data is automatically removed when your client terminates, typically at the end of your script or notebook session.
+This section includes the following components:
+
+- Data Introduction
+
+- Preprocess Data
+
+
+### Data Introduction
+
+In this tutorial, we will use the fairy tale **📗 The Little Prince** in PDF format as our data.
+
+This material complies with the **Apache 2.0 license** .
+
+The data is used in a text (.txt) format converted from the original PDF.
+
+You can view the data at the link below.
+- [Data Link](https://huggingface.co/datasets/sohyunwriter/the_little_prince)
+
+### Preprocess Data
+
+In this tutorial section, we will preprocess the text data from The Little Prince and convert it into a list of ```LangChain Document``` objects with metadata. 
+
+Each document chunk will include a ```title``` field in the metadata, extracted from the first line of each section.
 
 ```python
-from utils.qdrant import QdrantDocumentManager
-from langchain_openai import OpenAIEmbeddings
+from langchain.schema import Document
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+import re
+from typing import List
 
-# Define the collection name for storing documents
-collection_name = "demo_collection"
 
-# Initialize the embedding model with a specific OpenAI model
-embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+def preprocessing_data(content: str) -> List[Document]:
+    # 1. Split the text by double newlines to separate sections
+    blocks = content.split("\n\n")
 
-# Create an instance of QdrantDocumentManager with in-memory storage
-db = QdrantDocumentManager(
-    location=":memory:",  # Use in-memory database for temporary storage
-    collection_name=collection_name,
-    embedding=embedding,
-)
+    # 2. Initialize the text splitter
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=500,  # Maximum number of characters per chunk
+        chunk_overlap=50,  # Overlap between chunks to preserve context
+        separators=["\n\n", "\n", " "],  # Order of priority for splitting
+    )
+
+    documents = []
+
+    # 3. Loop through each section
+    for block in blocks:
+        lines = block.strip().splitlines()
+        if not lines:
+            continue
+
+        # Extract title from the first line using square brackets [ ]
+        first_line = lines[0]
+        title_match = re.search(r"\[(.*?)\]", first_line)
+        title = title_match.group(1).strip() if title_match else ""
+
+        # Remove the title line from content
+        body = "\n".join(lines[1:]).strip()
+        if not body:
+            continue
+
+        # 4. Chunk the section using the text splitter
+        chunks = text_splitter.split_text(body)
+
+        # 5. Create a LangChain Document for each chunk with the same title metadata
+        for chunk in chunks:
+            documents.append(Document(page_content=chunk, metadata={"title": title}))
+
+    print(f"Generated {len(documents)} chunked documents.")
+
+    return documents
 ```
 
-<pre class="custom">Collection 'demo_collection' does not exist or force recreate is enabled. Creating new collection...
-    Collection 'demo_collection' created successfully with configuration: {'vectors_config': VectorParams(size=3072, distance=<Distance.COSINE: 'Cosine'>, hnsw_config=None, quantization_config=None, on_disk=None, datatype=None, multivector_config=None)}
+```python
+# Load the entire text file
+with open("./data/the_little_prince.txt", "r", encoding="utf-8") as f:
+    content = f.read()
+
+# Preprocess Data
+docs = preprocessing_data(content=content)
+```
+
+<pre class="custom">Generated 262 chunked documents.
 </pre>
 
-### On-Disk Storage
+## Setting up Qdrant
 
-With **on-disk storage**, you can store your vectors directly on your hard drive without requiring a **Qdrant server**. This ensures that your data persists even when you restart the program.
+This part walks you through the initial setup of **Qdrant** .
+
+This section includes the following components:
+
+- Load Embedding Model
+
+- Load Qdrant Client
+
+### Load Embedding Model
+
+In this section, you'll learn how to load an embedding model.
+
+This tutorial uses **OpenAI's** **API-Key** for loading the model.
+
+*💡 If you prefer to use another embedding model, see the instructions below.*
+- [Embedding Models](https://python.langchain.com/docs/integrations/text_embedding/)
 
 ```python
-from utils.qdrant import QdrantDocumentManager
+import os
 from langchain_openai import OpenAIEmbeddings
 
-# Define the path for Qdrant storage
-qdrant_path = "./qdrant_memory"
-
-# Define the collection name for storing documents
-collection_name = "demo_collection"
-
-# Initialize the embedding model with a specific OpenAI model
-embedding = OpenAIEmbeddings(model="text-embedding-3-large")
-
-# Create an instance of QdrantDocumentManager with specified storage path
-db = QdrantDocumentManager(
-    path=qdrant_path,  # Specify the path for Qdrant storage
-    collection_name=collection_name,
-    embedding=embedding,
-)
+embedding = OpenAIEmbeddings(model="text-embedding-3-large", dimensions=1536)
 ```
 
-<pre class="custom">Collection 'demo_collection' does not exist or force recreate is enabled. Creating new collection...
-    Collection 'demo_collection' created successfully with configuration: {'vectors_config': VectorParams(size=3072, distance=<Distance.COSINE: 'Cosine'>, hnsw_config=None, quantization_config=None, on_disk=None, datatype=None, multivector_config=None)}
-</pre>
+### Load Qdrant Client
 
-### Docker Deployments
-
-You can deploy `Qdrant` in a **production environment** using [`Docker`](https://qdrant.tech/documentation/guides/installation/#docker) and [`Docker Compose`](https://qdrant.tech/documentation/guides/installation/#docker-compose). Refer to the `Docker` and `Docker Compose` setup instructions in the development section for detailed information.
+In this section, we'll show you how to load the **database client object** using the **Python SDK** for **Qdrant** .
+- [Python SDK Docs](https://python-client.qdrant.tech/)
 
 ```python
-from utils.qdrant import QdrantDocumentManager
-from langchain_openai import OpenAIEmbeddings
-
-# Define the URL for Qdrant server
-url = "http://localhost:6333"
-
-# Define the collection name for storing documents
-collection_name = "demo_collection"
-
-# Initialize the embedding model with a specific OpenAI model
-embedding = OpenAIEmbeddings(model="text-embedding-3-large")
-
-# Create an instance of QdrantDocumentManager with specified storage path
-db = QdrantDocumentManager(
-    url=url,  # Specify the path for Qdrant storage
-    collection_name=collection_name,
-    embedding=embedding,
-)
-```
-
-### Qdrant Cloud
-
-For a **production environment**, you can use [**Qdrant Cloud**](https://cloud.qdrant.io/). It offers fully managed `Qdrant` databases with features such as **horizontal and vertical scaling**, **one-click setup and upgrades**, **monitoring**, **logging**, **backups**, and **disaster recovery**. For more information, refer to the [**Qdrant Cloud documentation**](https://qdrant.tech/documentation/cloud/).
-
-
-```python
-import getpass
+# Create Database Client Object Function
+from qdrant_client import QdrantClient
 import os
 
-# Fetch the Qdrant server URL from environment variables or prompt for input
-if not os.getenv("QDRANT_URL"):
-    os.environ["QDRANT_URL"] = getpass.getpass("Enter your Qdrant Cloud URL key: ")
-QDRANT_URL = os.environ.get("QDRANT_URL")
 
-# Fetch the Qdrant API key from environment variables or prompt for input
-if not os.getenv("QDRANT_API_KEY"):
-    os.environ["QDRANT_API_KEY"] = getpass.getpass("Enter your Qdrant API key: ")
-QDRANT_API_KEY = os.environ.get("QDRANT_API_KEY")
+def get_db_client():
+    """
+    Initializes and returns a VectorStore client instance.
+
+    This function loads configuration (e.g., API key, host) from environment
+    variables or default values and creates a client object to interact
+    with the Qdrant Python SDK.
+
+    Returns:
+        client:ClientType - An instance of the Qdrant client.
+
+    Raises:
+        ValueError: If required configuration is missing.
+    """
+
+    # In this tutorial, use Qdrant Cloud.
+    # Get your personal Qdrant Cloud URL and API_Key on the official website.
+    # https://qdrant.tech/documentation/cloud-intro/
+    # If you want to use on-premise, please refer to -> https://qdrant.tech/documentation/quickstart/
+
+    host = os.environ.get("QDRANT_URL", None)
+    api_key = os.environ.get("QDRANT_API_KEY", None)
+    try:
+        client = QdrantClient(url=host, api_key=api_key, timeout=30)
+    except Exception as e:
+        print("Error")
+        print(f"{e}")
+        return None
+    return client
 ```
+
+```python
+# Get DB Client Object
+client = get_db_client()
+```
+
+## Document Manager
+
+For the **LangChain-OpenTutorial**, we have implemented a custom set of **CRUD** functionalities for VectorDBs
+
+The following operations are included:
+
+- ```upsert``` : Update existing documents or insert if they don’t exist
+
+- ```upsert_parallel``` : Perform upserts in parallel for large-scale data
+
+- ```similarity_search``` : Search for similar documents based on embeddings
+
+- ```delete``` : Remove documents based on filter conditions
+
+Each of these features is implemented as class methods specific to each VectorDB.
+
+In this tutorial, you'll learn how to use these methods to interact with your VectorDB.
+
+*We plan to continuously expand the functionality by adding more common operations in the future.*
+
+### Create Instance
+
+First, create an instance of the **Qdrant** helper class to use its CRUD functionalities.
+
+This class is initialized with the **Qdrant Python SDK client instance** and the **embedding model instance** , both of which were defined in the previous section.
 
 ```python
 from utils.qdrant import QdrantDocumentManager
-from langchain_openai import OpenAIEmbeddings
 
-# Define the collection name for storing documents
-collection_name = "demo_collection"
-
-# Initialize the embedding model with a specific OpenAI model
-embedding = OpenAIEmbeddings(model="text-embedding-3-large")
-
-# Create an instance of QdrantDocumentManager with specified storage path
-db = QdrantDocumentManager(
-    url=QDRANT_URL,
-    api_key=QDRANT_API_KEY,
-    collection_name=collection_name,
-    embedding=embedding,
-)
+# ❗ Qdrant vectorizes using the embedding function. Transfer the "Embedding Function" as a parameter.
+crud_manager = QdrantDocumentManager(client=client, embedding=embedding.embed_documents)
 ```
 
-## Initialization
+Now you can use the following **CRUD** operations with the ```crud_manager``` instance.
 
-Once you've established your **vector store**, you'll likely need to manage the **collections** within it. Here are some common operations you can perform:
+These instance allow you to easily manage documents in your **Qdrant** .
 
-- **Create a collection**
-- **List collections**
-- **Delete a collection**
+### Upsert Document
 
-To proceed with the tutorial, we will use **Qdrant Cloud** for the next steps. This approach ensures that your data is securely stored in the cloud, allowing for seamless access, comprehensive testing, and experimentation across different environments.
+**Update** existing documents or **insert** if they don’t exist
 
-### Create a Collection
+**✅ Args**
 
-The `QdrantDocumentManager` class allows you to create a new **collection** in `Qdrant`. It can automatically create a collection if it doesn't exist or if you want to **recreate** it. You can specify configurations for **dense** and **sparse vectors** to meet different search needs. Use the `_ensure_collection_exists` method for **automatic creation** or call `create_collection` directly when needed.
+- ```texts``` : Iterable[str] – List of text contents to be inserted/updated.
 
-```python
-from utils.qdrant import QdrantDocumentManager
-from langchain_openai import OpenAIEmbeddings
-from qdrant_client.http.models import Distance
+- ```metadatas``` : Optional[List[Dict]] – List of metadata dictionaries for each text (optional).
 
-# Define the collection name for storing documents
-collection_name = "test_collection"
+- ```ids``` : Optional[List[str]] – Custom IDs for the documents. If not provided, IDs will be auto-generated.
 
-# Initialize the embedding model with a specific OpenAI model
-embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+- ```**kwargs``` : Extra arguments for the underlying vector store.
 
-# Create an instance of QdrantDocumentManager with specified storage path
-db = QdrantDocumentManager(
-    url=QDRANT_URL,
-    api_key=QDRANT_API_KEY,
-    collection_name=collection_name,
-    embedding=embedding,
-    metric=Distance.COSINE,
-)
-```
+**🔄 Return**
 
-<pre class="custom">Collection 'test_collection' does not exist or force recreate is enabled. Creating new collection...
-    Collection 'test_collection' created successfully with configuration: {'vectors_config': VectorParams(size=3072, distance=<Distance.COSINE: 'Cosine'>, hnsw_config=None, quantization_config=None, on_disk=None, datatype=None, multivector_config=None)}
-</pre>
-
-### List Collections
-
-The `QdrantDocumentManager` class lets you list all **collections** in your `Qdrant` instance using the `get_collections` method. This retrieves and displays the **names** of all existing collections.
-
+- None
 
 ```python
-# Retrieve the list of collections from the Qdrant client
-collections = db.client.get_collections()
-
-# Iterate over each collection and print its details
-for collection in collections.collections:
-    print(f"Collection Name: {collection.name}")
-```
-
-<pre class="custom">Collection Name: test_collection
-    Collection Name: sparse_collection
-    Collection Name: dense_collection
-    Collection Name: insta_image_search_test
-    Collection Name: insta_image_search
-    Collection Name: demo_collection
-</pre>
-
-### Delete a Collection
-
-The `QdrantDocumentManager` class allows you to delete a **collection** using the `delete_collection` method. This method removes the specified collection from your `Qdrant` instance.
-
-```python
-# Define collection name
-collection_name = "test_collection"
-
-# Delete the collection
-if db.client.delete_collection(collection_name=collection_name):
-    print(f"Collection '{collection_name}' has been deleted.")
-```
-
-<pre class="custom">Collection 'test_collection' has been deleted.
-</pre>
-
-## Manage VectorStore
-
-After you've created your **vector store**, you can interact with it by **adding** or **deleting** items. Here are some common operations:
-
-### Add Items to the Vector Store
-
-The `QdrantDocumentManager` class lets you add items to your **vector store** using the `upsert` method. This method **updates** existing documents with new data if their IDs already exist.
-
-```python
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.document_loaders import TextLoader
 from uuid import uuid4
 
-# Load the text file
-loader = TextLoader("./data/the_little_prince.txt")
-documents = loader.load()
+args = {
+    "texts": [doc.page_content for doc in docs[:2]],
+    "metadatas": [doc.metadata for doc in docs[:2]],
+    "ids": [str(uuid4()) for _ in docs[:2]],
+    "result_view": True,
+    # Add additional parameters if you need
+}
 
-# Initialize the text splitter
-text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=600, chunk_overlap=100, length_function=len
-)
-
-split_docs = text_splitter.split_documents(documents)
-
-# Generate unique IDs for documents
-uuids = [str(uuid4()) for _ in split_docs[:30]]
-page_contents = [doc.page_content for doc in split_docs[:30]]
-metadatas = [doc.metadata for doc in split_docs[:30]]
+crud_manager.upsert(**args)
 ```
 
+<pre class="custom">Operation_id : 70 | Status : completed
+</pre>
+
+### Upsert Parallel
+
+Perform **upsert** in **parallel** for large-scale data
+
+**✅ Args**
+
+- ```texts``` : Iterable[str] – List of text contents to be inserted/updated.
+
+- ```metadatas``` : Optional[List[Dict]] – List of metadata dictionaries for each text (optional).
+
+- ```ids``` : Optional[List[str]] – Custom IDs for the documents. If not provided, IDs will be auto-generated.
+
+- ```batch_size``` : int – Number of documents per batch (default: 32).
+
+- ```workers``` : int – Number of parallel workers (default: 10).
+
+- ```**kwargs``` : Extra arguments for the underlying vector store.
+
+**🔄 Return**
+
+- None
+
 ```python
-from utils.qdrant import QdrantDocumentManager
-from langchain_openai import OpenAIEmbeddings
+from uuid import uuid4
 
-# Define the collection name for storing documents
-collection_name = "demo_collection"
+args = {
+    "texts": [doc.page_content for doc in docs],
+    "metadatas": [doc.metadata for doc in docs],
+    "ids": [str(uuid4()) for _ in docs],
+    # Add additional parameters if you need
+}
 
-# Initialize the embedding model with a specific OpenAI model
-embedding = OpenAIEmbeddings(model="text-embedding-3-large")
-
-# Create an instance of QdrantDocumentManager with specified storage path
-db = QdrantDocumentManager(
-    url=QDRANT_URL,
-    api_key=QDRANT_API_KEY,
-    collection_name=collection_name,
-    embedding=embedding,
-)
-
-db.upsert(texts=page_contents, metadatas=metadatas, ids=uuids)
+crud_manager.upsert_parallel(**args)
 ```
 
+### Similarity Search
+
+Search for **similar documents** based on **embeddings** .
+
+This method uses **"cosine similarity"** .
 
 
+**✅ Args**
 
-<pre class="custom">['22417c4f-bf11-4e92-978a-6c436dec39ca',
-     '28f56a01-34af-46ae-aeb4-ea6e0fcacb62',
-     'c6d06501-9595-4272-80b5-f0747cb145fc',
-     'b4b901bf-6e83-4658-b5e9-a1d5a80c767d',
-     '21b1b98d-0707-4128-a0bd-78c94db6cbf3',
-     'c49b5d7c-c330-4d59-9097-25c3c52510b9',
-     '36ddc677-4fa9-47ee-b2e0-284bdb9062a1',
-     '32fde659-84c6-4679-b4df-d4b1d11e645f',
-     'caf0b611-4a38-4a94-84a9-c3a98ac0b2a1',
-     '0e655834-9a6c-48a8-8a3b-5d5e2b1d6c2c',
-     '493aaa5c-b89d-429b-a425-57f20f3564ed',
-     '6f7f0755-d226-4aec-a714-a53d7a705e51',
-     '8b68a39b-f990-4ce1-9fbd-675f5103d3ff',
-     '73ef217b-9114-48a4-a447-0deb916b3d5a',
-     '63b99932-4e84-4cb2-a5ef-1d83fdbc4e6a',
-     '45fd3628-ca2f-439d-97ba-cc34da564f36',
-     '876f59dd-a9ae-4af7-84e8-5d8fe78cf7d3',
-     '5aa82f42-534f-447f-94b5-9ed4f3571091',
-     'eb69cc2a-8899-4d9e-ad8f-adebea281ff0',
-     '1defc340-16b4-4ee0-94de-0dabc23e5d07',
-     '368d5f90-75d2-406c-8dd2-c7d8736b6944',
-     '842812f6-ee9f-43ae-8f6d-53015a5e57af',
-     '61031399-09ed-4c88-bc93-1018b942df71',
-     'a6ac25f2-2dd5-445f-95dd-6a4d9fc4081c',
-     '08215031-2393-4d0c-82a2-53a6a90d169f',
-     'f41de48c-1e7d-4036-a75e-a10ac579081d',
-     'a2d6b6d1-5bbc-4f17-9b95-c917021614f0',
-     '3603a2e7-6021-46c9-8f4c-d53056849c1a',
-     'e1fb95a1-7c1c-4aed-a628-b39e0907b744',
-     '2a42fbb6-9450-4d86-a5f8-65f333c10d4c']</pre>
+- ```query``` : str – The text query for similarity search.
 
+- ```k``` : int – Number of top results to return (default: 10).
 
+- ```**kwargs``` : Additional search options (e.g., filters).
 
-### Delete Items from the Vector Store
+**🔄 Return**
 
-The `QdrantDocumentManager` class allows you to delete items from your **vector store** using the `delete` method. You can specify items to delete by providing **IDs** or **filters**.
-
+- ```results``` : List[Document] – A list of LangChain Document objects ranked by similarity.
 
 ```python
-delete_ids = [uuids[0]]
-
-db.delete(ids=delete_ids)
+# Search by query
+results = crud_manager.search(query="What is essential is invisible to the eye.", k=3)
+for idx, doc in enumerate(results):
+    print(f"Rank {idx} | Title : {doc.metadata['title']}")
+    print(f"Contents : {doc.page_content}")
+    print()
 ```
 
-### Upsert Items to Vector Store (Parallel)
-
-The `QdrantDocumentManager` class supports **parallel upserts** using the `upsert_parallel` method. This efficiently **adds** or **updates** multiple items with unique **IDs**, **data**, and **metadata**.
-
-```python
-# Generate unique IDs for documents
-uuids = [str(uuid4()) for _ in split_docs[30:60]]
-page_contents = [doc.page_content for doc in split_docs[30:60]]
-metadatas = [doc.metadata for doc in split_docs[30:60]]
-
-db.upsert_parallel(
-    texts=page_contents,
-    metadatas=metadatas,
-    ids=uuids,
-    batch_size=32,
-    workers=10,
-)
-```
-
-
-
-
-<pre class="custom">['286d99ae-019b-41ed-962a-c1a26bf41c4a',
-     'e17ce584-3576-45bb-8d82-36cfdd4c89d1',
-     'aed142fa-a13a-421f-9e60-ab1af13a8b15',
-     '14337336-edb2-4ea1-880c-2f4613f1f999',
-     '91d47b16-4a1f-4f1f-ba07-78f9b2db06d8',
-     '6b58d2d9-1a4b-4e03-97fd-d584d502b606',
-     'e7b6f4b5-27e0-4787-a74c-b8d17a7038ea',
-     '01579e1a-9935-443d-a7a5-b9ffdd1e07f9',
-     '4d516f16-09cf-4b7e-8d65-455eced738e7',
-     '7fd284a3-5f10-407f-a8fe-44a923263748',
-     '55fae9b6-046a-4f09-9cf0-08568efde43c',
-     'b4386ade-1590-41fa-94e7-cc34d4f4c9da',
-     'd27d8f98-349a-4c45-9f82-31e983edfa8c',
-     '20537c5d-80d1-4d72-8507-73fd21e3f11a',
-     'ae418ede-69f6-4703-9d9d-2e31d59441b2',
-     '975d663d-f825-446d-9824-7997058ca24a',
-     'c8086e33-6345-4403-a98c-a4cd46375cd1',
-     'ec887b4f-eecf-4325-8117-293e6fd8dfd6',
-     'c5fa1381-e30d-47d8-aad3-d46cc8520953',
-     '1b20e891-e44f-4640-ab24-03d692627265',
-     '0d37a3dd-329f-4901-a828-71a704f7a35e',
-     '170420dc-b02c-42f3-a36d-c56973784fb7',
-     'f11893c3-20c5-43e4-9c0f-905d91c7a668',
-     '37327ff1-7f17-43b0-89ca-65ab69c14df6',
-     '92a4e2ec-7418-4241-a1e3-3bf2668a9fd6',
-     'ea018faa-293f-4329-b8ae-92dc3fcdd909',
-     '09c78d94-0b4c-41cc-b530-7504f3d62dc4',
-     '907ad8d0-427d-4f29-b801-aea90a6a86aa',
-     '86508b0c-4ff7-422f-b13e-1443e47ef5d3',
-     'b12e4c37-50a1-4257-80ae-de372a4a77ce']</pre>
-
-
-
-## Query VectorStore
-
-Once your **vector store** has been created and the relevant **documents** have been added, you will most likely wish to **query** it during the running of your `chain` or `agent`.
-
-### Query Directly
-
-The `QdrantDocumentManager` class allows direct **querying** using the `search` method. It performs **similarity searches** by converting queries into **vector embeddings** to find similar **documents**.
-
+<pre class="custom">Rank 0 | Title : TO LEON WERTH
+    Contents : TO LEON WERTH WHEN HE WAS A LITTLE BOY
+    
+    Rank 1 | Title : Chapter 21
+    Contents : you see the grain-fields down yonder? I do not ea t bread. Wheat is of no use to me. The wheat fields have nothing to say to me. And that is sad. But you have hair that is the colour of gold. Think how wonderful that will be when you have tamed me! The grain, which is also golden, will bring me bac k the thought of you. And I shall love to listen to the wind in the wheat..."
+    
+    Rank 2 | Title : Chapter 27
+    Contents : Look up at the sky. Ask yourselves: is it yes or no? Has the sheep eaten the flower? And you will see how everything changes... 
+    And no grown-up will ever understand that this is a matter of so much importance! 
+    (picture)
+    This is, to me, the loveliest and saddest landscape in the world. It is the same as that on the preceding page, but I have drawn it again to impress it on your memory. It is here that the little prince appeared on Earth, and disappeared.
+    
+</pre>
 
 ```python
-query = "What is the significance of the rose in The Little Prince?"
-
-response = db.search(
-    query=query,
+# Search by query with filters
+results = crud_manager.search(
+    query="Which asteroid did the little prince come from?",
     k=3,
+    filters=[{"title": "Chapter 4"}],
 )
-
-for res in response:
-    payload = res["payload"]
-    print(f"* {payload['page_content'][:200]}\n [{payload['metadata']}]\n\n")
+for idx, doc in enumerate(results):
+    print(f"Rank {idx} | Title : {doc.metadata['title']}")
+    print(f"Contents : {doc.page_content}")
+    print()
 ```
 
-<pre class="custom">* for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
-     [{'source': './data/the_little_prince.txt'}]
+<pre class="custom">Rank 0 | Title : Chapter 4
+    Contents : But that did not really surprise me much. I knew very well that in addition to the great planets-- such as the Earth, Jupiter, Mars, Venus-- to which we have given names, there are also hundreds of others, some of which are so small that one has a hard time seeing them through the telescope. When an astronomer discovers one of these he does not give it a name, but only a number. He might call it, for example, "Asteroid 325."
     
+    Rank 1 | Title : Chapter 4
+    Contents : - the narrator speculates as to which asteroid from which the little prince came　　
+    I had thus learned a second fact of great importance: this was that the planet the little prince came from was scarcely any larger than a house!
     
-    * for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
-     [{'source': './data/the_little_prince.txt'}]
-    
-    
-    * for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
-     [{'source': './data/the_little_prince.txt'}]
-    
+    Rank 2 | Title : Chapter 4
+    Contents : weigh? How much money does his father make?" Only from these figures do they think they have learned anything about him.
     
 </pre>
 
-### Similarity Search with Score
+### as_retriever
 
-The `QdrantDocumentManager` class enables **similarity searches** with **scores** using the `search` method. This provides a **relevance score** for each **document** found.
+The ```as_retriever()``` method creates a LangChain-compatible retriever wrapper.
+
+This function allows a ```DocumentManager``` class to return a retriever object by wrapping the internal ```search()``` method, while staying lightweight and independent from full LangChain ```VectorStore``` dependencies.
+
+The retriever obtained through this function is compatible with existing LangChain retrievers and can be used in LangChain Pipelines (e.g., RetrievalQA, ConversationalRetrievalChain, Tool, etc.)
+
+**✅ Args**
+
+- ```search_fn``` : Callable - The function used to retrieve relevant documents. Typically this is ```self.search``` from a ```DocumentManager``` instance.
+
+- ```search_kwargs``` : Optional[Dict] - A dictionary of keyword arguments passed to ```search_fn```, such as ```k``` for top-K results or metadata filters.
+
+**🔄 Return**
+
+- ```LightCustomRetriever``` :BaseRetriever - A lightweight LangChain-compatible retriever that internally uses the given ```search_fn``` and ```search_kwargs```.
+
+```python
+# Search without filters
+ret = crud_manager.as_retriever(
+    search_fn=crud_manager.search, search_kwargs={"k": 1}
+)
+```
+
+```python
+ret.invoke("Which asteroid did the little prince come from?")
+```
+
+
+
+
+<pre class="custom">[Document(metadata={'title': 'TO LEON WERTH', 'score': 0.2232914, 'id': 'cfa0c496-ab0b-4a31-8f13-90f97ed713da'}, page_content='TO LEON WERTH WHEN HE WAS A LITTLE BOY')]</pre>
+
 
 
 ```python
-# Define the query to search in the database
-query = "What is the significance of the rose in The Little Prince?"
-
-# Perform the search with the specified query and number of results
-response = db.search(query=query, k=3)
-
-for res in response:
-    payload = res["payload"]
-    score = res["score"]
-    print(
-        f"* [SIM={score:.3f}] {payload['page_content'][:200]}\n [{payload['metadata']}]\n\n"
-    )
+# Search with filters
+ret = crud_manager.as_retriever(
+    search_fn=crud_manager.search,
+    search_kwargs={
+        "k": 2,
+        "where": {"title": "Chapter 4"}  # Filter to only search in Chapter 4
+    }
+)
 ```
 
-<pre class="custom">* [SIM=0.527] for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
-     [{'source': './data/the_little_prince.txt'}]
-    
-    
-    * [SIM=0.527] for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
-     [{'source': './data/the_little_prince.txt'}]
-    
-    
-    * [SIM=0.527] for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
-     [{'source': './data/the_little_prince.txt'}]
-    
-    
+```python
+print("Example 2: Search with title filter (Chapter 4)")
+print(ret.invoke("Which asteroid did the little prince come from?"))
+```
+
+<pre class="custom">Example 2: Search with title filter (Chapter 4)
+    [Document(metadata={'title': 'TO LEON WERTH', 'score': 0.2232914, 'id': 'cfa0c496-ab0b-4a31-8f13-90f97ed713da'}, page_content='TO LEON WERTH WHEN HE WAS A LITTLE BOY'), Document(metadata={'title': 'Chapter 21', 'score': 0.17259452, 'id': 'b72da2e6-8793-4344-b864-7b833b615ea4'}, page_content='you see the grain-fields down yonder? I do not ea t bread. Wheat is of no use to me. The wheat fields have nothing to say to me. And that is sad. But you have hair that is the colour of gold. Think how wonderful that will be when you have tamed me! The grain, which is also golden, will bring me bac k the thought of you. And I shall love to listen to the wind in the wheat..."')]
 </pre>
 
-### Query by Turning into Retriever
+### Delete Document
 
-The `QdrantDocumentManager` class can transform the **vector store** into a `retriever`. This allows for easier **integration** into **workflows** or **chains**.
+Delete documents based on filter conditions
 
+**✅ Args**
+
+- ```ids``` : Optional[List[str]] – List of document IDs to delete. If None, deletion is based on filter.
+
+- ```filters``` : Optional[Dict] – Dictionary specifying filter conditions (e.g., metadata match).
+
+- ```**kwargs``` : Any additional parameters.
+
+**🔄 Return**
+
+- None
 
 ```python
-from langchain_qdrant import QdrantVectorStore
-
-# Initialize QdrantVectorStore with the client, collection name, and embedding
-vector_store = QdrantVectorStore(
-    client=db.client, collection_name=db.collection_name, embedding=db.embedding
-)
-
-query = "What is the significance of the rose in The Little Prince?"
-
-# Transform the vector store into a retriever with specific search parameters
-retriever = vector_store.as_retriever(
-    search_type="similarity_score_threshold",
-    search_kwargs={"k": 3, "score_threshold": 0.3},
-)
-
-results = retriever.invoke(query)
-
-for res in results:
-    print(f"* {res.page_content[:200]}\n [{res.metadata}]\n\n")
+# Delete by ids
+ids = args["ids"][:3]  # The 'ids' value you want to delete
+crud_manager.delete(ids=ids)
 ```
 
-<pre class="custom">* for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
-     [{'source': './data/the_little_prince.txt', '_id': 'c49b5d7c-c330-4d59-9097-25c3c52510b9', '_collection_name': 'demo_collection'}]
-    
-    
-    * for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
-     [{'source': './data/the_little_prince.txt', '_id': '9567e6cf-2f89-4c3b-8a41-7167770fbcd3', '_collection_name': 'demo_collection'}]
-    
-    
-    * for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
-     [{'source': './data/the_little_prince.txt', '_id': 'e2a0d06a-9ccd-4e9e-8d4a-4e1292b6ccef', '_collection_name': 'demo_collection'}]
-    
-    
+<pre class="custom">3 data delete...
 </pre>
 
-### Search with Filtering
-
-The `QdrantDocumentManager` class allows **searching with filters** to retrieve records based on specific **metadata values**. This is done using the `scroll` method with a defined **filter query**.
-
 ```python
-from qdrant_client import models
-
-# Define a filter query to match documents containing the text "Chapter" in the page content
-filter_query = models.Filter(
-    must=[
-        models.FieldCondition(
-            key="page_content",
-            match=models.MatchText(text="Chapter"),
-        ),
-    ]
-)
-
-# Retrieve records from the collection that match the filter query
-db.scroll(
-    scroll_filter=filter_query,
-    k=10,
-)
+# Delete by ids with filters
+ids = args["ids"][3:]  # The `ids` value corresponding to chapter 6
+crud_manager.delete(ids=ids, filters=[{"title": "Chapter 6"}])
 ```
 
-
-
-
-<pre class="custom">[Record(id='09c78d94-0b4c-41cc-b530-7504f3d62dc4', payload={'page_content': '[ Chapter 7 ]\n- the narrator learns about the secret of the little prince‘s life \nOn the fifth day-- again, as always, it was thanks to the sheep-- the secret of the little prince‘s life was revealed to me. Abruptly, without anything to lead up to it, and as if the question had been born of long and silent meditation on his problem, he demanded: \n"A sheep-- if it eats little bushes, does it eat flowers, too?"\n"A sheep," I answered, "eats anything it finds in its reach."\n"Even flowers that have thorns?"\n"Yes, even flowers that have thorns." \n"Then the thorns-- what use are they?"', 'metadata': {'source': './data/the_little_prince.txt'}}, vector=None, shard_key=None, order_value=None),
-     Record(id='0e655834-9a6c-48a8-8a3b-5d5e2b1d6c2c', payload={'page_content': '[ Chapter 1 ]\n- we are introduced to the narrator, a pilot, and his ideas about grown-ups\nOnce when I was six years old I saw a magnificent picture in a book, called True Stories from Nature, about the primeval forest. It was a picture of a boa constrictor in the act of swallowing an animal. Here is a copy of the drawing. \n(picture)\nIn the book it said: "Boa constrictors swallow their prey whole, without chewing it. After that they are not able to move, and they sleep through the six months that they need for digestion."', 'metadata': {'source': './data/the_little_prince.txt'}}, vector=None, shard_key=None, order_value=None),
-     Record(id='286d99ae-019b-41ed-962a-c1a26bf41c4a', payload={'page_content': '[ Chapter 4 ]\n- the narrator speculates as to which asteroid from which the little prince came\u3000\u3000\nI had thus learned a second fact of great importance: this was that the planet the little prince came from was scarcely any larger than a house!', 'metadata': {'source': './data/the_little_prince.txt'}}, vector=None, shard_key=None, order_value=None),
-     Record(id='45fd3628-ca2f-439d-97ba-cc34da564f36', payload={'page_content': '[ Chapter 2 ]\n- the narrator crashes in the desert and makes the acquaintance of the little prince\nSo I lived my life alone, without anyone that I could really talk to, until I had an accident with my plane in the Desert of Sahara, six years ago. Something was broken in my engine. And as I had with me neither a mechanic nor any passengers, I set myself to attempt the difficult repairs all alone. It was a question of life or death for me: I had scarcely enough drinking water to last a week.', 'metadata': {'source': './data/the_little_prince.txt'}}, vector=None, shard_key=None, order_value=None),
-     Record(id='d27d8f98-349a-4c45-9f82-31e983edfa8c', payload={'page_content': '[ Chapter 5 ]\n- we are warned as to the dangers of the baobabs\nAs each day passed I would learn, in our talk, something about the little prince‘s planet, his departure from it, his journey. The information would come very slowly, as it might chance to fall from his thoughts. It was in this way that I heard, on the third day, about the catastrophe of the baobabs.\nThis time, once more, I had the sheep to thank for it. For the little prince asked me abruptly-- as if seized by a grave doubt-- "It is true, isn‘t it, that sheep eat little bushes?" \n"Yes, that is true." \n"Ah! I am glad!"', 'metadata': {'source': './data/the_little_prince.txt'}}, vector=None, shard_key=None, order_value=None),
-     Record(id='f11893c3-20c5-43e4-9c0f-905d91c7a668', payload={'page_content': '[ Chapter 6 ]\n- the little prince and the narrator talk about sunsets\nOh, little prince! Bit by bit I came to understand the secrets of your sad little life... For a long time you had found your only entertainment in the quiet pleasure of looking at the sunset. I learned that new detail on the morning of the fourth day, when you said to me: \n"I am very fond of sunsets. Come, let us go look at a sunset now." \n"But we must wait," I said. \n"Wait? For what?" \n"For the sunset. We must wait until it is time."', 'metadata': {'source': './data/the_little_prince.txt'}}, vector=None, shard_key=None, order_value=None),
-     Record(id='f41de48c-1e7d-4036-a75e-a10ac579081d', payload={'page_content': '[ Chapter 3 ]\n- the narrator learns more about from where the little prince came\nIt took me a long time to learn where he came from. The little prince, who asked me so many questions, never seemed to hear the ones I asked him. It was from words dropped by chance that, little by little, everything was revealed to me. \nThe first time he saw my airplane, for instance (I shall not draw my airplane; that would be much too complicated for me), he asked me: \n"What is that object?"\n"That is not an object. It flies. It is an airplane. It is my airplane."', 'metadata': {'source': './data/the_little_prince.txt'}}, vector=None, shard_key=None, order_value=None)]</pre>
-
-
-
-### Delete with Filtering
-
-The `QdrantDocumentManager` class allows you to **delete records** using **filters** based on specific **metadata values**. This is achieved with the `delete` method and a **filter query**.
-
-```python
-from qdrant_client.http.models import Filter, FieldCondition, MatchText
-
-# Define a filter query to match documents containing the text "Chapter" in the page content
-filter_query = models.Filter(
-    must=[
-        models.FieldCondition(
-            key="page_content",
-            match=models.MatchText(text="Chapter"),
-        ),
-    ]
-)
-
-# Delete records from the collection that match the filter query
-db.client.delete(collection_name=db.collection_name, points_selector=filter_query)
-```
-
-
-
-
-<pre class="custom">UpdateResult(operation_id=31, status=<UpdateStatus.COMPLETED: 'completed'>)</pre>
-
-
-
-### Filtering and Updating Records
-
-The `QdrantDocumentManager` class supports **filtering and updating records** based on specific **metadata values**. This is done by **retrieving records** with **filters** and **updating** them as needed.
-
-
-```python
-from qdrant_client import models
-
-# Define a filter query to match documents with a specific metadata source
-filter_query = models.Filter(
-    must=[
-        models.FieldCondition(
-            key="metadata.source",
-            match=models.MatchValue(value="./data/the_little_prince.txt"),
-        ),
-    ]
-)
-
-# Retrieve records matching the filter query, including their vectors
-response = db.scroll(scroll_filter=filter_query, k=10, with_vectors=True)
-new_source = "the_little_prince.txt"
-
-# Update the point IDs and set new metadata for the records
-for point in response:  # response[0] returns a list of points
-    payload = point.payload
-
-    # Check if metadata exists in the payload
-    if "metadata" in payload:
-        payload["metadata"]["source"] = new_source
-    else:
-        payload["metadata"] = {
-            "source": new_source
-        }  # Add new metadata if it doesn't exist
-
-    # Update the point with new metadata
-    db.client.upsert(
-        collection_name=db.collection_name,
-        points=[
-            models.PointStruct(
-                id=point.id,
-                payload=payload,
-                vector=point.vector,
-            )
-        ],
-    )
-```
-
-### Similarity Search Options
-
-When using `QdrantVectorStore`, you have three options for performing **similarity searches**. You can select the desired search mode using the `retrieval_mode` parameter when you set up the class. The available modes are:
-
-- **Dense Vector Search** (Default)
-- **Sparse Vector Search**
-- **Hybrid Search**
-
-### Dense Vector Search
-
-To perform a search using only **dense vectors**:
-
-- The `retrieval_mode` parameter must be set to `RetrievalMode.DENSE`. This is also the **default setting**.
-- You need to provide a [dense embeddings](https://python.langchain.com/docs/integrations/text_embedding/) value through the `embedding` parameter.
-
-
-```python
-from langchain_qdrant import RetrievalMode
-from langchain_openai import OpenAIEmbeddings
-
-query = "What is the significance of the rose in The Little Prince?"
-
-# Initialize the embedding model with a specific OpenAI model
-embedding = OpenAIEmbeddings(model="text-embedding-3-large")
-
-# Initialize QdrantVectorStore with documents, embeddings, and configuration
-vector_store = QdrantVectorStore.from_documents(
-    documents=split_docs[:50],
-    embedding=embedding,
-    url=QDRANT_URL,
-    api_key=QDRANT_API_KEY,
-    collection_name="dense_collection",
-    retrieval_mode=RetrievalMode.DENSE,
-    batch_size=10,
-)
-
-# Perform similarity search in the vector store
-results = vector_store.similarity_search(
-    query=query,
-    k=3,
-)
-
-for res in results:
-    print(f"* {res.page_content[:200]}\n [{res.metadata}]\n\n")
-```
-
-<pre class="custom">* for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
-     [{'source': './data/the_little_prince.txt', '_id': '3cc041d5-2700-498f-8114-85f3c96e26b9', '_collection_name': 'dense_collection'}]
-    
-    
-    * for decades. In the book, a pilot is stranded in the midst of the Sahara where he meets a tiny prince from another world traveling the universe in order to understand life. In the book, the little pri
-     [{'source': './data/the_little_prince.txt', '_id': '24d766ea-3383-40e5-bd0e-051d51de88a3', '_collection_name': 'dense_collection'}]
-    
-    
-    * Indeed, as I learned, there were on the planet where the little prince lived-- as on all planets-- good plants and bad plants. In consequence, there were good seeds from good plants, and bad seeds fro
-     [{'source': './data/the_little_prince.txt', '_id': 'd25ba992-e54d-4e8a-9572-438c78d0288b', '_collection_name': 'dense_collection'}]
-    
-    
+<pre class="custom">4 data delete...
+    Delete All Finished
 </pre>
 
-### Sparse Vector Search
-
-To search with only **sparse vectors**:
-
-- The `retrieval_mode` parameter should be set to `RetrievalMode.SPARSE`.
-- An implementation of the [SparseEmbeddings](https://github.com/langchain-ai/langchain/blob/master/libs/partners/qdrant/langchain_qdrant/sparse_embeddings.py) interface using any **sparse embeddings provider** has to be provided as a value to the `sparse_embedding` parameter.
-- The `langchain-qdrant` package provides a **FastEmbed** based implementation out of the box.
-
-To use it, install the [FastEmbed](https://github.com/qdrant/fastembed) package:
-
-```bash
-pip install fastembed
-```
-
 ```python
-from langchain_qdrant import FastEmbedSparse, RetrievalMode
-from langchain_qdrant import RetrievalMode
-from langchain_openai import OpenAIEmbeddings
-
-query = "What is the significance of the rose in The Little Prince?"
-
-# Initialize the embedding model with a specific OpenAI model
-embedding = OpenAIEmbeddings(model="text-embedding-3-large")
-# Initialize sparse embeddings using FastEmbedSparse
-sparse_embeddings = FastEmbedSparse(model_name="Qdrant/bm25")
-
-# Initialize QdrantVectorStore with documents, embeddings, and configuration
-vector_store = QdrantVectorStore.from_documents(
-    documents=split_docs,
-    embedding=embedding,
-    sparse_embedding=sparse_embeddings,
-    url=QDRANT_URL,
-    api_key=QDRANT_API_KEY,
-    collection_name="sparse_collection",
-    retrieval_mode=RetrievalMode.SPARSE,
-    batch_size=10,
-)
-
-# Perform similarity search in the vector store
-results = vector_store.similarity_search(
-    query=query,
-    k=3,
-)
-
-for res in results:
-    print(f"* {res.page_content[:200]}\n [{res.metadata}]\n\n")
+# Delete All
+crud_manager.delete()
 ```
 
-<pre class="custom">* [ Chapter 20 ]
-    - the little prince discovers a garden of roses
-    But it happened that after walking for a long time through sand, and rocks, and snow, the little prince at last came upon a road. And all
-     [{'source': './data/the_little_prince.txt', '_id': '30d70339-4233-427b-b839-208c7618ae82', '_collection_name': 'sparse_collection'}]
-    
-    
-    * [ Chapter 20 ]
-    - the little prince discovers a garden of roses
-    But it happened that after walking for a long time through sand, and rocks, and snow, the little prince at last came upon a road. And all
-     [{'source': './data/the_little_prince.txt', '_id': '45ad1b0e-45cd-46f0-b6cd-d8e2b19ea8fa', '_collection_name': 'sparse_collection'}]
-    
-    
-    * And he went back to meet the fox. 
-    "Goodbye," he said. 
-    "Goodbye," said the fox. "And now here is my secret, a very simple secret: It is only with the heart that one can see rightly; what is essential
-     [{'source': './data/the_little_prince.txt', '_id': 'ab098119-c45f-4e33-b105-a6c6e01a918b', '_collection_name': 'sparse_collection'}]
-    
-    
-</pre>
-
-### Hybrid Vector Search
-
-To perform a **hybrid search** using **dense** and **sparse vectors** with **score fusion**:
-
-- The `retrieval_mode` parameter should be set to `RetrievalMode.HYBRID`.
-- A [`dense embeddings`](https://python.langchain.com/docs/integrations/text_embedding/) value should be provided to the `embedding` parameter.
-- An implementation of the [`SparseEmbeddings`](https://github.com/langchain-ai/langchain/blob/master/libs/partners/qdrant/langchain_qdrant/sparse_embeddings.py) interface using any **sparse embeddings provider** has to be provided as a value to the `sparse_embedding` parameter.
-
-**Note**: If you've added documents with the `HYBRID` mode, you can switch to any **retrieval mode** when searching, since both the **dense** and **sparse vectors** are available in the **collection**.
-
-```python
-from langchain_qdrant import FastEmbedSparse, RetrievalMode
-from langchain_qdrant import RetrievalMode
-from langchain_openai import OpenAIEmbeddings
-
-query = "What is the significance of the rose in The Little Prince?"
-
-# Initialize the embedding model with a specific OpenAI model
-embedding = OpenAIEmbeddings(model="text-embedding-3-large")
-# Initialize sparse embeddings using FastEmbedSparse
-sparse_embeddings = FastEmbedSparse(model_name="Qdrant/bm25")
-
-# Initialize QdrantVectorStore with documents, embeddings, and configuration
-vector_store = QdrantVectorStore.from_documents(
-    documents=split_docs,
-    embedding=embedding,
-    sparse_embedding=sparse_embeddings,
-    url=QDRANT_URL,
-    api_key=QDRANT_API_KEY,
-    collection_name="hybrid_collection",
-    retrieval_mode=RetrievalMode.HYBRID,
-    batch_size=10,
-)
-
-# Perform similarity search in the vector store
-results = vector_store.similarity_search(
-    query=query,
-    k=3,
-)
-
-for res in results:
-    print(f"* {res.page_content[:200]}\n [{res.metadata}]\n\n")
-```
-
-<pre class="custom">* "Go and look again at the roses. You will understand now that yours is unique in all the world. Then come back to say goodbye to me, and I will make you a present of a secret." 
-    The little prince went
-     [{'source': './data/the_little_prince.txt', '_id': '447a916c-d8a9-46f2-b035-d0ac4c7ea901', '_collection_name': 'hybrid_collection'}]
-    
-    
-    * [ Chapter 20 ]
-    - the little prince discovers a garden of roses
-    But it happened that after walking for a long time through sand, and rocks, and snow, the little prince at last came upon a road. And all
-     [{'source': './data/the_little_prince.txt', '_id': '894a9222-ef0c-4e28-b736-8a334cbdc83b', '_collection_name': 'hybrid_collection'}]
-    
-    
-    * [ Chapter 8 ]
-    - the rose arrives at the little prince‘s planet
-     [{'source': './data/the_little_prince.txt', '_id': 'a3729fa0-b734-4316-ad18-83ea16263a2f', '_collection_name': 'hybrid_collection'}]
-    
-    
+<pre class="custom">256 data delete...
+    1 data delete...
+    Delete All Finished
 </pre>

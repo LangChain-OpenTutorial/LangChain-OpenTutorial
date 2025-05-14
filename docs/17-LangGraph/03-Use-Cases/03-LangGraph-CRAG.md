@@ -20,9 +20,11 @@ pre {
 # CRAG: Corrective RAG
 
 - Author: [Jaeho Kim](https://github.com/Jae-hoya)
-- Design: []()
 - Peer Review:
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
+
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/03-LangGraph-CRAG.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/03-LangGraph-CRAG.ipynb)
 
 ## OverView
 
@@ -44,20 +46,20 @@ The core ideas of CRAG are as follows:
 
 1. If one or more of the retrieved documents exceed the predefined relevance threshold (retrieval validation score), the process proceeds to the generation stage.
 2. A knowledge refinement step is performed before generation.
-3. Documents are divided into "knowledge strips" (where `k` refers to the number of document retrieval results).
+3. Documents are divided into "knowledge strips" (where ```k``` refers to the number of document retrieval results).
 4. Each knowledge strip is evaluated, and its relevance is scored (evaluations are conducted at the document chunk level).
 5. If all documents fall below the relevance threshold or the evaluation results have low confidence, additional data sources (e.g., web searches) are used for supplementation.
-6. When supplementing through web searches, query results are optimized using `Query-Rewrite`.
+6. When supplementing through web searches, query results are optimized using ```Query-Rewrite```.
 ---
 
 **Key Points**
 
 
-This tutorial demonstrates implementing some of the ideas from the `CRAG` approach using LangGraph.
+This tutorial demonstrates implementing some of the ideas from the ```CRAG``` approach using LangGraph.
 
 Here, **the knowledge refinement step is omitted** but is designed to be added as a node if necessary.
 
-Additionally, **if no relevant documents are found**, `web searches` will be used to supplement the retrieval.
+Additionally, **if no relevant documents are found**, ```web searches``` will be used to supplement the retrieval.
 
 For **web searches**,  [Tavily Search](https://python.langchain.com/docs/integrations/tools/tavily_search/) will be utilized, and Question Rewrite will be introduced to optimize the search process.
 
@@ -105,8 +107,8 @@ For **web searches**,  [Tavily Search](https://python.langchain.com/docs/integra
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -192,7 +194,7 @@ pdf_chain = pdf.chain
 
 The relevance evaluation of retrieved documents is the step where the retrieved documents are assessed for their relevance to the question.
 
-First, create an evaluator (`retrieval-grader`) to assess the retrieved documents.
+First, create an evaluator (```retrieval-grader```) to assess the retrieved documents.
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate
@@ -232,7 +234,7 @@ grade_prompt = ChatPromptTemplate.from_messages(
 retrieval_grader = grade_prompt | structured_llm_grader
 ```
 
-Using `retrieval_grader`, documents are evaluated.
+Using ```retrieval_grader```, documents are evaluated.
 
 Here, the evaluation is performed on a single document rather than a set of documents.
 
@@ -331,7 +333,7 @@ re_write_prompt = ChatPromptTemplate.from_messages(
 question_rewriter = re_write_prompt | llm | StrOutputParser()
 ```
 
-Rewrite Question Using `question_rewriter`.
+Rewrite Question Using ```question_rewriter```.
 
 ```python
 # Run chain and output results
@@ -372,7 +374,7 @@ print(results)
 
 Define the state for the CRAG graph.
 
-`Web_search` represents the state indicating whether to use web search.
+```Web_search``` represents the state indicating whether to use web search.
 It is expressed as yes or no (yes: web search required, no: not required).
 
 ```python
@@ -474,11 +476,11 @@ def web_search(state: GraphState):
 
 ## Function for Conditional Edges
 
-The `decide_to_generate` function routes to the next node based on whether web search is required after relevance evaluation.
+The ```decide_to_generate``` function routes to the next node based on whether web search is required after relevance evaluation.
 
-If `web_search` is `Yes`, it rewrites the query at the `query_rewrite` node and performs a web search.
+If ```web_search``` is ```Yes```, it rewrites the query at the ```query_rewrite``` node and performs a web search.
 
-If `web_search` is `No`, it proceeds to `generate` to create the final answer.
+If ```web_search``` is ```No```, it proceeds to ```generate``` to create the final answer.
 
 
 ```python
@@ -567,11 +569,11 @@ display(Image(app.get_graph(xray=True).draw_mermaid_png()))
 
 Now, execute the graph and check the results. This explains how to stream results in a RAG application.
 
-There are two streaming output modes for the graph: `messages` and `updates`. These can be controlled by specifying the `stream_mode` parameter.
+There are two streaming output modes for the graph: ```messages``` and ```updates```. These can be controlled by specifying the ```stream_mode``` parameter.
 
-- `stream_mode="updates"`: Typically streams during the call steps,  meaning updates to the state of individual nodes. In this case, each node simply adds a new key to the state.
+- ```stream_mode="updates"```: Typically streams during the call steps,  meaning updates to the state of individual nodes. In this case, each node simply adds a new key to the state.
 
-- `stream_mode="messages"`: Streams tokens from a chat model call.
+- ```stream_mode="messages"```: Streams tokens from a chat model call.
 
 - [Langchain: stream_mode](https://python.langchain.com/docs/how_to/qa_streaming/)
 
@@ -684,13 +686,13 @@ for message, metadata in app.stream(
     
 </pre>
 
-In the output above, since the question was relevant to the document, it directly connects to the `generation` node.
+In the output above, since the question was relevant to the document, it directly connects to the ```generation``` node.
 
-This time, the question is not relevant to the document. Therefore, it connects to the `query_rewrite` node and then to the `web_search` node.
+This time, the question is not relevant to the document. Therefore, it connects to the ```query_rewrite``` node and then to the ```web_search``` node.
 
-In other words, if the grade_documents node determines that no document is relevant, it connects to the `web_search` node.
+In other words, if the grade_documents node determines that no document is relevant, it connects to the ```web_search``` node.
 
-Here is the output for `stream_mode="messages"`.
+Here is the output for ```stream_mode="messages"```.
 
 ```python
 from langchain_core.runnables import RunnableConfig

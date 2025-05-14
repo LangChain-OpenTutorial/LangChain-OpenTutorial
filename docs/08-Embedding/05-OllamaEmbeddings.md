@@ -20,19 +20,18 @@ pre {
 # Ollama Embeddings With Langchain
 
 - Author: [Gwangwon Jung](https://github.com/pupba)
-- Design: []()
 - Peer Review : [Teddy Lee](https://github.com/teddylee777), [ro__o_jun](https://github.com/ro-jun), [BokyungisaGod](https://github.com/BokyungisaGod), [Youngjun cho](https://github.com/choincnp)
+- Proofread : [Youngjun cho](https://github.com/choincnp)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/05-OllamaEmbeddings.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/05-OllamaEmbeddings.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embedding/05-OllamaEmbeddings.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embedding/05-OllamaEmbeddings.ipynb)
 ## Overview
 
-This tutorial covers how to perform `Text Embedding` using `Ollama` and `Langchain`.
+This tutorial covers how to perform ```Text Embedding``` using ```Ollama``` and ```Langchain```.
 
-`Ollama` is an open-source project that allows you to easily serve models locally.
+```Ollama``` is an open-source project that allows you to easily serve models locally.
 
-In this tutorial, we will create a simple example to measure the similarity between `Documents` and an input `Query` using `Ollama` and `Langchain`.
+In this tutorial, we will create a simple example to measure the similarity between ```Documents``` and an input ```Query``` using ```Ollama``` and ```Langchain```.
 
 ![example](./img/example-flow-ollama-embedding-cal-similarity.png)
 
@@ -56,8 +55,8 @@ In this tutorial, we will create a simple example to measure the similarity betw
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -116,7 +115,7 @@ Ollama is an open-source project that makes it easy to run large language models
 
 Now that you have downloaded the model, let's load the model you downloaded and proceed with the embedding.
 
-First, define `Query` and `Documents`
+First, define ```Query``` and ```Documents```
 
 ```python
 # Query
@@ -132,10 +131,10 @@ docs = [
 ]
 ```
 
-Next, let's load the embedding model downloaded with `Ollama` using `Langchain`.
+Next, let's load the embedding model downloaded with ```Ollama``` using ```Langchain```.
 
 
-The `OllamaEmbeddings` class in `langchain_community/embeddings.py` will be removed in `langchain-community` version 1.0.0.
+The ```OllamaEmbeddings``` class in ```langchain_community/embeddings.py``` will be removed in ```langchain-community``` version 1.0.0.
 
 ```python
 # Load Embedding Model : Legacy
@@ -147,7 +146,7 @@ ollama_embeddings = OllamaEmbeddings(
 )
 ```
 
-So, in this tutorial, we used the `OllamaEmbeddings` class from `langchain-ollama`.
+So, in this tutorial, we used the ```OllamaEmbeddings``` class from ```langchain-ollama```.
 
 ```python
 # Load Embedding Model : Latest
@@ -159,7 +158,7 @@ ollama_embeddings = OllamaEmbeddings(
 )
 ```
 
-Let's use the loaded model to embed the `Query` and `Documents`.
+Let's use the loaded model to embed the ```Query``` and ```Documents```.
 
 ```python
 # Embedding Query
@@ -178,9 +177,9 @@ print(f"Embedding Dimension Output: {len(embedded_query)}")
 
 Let's use the vector values of the query and documents obtained earlier to calculate the similarity.
 
-In this tutorial, we will use [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity) to calculate the similarity between the `Query` and the `Documents`.
+In this tutorial, we will use [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity) to calculate the similarity between the ```Query``` and the ```Documents```.
 
-Using the `Sklearn` library in Python, you can easily calculate **cosine similarity**.
+Using the ```Sklearn``` library in Python, you can easily calculate **cosine similarity**.
 
 ```python
 from sklearn.metrics.pairwise import cosine_similarity

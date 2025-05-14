@@ -20,12 +20,11 @@ pre {
 # Prompt Caching
 
 - Author: [PangPangGod](https://github.com/pangpanggod)
-- Design: []()
-- Peer Review : []()
+- Peer Review : [byoon](https://github.com/acho98), [Wonyoung Lee](https://github.com/BaBetterB)
+- Proofread : [BokyungisaGod](https://github.com/BokyungisaGod)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/12-RunnableRetry.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/12-RunnableRetry.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/02-Prompt/05-Prompt-Caching.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/02-Prompt/05-Prompt-Caching.ipynb)
 ## Overview
 
 Prompt caching is a powerful feature that optimizes API usage by enabling resumption from specific prefixes in your prompts.  

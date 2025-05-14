@@ -21,10 +21,10 @@ pre {
 
 - Author: [Yejin Park](https://github.com/ppakyeah)
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/15-LangGraph-Streaming-steps.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/15-LangGraph-Streaming-steps.ipynb)
 ## Overview
 
 This tutorial demonstrates LangGraph's streaming capabilities by building an AI news search system.
@@ -58,7 +58,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -81,9 +81,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -105,9 +105,9 @@ if not load_dotenv():
 ## Introduction to Streaming Modes
 LangGraph supports multiple streaming modes. The main ones are:
 
-- `values`: This streaming mode streams back values of the graph. This is the full state of the graph after each node is called.
-- `updates`: This streaming mode streams back updates to the graph. This is the update to the state of the graph after each node is called.
-- `messages`: This streaming mode streams LLM tokens from nodes as they are produced.
+- ```values```: This streaming mode streams back values of the graph. This is the full state of the graph after each node is called.
+- ```updates```: This streaming mode streams back updates to the graph. This is the update to the state of the graph after each node is called.
+- ```messages```: This streaming mode streams LLM tokens from nodes as they are produced.
 
 ## Defining the Graph
 We'll create a simple agent that can search news and process the results.
@@ -264,19 +264,19 @@ display(Image(graph.get_graph().draw_mermaid_png()))
 
 ## Step-by-step output of a node
 Streaming mode
-- `values`: Output current status value for each step
-- `updates`: Output only status updates for each step (default)
-- `messages`: Output messages for each step
+- ```values```: Output current status value for each step
+- ```updates```: Output only status updates for each step (default)
+- ```messages```: Output messages for each step
 
 Streaming here does not mean token-by-token streaming of LLM output, but rather step-by-step output.
 
-### Values Mode (`stream_mode="values"`)
+### Values Mode (```stream_mode="values"```)
 
 The values mode streams the complete state after each node execution.
 
 A chunk is a tuple with two elements.
-- `key`: key of State
-- `value`: value of State
+- ```key```: key of State
+- ```value```: value of State
 
 
 **Synchronous Streaming**
@@ -322,7 +322,7 @@ for chunk in graph.stream(inputs, stream_mode="values"):
 
 **Asynchronous Streaming**
 
-The `astream()` method runs the graph through asynchronous stream processing and generates chunked responses in value mode.
+The ```astream()``` method runs the graph through asynchronous stream processing and generates chunked responses in value mode.
 
 It uses an async for statement to perform asynchronous stream processing.
 
@@ -390,14 +390,14 @@ print(final_result["messages"][-1].content)
     If you would like more details on any of these articles, let me know!
 </pre>
 
-### Updates Mode (`stream_mode="updates"`)
+### Updates Mode (```stream_mode="updates"```)
 The updates mode streams only the changes to the state after each node execution.
 
 The output is a dictionary with the node names as keys and the updated values as values.
 
 A chunk is a tuple with two elements.
-- `key`: the name of the Node
-- `value`: The output value from that Node step, i.e. a dictionary with multiple key-value pairs
+- ```key```: the name of the Node
+- ```value```: The output value from that Node step, i.e. a dictionary with multiple key-value pairs
 
 **Synchronous Streaming**
 
@@ -498,13 +498,13 @@ async for chunk in graph.astream(inputs, stream_mode="updates"):
     If you would like more details about any specific article, let me know!
 </pre>
 
-### Messages Mode (`stream_mode="messages"`)
+### Messages Mode (```stream_mode="messages"```)
 
 The messages mode streams individual messages from each node.
 
 A chunk is a tuple with two elements.
-- `chunk_msg`: real-time output message
-- `metadata`: Node information
+- ```chunk_msg```: real-time output message
+- ```metadata```: Node information
 
 **Synchronous Streaming**
 
@@ -579,13 +579,13 @@ async for chunk_msg, metadata in graph.astream(inputs, stream_mode="messages"):
 ## Advanced Streaming Features
 ### Streaming output to a specific node
 
-If you want to output for a specific Node, you can set it via `stream_mode="messages"`.
+If you want to output for a specific Node, you can set it via ```stream_mode="messages"```.
 
-When setting `stream_mode="messages"`, you will receive messages in the form of `(chunk_msg, metadata)`.
-- `chunk_msg`: the real-time output message
-- `metadata`: the node information
+When setting ```stream_mode="messages"```, you will receive messages in the form of ```(chunk_msg, metadata)```.
+- ```chunk_msg```: the real-time output message
+- ```metadata```: the node information
 
-You can use `metadata["langgraph_node"]` to output only messages from a specific node.
+You can use ```metadata["langgraph_node"]``` to output only messages from a specific node.
 
 ```python
 from langchain_core.messages import HumanMessage
@@ -662,7 +662,7 @@ llm_with_tools = llm.bind_tools(tools).with_config(tags=["WANT_TO_STREAM"])
 
 This allows you to filter events more precisely, keeping only events that occurred in that model.
 
-The example below outputs only if the `WANT_TO_STREAM` tag is present.
+The example below outputs only if the ```WANT_TO_STREAM``` tag is present.
 
 ```python
 async for event in graph.astream_events(inputs, version="v2"):
@@ -688,8 +688,8 @@ async for event in graph.astream_events(inputs, version="v2"):
     If you would like more details on any specific article, let me know!</pre>
 
 ### Tool Call Streaming
-- `AIMessageChunk`: Output messages in real-time, tokenized units.
-- `tool_call_chunks`: Tool call chunks. If tool_call_chunks exists, output tool call chunks cumulatively. (Tool tokens are determined by looking at this property)
+- ```AIMessageChunk```: Output messages in real-time, tokenized units.
+- ```tool_call_chunks```: Tool call chunks. If tool_call_chunks exists, output tool call chunks cumulatively. (Tool tokens are determined by looking at this property)
 
 ```python
 from langchain_core.messages import AIMessageChunk, HumanMessage
@@ -904,9 +904,9 @@ for chunk in graph.stream(inputs, stream_mode="updates"):
 
 ### When including Subgraphs output
 
-You can also include the output of Subgraphs via `subgraphs=True`.
+You can also include the output of Subgraphs via ```subgraphs=True```.
 
-The output will be in the form `(namespace, chunk)`.
+The output will be in the form ```(namespace, chunk)```.
 
 ```python
 inputs = {"messages": [("human", "Search for the latest AI news")]}
@@ -991,9 +991,9 @@ for namespace, chunk in graph.stream(inputs, stream_mode="updates", subgraphs=Tr
 </pre>
 
 ### Streaming LLM Output Token by Token Inside Subgraphs
-`kind` indicates the type of event.
+```kind``` indicates the type of event.
 
-See the [LangChain `astream_events()` reference](https://python.langchain.com/api_reference/langchain/agents/langchain.agents.agent.AgentExecutor.html#langchain.agents.agent.AgentExecutor.astream_events) for all event types.
+See the [LangChain ```astream_events()``` reference](https://python.langchain.com/api_reference/langchain/agents/langchain.agents.agent.AgentExecutor.html#langchain.agents.agent.AgentExecutor.astream_events) for all event types.
 
 ```python
 # Function to parse namespace information
@@ -1069,7 +1069,7 @@ async for event in graph.astream_events(inputs, version="v2", subgraphs=True):
 
 ### For streaming output of only specific tags
 
-`ONLY_STREAM_TAGS` allows you to set only the tags you want to stream output.
+```ONLY_STREAM_TAGS``` allows you to set only the tags you want to stream output.
 
 Here we see that "WANT_TO_STREAM2" is excluded from the output and only "WANT_TO_STREAM" is output.
 

@@ -19,14 +19,13 @@ pre {
 
 # Kiwi BM25 Retriever
 - Author: [JeongGi Park](https://github.com/jeongkpa)
-- Design: []()
 - Peer Review: 
+- Proofread : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/07-LCEL-Interface.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/07-LCEL-Interface.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/10-Kiwi-BM25-Retriever.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/10-Kiwi-BM25-Retriever.ipynb)
 ## Overview
-This tutorial explores the use of `kiwipiepy` for Korean morphological analysis and demonstrates its integration within the `LangChain` framework. 
+This tutorial explores the use of ```kiwipiepy``` for Korean morphological analysis and demonstrates its integration within the ```LangChain``` framework. 
 It highlights Korean text tokenization, and the comparison of different retrievers with various setups.
 
 Since this tutorial covers Korean morphological analysis, the output primarily contains Korean text, reflecting the language structure being analyzed.
@@ -52,8 +51,8 @@ For international users, we provide English translations alongside Korean exampl
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -100,7 +99,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-[Note] If you are using a `.env` file, proceed as follows.
+[Note] If you are using a ```.env``` file, proceed as follows.
 
 ```python
 from dotenv import load_dotenv
@@ -124,7 +123,7 @@ For instance, “안녕하세요” is tokenized into:
   - Token(form='하', tag='XSA')
   - Token(form='세요', tag='EF')
 
-We utilize `kiwipiepy`, which is a Python module for **Kiwi**, an open-source Korean morphological analyzer, to tokenize Korean text.
+We utilize ```kiwipiepy```, which is a Python module for **Kiwi**, an open-source Korean morphological analyzer, to tokenize Korean text.
 
 ```python
 from kiwipiepy import Kiwi
@@ -227,7 +226,7 @@ In this section, we compare how different retrieval methods rank documents when 
 
 - **BM25**: A traditional ranking function based on term frequency (TF) and inverse document frequency (IDF).
 - **Kiwi BM25**: BM25 with an added benefit of kiwipiepy tokenization, enabling more accurate splitting of Korean words into morphemes (especially important for Korean queries).
-- **FAISS**: A vector-based retriever using embeddings (in this case, `OpenAIEmbeddings`). It captures semantic similarity, so it’s less reliant on exact keyword matches and more on meaning.
+- **FAISS**: A vector-based retriever using embeddings (in this case, ```OpenAIEmbeddings```). It captures semantic similarity, so it’s less reliant on exact keyword matches and more on meaning.
 - **Ensemble**: A combination of BM25 (or Kiwi BM25) and FAISS, weighted to leverage both the lexical matching strengths of BM25 and the semantic understanding of FAISS.
 
 ### Key points of Comparison
@@ -418,7 +417,7 @@ print_search_results(retrievers, "금융보씨 개인정보 조회")
 
 By running the code and observing the top documents returned for each query, you can see how each retriever type has its strengths:
 
-- `BM25` / `Kiwi BM25`: Great for precise keyword matching, beneficial for Korean morphological nuances.
-- `FAISS`: Finds semantically related documents even if the wording differs.
-- `Ensemble`: Balances both worlds, often achieving better overall coverage for a wide range of queries.
+- ```BM25``` / ```Kiwi BM25```: Great for precise keyword matching, beneficial for Korean morphological nuances.
+- ```FAISS```: Finds semantically related documents even if the wording differs.
+- ```Ensemble```: Balances both worlds, often achieving better overall coverage for a wide range of queries.
 

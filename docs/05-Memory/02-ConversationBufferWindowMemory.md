@@ -22,15 +22,15 @@ pre {
 - Author: [Kenny Jung](https://www.linkedin.com/in/kwang-yong-jung)
 - Design: [Kenny Jung](https://www.linkedin.com/in/kwang-yong-jung)
 - Peer Review : [Wooseok Jeong](https://github.com/jeong-wooseok), [JeongGi Park](https://www.linkedin.com/in/jeonggipark/)
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/02-ConversationBufferWindowMemory.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/02-ConversationBufferWindowMemory.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/02-ConversationBufferWindowMemory.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/02-ConversationBufferWindowMemory.ipynb)
 ## Overview
 
-This tutorial introduces `ConversationBufferWindowMemory`, which maintains a sliding window of recent conversation interactions over time.
+This tutorial introduces ```ConversationBufferWindowMemory```, which maintains a sliding window of recent conversation interactions over time.
 
-Instead of utilizing all conversation content, `ConversationBufferWindowMemory` retains only the **most recent K** interactions.
+Instead of utilizing all conversation content, ```ConversationBufferWindowMemory``` retains only the **most recent K** interactions.
 
 This prevents the memory buffer from growing too large.
 
@@ -52,8 +52,8 @@ This prevents the memory buffer from growing too large.
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -97,9 +97,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it.
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -116,7 +116,7 @@ load_dotenv(override=True)
 
 ## Online Bank Account Opening Conversation Example
 
-This example demonstrates using `ConversationBufferWindowMemory` to simulate a virtual banking assistant conversation. The flow covers a typical online bank account opening process, from initial greeting to account creation confirmation, retaining only the most recent interactions in memory.
+This example demonstrates using ```ConversationBufferWindowMemory``` to simulate a virtual banking assistant conversation. The flow covers a typical online bank account opening process, from initial greeting to account creation confirmation, retaining only the most recent interactions in memory.
 
 ```python
 from langchain.memory import ConversationBufferWindowMemory
@@ -169,7 +169,7 @@ memory.save_context(
 
 ## Retrieving Conversation History
 
-Let's examine the stored conversation history using the `load_memory_variables()` method to verify our window-based memory retention.
+Let's examine the stored conversation history using the ```load_memory_variables()``` method to verify our window-based memory retention.
 
 ```python
 # Check the conversation history

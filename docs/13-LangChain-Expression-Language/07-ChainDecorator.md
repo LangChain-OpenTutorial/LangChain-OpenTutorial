@@ -21,15 +21,15 @@ pre {
 
 - Author: [Yejin Park](https://github.com/ppakyeah)
 - Peer Review: []()
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/07-ChainDecorator.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/07-ChainDecorator.ipynb)
 ## Overview
 
-This tutorial explains how to convert regular functions into Runnable objects using the `@chain` decorator.
+This tutorial explains how to convert regular functions into Runnable objects using the ```@chain``` decorator.
 
-We'll cover `ChatPromptTemplate` for prompt creation, function transformation with `@chain`.
+We'll cover ```ChatPromptTemplate``` for prompt creation, function transformation with ```@chain```.
 
 The practical exercise demonstrates how to builde a custom chain that converts text into Instagram-style posts with emojis.
 
@@ -56,8 +56,8 @@ The practical exercise demonstrates how to builde a custom chain that converts t
 Setting up your environment is the first step. See the [Environment Setup](https://wikidocs.net/257836) guide for more details.
 
 **[Note]**
-- The `langchain-opentutorial` is a bundle of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-- Check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- The ```langchain-opentutorial``` is a bundle of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
+- Check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -103,14 +103,14 @@ if not load_dotenv():
 
 As highlighted in LangChain's [Conceptual guide](https://python.langchain.com/docs/concepts/runnables/#overview-of-runnable-interface), the Runnable interface is a core concept going with many LangChain components. When we use LangChain Expression Language (LCEL) to create a Runnable, we often call it a **chain**. This means that **chains** are a specific type of Runnable and therefore inherit all the properties and methods of a Runnable object.
 
-You can create these objects from regular Python functions using two primary methods: `RunnableLambda` and the `@chain` decorator.
+You can create these objects from regular Python functions using two primary methods: ```RunnableLambda``` and the ```@chain``` decorator.
 
 Let's see how it works in practice!
 
-Define two prompt templates using the `ChatPromptTemplate` class:
+Define two prompt templates using the ```ChatPromptTemplate``` class:
 
-- `prompt1` requests a brief description of a given topic.
-- `prompt2` requests the creation of an Instagram post using emojis.
+- ```prompt1``` requests a brief description of a given topic.
+- ```prompt2``` requests the creation of an Instagram post using emojis.
 
 ```python
 from langchain_core.output_parsers import StrOutputParser
@@ -126,7 +126,7 @@ prompt2 = ChatPromptTemplate.from_template(
 ```
 
 ### Using the RunnableLambda
-Let's check the following example, wrapping a regular function `instagram_post_generator()` with `RunnableLambda` to create a Runnable object.
+Let's check the following example, wrapping a regular function ```instagram_post_generator()``` with ```RunnableLambda``` to create a Runnable object.
 
 ```python
 from langchain_core.runnables import RunnableLambda
@@ -160,12 +160,12 @@ print(runnable_chain.invoke("quantum mechanics"))
 </pre>
 
 ### Using the chain decorator
-You can convert any function into a chain by adding the `@chain` decorator.
+You can convert any function into a chain by adding the ```@chain``` decorator.
 
-This does the same thing as wrapping the function in `RunnableLambda`. However, the `@chain` decorator provides a cleaner and more maintainable way to create Runnable objects in your LangChain applications.
+This does the same thing as wrapping the function in ```RunnableLambda```. However, the ```@chain``` decorator provides a cleaner and more maintainable way to create Runnable objects in your LangChain applications.
 
-The `custom_chain` function executes a custom chain based on the input text.
-- By decorating this function with `@chain`, we convert it into a Runnable object.
+The ```custom_chain``` function executes a custom chain based on the input text.
+- By decorating this function with ```@chain```, we convert it into a Runnable object.
 
 ```python
 @chain
@@ -180,7 +180,7 @@ def custom_chain(text):
     return chain2.invoke({"sentence": output1})
 ```
 
-Since `custom_chain` is now a Runnable object, it must be executed using `invoke()`.
+Since ```custom_chain``` is now a Runnable object, it must be executed using ```invoke()```.
 
 ```python
 # Call custom_chain

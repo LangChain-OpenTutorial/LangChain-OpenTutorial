@@ -20,7 +20,7 @@ from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters.base import TextSplitter
-from utils.vectordbinterface import DocumentManager
+from utils.base import DocumentManager
 
 
 class MongoDBAtlasCollectionManager:

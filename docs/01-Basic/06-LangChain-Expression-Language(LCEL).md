@@ -20,11 +20,12 @@ pre {
 # Basic Example: Prompt+Model+OutputParser
 
 - Author: [ChangJun Lee](https://www.linkedin.com/in/cjleeno1/)
-- Design: []()
-- Peer Review: 
+- Peer Review: [Erika Park](https://www.linkedin.com/in/yeonseo-park-094193198/), [Wooseok Jeong](https://github.com/jeong-wooseok)
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/06-LangChain-Expression-Language(LCEL).ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/06-LangChain-Expression-Language(LCEL).ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/06-LangChain-Expression-Language(LCEL).ipynb)
+[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/06-LangChain-Expression-Language(LCEL).ipynb)
 
 
 ## Overview
@@ -51,8 +52,8 @@ The most fundamental and commonly used case involves linking a prompt template w
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -94,9 +95,9 @@ set_env(
 </pre>
 
 ---
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 # Configuration File for Managing API Key as an Environment Variable
@@ -129,23 +130,23 @@ utils.tracing_is_enabled()
 
 ## Utilizing Prompt Templates
 
-`PromptTemplate`
+```PromptTemplate```
 
 - A prompt template is used to create a complete prompt string by incorporating the user's input variables.
 - Usage
-  - `template`: A template string is a predefined format where curly braces '{}' are used to represent variables.
+  - ```template```: A template string is a predefined format where curly braces '{}' are used to represent variables.
 
-  - `input_variables`: The names of the variables to be inserted within the curly braces are defined as a list.
+  - ```input_variables```: The names of the variables to be inserted within the curly braces are defined as a list.
 
-`input_variables`
+```input_variables```
 
-- `input_variables` is a list that defines the names of the variables used in the `PromptTemplate`.
+- ```input_variables``` is a list that defines the names of the variables used in the ```PromptTemplate```.
 
 ```python
 from langchain_core.prompts import PromptTemplate
 ```
 
-The `from_template()` method is used to create a `PromptTemplate` object.
+The ```from_template()``` method is used to create a ```PromptTemplate``` object.
 
 ```python
 # Define template
@@ -207,7 +208,7 @@ Here, we use LCEL to combine various components into a single chain.
 chain = prompt | model | output_parser
 ```
 
-The `|` symbol works similarly to the [Unix pipe operator](<https://en.wikipedia.org/wiki/Pipeline_(Unix)>), linking different components and passing the output of one component as the input to the next.
+The ```|``` symbol works similarly to the [Unix pipe operator](<https://en.wikipedia.org/wiki/Pipeline_(Unix)>), linking different components and passing the output of one component as the input to the next.
 
 In this chain, user input is passed to the prompt template, and the output from the prompt template is then forwarded to the model. By examining each component individually, you can understand what happens at each step.
 
@@ -220,10 +221,10 @@ prompt = PromptTemplate.from_template("Please explain {topic} in simple terms.")
 chain = prompt | model
 ```
 
-### Calling `invoke()`
+### Calling ```invoke()```
 
 - Input values are provided in the form of a Python dictionary (key-value pairs).  
-- When calling the `invoke()` function, these input values are passed as arguments.
+- When calling the ```invoke()``` function, these input values are passed as arguments.
 
 ```python
 # Set the topic in the `input` dictionary to 'The Principles of Learning in Artificial Intelligence Models'.
@@ -341,7 +342,7 @@ for token in answer:
 ### Applying and Modifying Templates
 
 - The prompt content below can be **modified** as needed for testing purposes.  
-- The `model_name` can also be adjusted for testing.
+- The ```model_name``` can also be adjusted for testing.
 
 ```python
 template = """

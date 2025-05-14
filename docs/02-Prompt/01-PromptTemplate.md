@@ -20,12 +20,11 @@ pre {
 # Prompt Template
 
 - Author: [Hye-yoon Jeong](https://github.com/Hye-yoonJeong)
-- Design: 
-- Peer Review :
+- Peer Review : [hyeyeoon](https://github.com/hyeyeoon), [Wooseok Jeong](https://github.com/jeong-wooseok)
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/02-Prompt/01-PromptTemplate.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/02-Prompt/01-PromptTemplate.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/02-Prompt/01-PromptTemplate.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/02-Prompt/01-PromptTemplate.ipynb)
 ## Overview
 This tutorial covers how to create and utilize prompt templates using ```LangChain```.
 

@@ -21,10 +21,10 @@ pre {
 
 - Author: [Wooseok-Jeong](https://github.com/jeong-wooseok)
 - Peer Review: [Yun Eun](https://github.com/yuneun92), [MinJi Kang](https://www.linkedin.com/in/minji-kang-995b32230/)
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/01-Getting-Started-Windows.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/01-Getting-Started-Windows.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/01-Getting-Started-Windows.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/01-Getting-Started-Windows.ipynb)
 ## Overview
 
 This tutorial explains how to install the LangChain package on Windows environment. You can easily build a development environment by cloning the required github repository, batch installing the same packages as the author via pyenv, Poetry, installing Visual Studio Code and Jupyter Extension.
@@ -63,7 +63,7 @@ Click the Next button for all the rest to proceed with the installation.
 
 Window key - PowerShell must be run as administrator
 
-Enter the command "`git`" and verify that the output looks like the image below
+Enter the command "```git```" and verify that the output looks like the image below
 ```powershell1
 git
 ```

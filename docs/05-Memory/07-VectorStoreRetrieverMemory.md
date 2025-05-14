@@ -21,16 +21,16 @@ pre {
 
 - Author: [Harheem Kim](https://github.com/harheem)
 - Peer Review:
+- Proofread : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/07-VectorStoreRetrieverMemory.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/07-VectorStoreRetrieverMemory.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/07-VectorStoreRetrieverMemory.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/07-VectorStoreRetrieverMemory.ipynb)
 ## Overview
 
-`VectorStoreRetrieverMemory` stores memory in a vector store and queries the top-K most 'relevant' documents whenever called.
+```VectorStoreRetrieverMemory``` stores memory in a vector store and queries the top-K most 'relevant' documents whenever called.
 This differs from most of the other memory classes in that it does not explicitly track the order of conversation.
 
-In this tutorial, we'll explore the practical application of `VectorStoreRetrieverMemory` through a simulated interview scenario. Through this example, we'll see how `VectorStoreRetrieverMemory` searches for information based on semantic relevance rather than chronological order of conversations.
+In this tutorial, we'll explore the practical application of ```VectorStoreRetrieverMemory``` through a simulated interview scenario. Through this example, we'll see how ```VectorStoreRetrieverMemory``` searches for information based on semantic relevance rather than chronological order of conversations.
 
 ### Table of Contents
 
@@ -51,8 +51,8 @@ In this tutorial, we'll explore the practical application of `VectorStoreRetriev
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -88,9 +88,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it.
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -131,7 +131,7 @@ This setup creates an in-memory vector store that will maintain our conversation
 
 Now, we'll create our memory system and populate it with example interview conversations.
 
-Note that by setting `k=1`, we ensure that only the single most relevant conversation is returned. (In real applications, you might want to increase this value to provide more context.):
+Note that by setting ```k=1```, we ensure that only the single most relevant conversation is returned. (In real applications, you might want to increase this value to provide more context.):
 
 ```python
 from langchain.memory import VectorStoreRetrieverMemory

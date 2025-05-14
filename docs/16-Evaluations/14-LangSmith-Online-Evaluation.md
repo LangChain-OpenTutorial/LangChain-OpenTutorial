@@ -27,7 +27,7 @@ pre {
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/07-LCEL-Interface.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/07-LCEL-Interface.ipynb)
 
 ## Overview
-This module provides tools to evaluate and track the performance of language models using **LangSmith's** online evaluation capabilities.
+This notebook provides tools to evaluate and track the performance of language models using **LangSmith's** online evaluation capabilities.
 
 
 By setting up chains and using custom configurations, users can assess model outputs, including **hallucination** detection and context recall, ensuring robust performance in various scenarios.
@@ -113,9 +113,9 @@ load_dotenv(override=True)
 
 ## Build a Pipeline for Online Evaluations
 
-The provided Python script defines a class `PDFRAG` and related functionality to set up a retriever-augmented generation (RAG) pipeline for online evaluation of language models.
+The provided Python script defines a class `PDFRAG` and related functionality to set up a RAG(Retriever-Augmented Generation) pipeline for online evaluation of language models.
 
-### Explain for 'PDFRAG'
+### Explain for `PDFRAG`
 
 The `PDFRAG` class is a modular framework for:
 
@@ -123,7 +123,7 @@ The `PDFRAG` class is a modular framework for:
 2. Document Splitting: Dividing the content into manageable chunks for processing.
 3. Vectorstore Creation: Converting chunks into vector representations using embeddings.
 4. Retriever Setup: Enabling retrieval of the most relevant chunks for a given query.
-5. Chain Construction: Creating a question-answering (QA) chain with prompt templates.
+5. Chain Construction: Creating a QA(Question-Answering) chain with prompt templates.
 
 ```python
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -201,7 +201,7 @@ class PDFRAG:
 
 ## Set Up the RAG System with PDFRAG
 
-The following code demonstrates how to instantiate and use the `PDFRAG` class to set up a retriever-augmented generation (RAG) pipeline using a specific PDF document and a GPT-based model.
+The following code demonstrates how to instantiate and use the `PDFRAG` class to set up a RAG(Retriever-Augmented Generation) pipeline using a specific PDF document and a GPT-based model.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -221,7 +221,7 @@ rag_chain = rag.create_chain(retriever)
 
 ## Create a Parallel Evaluation Runnable
 
-The following code demonstrates how to create a `RunnableParallel` object to evaluate multiple aspects of the retriever-augmented generation (RAG) pipeline concurrently.
+The following code demonstrates how to create a `RunnableParallel` object to evaluate multiple aspects of the RAG(Retriever-Augmented Generation) pipeline concurrently.
 
 ```python
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
@@ -242,36 +242,62 @@ _ = evaluation_runnable.invoke("How do agents differ from standalone language mo
 
 ## Make Online LLM-as-judge
 
+This guide explains how to set up and configure an online LLM evaluator using LangSmith. It walks you through creating evaluation rules, configuring API keys and prompts, and targeting specific outputs with tags for precise assessments.
+
+
 ### 1. click Add Rule
+Click “Add Rule” to create a new evaluation rule in your LangSmith project.
+
 
 ![make-online-LLM-as-judge](./img/14-LangSmith-Online-Evaluation-01.png)
 
 ### 2. Create Evaluator
+Open the Evaluator creation page to define how your outputs will be judged.
+
+
 ![create-evaluator](./img/14-LangSmith-Online-Evaluation-02.png)
 
 
 ### 3. Set Secrets & API Keys
+Provide the necessary API keys and environment secrets for your LLM provider.
+
+
 ![set-secrets-API-keys](./img/14-LangSmith-Online-Evaluation-03.png)
 ![set-API-Keys](./img/14-LangSmith-Online-Evaluation-04.png)
 
 
 ### 4. Set Provider, Model, Prompt
+Choose the LLM provider, select a model, and write the prompt you want to use.
+
+
 ![set-provider-model-prompt](./img/14-LangSmith-Online-Evaluation-05.png)
 
 
 ### 5. Select Halluciantion
+Pick the “Hallucination” criteria to evaluate factual accuracy in responses.
+
+
 ![select-hallucination](./img/14-LangSmith-Online-Evaluation-06.png)
 
 
 
 ### 6. Set facts for output.context
+Enter the factual information in “output.context” so the evaluator can reference it.
+
+
 ![set-facts](./img/14-LangSmith-Online-Evaluation-07.png)
 
 ### 7. Set answer for output.answer
+Specify the expected answer in “output.answer” for comparison.
+
+
 ![set-answer](./img/14-LangSmith-Online-Evaluation-08.png)
 
 
 ### 8. Check Preview for Data
+Review your evaluation data in the Preview tab to confirm correctness.
+
+
 ![check-preview](./img/14-LangSmith-Online-Evaluation-09.png)
 
 
@@ -284,10 +310,15 @@ You must view the preview and then turn off preview mode again before proceeding
 ![fill-evaluator](./img/14-LangSmith-Online-Evaluation-13.png)
 
 ### 9. Save and Continue
+Save your evaluator and click “Continue” to finalize the configuration.
+
+
 ![save](./img/14-LangSmith-Online-Evaluation-11.png)\
 ![check-for-save](./img/14-LangSmith-Online-Evaluation-14.png)
 
 ### 10. Make "Tag"
+Create a tag so you can selectively run evaluations on particular outputs.
+
 
 ![make-tag](./img/14-LangSmith-Online-Evaluation-15.png)
 
@@ -295,14 +326,19 @@ Instead of evaluating all steps, you can set "Tag" to evaluate only specific tag
 
 
 ### 11. Set "Tag" that you want
+Choose the tag you wish to use for targeted evaluations.
+
+
 ![set-tag](./img/14-LangSmith-Online-Evaluation-16.png)
 
 ### 12. Run evaluations only for specific tags (hallucination)
+Trigger the evaluation process exclusively for outputs labeled with your chosen tag.
+
 ![run-eval](./img/14-LangSmith-Online-Evaluation-17.png)
 
 ## Run Evaluations
 
-The following code demonstrates how to perform evaluations on the retriever-augmented generation (RAG) pipeline, including **hallucination** detection, context recall assessment, and combined evaluations.
+The following code demonstrates how to perform evaluations on the RAG(Retriever-Augmented Generation) pipeline, including **hallucination** detection, context recall assessment, and combined evaluations.
 
 ```python
 from langchain_core.runnables import RunnableConfig

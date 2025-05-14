@@ -20,12 +20,11 @@ pre {
 # Chat Models
 
 - Author: [PangPangGod](https://github.com/pangpanggod)
-- Design: []()
 - Peer Review : [YooKyung Jeon](https://github.com/sirena1)
+- Proofread : [Two-Jay](https://github.com/Two-Jay)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/01-Chat-Models.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/01-Chat-Models.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/02-Chat-Models.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/02-Chat-Models.ipynb)
 ## Overview
 
 This tutorial covers an explanation of various Chat models (OpenAI, Anthropic, etc.) along with brief usage examples.
@@ -66,8 +65,8 @@ This tutorial covers an explanation of various Chat models (OpenAI, Anthropic, e
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -140,13 +139,13 @@ A detailed specification of these models can be found at the following link:
 
 The basic API options are as follows:
 
-- `model_name` : `str`  
-  This option allows you to select the applicable model. can be aliased as `model`.
+- ```model_name``` : ```str```  
+  This option allows you to select the applicable model. can be aliased as ```model```.
 
-- `temperature` : `float` = 0.7    
-  This option sets the sampling `temperature`. Values can range between 0 and 2. Higher values (e.g., 0.8) make the output more random, while lower values (e.g., 0.2) make the output more focused and deterministic.
+- ```temperature``` : ```float``` = 0.7    
+  This option sets the sampling ```temperature```. Values can range between 0 and 2. Higher values (e.g., 0.8) make the output more random, while lower values (e.g., 0.2) make the output more focused and deterministic.
 
-- `max_tokens` : `int` | `None` = `None`    
+- ```max_tokens``` : ```int``` | ```None``` = ```None```    
   Specifies the maximum number of tokens to generate in the chat completion. This option controls the length of text the model can generate in one instance.
 
 Detailed information about the available API options can be found [here](https://python.langchain.com/api_reference/openai/chat_models/langchain_openai.chat_models.base.ChatOpenAI.html).
@@ -167,7 +166,7 @@ model = ChatOpenAI(
 )
 ```
 
-The code provided assumes that your `OPENAI_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
+The code provided assumes that your ```OPENAI_API_KEY``` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
 
 ```python
 # model = ChatOpenAI(temperature=0, api_key="YOUR_API_KEY_HERE", model="gpt-4o-mini")
@@ -210,13 +209,13 @@ A detailed specification of these models can be found at the following link:
 
 The basic API options are as follows:
 
-- `model_name` : `str`  
-  This option allows you to select the applicable model. can be aliased as `model`.
+- ```model_name``` : ```str```  
+  This option allows you to select the applicable model. can be aliased as ```model```.
 
-- `temperature` : `float` = 0.7    
-  This option sets the sampling `temperature`. Values can range between 0 and 2. Higher values (e.g., 0.8) make the output more random, while lower values (e.g., 0.2) make the output more focused and deterministic.
+- ```temperature``` : ```float``` = 0.7    
+  This option sets the sampling ```temperature```. Values can range between 0 and 2. Higher values (e.g., 0.8) make the output more random, while lower values (e.g., 0.2) make the output more focused and deterministic.
 
-- `max_tokens` : `int` | `None` = `None`    
+- ```max_tokens``` : ```int``` | ```None``` = ```None```    
   Specifies the maximum number of tokens to generate in the chat completion. This option controls the length of text the model can generate in one instance.
 
 Detailed information about the available API options can be found [here](https://python.langchain.com/api_reference/anthropic/chat_models/langchain_anthropic.chat_models.ChatAnthropic.html).
@@ -237,7 +236,7 @@ model = ChatAnthropic(
 )
 ```
 
-The code provided assumes that your `ANTHROPIC_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
+The code provided assumes that your ```ANTHROPIC_API_KEY``` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
 
 ```python
 # model = ChatAnthropic(temperature=0, api_key="YOUR_API_KEY_HERE", model="claude-3-5-haiku-latest")
@@ -282,13 +281,13 @@ A detailed specification of these models can be found at the following link:
 
 The basic API options are as follows:
 
-- `model` : str  
+- ```model``` : str  
   Specifies the language model to use (e.g., **llama-3.1-sonar-small-128k-online**). This determines the performance and capabilities of the response.
 
-- `temperature` : float = 0.7  
+- ```temperature``` : float = 0.7  
   Controls the randomness of responses. A value of 0 is deterministic, while 1 allows for the most random outputs.
 
-- `max_tokens` : int | None = None    
+- ```max_tokens``` : int | None = None    
   Specifies the maximum number of tokens to generate in the chat completion. This option controls the length of text the model can generate in one instance.
 
 For more detailed information about the available API options, visit [Perplexity API Reference](https://api.python.langchain.com/en/latest/community/chat_models/langchain_community.chat_models.perplexity.ChatPerplexity.html).
@@ -309,7 +308,7 @@ model = ChatPerplexity(
 )
 ```
 
-The code provided assumes that your `PPLX_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
+The code provided assumes that your ```PPLX_API_KEY``` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
 
 ```python
 # model = ChatPerplexity(temperature=0, pplx_api_key="YOUR_API_KEY_HERE", model="llama-3.1-sonar-large-128k-online")
@@ -368,13 +367,13 @@ Together AI is a San Francisco-based company specializing in decentralized cloud
 
 The basic API options are as follows:
 
-- `model_name` : `str`  
-  This option allows you to select the applicable model. can be aliased as `model`.
+- ```model_name``` : ```str```  
+  This option allows you to select the applicable model. can be aliased as ```model```.
 
-- `temperature` : `float` = 0.7    
-  This option sets the sampling `temperature`. Values can range between 0 and 2. Higher values (e.g., 0.8) make the output more random, while lower values (e.g., 0.2) make the output more focused and deterministic.
+- ```temperature``` : ```float``` = 0.7    
+  This option sets the sampling ```temperature```. Values can range between 0 and 2. Higher values (e.g., 0.8) make the output more random, while lower values (e.g., 0.2) make the output more focused and deterministic.
 
-- `max_tokens` : `int` | `None` = `None`    
+- ```max_tokens``` : ```int``` | ```None``` = ```None```    
   Specifies the maximum number of tokens to generate in the chat completion. This option controls the length of text the model can generate in one instance.
 
 Detailed information about the available API options can be found [here](https://python.langchain.com/api_reference/together/chat_models/langchain_together.chat_models.ChatTogether.html).
@@ -396,7 +395,7 @@ model = ChatTogether(
 )
 ```
 
-The code provided assumes that your `TOGETHER_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
+The code provided assumes that your ```TOGETHER_API_KEY``` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
 
 ```python
 # model = ChatTogether(temperature=0, api_key="YOUR_API_KEY_HERE", model="meta-llama/Llama-3.3-70B-Instruct-Turbo")
@@ -454,13 +453,13 @@ Their platform is tailored for natural language processing tasks, providing scal
 
 The basic API options are as follows:
 
-- `model_name` : `str`  
-  This option allows you to select the applicable model. can be aliased as `model`.
+- ```model_name``` : ```str```  
+  This option allows you to select the applicable model. can be aliased as ```model```.
 
-- `temperature` : `float` = 0.7    
-  This option sets the sampling `temperature`. Values can range between 0 and 2. Higher values (e.g., 0.8) make the output more random, while lower values (e.g., 0.2) make the output more focused and deterministic.
+- ```temperature``` : ```float``` = 0.7    
+  This option sets the sampling ```temperature```. Values can range between 0 and 2. Higher values (e.g., 0.8) make the output more random, while lower values (e.g., 0.2) make the output more focused and deterministic.
 
-- `max_tokens` : `int` | `None` = `None`    
+- ```max_tokens``` : ```int``` | ```None``` = ```None```    
   Specifies the maximum number of tokens to generate in the chat completion. This option controls the length of text the model can generate in one instance.
 
 Detailed information about the available API options can be found [here](https://python.langchain.com/api_reference/cohere/chat_models/langchain_cohere.chat_models.ChatCohere.html).
@@ -481,7 +480,7 @@ model = ChatCohere(
 )
 ```
 
-The code provided assumes that your `COHERE_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
+The code provided assumes that your ```COHERE_API_KEY``` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
 
 ```python
 # model = ChatCohere(temperature=0, cohere_api_key="YOUR_API_KEY_HERE", model="command-r7b-12-2024")
@@ -547,13 +546,13 @@ Upstage provides cutting-edge tools for enterprises to enhance automation, strea
 
 The basic API options are as follows:
 
-- `model_name` : `str`  
-  This option allows you to select the applicable model. can be aliased as `model`.
+- ```model_name``` : ```str```  
+  This option allows you to select the applicable model. can be aliased as ```model```.
 
-- `temperature` : `float` = 0.7    
-  This option sets the sampling `temperature`. Values can range between 0 and 2. Higher values (e.g., 0.8) make the output more random, while lower values (e.g., 0.2) make the output more focused and deterministic.
+- ```temperature``` : ```float``` = 0.7    
+  This option sets the sampling ```temperature```. Values can range between 0 and 2. Higher values (e.g., 0.8) make the output more random, while lower values (e.g., 0.2) make the output more focused and deterministic.
 
-- `max_tokens` : `int` | `None` = `None`    
+- ```max_tokens``` : ```int``` | ```None``` = ```None```    
   Specifies the maximum number of tokens to generate in the chat completion. This option controls the length of text the model can generate in one instance.
 
 Detailed information about the available API options can be found [here](https://python.langchain.com/api_reference/upstage/chat_models/langchain_upstage.chat_models.ChatUpstage.html).
@@ -574,7 +573,7 @@ model = ChatUpstage(
 )
 ```
 
-The code provided assumes that your `UPSTAGE_API_KEY` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
+The code provided assumes that your ```UPSTAGE_API_KEY``` is set in your environment variables. If you would like to manually specify your API key and also choose a different model, uncomment following section before using the code:
 
 ```python
 # model = ChatUpstage(temperature=0, upstage_api_key="YOUR_API_KEY_HERE", model="solar-mini")

@@ -20,18 +20,17 @@ pre {
 #  TitanicQASystem
 
 - Author: [Taylor(Jihyun Kim)](https://github.com/Taylor0819)
-- Design: 
 - Peer Review: [Jongcheol Kim](https://github.com/greencode-99), [Heesun Moon](https://github.com/MoonHeesun)
+- Proofread  : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/03-GraphDB/05-TitanicQASystem.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/03-GraphDB/05-TitanicQASystem.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/03-GraphDB/05-TitanicQASystem.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/03-GraphDB/05-TitanicQASystem.ipynb)
 
 
 ## Overview
-In this tutorial, we walk through building a Q&A system with the Titanic dataset stored in a `Neo4j` graph. 
+In this tutorial, we walk through building a Q&A system with the Titanic dataset stored in a ```Neo4j``` graph. 
 
-Starting with a csv file, we preprocess passenger data and model both nodes (Passenger) and relationships (`MARRIED_TO` , `SIBLING_OF` , `PARENT_OF` ) in `Neo4j` . 
+Starting with a csv file, we preprocess passenger data and model both nodes (Passenger) and relationships (```MARRIED_TO``` , ```SIBLING_OF``` , ```PARENT_OF``` ) in ```Neo4j``` . 
 
 LangChain then transforms user questions into Cypher queries that retrieve key insights, while langgraph handles invalid queries by allowing an LLM to revise them based on Neo4j feedback. 
 
@@ -42,11 +41,11 @@ Ultimately, you gain a robust pipeline to analyze relationships, compute statist
    - Preprocess passenger data by handling missing values and extracting relevant fields.
 
 2. Graph Modeling in Neo4j
-   - Create `Passenger` nodes with core properties (e.g., `age`, `ticket`, `survived`).  
+   - Create ```Passenger``` nodes with core properties (e.g., ```age```, ```ticket```, ```survived```).  
    - Establish relationships such as:
-     - `MARRIED_TO`  
-     - `SIBLING_OF` 
-     - `PARENT_OF` 
+     - ```MARRIED_TO```  
+     - ```SIBLING_OF``` 
+     - ```PARENT_OF``` 
 
 3. Querying with LangChain
    - Convert natural-language questions into Cypher queries.  
@@ -81,8 +80,8 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 **[Note]** 
 
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 
 ```python
@@ -122,7 +121,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -377,23 +376,23 @@ df.head()
 
 ### Column Descriptions
 Key column descriptions:
-- `PassengerId` : Unique identifier for each passenger
-- `Survived` : Survival status (0 = No, 1 = Yes)
-- `Pclass` : Ticket class (1, 2, 3)
-- `Name` : Passenger name
-- `Sex` : Gender
-- `Age` : Age in years
-- `SibSp` : Number of siblings/spouses aboard
-- `Parch` : Number of parents/children aboard
-- `Ticket` : Ticket number
-- `Fare` : Passenger fare
-- `Cabin` : Cabin number
-- `Embarked` : Port of embarkation (C = Cherbourg, Q = Queenstown, S = Southampton)
+- ```PassengerId``` : Unique identifier for each passenger
+- ```Survived``` : Survival status (0 = No, 1 = Yes)
+- ```Pclass``` : Ticket class (1, 2, 3)
+- ```Name``` : Passenger name
+- ```Sex``` : Gender
+- ```Age``` : Age in years
+- ```SibSp``` : Number of siblings/spouses aboard
+- ```Parch``` : Number of parents/children aboard
+- ```Ticket``` : Ticket number
+- ```Fare``` : Passenger fare
+- ```Cabin``` : Cabin number
+- ```Embarked``` : Port of embarkation (C = Cherbourg, Q = Queenstown, S = Southampton)
 
 ### Simple Data Preprocessing
-- Creating `LastName` Column: Extracts the last name from the Name column and stores it in a new column LastName. The extraction is done by splitting the string at the comma and using the first element.
-- Removing Missing Values: Drops rows where the `Age` column has null values to ensure data completeness.
-- Data Type Conversion: Converts the `Ticket` column to string format to maintain consistency in data types.
+- Creating ```LastName``` Column: Extracts the last name from the Name column and stores it in a new column LastName. The extraction is done by splitting the string at the comma and using the first element.
+- Removing Missing Values: Drops rows where the ```Age``` column has null values to ensure data completeness.
+- Data Type Conversion: Converts the ```Ticket``` column to string format to maintain consistency in data types.
 
 ```python
 # Optional: parse last names from "Name" if helpful
@@ -539,11 +538,11 @@ This tutorial is based on Neo4j Desktop. First, install the Neo4j graph database
 [Note] 
 You can set up Neo4j in several ways 
 
-1. [`Neo4j Desktop`](https://neo4j.com/docs/operations-manual/current/installation/) :  A desktop application for local development
+1. [```Neo4j Desktop```](https://neo4j.com/docs/operations-manual/current/installation/) :  A desktop application for local development
 
-2. [`Neo4j Sandbox` ](https://neo4j.com/sandbox/) : A free, cloud-based platform for working with graph databases
+2. [```Neo4j Sandbox``` ](https://neo4j.com/sandbox/) : A free, cloud-based platform for working with graph databases
 
-3. [`Docker` ](https://neo4j.com/docs/operations-manual/current/docker/) : Run Neo4j in a container using the official Neo4j Docker image
+3. [```Docker``` ](https://neo4j.com/docs/operations-manual/current/docker/) : Run Neo4j in a container using the official Neo4j Docker image
 
 **[Important]** Before importing the csv file, Please follow the setup instructions in the link: 
 
@@ -556,15 +555,15 @@ You can set up Neo4j in several ways
 
 ### Define Neo4j Credentials
 
-Next, you need to define your `Neo4j` credentials. If you haven't done this in the previous steps, you can define them using the os package.
+Next, you need to define your ```Neo4j``` credentials. If you haven't done this in the previous steps, you can define them using the os package.
 
-[Note] This is not necessary if you've already set the required `Neo4j` credentials in previous steps.
+[Note] This is not necessary if you've already set the required ```Neo4j``` credentials in previous steps.
 
 >The default user account information:
 >
->- Default username: `neo4j`
+>- Default username: ```neo4j```
 >
->- Default password: `neo4j`
+>- Default password: ```neo4j```
 >
 >You are required to change the password upon your first login.
 
@@ -581,9 +580,9 @@ os.environ["NEO4J_PASSWORD"] = "titanic12"
 ### Import Titanic data
 [How to Import csv File into Neo4j](https://neo4j.com/docs/getting-started/appendix/tutorials/guide-import-desktop-csv/#csv-location)
 
-We will import a csv file into the Neo4j Desktop by adding it to the `import` folder.
+We will import a csv file into the Neo4j Desktop by adding it to the ```import``` folder.
 
-To open a finder window, hover over the three dots on the right side of the started DBMS, select `Open folder` , and then click `Import` 
+To open a finder window, hover over the three dots on the right side of the started DBMS, select ```Open folder``` , and then click ```Import``` 
 ![explanation-02](./img/05-titanicqasystem-flow-explanation-02.png)
 
 You can directly drag & drop files into this folder to add them.
@@ -629,34 +628,34 @@ except Exception as e:
     
 
 # Consider the data with Arrows.app
-When converting a complete tabular dataset like a passenger manifest into a graph, it may seem simple to create nodes for each `Person`, `tickets`, and `Embarked points` while turning the remaining columns into properties. 
+When converting a complete tabular dataset like a passenger manifest into a graph, it may seem simple to create nodes for each ```Person```, ```tickets```, and ```Embarked points``` while turning the remaining columns into properties. 
 
 However, the flexibility of the graph structure requires careful consideration of how to categorize data into nodes, relationships, or properties. The way the data is structured may vary depending on the types of queries you plan to run on the graph.
 
-To assist with this, Neo4j provides `Arrows.app`, a tool that allows you to visualize relationships across the graph before uploading any specific data. With [arrows.app](https://arrows.app), you can explore and experiment with different ways to model the data. To demonstrate this, I will present an example graph that represents a complex data structure.
+To assist with this, Neo4j provides ```Arrows.app```, a tool that allows you to visualize relationships across the graph before uploading any specific data. With [arrows.app](https://arrows.app), you can explore and experiment with different ways to model the data. To demonstrate this, I will present an example graph that represents a complex data structure.
 
 ### Defining the Relationship Categories
 The first step was to define the categories of relationships we were interested in.
-Here are the three relationships I had to define: `MARRIED_TO` , `SIBLING_TO` , `PARENT_OF`.
+Here are the three relationships I had to define: ```MARRIED_TO``` , ```SIBLING_TO``` , ```PARENT_OF```.
 
 ![explanation-01](./img/05-titanicqasystem-flow-explanation-01.png)
 
-Both `MARRIED_TO` and `SIBLING_TO` would imply the same relationship in the other direction between the same nodes. 
+Both ```MARRIED_TO``` and ```SIBLING_TO``` would imply the same relationship in the other direction between the same nodes. 
 
-`PARENT_OF` would imply a reverse relationship of `CHILD_OF` .
+```PARENT_OF``` would imply a reverse relationship of ```CHILD_OF``` .
 
 
 ## Data Restructure
 ### Why We Create Passenger Nodes
 
-We create `Passenger` nodes to represent each Titanic passenger in the graph database. 
+We create ```Passenger``` nodes to represent each Titanic passenger in the graph database. 
 
 This enables us to:
-- Assign properties (e.g., `age` , `ticket` , `survived` ) directly to a node.
-- Connect these person with relationships to other entities (e.g., `SIBLING_OF` , `MARRIED_TO` , `PARENT_OF` ) once we identify family links or other relevant data points.
+- Assign properties (e.g., ```age``` , ```ticket``` , ```survived``` ) directly to a node.
+- Connect these person with relationships to other entities (e.g., ```SIBLING_OF``` , ```MARRIED_TO``` , ```PARENT_OF``` ) once we identify family links or other relevant data points.
 - Query the graph to analyze connections, run aggregations on survivor counts, family group structures, or other correlations inherent in the Titanic dataset.
 
-By modeling person as nodes, `Neo4j` can leverage its graph capabilities (like path finding, pattern matching, or graph algorithms) to deliver deeper insights than a traditional relational or tabular approach might.
+By modeling person as nodes, ```Neo4j``` can leverage its graph capabilities (like path finding, pattern matching, or graph algorithms) to deliver deeper insights than a traditional relational or tabular approach might.
 
 ```python
 cypher = """
@@ -793,30 +792,30 @@ print(graph.schema)
 
 ### Why Create These Relationships?
 
-1.	`MARRIED_TO` 
+1.	```MARRIED_TO``` 
 Infers a couple is married if they share the same Ticket, have the same LastName, have sibsp = 1 (i.e., exactly one sibling/spouse count in the data), differ in sex, and a few additional age-based checks.
 
-2.	`SIBLING_OF` 
+2.	```SIBLING_OF``` 
 Among those not married, uses SibSp, LastName, Ticket, and other constraints (e.g., (p2).parch = 1 or 2) to guess they’re siblings if they appear to have the same “family” context but are not recognized as spouses.
 
-3. `PARENT_OF` (and/or `CHILD_OF` )
+3. ```PARENT_OF``` (and/or ```CHILD_OF``` )
 If the passenger has parch >= 1 (parents/children on board), is older than some threshold, or specifically older than the potential child, create PARENT_OF edges.
 
 These queries are heuristics to reconstruct plausible family connections from partial data. They rely on simplified assumptions—such as “If two people share a ticket, they might be family,” “If a passenger’s sibsp=1, that single sibling/spouse is probably a spouse rather than a child,” etc. You can refine or alter the logic to fit your own inference approach.
 
 ### Key Idea
-< `MARRIED_TO` >
-1. Find passengers (person, other) who share the same ticket using the `TRAVELED_ON` relationship.
+< ```MARRIED_TO``` >
+1. Find passengers (person, other) who share the same ticket using the ```TRAVELED_ON``` relationship.
 
-2. Create a **family members list** by collecting others (collect(other)) after `ORDER BY other.age DESC` .
+2. Create a **family members list** by collecting others (collect(other)) after ```ORDER BY other.age DESC``` .
 
 3. Consider familyMembers[0] (the oldest person) as the "spouse candidate" or "family representative".
 
-4. Use `FOREACH`(... `CREATE` ...) statement to create relationships only for passengers meeting specific conditions.
+4. Use ```FOREACH```(... ```CREATE``` ...) statement to create relationships only for passengers meeting specific conditions.
 
 5. p2 = familyMembers[0] → "Only consider the oldest (or first) person as a spouse candidate"
 
-6. (`size(familyMembers) = 1` OR `p1.age > familyMembers[1].age` ) → Complex conditions like "If there's only one family member, or if p1 is older than the second oldest person..."
+6. (```size(familyMembers) = 1``` OR ```p1.age > familyMembers[1].age``` ) → Complex conditions like "If there's only one family member, or if p1 is older than the second oldest person..."
 
 If passengers share the same ticket + same family + sibsp=1 , they are considered spouses, processing only the first person by family age order as a spouse.
 
@@ -876,26 +875,26 @@ print(graph.schema)
     (:Passenger)-[:MARRIED_TO]->(:Passenger)
     
 
-< `SIBLING_OF` & `PARENT_OF` >
+< ```SIBLING_OF``` & ```PARENT_OF``` >
 
-1. Find passengers sharing the same ticket and family name using `TRAVELED_ON` relationship.
+1. Find passengers sharing the same ticket and family name using ```TRAVELED_ON``` relationship.
 
-2. Create a **family members list** ordered by age (`ORDER BY other.age DESC`).
+2. Create a **family members list** ordered by age (```ORDER BY other.age DESC```).
 
 3. Identify siblings based on conditions:
-- Not married (no `MARRIED_TO` relationship)
-- Has siblings (`sibsp >= 1`)
+- Not married (no ```MARRIED_TO``` relationship)
+- Has siblings (```sibsp >= 1```)
 - Same sibsp value between passengers
-- `Family value >= 1`
+- ```Family value >= 1```
 - Parent/child count (parch) is 1 or 2
 - Not the oldest family member
 
 4. Identify children based on conditions:
 - Not married
 - Not in siblings list
-- `Family value >= 1`
+- ```Family value >= 1```
 - Parent/child count is 1 or 2
-- Age comparison (`p1 older than p2`)
+- Age comparison (```p1 older than p2```)
 
 
 ```python
@@ -968,7 +967,7 @@ print(graph.schema)
 
 ### Consider the Data with Neo4j Desktop Visualization
 
-While we often handle and analyze large datasets using machine learning and deep learning techniques, visualizing data relationships through graph databases like Neo4j offers unique insights. The attached node visualization from `Neo4j Desktop` demonstrates the intricate connections within our Titanic dataset.
+While we often handle and analyze large datasets using machine learning and deep learning techniques, visualizing data relationships through graph databases like Neo4j offers unique insights. The attached node visualization from ```Neo4j Desktop``` demonstrates the intricate connections within our Titanic dataset.
 
 This graph-based approach allows us to:
 1. Discover hidden patterns in passenger relationships
@@ -983,7 +982,7 @@ By combining these visual insights with ML/DL approaches, we can develop a more 
 ![explanation-08](./img/05-titanicqasystem-flow-explanation-08.png)
 
 # Usage Example
-Exploring Titanic Dataset with `Neo4j` and `LangGraph`
+Exploring Titanic Dataset with ```Neo4j``` and ```LangGraph```
 
 When converting natural language into Cypher queries, the process doesn’t always succeed on the first try. Queries can fail for various reasons:
 1. Nonexistent columns or properties
@@ -993,7 +992,7 @@ When converting natural language into Cypher queries, the process doesn’t alwa
 To handle these challenges, this tutorial demonstrates:
 - Robust error handling for query validation
 - Property existence checking before query execution
-- Automated syntax verification using `EXPLAIN`
+- Automated syntax verification using ```EXPLAIN```
 - Smart query reformulation using LLMs
 - Step-by-step debugging techniques for complex queries
 
@@ -1185,7 +1184,7 @@ Sometimes, natural language can’t be directly or accurately converted to a val
 
 Instead of manually fixing the query, we can automate the process:
 1.	Ask an LLM to generate a query from a user’s question.
-2.	Try running the query against `Neo4j` .
+2.	Try running the query against ```Neo4j``` .
 3.	If it fails, capture the error message and feed it back to the LLM so it can revise the query.
 4.	Retry until a valid query is produced or we exceed the maximum number of attempts.
 
@@ -1379,7 +1378,7 @@ corrector_schema = [
 cypher_query_corrector = CypherQueryCorrector(corrector_schema)
 ```
 
-Now we can implement the Cypher validation step. First, we use the `EXPLAIN` method to detect any syntax errors. Next, we leverage the LLM to identify potential issues and extract the properties used for filtering. For string properties, we validate them against the database using a simple `CONTAINS` clause.
+Now we can implement the Cypher validation step. First, we use the ```EXPLAIN``` method to detect any syntax errors. Next, we leverage the LLM to identify potential issues and extract the properties used for filtering. For string properties, we validate them against the database using a simple ```CONTAINS``` clause.
 
 Based on the validation results, the process can take the following paths:
 

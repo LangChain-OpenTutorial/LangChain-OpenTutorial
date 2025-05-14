@@ -21,10 +21,10 @@ pre {
 
 - Author: [3dkids](https://github.com/3dkids)
 - Peer Review: [r14minji](https://github.com/r14minji), [jeongkpa](https://github.com/jeongkpa)
+- Proofread : [jishin86](https://github.com/jishin86)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1a9N74AS8BTPuO5IWdlvAm1AWwTRP9nCH?usp=sharing) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/03-EnsembleRetriever.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/03-EnsembleRetriever.ipynb)
 ## Overview
 
 This notebook explores the creation and use of an EnsembleRetriever in LangChain to improve information retrieval by combining multiple retrieval methods.<br> 
@@ -33,13 +33,13 @@ The EnsembleRetriever integrates the strengths of sparse and dense retrieval alg
 **Key Features**
 1. integrate multiple searchers: take different types of searchers as input and combine results.
 2. result re-ranking: uses the [Reciprocal Rank Fusion](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) algorithm to re-rank results.
-3. hybrid search: mainly uses a combination of `sparse retriever` (e.g. BM25) and `dense retriever` (e.g. embedding similarity).
+3. hybrid search: mainly uses a combination of ```sparse retriever``` (e.g. BM25) and ```dense retriever``` (e.g. embedding similarity).
 
 **Advantages**
 - Sparse retriever: effective for keyword-based searches
 - Dense retriever: effective for semantic similarity-based searches
 
-Due to these complementary characteristics, `EnsembleRetriever` can provide improved performance in a variety of search scenarios.
+Due to these complementary characteristics, ```EnsembleRetriever``` can provide improved performance in a variety of search scenarios.
 
 For more information, please refer to the [LangChain official documentation](https://python.langchain.com/api_reference/langchain/retrievers.html)
 
@@ -66,8 +66,8 @@ For more information, please refer to the [LangChain official documentation](htt
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -130,7 +130,7 @@ Ensemble retrievers combine two discovery mechanisms
 - Sparse search: Uses BM25Retriever for keyword-based matching.
 - Dense search: Uses FAISS with OpenAI embedding for semantic similarity.
 
-- Initialize `EnsembleRetriever` to combine the `BM25Retriever` and `FAISS` searchers. Set the weights for each searcher.
+- Initialize ```EnsembleRetriever``` to combine the ```BM25Retriever``` and ```FAISS``` searchers. Set the weights for each searcher.
 
 ```python
 from langchain.retrievers import BM25Retriever, EnsembleRetriever
@@ -170,7 +170,7 @@ ensemble_retriever = EnsembleRetriever(
 
 ## Query Execution
 Perform retrieval for a given query using ensemble_retriever and compare results across retrievers.
-- Call the `get_relevant_documents()` method of the `ensemble_retriever` object to retrieve relevant documents.
+- Call the ```get_relevant_documents()``` method of the ```ensemble_retriever``` object to retrieve relevant documents.
 
 
 ```python
@@ -249,9 +249,9 @@ for doc in faiss_result:
 
 ## Change runtime config
 
-You can also change the properties of a retriever at runtime. This is possible using the `ConfigurableField` class.
+You can also change the properties of a retriever at runtime. This is possible using the ```ConfigurableField``` class.
 
-- Define the `weights` parameter as a `ConfigurableField` object.
+- Define the ```weights``` parameter as a ```ConfigurableField``` object.
   - Set the field's ID to “ensemble_weights”.
 
 
@@ -273,8 +273,8 @@ ensemble_retriever = EnsembleRetriever(
 )
 ```
 
-- Specify the search settings via the `config` parameter when searching.
-  - Set the weight of the `ensemble_weights` option to [1, 0] so that **all search results are weighted more heavily toward BM25 retriever**.
+- Specify the search settings via the ```config``` parameter when searching.
+  - Set the weight of the ```ensemble_weights``` option to [1, 0] so that **all search results are weighted more heavily toward BM25 retriever**.
 
 ```python
 config = {"configurable": {"ensemble_weights": [1, 0]}}

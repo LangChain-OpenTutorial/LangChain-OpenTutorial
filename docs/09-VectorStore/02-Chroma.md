@@ -19,39 +19,31 @@ pre {
 
 # Chroma
 
-- Author: [Gwangwon Jung](https://github.com/pupba)
-- Design: []()
-- Peer Review: 
+- Author: [Pupba](https://github.com/pupba)
+- Peer Review: [liniar](https://github.com/namyoungkim), [Youngin Kim](https://github.com/Normalist-K), [BokyungisaGod](https://github.com/BokyungisaGod), [Sohyeon Yim](https://github.com/sohyunwriter)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/09-VectorStore/02-Chroma.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/09-VectorStore/02-Chroma.ipynb)
 
 ## Overview
 
-This tutorial covers how to use **Chroma Vector Store** with **LangChain** .
+This tutorial covers how to use **Chroma** with **LangChain** .
 
-`Chroma` is an **open-source AI application database** .
+**Chroma** is an open-source vector database optimized for semantic search and RAG applications. It offers **fast similarity search**, **metadata filtering**, and supports both **in-memory** and **persistent storage**. With built-in or **custom embedding functions** and a **simple Python API**, it's easy to integrate into ML pipelines.
 
-In this tutorial, after learning how to use `langchain-chroma` , we will implement examples of a simple **Text Search** engine using `Chroma` .
-
-![search-example](./img/02-chroma-with-langchain-flow-search-example.png)
+This tutorial walks you through using **CRUD** operations with the **Chroma** **storing** , **updating** , **deleting** documents, and performing **similarity-based retrieval** .
 
 ### Table of Contents
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
 - [What is Chroma?](#what-is-chroma?)
-- [LangChain Chroma Basic](#langchain-chroma-basic)
-- [Manage Store](#manage-store)
-- [Query Vector Store](#query-vector-store)
+- [Prepare Data](#Prepare-Data)
+- [Setting up Chroma](#Setting-up-Chroma)
 - [Document Manager](#document-manager)
 
 
 ### References
-
-- [Chroma Docs](https://docs.trychroma.com/docs/overview/introduction)
-- [Langchain-Chroma](https://python.langchain.com/docs/integrations/vectorstores/chroma/)
-- [List of VectorStore supported by Langchain](https://python.langchain.com/docs/integrations/vectorstores/)
 ----
 
 ## Environment Setup
@@ -59,8 +51,8 @@ In this tutorial, after learning how to use `langchain-chroma` , we will impleme
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -75,10 +67,6 @@ package.install(
     [
         "langsmith",
         "langchain-core",
-        "langchain-chroma",
-        "chromadb",
-        "langchain-text-splitters",
-        "langchain-huggingface",
         "python-dotenv",
     ],
     verbose=False,
@@ -94,10 +82,9 @@ set_env(
     {
         "OPENAI_API_KEY": "",
         "LANGCHAIN_API_KEY": "",
-        "LANGCHAIN_TRACING_V2": "true",
+        "LANGCHAIN_TRACING_V2": "false",
         "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
         "LANGCHAIN_PROJECT": "Chroma",
-        "HUGGINGFACEHUB_API_TOKEN": "",
     }
 )
 ```
@@ -105,12 +92,11 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
 ```python
-# Load API keys from .env file
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
@@ -125,811 +111,445 @@ load_dotenv(override=True)
 
 ## What is Chroma?
 
-![logo](./img/02-chroma-with-langchain-chroma-logo.png)
+![chroma](./img/02-chroma-with-langchain-chroma-logo.png)
 
-`Chroma` is the **open-source vector database** designed for AI application. 
+```Chroma``` is an open-source embedding database built for enabling semantic search in AI applications.  
+It is commonly used in Retrieval-Augmented Generation(RAG) pipelines to manage and search document embeddings efficiently.
 
-It specializes in storing high-dimensional vectors and performing fast similariy search, making it ideal for tasks like **semantic search** , **recommendation systems** and **multimodal search** .
+Unlike traditional databases or pure vector stores, ```Chroma``` combines vector similarity with structured metadata filtering.  
 
-With its **developer-friendly APIs** and seamless integration with frameworks like **LangChain** , `Chroma` is powerful tool for building scalable, AI-driven solutions.
+This allows developers to build hybrid search systems that consider both the meaning of the text and metadata constraints.
 
-The biggest feature of `Chroma` is that it internally **Indexing ([HNSW](https://en.wikipedia.org/wiki/Hierarchical_navigable_small_world))** and **Embedding ([all-MiniLM-L6-v2](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2))** are used when storing data.
+### Key Features
 
-## LangChain Chroma Basic
+- **Easy-to-use API** : Simplifies vector management and querying through a clean Python interface.
 
-### Select Embedding Model
+- **Persistent storage** : Supports both in-memory and on-disk storage for scalable deployment.
 
-We load the **Embedding Model** with `langchain_huggingface` .
+- **Metadata filtering** : Enables precise search using custom fields stored alongside vectors.
 
-If you want to use a different model, use a different model.
+- **Built-in similarity search** : Provides fast approximate nearest-neighbor (ANN) retrieval using cosine distance.
+
+- **Local-first and open-source** : No cloud lock-in; can run entirely on local or edge environments.
+
+## Prepare Data
+
+This section guides you through the **data preparation process** .
+
+This section includes the following components:
+
+- Data Introduction
+
+- Preprocess Data
+
+
+### Data Introduction
+
+In this tutorial, we will use the fairy tale **📗 The Little Prince** in PDF format as our data.
+
+This material complies with the **Apache 2.0 license** .
+
+The data is used in a text (.txt) format converted from the original PDF.
+
+You can view the data at the link below.
+- [Data Link](https://huggingface.co/datasets/sohyunwriter/the_little_prince)
+
+### Preprocess Data
+
+In this tutorial section, we will preprocess the text data from The Little Prince and convert it into a list of ```LangChain Document``` objects with metadata. 
+
+Each document chunk will include a ```title``` field in the metadata, extracted from the first line of each section.
 
 ```python
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain.schema import Document
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+import re
+from typing import List
 
-model_name = "Alibaba-NLP/gte-base-en-v1.5"
 
-embeddings = HuggingFaceEmbeddings(
-    model_name=model_name, model_kwargs={"trust_remote_code": True}
-)
+def preprocessing_data(content: str) -> List[Document]:
+    # 1. Split the text by double newlines to separate sections
+    blocks = content.split("\n\n")
+
+    # 2. Initialize the text splitter
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=500,  # Maximum number of characters per chunk
+        chunk_overlap=50,  # Overlap between chunks to preserve context
+        separators=["\n\n", "\n", " "],  # Order of priority for splitting
+    )
+
+    documents = []
+
+    # 3. Loop through each section
+    for block in blocks:
+        lines = block.strip().splitlines()
+        if not lines:
+            continue
+
+        # Extract title from the first line using square brackets [ ]
+        first_line = lines[0]
+        title_match = re.search(r"\[(.*?)\]", first_line)
+        title = title_match.group(1).strip() if title_match else ""
+
+        # Remove the title line from content
+        body = "\n".join(lines[1:]).strip()
+        if not body:
+            continue
+
+        # 4. Chunk the section using the text splitter
+        chunks = text_splitter.split_text(body)
+
+        # 5. Create a LangChain Document for each chunk with the same title metadata
+        for chunk in chunks:
+            documents.append(Document(page_content=chunk, metadata={"title": title}))
+
+    print(f"Generated {len(documents)} chunked documents.")
+
+    return documents
 ```
 
-### Create VectorDB
-
-The **library** supported by **LangChain** has no `upsert` function and lacks interface uniformity with other **Vector DBs**, so we have implemented a new **Python** class.
-
-First, Load a **Python** class from **utils/chroma/basic.py** .
-
 ```python
-from utils.chroma.basic import ChromaDB
-
-vector_store = ChromaDB(embeddings=embeddings)
-```
-
-Create `ChromaDB` object.
-
-- **Mode** : `persistent`
-
-- **Persistent Path** : `data/chroma.sqlite` (Used `SQLite` DB)
-
-- **collection** : `test`
-
-- **hnsw:space** : `cosine`
-
-```python
-configs = {
-    "mode": "persistent",
-    "persistent_path": "data/chroma_text",
-    "collection": "test",
-    "hnsw:space": "cosine",
-}
-
-vector_store.connect(**configs)
-```
-
-### Load Text Documents Data
-
-In this tutorial, we will use the **A Little Prince** fairy tale document.
-
-To put this data in **Chroma** ,we will do data preprocessing first.
-
-First of all, we will load the `data/the_little_prince.txt` file that extracted only the text of the fairy tale document.
-
-
-```python
-# If your "OS" is "Windows", add 'encoding=utf-8' to the open function
+# Load the entire text file
 with open("./data/the_little_prince.txt", "r", encoding="utf-8") as f:
-    raw_text = f.read()
+    content = f.read()
+
+# Preprocess Data
+docs = preprocessing_data(content=content)
 ```
 
-Second, chunking the text imported into the `RecursiveCharacterTextSplitter` .
-
-```python
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-
-text_splitter = RecursiveCharacterTextSplitter(
-    # Set a really small chunk size, just to show.
-    chunk_size=100,
-    chunk_overlap=20,
-    length_function=len,
-    is_separator_regex=False,
-)
-
-split_docs = text_splitter.create_documents([raw_text])
-
-for docs in split_docs[:2]:
-    print(f"Content: {docs.page_content}\nMetadata: {docs.metadata}", end="\n\n")
-```
-
-<pre class="custom">Content: The Little Prince
-    Written By Antoine de Saiot-Exupery (1900〜1944)
-    Metadata: {}
-    
-    Content: [ Antoine de Saiot-Exupery ]
-    Metadata: {}
-    
+<pre class="custom">Generated 262 chunked documents.
 </pre>
 
-Preprocessing document for **Chroma** .
+## Setting up Chroma
+
+This part walks you through the initial setup of ```Chroma``` .
+
+This section includes the following components:
+
+- Load Embedding Model
+
+- Load Qdrant Client
+
+### Load Embedding Model
+
+In this section, you'll learn how to load an embedding model.
+
+This tutorial uses **OpenAI's** **API-Key** for loading the model.
+
+*💡 If you prefer to use another embedding model, see the instructions below.*
+- [Embedding Models](https://python.langchain.com/docs/integrations/text_embedding/)
 
 ```python
-pre_dosc = vector_store.preprocess_documents(
-    documents=split_docs,
-    source="The Little Prince",
-    author="Antoine de Saint-Exupéry",
-    chapter=True,
-)
+import os
+from langchain_openai import OpenAIEmbeddings
+
+embedding = OpenAIEmbeddings(model="text-embedding-3-large")
+```
+
+### Load Chroma Client
+In this section, we'll show you how to load the **database client object** using the **Python SDK** for ```Chroma``` .
+- [Python SDK Docs](https://docs.trychroma.com/docs/overview/introduction)
+
+```python
+# Create Database Client Object Function
+import chromadb
+
+
+def get_db_client():
+    """
+    Initializes and returns a VectorStore client instance.
+
+    This function loads configuration (e.g., API key, host) from environment
+    variables or default values and creates a client object to interact
+    with the Chroma Python SDK.
+
+    Returns:
+        client:ClientType - An instance of the Chroma client.
+
+    Raises:
+        ValueError: If required configuration is missing.
+    """
+    client = chromadb.Client()  # in-memory
+    return client
 ```
 
 ```python
-pre_dosc[:2]
+# Get DB Client Object
+client = get_db_client()
 ```
-
-
-
-
-<pre class="custom">[Document(metadata={'source': 'The Little Prince', 'author': 'Antoine de Saint-Exupéry', 'chapter': 1, 'id': 'd5fcd392-cf17-475e-9bd6-2aecfa481ffe'}, page_content='- we are introduced to the narrator, a pilot, and his ideas about grown-ups'),
-     Document(metadata={'source': 'The Little Prince', 'author': 'Antoine de Saint-Exupéry', 'chapter': 1, 'id': '3b2062be-649a-4b11-adf7-2eb5c2634e6e'}, page_content='Once when I was six years old I saw a magnificent picture in a book, called True Stories from')]</pre>
-
-
-
-## Manage Store
-
-This section introduces four basic functions.
-
-- `add`
-
-- `upsert(parallel)`
-
-- `query`
-
-- `delete`
-
-### Add
-
-Add the new **Documents** .
-
-An error occurs if you have the same **ID** .
-
-```python
-vector_store.add(pre_documents=pre_dosc[:2])
-```
-
-```python
-uids = list(vector_store.unique_ids)
-uids
-```
-
-
-
-
-<pre class="custom">['3b2062be-649a-4b11-adf7-2eb5c2634e6e',
-     'd5fcd392-cf17-475e-9bd6-2aecfa481ffe']</pre>
-
-
-
-```python
-vector_store.chroma.get(ids=uids[0])
-```
-
-
-
-
-<pre class="custom">{'ids': ['3b2062be-649a-4b11-adf7-2eb5c2634e6e'],
-     'embeddings': None,
-     'documents': ['Once when I was six years old I saw a magnificent picture in a book, called True Stories from'],
-     'uris': None,
-     'data': None,
-     'metadatas': [{'author': 'Antoine de Saint-Exupéry',
-       'chapter': 1,
-       'source': 'The Little Prince'}],
-     'included': [<IncludeEnum.documents: 'documents'>,
-      <IncludeEnum.metadatas: 'metadatas'>]}</pre>
-
-
-
-Error occurs when trying to `add` duplicate `ids` .
-
-```python
-vector_store.add(pre_documents=pre_dosc[:2])
-```
-
-<pre class="custom">Insert of existing embedding ID: d5fcd392-cf17-475e-9bd6-2aecfa481ffe
-    Insert of existing embedding ID: 3b2062be-649a-4b11-adf7-2eb5c2634e6e
-    Add of existing embedding ID: d5fcd392-cf17-475e-9bd6-2aecfa481ffe
-    Add of existing embedding ID: 3b2062be-649a-4b11-adf7-2eb5c2634e6e
-</pre>
-
-### Upsert(parallel)
-
-`Upsert` will `Update` a document or `Add` a new document if the same `ID` exists.
-
-```python
-tmp_ids = [docs.metadata["id"] for docs in pre_dosc[:2]]
-vector_store.chroma.get(ids=tmp_ids)
-```
-
-
-
-
-<pre class="custom">{'ids': ['d5fcd392-cf17-475e-9bd6-2aecfa481ffe',
-      '3b2062be-649a-4b11-adf7-2eb5c2634e6e'],
-     'embeddings': None,
-     'documents': ['- we are introduced to the narrator, a pilot, and his ideas about grown-ups',
-      'Once when I was six years old I saw a magnificent picture in a book, called True Stories from'],
-     'uris': None,
-     'data': None,
-     'metadatas': [{'author': 'Antoine de Saint-Exupéry',
-       'chapter': 1,
-       'source': 'The Little Prince'},
-      {'author': 'Antoine de Saint-Exupéry',
-       'chapter': 1,
-       'source': 'The Little Prince'}],
-     'included': [<IncludeEnum.documents: 'documents'>,
-      <IncludeEnum.metadatas: 'metadatas'>]}</pre>
-
-
-
-```python
-pre_dosc[0].page_content = "Changed Content"
-pre_dosc[0]
-```
-
-
-
-
-<pre class="custom">Document(metadata={'source': 'The Little Prince', 'author': 'Antoine de Saint-Exupéry', 'chapter': 1, 'id': 'd5fcd392-cf17-475e-9bd6-2aecfa481ffe'}, page_content='Changed Content')</pre>
-
-
-
-```python
-vector_store.upsert_documents(
-    documents=pre_dosc[:2],
-)
-tmp_ids = [docs.metadata["id"] for docs in pre_dosc[:2]]
-vector_store.chroma.get(ids=tmp_ids)
-```
-
-
-
-
-<pre class="custom">{'ids': ['d5fcd392-cf17-475e-9bd6-2aecfa481ffe',
-      '3b2062be-649a-4b11-adf7-2eb5c2634e6e'],
-     'embeddings': None,
-     'documents': ['Changed Content',
-      'Once when I was six years old I saw a magnificent picture in a book, called True Stories from'],
-     'uris': None,
-     'data': None,
-     'metadatas': [{'author': 'Antoine de Saint-Exupéry',
-       'chapter': 1,
-       'id': 'd5fcd392-cf17-475e-9bd6-2aecfa481ffe',
-       'source': 'The Little Prince'},
-      {'author': 'Antoine de Saint-Exupéry',
-       'chapter': 1,
-       'id': '3b2062be-649a-4b11-adf7-2eb5c2634e6e',
-       'source': 'The Little Prince'}],
-     'included': [<IncludeEnum.documents: 'documents'>,
-      <IncludeEnum.metadatas: 'metadatas'>]}</pre>
-
-
-
-```python
-# parallel upsert
-vector_store.upsert_documents_parallel(
-    documents=pre_dosc,
-    batch_size=32,
-    max_workers=10,
-)
-```
-
-## Query Vector Store
-
-There are two ways to **Query** the **LangChain Chroma Vector Store** .
-
-- **Directly** : Query the vector store directly using methods like `similarity_search` or `similarity_search_with_score` .
-
-- **Turning into retriever** : Convert the vector store into a **retriever** object, which can be used in **LangChain** pipelines or chains.
-
-### Query
-
-This method is created by wrapping the methods of the `langchain-chroma` .
-
-**Parameters**
-
-- `query:str` - Query text to search for.
-
-- `k:int = DEFAULT_K` - Number of results to return. Defaults to 4.
-
-- `filter: Dict[str, str] | None = None` - Filter by metadata. Defaults to None.
-
-- `where_document: Dict[str, str] | None = None` - dict used to filter by the documents. E.g. {$contains: {"text": "hello"}}.
-
-- `**kwargs:Any` : Additional keyword arguments to pass to Chroma collection query.
-
-
-**Returns**
-- `List[Document]` - List of documents most similar to the query text and distance in float for each. Lower score represents more similarity.
-
-**Simple Search**
-
-```python
-docs = vector_store.query(query="Prince", top_k=2)
-
-for doc in docs:
-    print("ID:", doc.metadata["id"])
-    print("Chapter:", doc.metadata["chapter"])
-    print("Page Content:", doc.page_content)
-    print()
-```
-
-<pre class="custom">ID: 8a3ea7ca-0bda-4da5-aca1-3adbac2f07a1
-    Chapter: 7
-    Page Content: prince disturbed my thoughts.
-    
-    ID: 2a2c0daf-8c25-418a-821f-20f8f7141cd3
-    Chapter: 6
-    Page Content: Oh, little prince! Bit by bit I came to understand the secrets of your sad little life... For a
-    
-</pre>
-
-**Filtering Search**
-
-```python
-docs = vector_store.query(query="Prince", top_k=2, filters={"chapter": 20})
-
-for doc in docs:
-    print("ID:", doc.metadata["id"])
-    print("Chapter:", doc.metadata["chapter"])
-    print("Page Content:", doc.page_content)
-    print()
-```
-
-<pre class="custom">ID: 543ed504-aef4-4eeb-9946-616c448a4ad8
-    Chapter: 20
-    Page Content: snow, the little prince at last came upon a road. And all roads lead to the abodes of men.
-    
-    ID: b02ae0a4-b881-49aa-838f-5e25377f6724
-    Chapter: 20
-    Page Content: extinct forever... that doesn‘t make me a very great prince..."
-    
-</pre>
-
-**Cosine Similarity Search**
-
-```python
-# Cosine Similarity
-results = vector_store.query(query="Prince", top_k=2, cs=True, filters={"chapter": 20})
-
-for doc, score in results:
-    print("ID:", doc.metadata["id"])
-    print("Chapter:", doc.metadata["chapter"])
-    print("Page Content:", doc.page_content)
-    print(f"Similarity Score: {round(score,2)*100:.1f}%")
-    print()
-```
-
-<pre class="custom">ID: b38c0471-f74b-4fa6-a9c9-872b01fd87bb
-    Chapter: 20
-    Page Content: snow, the little prince at last came upon a road. And all roads lead to the abodes of men.
-    Similarity Score: 60.0%
-    
-    ID: 02092b04-eeb3-496e-885c-174e0f864a80
-    Chapter: 20
-    Page Content: extinct forever... that doesn‘t make me a very great prince..."
-    Similarity Score: 54.0%
-    
-</pre>
-
-### as_retriever()
-
-The `as_retriever()` method converts a `VectorStore` object into a `Retriever` object.
-
-A `Retriever` is an interface used in `LangChain` to query a vector store and retrieve relevant documents.
-
-**Parameters**
-
-- `search_type:Optional[str]` - Defines the type of search that the Retriever should perform. Can be `similarity` (default), `mmr` , or `similarity_score_threshold`
-
-- `search_kwargs:Optional[Dict]` - Keyword arguments to pass to the search function. 
-
-    Can include things like:
-
-    `k` : Amount of documents to return (Default: 4)
-
-    `score_threshold` : Minimum relevance threshold for similarity_score_threshold
-
-    `fetch_k` : Amount of documents to pass to `MMR` algorithm(Default: 20)
-        
-    `lambda_mult` : Diversity of results returned by MMR; 1 for minimum diversity and 0 for maximum. (Default: 0.5)
-
-    `filter` : Filter by document metadata
-
-
-**Returns**
-
-- `VectorStoreRetriever` - Retriever class for VectorStore.
-
-
-### invoke()
-
-Invoke the retriever to get relevant documents.
-
-Main entry point for synchronous retriever invocations.
-
-**Parameters**
-
-- `input:str` - The query string.
-
-- `config:RunnableConfig | None = None` - Configuration for the retriever. Defaults to None.
-
-- `**kwargs:Any` - Additional arguments to pass to the retriever.
-
-
-**Returns**
-
-- `List[Document]` : List of relevant documents.
-
-```python
-from langchain_chroma import Chroma
-
-client = Chroma(
-    collection_name="test",
-    persist_directory="data/chroma_text",
-    collection_metadata={"hnsw:space": "cosine"},
-    embedding_function=embeddings,
-)
-```
-
-```python
-retriever = client.as_retriever(search_type="similarity", search_kwargs={"k": 2})
-docs = retriever.invoke("Prince", filter={"chapter": 5})
-
-for doc in docs:
-    print("ID:", doc.id)
-    print("Chapter:", doc.metadata["chapter"])
-    print("Page Content:", doc.page_content)
-    print()
-```
-
-<pre class="custom">ID: 63c0f702-49d4-411e-beab-e18dbf2543ff
-    Chapter: 5
-    Page Content: Indeed, as I learned, there were on the planet where the little prince lived-- as on all planets--
-    
-    ID: 2d4abb40-f615-4f22-8183-066e8a43f317
-    Chapter: 5
-    Page Content: Now there were some terrible seeds on the planet that was the home of the little prince; and these
-    
-</pre>
-
-### Delete
-
-`Delete` the Documents.
-
-You can use with `filter` .
-
-```python
-len(vector_store.unique_ids)
-```
-
-
-
-
-<pre class="custom">1317</pre>
-
-
-
-```python
-len([docs for docs in pre_dosc if docs.metadata["chapter"] == 1])
-```
-
-
-
-
-<pre class="custom">43</pre>
-
-
-
-```python
-vector_store.delete_by_filter(
-    unique_ids=list(vector_store.unique_ids), filters={"chapter": 1}
-)
-```
-
-<pre class="custom">Success Delete 43 Documents
-</pre>
-
-```python
-len(vector_store.unique_ids)
-```
-
-
-
-
-<pre class="custom">1274</pre>
-
-
-
-```python
-vector_store.delete_by_filter(unique_ids=list(vector_store.unique_ids))
-```
-
-<pre class="custom">Success Delete 1274 Documents
-</pre>
-
-```python
-len(vector_store.unique_ids)
-```
-
-
-
-
-<pre class="custom">0</pre>
-
-
-
-Remove a **Huggingface Cache** , `vector_store` , `embeddings` and `client` .
-
-If you created a **vectordb** directory, please **remove** it at the end of this tutorial.
-
-```python
-from huggingface_hub import scan_cache_dir
-
-del embeddings
-del vector_store
-del client
-scan = scan_cache_dir()
-scan.delete_revisions()
-```
-
-
-
-
-<pre class="custom">DeleteCacheStrategy(expected_freed_size=0, blobs=frozenset(), refs=frozenset(), repos=frozenset(), snapshots=frozenset())</pre>
-
-
 
 ## Document Manager
 
-We have developed an interface that makes **CRUD** of **VectorDB** easy to use in tutorials.
+For the **LangChain-OpenTutorial**, we have implemented a custom set of **CRUD** functionalities for VectorDBs
 
-Features are as follows
+The following operations are included:
 
-- `upsert` : Inserts or updates documents in the vector database with optional metadata and embeddings.
+- ```upsert``` : Update existing documents or insert if they don’t exist
 
-- `upsert_parellel` : Processes batch insertions or updates in parallel for improved performance.
+- ```upsert_parallel``` : Perform upserts in parallel for large-scale data
 
-- `search` : Searches for the top k most similar documents using **cosine similarity** (In this tutorial, we fix the similarity score as cosine similarity) .
+- ```similarity_search``` : Search for similar documents based on embeddings
 
-- `delete` : Deletes documents by IDs or filters based on metadata or content.
+- ```delete``` : Remove documents based on filter conditions
 
-Each function was inherited and developed for each vector DB.
+Each of these features is implemented as class methods specific to each VectorDB.
 
-In this tutorial, it was developed for **Chroma** .
+In this tutorial, you'll learn how to use these methods to interact with your VectorDB.
 
-Load **Chroma Client** and **Embedding** .
+*We plan to continuously expand the functionality by adding more common operations in the future.*
 
-```python
-import chromadb
+### Create Instance
 
-client = chromadb.Client()  # in-memory
-```
+First, create an instance of the **Qdrant** helper class to use its CRUD functionalities.
 
-```python
-from langchain_huggingface import HuggingFaceEmbeddings
-
-model_name = "Alibaba-NLP/gte-base-en-v1.5"
-
-embeddings = HuggingFaceEmbeddings(
-    model_name=model_name, model_kwargs={"trust_remote_code": True}
-)
-```
-
-Load `ChromaDocumentManager` .
+This class is initialized with the **Qdrant Python SDK client instance** and the **embedding model instance** , both of which were defined in the previous section.
 
 ```python
-from utils.chroma.crud import ChromaDocumentMangager
+from utils.chroma import ChromaDocumentMangager
 
-cdm = ChromaDocumentMangager(
-    client=client,
-    embedding=embeddings,
-    name="chroma",
-    metadata={"created_by": "pupba"},
-)
+crud_manager = ChromaDocumentMangager(client=client, embedding=embedding)
 ```
 
-Preprocessing for `Upsert` .
+Now you can use the following **CRUD** operations with the ```crud_manager``` instance.
+
+These instance allow you to easily manage documents in your ```Chroma``` .
+
+### Upsert Document
+
+**Update** existing documents or **insert** if they don’t exist
+
+**✅ Args**
+
+- ```texts``` : Iterable[str] – List of text contents to be inserted/updated.
+
+- ```metadatas``` : Optional[List[Dict]] – List of metadata dictionaries for each text (optional).
+
+- ```ids``` : Optional[List[str]] – Custom IDs for the documents. If not provided, IDs will be auto-generated.
+
+- ```**kwargs``` : Extra arguments for the underlying vector store.
+
+**🔄 Return**
+
+- None
 
 ```python
-test_docs = pre_dosc[:50]
+from uuid import uuid4
 
-ids = [doc.metadata["id"] for doc in test_docs]
-texts = [doc.page_content for doc in test_docs]
-metadatas = [{k: v for k, v in doc.metadata.items() if k != "id"} for doc in test_docs]
+args = {
+    "texts": [doc.page_content for doc in docs[:2]],
+    "metadatas": [doc.metadata for doc in docs[:2]],
+    "ids": [str(uuid4()) for _ in docs[:2]],
+    # Add additional parameters if you need
+}
+crud_manager.upsert(**args)
 ```
 
-### Upsert
+### Upsert Parallel
 
-The upsert method is designed to **insert** or **update** documents in a vector database. 
+Perform **upsert** in **parallel** for large-scale data
 
-It takes the following parameters:
+**✅ Args**
 
-- **texts** : A collection of document texts to be inserted or updated.
+- ```texts``` : Iterable[str] – List of text contents to be inserted/updated.
 
-- **metadatas** : Optional metadata associated with each document.
+- ```metadatas``` : Optional[List[Dict]] – List of metadata dictionaries for each text (optional).
 
-- **ids** : Optional unique identifiers for each document.
+- ```ids``` : Optional[List[str]] – Custom IDs for the documents. If not provided, IDs will be auto-generated.
 
-- ****kwargs** : Additional keyword arguments for flexibility.
+- ```batch_size``` : int – Number of documents per batch (default: 32).
+
+- ```workers``` : int – Number of parallel workers (default: 10).
+
+- ```**kwargs``` : Extra arguments for the underlying vector store.
+
+**🔄 Return**
+
+- None
 
 ```python
-cdm.upsert(texts=texts[:5], metadatas=metadatas[:5], ids=ids[:5])
+from uuid import uuid4
+
+args = {
+    "texts": [doc.page_content for doc in docs],
+    "metadatas": [doc.metadata for doc in docs],
+    "ids": [str(uuid4()) for _ in docs],
+    # Add additional parameters if you need
+}
+
+crud_manager.upsert_parallel(**args)
 ```
+
+### Similarity Search
+
+Search for **similar documents** based on **embeddings** .
+
+This method uses **"cosine similarity"** .
+
+
+**✅ Args**
+
+- ```query``` : str – The text query for similarity search.
+
+- ```k``` : int – Number of top results to return (default: 10).
+
+- ```**kwargs``` : Additional search options (e.g., filters).
+
+**🔄 Return**
+
+- ```results``` : List[Document] – A list of LangChain Document objects ranked by similarity.
 
 ```python
-cdm.collection.get()["ids"]
+# Search by Query
+results = crud_manager.search(query="What is essential is invisible to the eye.", k=3)
+for idx, doc in enumerate(results):
+    print(f"Rank {idx} | Title : {doc.metadata['title']}")
+    print(f"Contents : {doc.page_content}")
+    print()
 ```
 
-
-
-
-<pre class="custom">['7c84ae6c-fcda-495a-9f83-4014e17cde17',
-     '68222d17-0405-4627-861a-24f74234f600',
-     '35b4b8ac-ec66-4303-baf0-00396235ee50',
-     'adfbaa1e-3f24-4303-a074-73ef9d7e434d',
-     '096e29ba-fd45-411d-87a9-3b3b62938c4a']</pre>
-
-
-
-### Upsert-Parellel
-
-The `upsert_parallel` method is an optimized version of `upsert` that processes documents in parallel.
-
-The following parameters are added.
-
-- **batch_size** : The number of documents to process in each batch (default: 32).
-
-- **workers** : The number of parallel workers to use (default: 10).
-
-```python
-cdm.upsert_parallel(
-    texts=texts,
-    metadatas=metadatas,
-    ids=ids,
-)
-```
-
-```python
-len(cdm.collection.get()["ids"])
-```
-
-
-
-
-<pre class="custom">50</pre>
-
-
-
-### Search
-
-The `search` method returns a list of Document objects, which are the top k most similar documents to the query. 
-
-- **query** : A string representing the search query.
-
-- **k** : An integer specifying the number of top results to return (default is 10).
-
-- ****kwargs** : Additional keyword arguments for flexibility in search options. This can include metadata filters( `where` , `where_document` ).
-
-Default search
-
-```python
-results = cdm.search("prince", k=2)
-results
-```
-
-
-
-
-<pre class="custom">[Document(metadata={'id': 'a33ebef8-e878-4a8b-aae2-39a5a0c1fb04', 'score': 0.52, 'author': 'Antoine de Saint-Exupéry', 'chapter': 2, 'source': 'The Little Prince'}, page_content='- the narrator crashes in the desert and makes the acquaintance of the little prince'),
-     Document(metadata={'id': '9719e551-884f-4726-85b4-78b6ec09e136', 'score': 0.45, 'author': 'Antoine de Saint-Exupéry', 'chapter': 1, 'source': 'The Little Prince'}, page_content='I pondered deeply, then, over the adventures of the jungle. And after some work with a colored')]</pre>
-
-
-
-```python
-cdm.collection.get()["metadatas"][:3]
-```
-
-
-
-
-<pre class="custom">[{'author': 'Antoine de Saint-Exupéry',
-      'chapter': 1,
-      'source': 'The Little Prince'},
-     {'author': 'Antoine de Saint-Exupéry',
-      'chapter': 1,
-      'source': 'The Little Prince'},
-     {'author': 'Antoine de Saint-Exupéry',
-      'chapter': 1,
-      'source': 'The Little Prince'}]</pre>
-
-
-
-Search with filters
-
-```python
-results = cdm.search("prince", k=2, where={"chapter": 1})
-results
-```
-
-
-
-
-<pre class="custom">[Document(metadata={'id': '9719e551-884f-4726-85b4-78b6ec09e136', 'score': 0.45, 'author': 'Antoine de Saint-Exupéry', 'chapter': 1, 'source': 'The Little Prince'}, page_content='I pondered deeply, then, over the adventures of the jungle. And after some work with a colored'),
-     Document(metadata={'id': '313ef6e6-146d-4722-a3d7-0e7861fe0f7e', 'score': 0.41, 'author': 'Antoine de Saint-Exupéry', 'chapter': 1, 'source': 'The Little Prince'}, page_content='to be always and forever explaining things to them.')]</pre>
-
-
-
-### Delete
-
-The `delete` method removes documents from the vector database based on specified criteria.
-
-- `ids` : A list of document IDs to be deleted. If None, all documents delete.
-
-- `filters` : A dictionary specifying filtering criteria for deletion. This can include metadata filters( `where` , `where_document` ).
-
-- `**kwargs` : Additional keyword arguments for custom deletion options.
-
-
-Delete with ids
-
-```python
-len(cdm.collection.get()["ids"])
-```
-
-
-
-
-<pre class="custom">50</pre>
-
-
-
-```python
-ids = cdm.collection.get()["ids"][:20]
-cdm.delete(ids=ids)
-len(cdm.collection.get()["ids"])
-```
-
-
-
-
-<pre class="custom">30</pre>
-
-
-
-Delete with filters
-
-```python
-ids = cdm.collection.get(where={"chapter": 1})["ids"]
-print("Chapter 1 documents counts:", len(ids))
-```
-
-<pre class="custom">Chapter 1 documents counts: 27
+<pre class="custom">Rank 0 | Title : Chapter 21
+    Contents : And he went back to meet the fox. 
+    "Goodbye," he said. 
+    "Goodbye," said the fox. "And now here is my secret, a very simple secret: It is only with the heart that one can see rightly; what is essential is invisible to the eye." 
+    "What is essential is invisible to the eye," the little prince repeated, so that he would be sure to remember.
+    "It is the time you have wasted for your rose that makes your rose so important."
+    
+    Rank 1 | Title : Chapter 24
+    Contents : "Yes," I said to the little prince. "The house, the stars, the desert-- what gives them their beauty is something that is invisible!" 
+    "I am glad," he said, "that you agree with my fox."
+    
+    Rank 2 | Title : Chapter 25
+    Contents : "The men where you live," said the little prince, "raise five thousand roses in the same garden-- and they do not find in it what they are looking for." 
+    "They do not find it," I replied. 
+    "And yet what they are looking for could be found in one single rose, or in a little water." 
+    "Yes, that is true," I said. 
+    And the little prince added: 
+    "But the eyes are blind. One must look with the heart..."
+    
 </pre>
 
 ```python
-cdm.delete(ids=cdm.collection.get()["ids"], filters={"where": {"chapter": 1}})
+# Filter Search
+results = crud_manager.search(
+    query="Which asteroid did the little prince come from?",
+    k=3,
+    where={"title": "Chapter 4"},
+)
+for idx, doc in enumerate(results):
+    print(f"Rank {idx} | Title : {doc.metadata['title']}")
+    print(f"Contents : {doc.page_content}")
+    print()
 ```
 
-```python
-ids = cdm.collection.get(where={"chapter": 1})["ids"]
-print("Chapter 1 documents counts:", len(ids))
-```
-
-<pre class="custom">Chapter 1 documents counts: 0
+<pre class="custom">Rank 0 | Title : Chapter 4
+    Contents : I have serious reason to believe that the planet from which the little prince came is the asteroid known as B-612. This asteroid has only once been seen through the telescope. That was by a Turkish astronomer, in 1909. 
+    (picture)
+    On making his discovery, the astronomer had presented it to the International Astronomical Congress, in a great demonstration. But he was in Turkish costume, and so nobody would believe what he said.
+    Grown-ups are like that...
+    
+    Rank 1 | Title : Chapter 4
+    Contents : - the narrator speculates as to which asteroid from which the little prince came　　
+    I had thus learned a second fact of great importance: this was that the planet the little prince came from was scarcely any larger than a house!
+    
+    Rank 2 | Title : Chapter 4
+    Contents : Just so, you might say to them: "The proof that the little prince existed is that he was charming, that he laughed, and that he was looking for a sheep. If anybody wants a sheep, that is a proof that he exists." And what good would it do to tell them that? They would shrug their shoulders, and treat you like a child. But if you said to them: "The planet he came from is Asteroid B-612," then they would be convinced, and leave you in peace from their questions.
+    
 </pre>
 
-Delete all
+### as_retriever
+
+The ```as_retriever()``` method creates a LangChain-compatible retriever wrapper.
+
+This function allows a ```DocumentManager``` class to return a retriever object by wrapping the internal ```search()``` method, while staying lightweight and independent from full LangChain ```VectorStore``` dependencies.
+
+The retriever obtained through this function is compatible with existing LangChain retrievers and can be used in LangChain Pipelines (e.g., RetrievalQA, ConversationalRetrievalChain, Tool, etc.)
+
+**✅ Args**
+
+- ```search_fn``` : Callable - The function used to retrieve relevant documents. Typically this is ```self.search``` from a ```DocumentManager``` instance.
+
+- ```search_kwargs``` : Optional[Dict] - A dictionary of keyword arguments passed to ```search_fn```, such as ```k``` for top-K results or metadata filters.
+
+**🔄 Return**
+
+- ```LightCustomRetriever``` :BaseRetriever - A lightweight LangChain-compatible retriever that internally uses the given ```search_fn``` and ```search_kwargs```.
 
 ```python
-len(cdm.collection.get()["ids"])
+# Search without filters
+ret = crud_manager.as_retriever(
+    search_fn=crud_manager.search, search_kwargs={"k": 1}
+)
+```
+
+```python
+ret.invoke("Which asteroid did the little prince come from?")
 ```
 
 
 
 
-<pre class="custom">3</pre>
+<pre class="custom">[Document(metadata={'id': '2b08e739-220f-4297-a287-d93f51780dd2', 'score': 0.66, 'title': 'Chapter 4'}, page_content='I have serious reason to believe that the planet from which the little prince came is the asteroid known as B-612. This asteroid has only once been seen through the telescope. That was by a Turkish astronomer, in 1909. \n(picture)\nOn making his discovery, the astronomer had presented it to the International Astronomical Congress, in a great demonstration. But he was in Turkish costume, and so nobody would believe what he said.\nGrown-ups are like that...')]</pre>
 
 
 
 ```python
-cdm.delete()
+# Search with filters
+ret = crud_manager.as_retriever(
+    search_fn=crud_manager.search,
+    search_kwargs={
+        "k": 2,
+        "where": {"title": "Chapter 4"}  # Filter to only search in Chapter 4
+    }
+)
 ```
 
 ```python
-len(cdm.collection.get()["ids"])
+print("Example 2: Search with title filter (Chapter 4)")
+print(ret.invoke("Which asteroid did the little prince come from?"))
 ```
 
+<pre class="custom">Example 2: Search with title filter (Chapter 4)
+    [Document(metadata={'id': '2b08e739-220f-4297-a287-d93f51780dd2', 'score': 0.66, 'title': 'Chapter 4'}, page_content='I have serious reason to believe that the planet from which the little prince came is the asteroid known as B-612. This asteroid has only once been seen through the telescope. That was by a Turkish astronomer, in 1909. \n(picture)\nOn making his discovery, the astronomer had presented it to the International Astronomical Congress, in a great demonstration. But he was in Turkish costume, and so nobody would believe what he said.\nGrown-ups are like that...'), Document(metadata={'id': 'd3f87cbe-6dae-4007-bb1a-4f119721a24a', 'score': 0.64, 'title': 'Chapter 4'}, page_content='- the narrator speculates as to which asteroid from which the little prince came\u3000\u3000\nI had thus learned a second fact of great importance: this was that the planet the little prince came from was scarcely any larger than a house!')]
+</pre>
 
+### Delete Document
 
+Delete documents based on filter conditions
 
-<pre class="custom">0</pre>
+**✅ Args**
 
+- ```ids``` : Optional[List[str]] – List of document IDs to delete. If None, deletion is based on filter.
 
+- ```filters``` : Optional[Dict] – Dictionary specifying filter conditions (e.g., metadata match).
+
+- ```**kwargs``` : Any additional parameters.
+
+**🔄 Return**
+
+- None
+
+```python
+# Delete by ids
+ids = args["ids"][:3]  # The 'ids' value you want to delete
+crud_manager.delete(ids=ids)
+```
+
+<pre class="custom">3 data deleted
+</pre>
+
+```python
+# Delete by ids with filters
+ids = args["ids"][3:]  # The `ids` value corresponding to chapter 6
+crud_manager.delete(ids=ids, filters={"where": {"title": "Chapter 6"}})
+```
+
+<pre class="custom">4 data deleted
+</pre>
+
+```python
+# Delete All
+crud_manager.delete()
+```
+
+<pre class="custom">257 data deleted
+</pre>

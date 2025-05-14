@@ -21,12 +21,11 @@ pre {
 
 
 - Author: [Jaeho Kim](https://github.com/Jae-hoya)
-- Design: []()
 - Peer Review:
+- Proofread : [Sooyoung](https://github.com/sooyoung-wind)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/langchain-ai/langchain-academy/blob/main/module-4/sub-graph.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/01-Tools.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/01-Tools.ipynb)
 ## OverView
 
 A tool is an interface that allows agents, chains, or LLMs to interact with the external world.
@@ -59,8 +58,8 @@ LangChain provides built-in tools that are easy to use, and it also enables user
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -106,7 +105,7 @@ set_env(
 </pre>
 
 Environment variables have been set successfully.
-You can alternatively set API keys, such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys, such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -129,7 +128,7 @@ load_dotenv(override=True)
 When using tools, warning messages may be displayed.
 
 For example, there are security warnings in the **REPL** environment.
-`PythonREPLTool` is a tool for executing Python code and can potentially execute commands (e.g., file system access, network requests) that may pose security risks.
+```PythonREPLTool``` is a tool for executing Python code and can potentially execute commands (e.g., file system access, network requests) that may pose security risks.
 In such cases, LangChain or Python itself may output warning messages.
 
 To ignore these warning messages, you can use the following code:
@@ -161,17 +160,17 @@ This tool provides a class for executing Python code in a **REPL (Read-Eval-Prin
 
 - Provides a Python shell environment.
 - Executes valid Python commands as input.
-- Use the `print(...)` function to view results.
+- Use the ```print(...)``` function to view results.
 
 **Key Features**
 
 - sanitize_input: Option to sanitize input (default: True)
-- `python_repl`: Instance of **PythonREPL** (default: executed in the global scope)
+- ```python_repl```: Instance of **PythonREPL** (default: executed in the global scope)
 
 **Usage**
 
-- Create an instance of `PythonREPLTool `.
-- Execute Python code using the `run` , `arun` , or `invoke` methods.
+- Create an instance of ```PythonREPLTool ```.
+- Execute Python code using the ```run``` , ```arun``` , or ```invoke``` methods.
 
 **Input Sanitization**
 
@@ -264,7 +263,7 @@ print(chain.invoke("Write code to generate Powerball numbers."))
 
 ## Search API Tool(Tavily)
 
-This is a tool that implements a search function using the `Tavily` Search API. It provides two main classes: `TavilySearchResults` and `TavilyAnswer` .
+This is a tool that implements a search function using the ```Tavily``` Search API. It provides two main classes: ```TavilySearchResults``` and ```TavilyAnswer``` .
 
 **API Key Issuance URL**
 - [Tavily API Key Issuance](https://app.tavily.com/)
@@ -285,13 +284,13 @@ TAVILY_API_KEY=tvly-abcdefghijklmnopqrstuvwxyz
 - Useful for answering questions about current events.
 
 **Key Parameters**
-- `max_results` (int): Max search results to return(default: 5).
-- `search_depth` (str): The depth of the search("basic" or "advanced").
-- `include_domains` (List[str]): A list of domains to specifically include in the search results.
-- `exclude_domains` (List[str]): A list of domains to specifically exclude from the search results.
-- `include_answer` (bool): Include a short answer to original query in the search results(defalut: False).
-- `include_raw_content` (bool): Include cleaned and parsed HTML of each site search results(defalut: False).
-- `include_images` (bool): Include a list of query related images in the response.(defalut: False)
+- ```max_results``` (int): Max search results to return(default: 5).
+- ```search_depth``` (str): The depth of the search("basic" or "advanced").
+- ```include_domains``` (List[str]): A list of domains to specifically include in the search results.
+- ```exclude_domains``` (List[str]): A list of domains to specifically exclude from the search results.
+- ```include_answer``` (bool): Include a short answer to original query in the search results(defalut: False).
+- ```include_raw_content``` (bool): Include cleaned and parsed HTML of each site search results(defalut: False).
+- ```include_images``` (bool): Include a list of query related images in the response.(defalut: False)
 
 
 **Return Value**
@@ -337,34 +336,34 @@ tool.invoke({"query": "What is Langchain Tools?"})
 
 ## Image Generation Tool (DALL-E)
 
-- `DallEAPIWrapper Class` : A wrapper for OpenAI's DALL-E image generator.
+- ```DallEAPIWrapper Class``` : A wrapper for OpenAI's DALL-E image generator.
 
 This tool allows easy integration of the DALL-E API to implement text-based image generation functionality. With various configuration options, it can be utilized as a flexible and powerful image generation tool.
 
 **Key Properties**
 
-- `model` : The name of the DALL-E model to use ( **dall-e-2**, **dall-e-3** ).
+- ```model``` : The name of the DALL-E model to use ( **dall-e-2**, **dall-e-3** ).
 
-- `n` : Number of images to generate (default: 1).
+- ```n``` : Number of images to generate (default: 1).
 
-- `size` : Size of the generated image:
+- ```size``` : Size of the generated image:
   - "dall-e-2": "1024x1024", "512x512", "256x256"
   - "dall-e-3": "1024x1024", "1792x1024", "1024x1792"
 
-- `style` : Style of the generated image ( **natural** , **vivid** ).
+- ```style``` : Style of the generated image ( **natural** , **vivid** ).
 
-- `quality` : Quality of the generated image ( **standard**, **hd** ).
+- ```quality``` : Quality of the generated image ( **standard**, **hd** ).
 
-- `max_retries` : Maximum number of retries for generation.
+- ```max_retries``` : Maximum number of retries for generation.
 
 **Key Features**
 - Generates images based on text descriptions using the DALL-E API.
 
 **Workflow Summary**
 
-The following is an example of generating images using the `DALL-E` Image Generator.
+The following is an example of generating images using the ```DALL-E``` Image Generator.
 
-This time, we will use the `DallEAPIWrapper` to generate images.
+This time, we will use the ```DallEAPIWrapper``` to generate images.
 
 The input prompt will request the LLM model to write a prompt for generating images.
 
@@ -399,7 +398,7 @@ print(image_prompt)
 <pre class="custom">A Neo-Classicism painting depicting a grand, opulent setting reminiscent of classical art, featuring elegantly dressed figures in flowing robes and togas, gathered in a lush, sunlit garden. Each figure is engrossed in their smartphones, completely absorbed in their screens, creating a stark contrast between their traditional attire and modern technology. The lush greenery and marble statues serve as a backdrop, highlighting the absurdity of their distraction. Subtle expressions of amusement and bewilderment are visible on their faces as they interact with their devices, oblivious to the beauty around them. Incorporate classical architectural elements like columns and arches in the background to emphasize the Neo-Classical style. The color palette should be rich and vibrant, with soft, diffused lighting to enhance the dreamlike quality of the scene while maintaining a satirical tone.
 </pre>
 
-Let’s use the previously generated image prompt as input to the `DallEAPIWrapper` to generate an image.
+Let’s use the previously generated image prompt as input to the ```DallEAPIWrapper``` to generate an image.
 
 ```python
 # Importing the DALL-E API Wrapper
@@ -441,14 +440,14 @@ The image below was generated by DALL-E.
 
 In addition to the built-in tools provided by LangChain, you can define and use your own custom tools.
 
-To do this, use the `@tool` decorator provided by the `langchain.tools` module to convert a function into a tool.
+To do this, use the ```@tool``` decorator provided by the ```langchain.tools``` module to convert a function into a tool.
 
 ### @tool Decorator
 
 This decorator allows you to transform a function into a tool. It provides various options to customize the behavior of the tool.
 
 **How to Use**
-1. Apply the `@tool` decorator above the function.
+1. Apply the ```@tool``` decorator above the function.
 2. Set the decorator parameters as needed.
 
 Using this decorator, you can easily convert regular Python functions into powerful tools, enabling automated documentation and flexible interface creation.
@@ -497,34 +496,34 @@ multiply_numbers.invoke({"a": 3, "b": 4})
 ### Tavily Custom Tool: Enhancing Tool Control through Custom Tool Configuration
 
 
-By using `@tool Decorator` , you can create a tool with improved control by leveraging the TavilyClient provided by the Tavily package.
+By using ```@tool Decorator``` , you can create a tool with improved control by leveraging the TavilyClient provided by the Tavily package.
 
 
 Below are the key parameters used in the Tavily.
 
 **Basic Search Configuration**
 
-- `query` (str): The keyword or phrase to search for.
-- `search_depth` (str): The level of detail for the search. Choose between **basic**  or **advanced** . (default: basic)
-- `topic` (str): The topic area of the search. Choose between **general**  or **news** . (default: general)
-- `days` (int): The recency of search results. Only results within the specified number of days will be returned. (default: 3)
-- `max_results` (int): The maximum number of search results to retrieve. (default: 5)
+- ```query``` (str): The keyword or phrase to search for.
+- ```search_depth``` (str): The level of detail for the search. Choose between **basic**  or **advanced** . (default: basic)
+- ```topic``` (str): The topic area of the search. Choose between **general**  or **news** . (default: general)
+- ```days``` (int): The recency of search results. Only results within the specified number of days will be returned. (default: 3)
+- ```max_results``` (int): The maximum number of search results to retrieve. (default: 5)
 
 **Domain Filtering**
 
-- `include_domains` (list): A list of domains that must be included in the search results.
-- `exclude_domains` (list): A list of domains to exclude from the search results.
+- ```include_domains``` (list): A list of domains that must be included in the search results.
+- ```exclude_domains``` (list): A list of domains to exclude from the search results.
 
 **Detailed Result Settings**
 
-- `include_answer` (bool): Whether to include answers generated by the API.
-- `include_raw_content` (bool): Whether to include the original HTML content of the webpage.
-- `include_images` (bool): Whether to include related image information.
-- `format_output` (bool): Whether to apply formatting to the search results.
+- ```include_answer``` (bool): Whether to include answers generated by the API.
+- ```include_raw_content``` (bool): Whether to include the original HTML content of the webpage.
+- ```include_images``` (bool): Whether to include related image information.
+- ```format_output``` (bool): Whether to apply formatting to the search results.
 
 **Miscellaneous**
 
-- `kwargs` : Additional keyword arguments. These may be used for future API updates or special features.
+- ```kwargs``` : Additional keyword arguments. These may be used for future API updates or special features.
 
 ```python
 # %pip install tavily-python
@@ -644,9 +643,9 @@ Implementing a **Custom Tool in LangGraph** is not just about using basic functi
 
 In this example, we will build a **Google News RSS-based custom tool** and explain why it is a better alternative to LangChain’s existing Google Search Tool.
 
-The `LangChain Google Search Tool` is suitable for searching the entire web, but it requires API calls, which may lead to usage-based costs. Additionally, since it relies on Google’s indexing, there may be delays in reflecting the latest news.
+The ```LangChain Google Search Tool``` is suitable for searching the entire web, but it requires API calls, which may lead to usage-based costs. Additionally, since it relies on Google’s indexing, there may be delays in reflecting the latest news.
 
-The `Google News RSS-based custom tool` is more suitable for quickly retrieving only the latest news.
+The ```Google News RSS-based custom tool``` is more suitable for quickly retrieving only the latest news.
 It provides real-time news without relying on Google’s indexing, is free to use without an API key, and offers more intuitive region and language filtering.
 
 Now, let's implement the Google News search functionality by defining the **GoogleNews** class, which will serve as a tool to search for Google News articles.
@@ -662,7 +661,7 @@ This tool searches for news articles provided by **news.google.com** .
 - Allows searching for news based on keywords.
 
 **Key Parameters**
-- `k` (int): Maximum number of search results to return (default: 5).
+- ```k``` (int): Maximum number of search results to return (default: 5).
 
 ```python
 # hl: Language, gl: Region, ceid: Region and Language Code
@@ -673,7 +672,7 @@ In the code, you can adjust the search results' language and region by modifying
 
 **Note**
 
-Save the provided code as `google_news.py` , and then you can import it in other files using `from google_news import GoogleNews` .
+Save the provided code as ```google_news.py``` , and then you can import it in other files using ```from google_news import GoogleNews``` .
 
 
 ```python

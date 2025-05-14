@@ -20,19 +20,18 @@ pre {
 # Split code with Langchain
 
 - Author: [Jongcheol Kim](https://github.com/greencode-99)
-- Design: 
 - Peer Review: [kofsitho87](https://github.com/kofsitho87), [teddylee777](https://github.com/teddylee777)
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/langchain-ai/langchain-academy/blob/main/module-4/sub-graph.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/07-TextSplitter/05-CodeSplitter.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/07-TextSplitter/05-CodeSplitter.ipynb)
 ## Overview
 
-`RecursiveCharacterTextSplitter` includes pre-built separator lists optimized for splitting text in different programming languages.
+```RecursiveCharacterTextSplitter``` includes pre-built separator lists optimized for splitting text in different programming languages.
 
-The `CodeTextSplitter` provides even more specialized functionality for splitting code.
+The ```CodeTextSplitter``` provides even more specialized functionality for splitting code.
 
-To use it, import the `Language` enum(enumeration) and specify the desired programming language.
+To use it, import the ```Language``` enum(enumeration) and specify the desired programming language.
 
 
 ### Table of Contents
@@ -61,8 +60,8 @@ To use it, import the `Language` enum(enumeration) and specify the desired progr
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -115,10 +114,10 @@ load_dotenv()
 
 ## Code Splitter Examples
 
-Here is an example of splitting text using the `RecursiveCharacterTextSplitter`.
+Here is an example of splitting text using the ```RecursiveCharacterTextSplitter```.
 
-- Import the `Language` and `RecursiveCharacterTextSplitter` classes from the `langchain_text_splitters` module.
-- `RecursiveCharacterTextSplitter` is a text splitter that recursively splits text at the character level.
+- Import the ```Language``` and ```RecursiveCharacterTextSplitter``` classes from the ```langchain_text_splitters``` module.
+- ```RecursiveCharacterTextSplitter``` is a text splitter that recursively splits text at the character level.
 
 ```python
 from langchain_text_splitters import (
@@ -170,9 +169,9 @@ See below for the full list of supported languages.
 
 
 
-You can use the `get_separators_for_language` method of the `RecursiveCharacterTextSplitter` class to see the separators used for a given language.
+You can use the ```get_separators_for_language``` method of the ```RecursiveCharacterTextSplitter``` class to see the separators used for a given language.
 
-- For example, passing `Language.PYTHON` retrieves the separators used for Python:
+- For example, passing ```Language.PYTHON``` retrieves the separators used for Python:
 
 ```python
 # You can check the separators used for the given language.
@@ -188,10 +187,10 @@ RecursiveCharacterTextSplitter.get_separators_for_language(Language.PYTHON)
 
 ### Python
 
-Here's how to split Python code into smaller chunks using the `RecursiveCharacterTextSplitter`.
-- First, specify `Language.PYTHON` for the `language` parameter. It tells the splitter you're working with Python code.
-- Then, set `chunk_size` to 50. This limits the size of each resulting chunk to a maximum of 50 characters.
-- Finally, set `chunk_overlap` to 0. It prevents any of the chunks from overlapping.
+Here's how to split Python code into smaller chunks using the ```RecursiveCharacterTextSplitter```.
+- First, specify ```Language.PYTHON``` for the ```language``` parameter. It tells the splitter you're working with Python code.
+- Then, set ```chunk_size``` to 50. This limits the size of each resulting chunk to a maximum of 50 characters.
+- Finally, set ```chunk_overlap``` to 0. It prevents any of the chunks from overlapping.
 
 ```python
 PYTHON_CODE = """
@@ -234,10 +233,10 @@ for doc in python_docs:
 
 ### JavaScript
 
-Here's how to split JavaScript code into smaller chunks using the `RecursiveCharacterTextSplitter`.
-- First, specify `Language.JS` for the `language` parameter. It tells the splitter you're working with JavaScript code.
-- Then, set `chunk_size` to 60. This limits the size of each resulting chunk to a maximum of 60 characters.
-- Finally, set `chunk_overlap` to 0. It prevents any of the chunks from overlapping.
+Here's how to split JavaScript code into smaller chunks using the ```RecursiveCharacterTextSplitter```.
+- First, specify ```Language.JS``` for the ```language``` parameter. It tells the splitter you're working with JavaScript code.
+- Then, set ```chunk_size``` to 60. This limits the size of each resulting chunk to a maximum of 60 characters.
+- Finally, set ```chunk_overlap``` to 0. It prevents any of the chunks from overlapping.
 
 
 ```python
@@ -268,10 +267,10 @@ js_docs
 
 ### TypeScript
 
-Here's how to split TypeScript code into smaller chunks using the `RecursiveCharacterTextSplitter`.
-- First, specify `Language.TS` for the `language` parameter. It tells the splitter you're working with TypeScript code.
-- Then, set `chunk_size` to 60. This limits the size of each resulting chunk to a maximum of 60 characters.
-- Finally, set `chunk_overlap` to 0. It prevents any of the chunks from overlapping.
+Here's how to split TypeScript code into smaller chunks using the ```RecursiveCharacterTextSplitter```.
+- First, specify ```Language.TS``` for the ```language``` parameter. It tells the splitter you're working with TypeScript code.
+- Then, set ```chunk_size``` to 60. This limits the size of each resulting chunk to a maximum of 60 characters.
+- Finally, set ```chunk_overlap``` to 0. It prevents any of the chunks from overlapping.
 
 
 ```python
@@ -303,11 +302,11 @@ ts_docs
 
 ### Markdown
 
-Here's how to split Markdown text into smaller chunks using the `RecursiveCharacterTextSplitter`.
+Here's how to split Markdown text into smaller chunks using the ```RecursiveCharacterTextSplitter```.
 
-- First, Specify `Language.MARKDOWN` for the `language` parameter. It tells the splitter you're working with Markdown text.
-- Then, set `chunk_size` to 60. This limits the size of each resulting chunk to a maximum of 60 characters.
-- Finally, set `chunk_overlap` to 0. It prevents any of the chunks from overlapping.
+- First, Specify ```Language.MARKDOWN``` for the ```language``` parameter. It tells the splitter you're working with Markdown text.
+- Then, set ```chunk_size``` to 60. This limits the size of each resulting chunk to a maximum of 60 characters.
+- Finally, set ```chunk_overlap``` to 0. It prevents any of the chunks from overlapping.
 
 ```python
 markdown_text = """
@@ -350,10 +349,10 @@ md_docs
 
 LaTeX is a markup language for document creation, widely used for representing mathematical symbols and formulas.
 
-Here's how to split LaTeX text into smaller chunks using the `RecursiveCharacterTextSplitter`.
-- First, specify `Language.LATEX` for the `language` parameter. It tells the splitter you're working with LaTeX text.
-- Then, set `chunk_size` to 60. This limits the size of each resulting chunk to a maximum of 60 characters.
-- Finally, set `chunk_overlap` to 0. It prevents any of the chunks from overlapping.
+Here's how to split LaTeX text into smaller chunks using the ```RecursiveCharacterTextSplitter```.
+- First, specify ```Language.LATEX``` for the ```language``` parameter. It tells the splitter you're working with LaTeX text.
+- Then, set ```chunk_size``` to 60. This limits the size of each resulting chunk to a maximum of 60 characters.
+- Finally, set ```chunk_overlap``` to 0. It prevents any of the chunks from overlapping.
 
 ```python
 latex_text = """
@@ -413,10 +412,10 @@ latex_docs
 
 ### HTML
 
-Here's how to split HTML text into smaller chunks using the `RecursiveCharacterTextSplitter`.
-- First, specify `Language.HTML` for the `language` parameter. It tells the splitter you're working with HTML.
-- Then, set `chunk_size` to 60. This limits the size of each resulting chunk to a maximum of 60 characters.
-- Finally, set `chunk_overlap` to 0. It prevents any of the chunks from overlapping.
+Here's how to split HTML text into smaller chunks using the ```RecursiveCharacterTextSplitter```.
+- First, specify ```Language.HTML``` for the ```language``` parameter. It tells the splitter you're working with HTML.
+- Then, set ```chunk_size``` to 60. This limits the size of each resulting chunk to a maximum of 60 characters.
+- Finally, set ```chunk_overlap``` to 0. It prevents any of the chunks from overlapping.
 
 
 ```python
@@ -475,12 +474,12 @@ html_docs
 
 ### Solidity
 
-Here's how to split Solidity code (sotred as a string in the `SOL_CODE` variable) into smaller chunks by creating a `RecursiveCharacterTextSplitter` instance called `sol_splitter` to handle the splitting.
-- First, specify `Language.SOL` for the `language` parameter. It tells the splitter you're working with Solidity code.
-- Then, set `chunk_size` to 128. This limits the size of each resulting chunk to a maximum of 128 characters.
-- Finally, set `chunk_overlap` to 0. It prevents any of the chunks from overlapping.
-- The `sol_splitter.create_documents()` method splits the Solidity code(`SOL_CODE`) into chunks and stores them in the `sol_docs` variable.
-- Print or display the output(`sol_docs`) to verify the split.
+Here's how to split Solidity code (sotred as a string in the ```SOL_CODE``` variable) into smaller chunks by creating a ```RecursiveCharacterTextSplitter``` instance called ```sol_splitter``` to handle the splitting.
+- First, specify ```Language.SOL``` for the ```language``` parameter. It tells the splitter you're working with Solidity code.
+- Then, set ```chunk_size``` to 128. This limits the size of each resulting chunk to a maximum of 128 characters.
+- Finally, set ```chunk_overlap``` to 0. It prevents any of the chunks from overlapping.
+- The ```sol_splitter.create_documents()``` method splits the Solidity code(```SOL_CODE```) into chunks and stores them in the ```sol_docs``` variable.
+- Print or display the output(```sol_docs```) to verify the split.
 
 
 ```python
@@ -511,10 +510,10 @@ sol_docs
 
 ### C#
 
-Here's how to split C# code into smaller chunks using the `RecursiveCharacterTextSplitter`.
-- First, specify `Language.CSHARP` for the `language` parameter. It tells the splitter you're working with C# code.
-- Then, set `chunk_size` to 128. This limits the size of each resulting chunk to a maximum of 128 characters.
-- Finally, set `chunk_overlap` to 0. It prevents any of the chunks from overlapping.
+Here's how to split C# code into smaller chunks using the ```RecursiveCharacterTextSplitter```.
+- First, specify ```Language.CSHARP``` for the ```language``` parameter. It tells the splitter you're working with C# code.
+- Then, set ```chunk_size``` to 128. This limits the size of each resulting chunk to a maximum of 128 characters.
+- Finally, set ```chunk_overlap``` to 0. It prevents any of the chunks from overlapping.
 
 ```python
 C_CODE = """
@@ -563,10 +562,10 @@ c_docs
 
 ### PHP
 
-Here's how to split PHP code into smaller chunks using the `RecursiveCharacterTextSplitter`.
-- First, specify `Language.PHP` for the `language` parameter. It tells the splitter you're working with PHP code.
-- Then, set `chunk_size` to 50. This limits the size of each resulting chunk to a maximum of 50 characters.
-- Finally, set `chunk_overlap` to 0. It prevents any of the chunks from overlapping.
+Here's how to split PHP code into smaller chunks using the ```RecursiveCharacterTextSplitter```.
+- First, specify ```Language.PHP``` for the ```language``` parameter. It tells the splitter you're working with PHP code.
+- Then, set ```chunk_size``` to 50. This limits the size of each resulting chunk to a maximum of 50 characters.
+- Finally, set ```chunk_overlap``` to 0. It prevents any of the chunks from overlapping.
 
 ```python
 PHP_CODE = """<?php
@@ -610,10 +609,10 @@ php_docs
 
 ### Kotlin
 
-Here's how to split Kotline code into smaller chunks using the `RecursiveCharacterTextSplitter`.
-- First, specify `Language.KOTLIN` for the `language` parameter. It tells the splitter you're working with Kotline code.
-- Then, set `chunk_size` to 100. This limits the size of each resulting chunk to a maximum of 100 characters.
-- Finally, set `chunk_overlap` to 0. It prevents any of the chunks from overlapping.
+Here's how to split Kotline code into smaller chunks using the ```RecursiveCharacterTextSplitter```.
+- First, specify ```Language.KOTLIN``` for the ```language``` parameter. It tells the splitter you're working with Kotline code.
+- Then, set ```chunk_size``` to 100. This limits the size of each resulting chunk to a maximum of 100 characters.
+- Finally, set ```chunk_overlap``` to 0. It prevents any of the chunks from overlapping.
 
 ```python
 KOTLIN_CODE = """

@@ -20,12 +20,11 @@ pre {
 # Add Groundedness Check
 
 - Author: [JeongGi Park](https://github.com/jeongkpa)
-- Design: []()
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/07-LCEL-Interface.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/07-LCEL-Interface.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/03-LangGraph-Add-Groundedness-Check.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/03-LangGraph-Add-Groundedness-Check.ipynb)
 ## Overview
 
 
@@ -53,8 +52,8 @@ In this tutorial, we perform a Naive Retrieval-Augmented Generation (RAG) step a
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -98,7 +97,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-[Note] If you are using a `.env` file, proceed as follows.
+[Note] If you are using a ```.env``` file, proceed as follows.
 
 ```python
 from dotenv import load_dotenv
@@ -164,9 +163,9 @@ print("PDF-based retrieval chain created.")
 
 ## Defining State
 
-We define a `GraphState` that represents the shared state among nodes. 
+We define a ```GraphState``` that represents the shared state among nodes. 
 
-It's typically a Python `TypedDict`. In this tutorial, the state includes a new key relevance to store the relevance check result.
+It's typically a Python ```TypedDict```. In this tutorial, the state includes a new key relevance to store the relevance check result.
 
 ```python
 from typing import Annotated, TypedDict
@@ -190,9 +189,9 @@ print("GraphState defined.")
 
 Nodes perform each step in the graph. Each node is implemented as a Python function that:
 
-1. Takes the current `GraphState` as input.
+1. Takes the current ```GraphState``` as input.
 2. Performs certain logic.
-3. Returns an updated `GraphState`.
+3. Returns an updated ```GraphState```.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -283,7 +282,7 @@ print("Nodes defined.")
 
 ## Defining Edges
 
-Edges define which node is executed next, based on the current `GraphState`. 
+Edges define which node is executed next, based on the current ```GraphState```. 
 
 We can create conditional edges to handle different logic flows.
 
@@ -355,9 +354,9 @@ print("Graph visualization displayed.")
 ## Running a graph
 
 
-The `config` parameter passes configuration information required when running the graph.
-`recursion_limit`: Sets the maximum number of recursions when running the graph.
-`inputs`: Passes input information required when running the graph.
+The ```config``` parameter passes configuration information required when running the graph.
+```recursion_limit```: Sets the maximum number of recursions when running the graph.
+```inputs```: Passes input information required when running the graph.
 
 ```python
 ### Execute the Graph
@@ -519,8 +518,8 @@ except Exception as e:
     Relevance: yes
 </pre>
 
-However, if the `relevance_check` of the search result fails, the same query is repeatedly entered into the retrieve node.
+However, if the ```relevance_check``` of the search result fails, the same query is repeatedly entered into the retrieve node.
 
 If the same query is repeatedly entered into the retrieve node, it will lead to the same search result, which will eventually lead to a recursion.
 
-To prevent possible recursion states, we set the maximum number of recursions (`recursion_limit`) and handle `GraphRecursionError` for error handling.
+To prevent possible recursion states, we set the maximum number of recursions (```recursion_limit```) and handle ```GraphRecursionError``` for error handling.

@@ -20,12 +20,11 @@ pre {
 # Getting Started on Mac
 
 - Author: [JeongHo Shin](https://github.com/ThePurpleCollar)
-- Design:
-- Peer Review: 
+- Peer Review: [JeongGi Park](https://www.linkedin.com/in/jeonggipark/), [Wooseok Jeong](https://github.com/jeong-wooseok)
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/02-Getting-Started-Mac.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/02-Getting-Started-Mac.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/02-Getting-Started-Mac.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/02-Getting-Started-Mac.ipynb)
 ## Overview
 
 This guide provides a comprehensive setup process tailored for developing with LangChain on a Mac. LangChain is a framework for building applications powered by large language models (LLMs), and this guide ensures your environment is fully optimized for seamless integration and development.
@@ -146,7 +145,7 @@ For detailed documentation, refer to the [Pyenv GitHub Page](https://github.com/
 
 #### Steps to Install Pyenv
 
-1. Update Homebrew and install `pyenv` using the following commands:
+1. Update Homebrew and install ```pyenv``` using the following commands:
    ```bash
    brew update
    brew install pyenv
@@ -175,7 +174,7 @@ For detailed documentation, refer to the [Pyenv GitHub Page](https://github.com/
 
 ## Installing Python
 
-- Use `pyenv` to install Python 3.11:
+- Use ```pyenv``` to install Python 3.11:
    ```bash
    pyenv install 3.11
    ```
@@ -206,7 +205,7 @@ For detailed documentation, refer to the [Poetry Official Documentation](https:/
 
 #### Steps to Install and Configure Poetry
 
-- Install Poetry using `pip3`:
+- Install Poetry using ```pip3```:
    ```bash
    pip3 install poetry
    ```

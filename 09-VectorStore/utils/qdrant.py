@@ -1,331 +1,361 @@
-from typing import Any, Dict, Iterable, List, Optional
+from utils.base import DocumentManager
 from qdrant_client import QdrantClient
-from qdrant_client.http.models import (
-    PointStruct,
-    PointIdsList,
-    Filter,
+from qdrant_client.models import (
     VectorParams,
     Distance,
+    PointStruct,
+    VectorStruct,
+    UpdateResult,
+    Filter,
+    FieldCondition,
+    MatchValue,
+    FilterSelector,
+    PointIdsList,
 )
-from qdrant_client import models
+from typing import List, Dict, Any, Optional, Iterable, Callable
+from uuid import uuid4
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from utils.vectordbinterface import DocumentManager
-from qdrant_client.http.models import Distance
+from langchain_core.documents import Document
 
 
 class QdrantDocumentManager(DocumentManager):
-    """Manages document operations with Qdrant, including upsert, search, and delete.
-
-    This class interfaces with Qdrant to perform operations such as inserting,
-    updating, searching, and deleting documents in a specified collection.
-    """
-
-    def __init__(
-        self,
-        collection_name: str,
-        embedding,
-        metric: Distance = Distance.COSINE,
-        force_recreate: bool = False,
-        **kwargs: Any,
-    ) -> None:
-        """Initializes the QdrantDocumentManager with a collection name and embedding model.
-
-        Args:
-            collection_name (str): The name of the collection in Qdrant.
-            embedding: The embedding model used to convert texts into vectors.
-            metric (Distance): The distance metric for vector comparisons.
-            force_recreate (bool): Whether to forcefully recreate the collection if it exists.
-            **kwargs (Any): Additional keyword arguments for QdrantClient configuration.
-        """
-        self.client = QdrantClient(**kwargs)
-        self.collection_name = collection_name
-        self.embedding = embedding
-        self.metric = metric
-        self._ensure_collection_exists(force_recreate=force_recreate)
-
-    def create_collection(
-        self,
-        dense_vectors_config: Optional[VectorParams] = None,
-        sparse_vector_config: Optional[dict] = None,
-        force_recreate: bool = False,
-    ) -> None:
-        if force_recreate:
-            self._delete_collection()
-
-        collection_config = self._build_collection_config(
-            dense_vectors_config, sparse_vector_config
-        )
-
-        self.client.create_collection(
-            collection_name=self.collection_name, **collection_config
-        )
-        print(
-            f"Collection '{self.collection_name}' created successfully with configuration: {collection_config}"
-        )
-
-    def _delete_collection(self) -> None:
+    def __init__(self, client: QdrantClient, embedding: Callable, **kwargs) -> None:
+        self.qdrant_client = client  # Qdrant Python SDK
         try:
-            self.client.delete_collection(self.collection_name)
-            print(f"Collection '{self.collection_name}' deleted for recreation.")
-        except Exception as delete_exception:
-            print(
-                f"Failed to delete existing collection '{self.collection_name}': {delete_exception}"
-            )
-            raise
+            if "collection_name" not in kwargs:
+                kwargs["collection_name"] = "qdrant_test"
 
-    def _build_collection_config(
-        self,
-        dense_vectors_config: Optional[VectorParams],
-        sparse_vector_config: Optional[dict],
-    ) -> dict:
-        collection_config = {}
-        if dense_vectors_config:
-            collection_config["vectors_config"] = dense_vectors_config
-        if sparse_vector_config:
-            collection_config["sparse_vectors_config"] = sparse_vector_config
-        if not collection_config:
-            raise ValueError(
-                "At least one of dense_vectors_config or sparse_vector_config must be provided."
-            )
-        return collection_config
+            self.collection_name = kwargs["collection_name"]
 
-    def _ensure_collection_exists(
-        self, force_recreate: bool = False, sparse_embedding=None
-    ) -> None:
-        vector_size = len(self.embedding.embed_query("vector size check"))
-        dense_vectors_config = VectorParams(size=vector_size, distance=self.metric)
-
-        sparse_vector_config = None
-        if sparse_embedding:
-            sparse_vector_config = {
-                "sparse-vector": models.SparseVectorParams(
-                    index=models.SparseIndexParams(
-                        on_disk=False,
-                    )
+            if "vectors_config" not in kwargs:
+                # https://qdrant.tech/documentation/embeddings/openai/?utm_source=chatgpt.com
+                kwargs["vectors_config"] = VectorParams(
+                    size=1536,  # text-embedding-3-large support 1536
+                    distance=Distance.COSINE,  # General Used Cosine Similarity
                 )
-            }
+            # Create Collection
+            if not self.qdrant_client.collection_exists(
+                "qdrant_test"
+            ) and not self.qdrant_client.collection_exists(kwargs["collection_name"]):
+                if self.qdrant_client.create_collection(**kwargs):
+                    print(f"Success Create {kwargs.get('collection_name')} Collection")
+                else:
+                    raise Exception("Failed Create Collection")
+        except Exception as e:
+            print(e)
+        # Embedding
+        self.embedding = embedding
 
-        if not self._collection_exists() or force_recreate:
-            print(
-                f"Collection '{self.collection_name}' does not exist or force recreate is enabled. Creating new collection..."
-            )
-            self.create_collection(
-                dense_vectors_config=dense_vectors_config,
-                sparse_vector_config=sparse_vector_config,
-                force_recreate=force_recreate,
-            )
+    def __ensure_indexed_fields(self, fields: List[str]):
+        """
+        Ensure that each specified payload field is indexed in the current Qdrant collection.
 
-    def _collection_exists(self) -> bool:
-        try:
-            collection_info = self.client.get_collection(self.collection_name)
-            return collection_info is not None
-        except Exception:
-            return False
-
-    def _create_points(
-        self,
-        texts: Iterable[str],
-        metadatas: Optional[List[dict]],
-        ids: Optional[List[str]],
-    ) -> List[PointStruct]:
-        """Converts strings into Qdrant's point structure.
+        This is required for enabling metadata filtering (e.g. via 'filters' argument in search).
+        If an index already exists for a field, it will be skipped silently.
 
         Args:
-            texts (Iterable[str]): The texts to be converted into points.
-            metadatas (Optional[List[dict]]): Optional metadata for each text.
-            ids (Optional[List[str]]): Optional list of ids for each text.
+            fields (List[str]): List of payload field names to index.
 
-        Returns:
-            List[PointStruct]: A list of PointStruct objects ready for insertion into Qdrant.
+        Raises:
+            Exception: If index creation fails for reasons other than 'already exists'.
         """
-        return [
-            PointStruct(
-                id=ids[i] if ids else str(i),
-                vector=self.embedding.embed_query(texts[i]),  # Convert text to vector
-                payload={
-                    "page_content": texts[i],  # Store original text in 'content'
-                    "metadata": metadatas[i],
-                },
-            )
-            for i in range(len(texts))
-        ]
+
+        for field in fields:
+            try:
+                self.qdrant_client.create_payload_index(
+                    collection_name=self.collection_name,
+                    field_name=field,
+                    field_schema="keyword",
+                )
+            except Exception as e:
+                if "already exists" not in str(e):
+                    raise
 
     def upsert(
         self,
         texts: Iterable[str],
-        metadatas: Optional[List[dict]] = None,
+        metadatas: Optional[List[Dict]] = None,
         ids: Optional[List[str]] = None,
         **kwargs: Any,
-    ) -> List[str]:
-        """Upserts documents into the collection and returns the upserted ids.
+    ) -> None:
+        """
+        Insert or update vectors in Qdrant using the provided embedding model.
+
+        Each text is embedded into a vector and stored in the Qdrant collection
+        along with its metadata (payload). If no ID is provided, UUIDs are generated.
 
         Args:
-            texts (Iterable[str]): The texts to be upserted.
-            metadatas (Optional[List[dict]]): Optional metadata for each text.
-            ids (Optional[List[str]]): Optional list of ids for each text.
-            **kwargs (Any): Additional keyword arguments for the upsert operation.
+            texts (Iterable[str]): List or iterable of input texts to be embedded and stored.
+            metadatas (Optional[List[Dict]]): Optional list of metadata dictionaries for each text.
+            ids (Optional[List[str]]): Optional list of string IDs for the vectors.
+            **kwargs: Optional arguments such as:
+                - result_view (bool): If True, prints operation_id and status for each result.
 
         Returns:
-            List[str]: The list of successfully upserted ids.
+            None
         """
-        points = self._create_points(texts, metadatas, ids)
-        self.client.upsert(collection_name=self.collection_name, points=points)
 
-        # Return the ids used for the upsert operation
-        return ids if ids else [str(i) for i in range(len(texts))]
+        if ids is None:  # if the ids are None
+            ids = [str(uuid4()) for _ in range(len(texts))]
 
-    def batch_upsert(
-        self,
-        texts: Iterable[str],
-        metadatas: Optional[List[dict]],
-        ids: Optional[List[str]],
-        start: int,
-        end: int,
-    ) -> List[str]:
-        """Performs batch upsert and returns the upserted ids.
+        vectors: VectorStruct = self.embedding(texts)  # List[float] in VectorStruct
 
-        Args:
-            texts (Iterable[str]): The texts to be upserted.
-            metadatas (Optional[List[dict]]): Optional metadata for each text.
-            ids (Optional[List[str]]): Optional list of ids for each text.
-            start (int): The starting index of the batch.
-            end (int): The ending index of the batch.
+        metadatas = metadatas or [{}] * len(texts)
 
-        Returns:
-            List[str]: The list of upserted ids.
-        """
-        batch_points = self._create_points(
-            texts[start:end],
-            metadatas[start:end] if metadatas else None,
-            ids[start:end] if ids else None,
+        payloads = [
+            {"text": text} | metadata for text, metadata in zip(texts, metadatas)
+        ]
+
+        # Create Index
+        index_fields = set()
+        for payload in payloads:
+            index_fields.update(k for k in payload.keys() if k != "text")
+
+        self.__ensure_indexed_fields(list(index_fields) + ["text"])
+
+        # make points
+        points = [
+            PointStruct(id=id, vector=vector, payload=payload)
+            for id, vector, payload in zip(ids, vectors, payloads)
+        ]
+
+        results: UpdateResult = self.qdrant_client.upsert(
+            collection_name=self.collection_name, points=points
         )
-        self.client.upsert(collection_name=self.collection_name, points=batch_points)
-        return ids[start:end] if ids else [str(i) for i in range(start, end)]
+
+        if "result_view" in kwargs:
+            print(f"Operation_id : {results.operation_id} | Status : {results.status}")
 
     def upsert_parallel(
         self,
         texts: Iterable[str],
-        metadatas: Optional[List[dict]] = None,
+        metadatas: Optional[List[Dict]] = None,
         ids: Optional[List[str]] = None,
         batch_size: int = 32,
         workers: int = 10,
         **kwargs: Any,
-    ) -> List[str]:
-        """Performs parallel upsert of documents and returns the upserted ids.
+    ) -> None:
+        """
+        Perform parallel upsert of vectors into Qdrant using ThreadPoolExecutor.
+
+        This method embeds input texts into vectors and inserts them into the collection
+        in parallel batches, which improves performance for large datasets.
 
         Args:
-            texts (Iterable[str]): The texts to be upserted.
-            metadatas (Optional[List[dict]]): Optional metadata for each text.
-            ids (Optional[List[str]]): Optional list of ids for each text.
-            batch_size (int): The size of each batch for upsert. Default is 32.
-            workers (int): The number of worker threads to use. Default is 10.
-            **kwargs (Any): Additional keyword arguments.
+            texts (Iterable[str]): List or iterable of texts to be embedded and inserted.
+            metadatas (Optional[List[Dict]]): Optional list of metadata dictionaries.
+            ids (Optional[List[str]]): Optional list of string IDs. If None, UUIDs are auto-generated.
+            batch_size (int): Number of points to upsert in each batch.
+            workers (int): Number of threads to use for parallel execution.
+            **kwargs: Optional arguments such as:
+                - result_view (bool): If True, prints operation_id and status for each batch result.
 
         Returns:
-            List[str]: The list of upserted ids.
+            None
         """
-        all_ids = []
+        texts = list(texts)
+        metadatas = metadatas or [{}] * len(texts)
+
+        if ids is None:
+            ids = [str(uuid4()) for _ in range(len(texts))]
+
+        vectors: VectorStruct = self.embedding(texts)
+
+        payloads = [
+            {"text": text} | metadata for text, metadata in zip(texts, metadatas)
+        ]
+
+        # Create Index
+        index_fields = set()
+        for payload in payloads:
+            index_fields.update(k for k in payload.keys() if k != "text")
+
+        self.__ensure_indexed_fields(list(index_fields) + ["text"])
+
+        # Prepare all points
+        all_points = [
+            PointStruct(id=id, vector=vector, payload=payload)
+            for id, vector, payload in zip(ids, vectors, payloads)
+        ]
+
+        # Batching
+        def batch_iterable(data, batch_size):
+            for i in range(0, len(data), batch_size):
+                yield data[i : i + batch_size]
+
+        # upsert Batch
+        def upsert_batch(batch: List[PointStruct]) -> UpdateResult:
+            return self.qdrant_client.upsert(
+                collection_name=self.collection_name, points=batch
+            )
 
         with ThreadPoolExecutor(max_workers=workers) as executor:
-            futures = [
-                executor.submit(
-                    self.batch_upsert,
-                    texts,
-                    metadatas,
-                    ids,
-                    i,
-                    min(i + batch_size, len(texts)),
-                )
-                for i in range(0, len(texts), batch_size)
-            ]
+            futures = {
+                executor.submit(upsert_batch, batch): batch
+                for batch in batch_iterable(all_points, batch_size)
+            }
+
             for future in as_completed(futures):
-                all_ids.extend(future.result())
+                result = future.result()
+                if kwargs.get("result_view", False):
+                    print(
+                        f"Operation_id: {result.operation_id} | Status: {result.status}"
+                    )
 
-        return all_ids
-
-    def search(self, query: str, k: int = 10, **kwargs: Any) -> List[Dict[str, Any]]:
-        """Performs a search query and returns a list of relevant documents.
+    def search(self, query: str, k: int = 10, **kwargs: Any) -> List[Document]:
+        """
+        Perform a vector similarity search with optional metadata filtering.
 
         Args:
-            query (str): The search query string to find similar documents.
-            k (int): The number of top documents to return. Default is 10.
-            **kwargs (Any): Additional keyword arguments for the search operation.
+            query (str): The input query string to embed and search.
+            k (int): The number of top results to return.
+            **kwargs:
+                filters (List[Dict[str, Any]]): Optional metadata filters.
+                    Example: [{"category": "news"}, {"lang": "en"}]
 
         Returns:
-            List[Dict[str, Any]]: A list of dictionaries containing the payload, id, and score of each result.
+            List[Document]: List of matching documents with metadata.
         """
-        search_results = self.client.search(
-            collection_name=self.collection_name,
-            query_vector=self.embedding.embed_query(query),
-            limit=k,
-            **kwargs,
+
+        query_vector: VectorStruct = self.embedding(query)[0]
+
+        # filtering
+        query_filter = None
+        if "filters" in kwargs:
+            condition = []
+            for f in kwargs["filters"]:
+                for key, value in f.items():
+                    condition.append(
+                        FieldCondition(key=key, match=MatchValue(value=value))
+                    )
+            query_filter = Filter(must=condition)
+
+        results = (
+            self.qdrant_client.query_points(
+                collection_name=self.collection_name,
+                query=query_vector,
+                limit=k,
+                query_filter=query_filter,
+            )
+            .model_dump()
+            .get("points", [])
         )
         return [
-            {
-                "payload": result.payload,
-                "id": result.id,
-                "score": result.score,
-            }
-            for result in search_results
+            Document(
+                page_content=hit["payload"].get("text", ""),
+                metadata={
+                    **{k: v for k, v in hit["payload"].items() if k != "text"},
+                    "score": hit["score"],
+                    "id": hit["id"],
+                },
+            )
+            for hit in results
         ]
 
     def delete(
         self,
         ids: Optional[List[str]] = None,
-        filters: Optional[Filter] = None,
+        filters: Optional[Dict] = None,
         **kwargs: Any,
     ) -> None:
-        """Deletes documents from the collection based on ids or filters.
+        """
+        Delete points from the Qdrant collection by ID, filter, or both.
+
+        - If only `ids` are given: delete those points.
+        - If only `filters` are given: delete all points matching the filter.
+        - If both `ids` and `filters` are given: delete only points that match both conditions.
+        - If neither is given: delete all points in the collection.
 
         Args:
-            ids (Optional[List[str]]): A list of document ids to delete. If None, no id-based deletion is performed.
-            filters (Optional[Filter]): A Filter object to apply for deletion. If None, no filter-based deletion is performed.
-            **kwargs (Any): Additional keyword arguments for the delete operation.
+            ids (Optional[List[str]]): List of point IDs to delete.
+            filters (Optional[List[Dict[str, Any]]]): Metadata filter conditions.
+            **kwargs: Reserved for future use.
 
         Returns:
             None
         """
-        if ids:
-            points_selector = PointIdsList(points=ids)
-            self.client.delete(
-                collection_name=self.collection_name, points_selector=points_selector
-            )
-        elif filters:
-            self.client.delete(collection_name=self.collection_name, filter=filters)
+        if ids and filters:
+            # Delete by ids and filters
+            conditions = []
+            for f in filters:
+                for key, value in f.items():
+                    conditions.append(
+                        FieldCondition(key=key, match=MatchValue(value=value))
+                    )
 
-    def scroll(self, scroll_filter, with_vectors=False, k=None) -> List[Dict[str, Any]]:
-        """
-        Retrieve records from a Qdrant collection using the scroll method.
+            query_filter = Filter(must=conditions)
 
-        Args:
-            scroll_filter: The filter condition to apply for retrieving records.
-            k (int, optional): The number of top records to return. If None, retrieve all records.
-
-        Returns:
-            List[Dict[str, Any]]: A list of records in the collection.
-        """
-        all_records = []
-        next_page_offset = None
-        total_retrieved = 0
-
-        try:
+            # query points matching filter
+            scroll_offset = None
+            matched_ids = set()
             while True:
-                limit = 100 if k is None else min(100, k - total_retrieved)
-                response, next_page_offset = self.client.scroll(
+                scroll_result = self.qdrant_client.scroll(
                     collection_name=self.collection_name,
-                    limit=limit,
-                    scroll_filter=scroll_filter,
-                    offset=next_page_offset,
-                    with_payload=True,
-                    with_vectors=with_vectors,
+                    scroll_filter=query_filter,
+                    with_payload=False,
+                    limit=30,
+                    offset=scroll_offset,
                 )
-                all_records.extend(response)
-                total_retrieved += len(response)
+                points_batch, scroll_offset = scroll_result
 
-                if next_page_offset is None or (k is not None and total_retrieved >= k):
+                if not points_batch:
+                    print("Delete All Finished")
                     break
 
-        except Exception as e:
-            print(f"Error retrieving records: {e}")
+                ids_to_delete = [point.id for point in points_batch]
+                self.qdrant_client.delete(
+                    collection_name=self.collection_name,
+                    points_selector=PointIdsList(points=ids_to_delete),
+                )
 
-        return all_records
+                print(f"{len(ids_to_delete)} data delete...")
+
+        elif ids:
+            # Delete by ids
+            self.qdrant_client.delete(
+                collection_name=self.collection_name,
+                points_selector=PointIdsList(points=ids),
+            )
+            print(f"{len(ids)} data delete...")
+
+        elif filters:
+            # Delete by filters
+            conditions = []
+            for f in filters:
+                for key, value in f.items():
+                    conditions.append(
+                        FieldCondition(key=key, match=MatchValue(value=value))
+                    )
+
+            query_filter = Filter(must=conditions)
+
+            self.qdrant_client.delete(
+                collection_name=self.collection_name,
+                points_selector=FilterSelector(filter=query_filter),
+            )
+            print(f"Filters: {query_filter}")
+            print("Delete All Finished")
+
+        else:
+            # all delete
+            scroll_offset = None
+            while True:
+                scroll_result = self.qdrant_client.scroll(
+                    collection_name=self.collection_name,
+                    with_payload=False,
+                    limit=256,
+                    offset=scroll_offset,
+                )
+                points_batch, scroll_offset = scroll_result
+
+                if not points_batch:
+                    print("Delete All Finished")
+                    break
+
+                ids_to_delete = [point.id for point in points_batch]
+
+                self.qdrant_client.delete(
+                    collection_name=self.collection_name,
+                    points_selector=PointIdsList(points=ids_to_delete),
+                )
+                print(f"{len(ids_to_delete)} data delete...")

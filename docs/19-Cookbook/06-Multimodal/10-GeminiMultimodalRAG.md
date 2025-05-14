@@ -22,18 +22,20 @@ pre {
 - Author: [Kane](https://github.com/HarryKane11)
 - Design: [Kane](https://github.com/HarryKane11)
 - Peer Review : [Mark](https://github.com/obov), [Brian](https://github.com/brian604)
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/06-Multimodal/10-GeminiMultimodalRAG.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/06-Multimodal/10-GeminiMultimodalRAG.ipynb)
 ## Overview
 
 This tutorial demonstrates how to build a Multimodal RAG (Retrieval-Augmented Generation) system using LangChain. The system processes both text and images from documents, creating a unified knowledge base for question-answering.
 
 Key features include:
-- Text content extraction to markdown using `pymupdf4llm`
-- Image content extraction using `Upstage Document AI API`
+- Text content extraction to markdown using ```pymupdf4llm```
+- Image content extraction using ```Upstage Document AI API```
 - Text and image content merging by page
-- RAG implementation using `OpenAI embeddings` and `GPT-4o`
-- `Langgraph` based RAG pipeline
+- RAG implementation using ```OpenAI embeddings``` and ```GPT-4o```
+- ```Langgraph``` based RAG pipeline
 
 ![Multimodal RAG Architecture](./img/10-GeminiMultimodalRAG-Architecture.png)
 
@@ -58,8 +60,8 @@ Key features include:
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -115,10 +117,10 @@ load_dotenv(override=True)
 
 
 
-## Extract and preprocess Text contents from PDF using `PyMuPDF4LLM`
-### `PyMuPDF4LLM`
+## Extract and preprocess Text contents from PDF using ```PyMuPDF4LLM```
+### ```PyMuPDF4LLM```
 
-`PyMuPDF4LLM` is a Python package designed to facilitate the extraction of PDF content into formats suitable for Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG) environments. It supports Markdown extraction and LlamaIndex document output, making it a valuable tool for developing document-based AI applications.
+```PyMuPDF4LLM``` is a Python package designed to facilitate the extraction of PDF content into formats suitable for Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG) environments. It supports Markdown extraction and LlamaIndex document output, making it a valuable tool for developing document-based AI applications.
 
 ### Key Features
 
@@ -220,9 +222,9 @@ for page, text in enumerate(md_text[:3]):
     today, but one thing is clear: the ...
 </pre>
 
-## Layout parsing to extract image from PDF using `Upstage Document Parse API`
+## Layout parsing to extract image from PDF using ```Upstage Document Parse API```
 
-The `Upstage Document Parse API` is a robust AI model that converts various document formats, including PDFs and images, into HTML by detecting layout elements such as paragraphs, tables, and images. This facilitates the integration of document content into applications requiring structured data.
+The ```Upstage Document Parse API``` is a robust AI model that converts various document formats, including PDFs and images, into HTML by detecting layout elements such as paragraphs, tables, and images. This facilitates the integration of document content into applications requiring structured data.
 
 **Key Features:**
 
@@ -237,8 +239,8 @@ The `Upstage Document Parse API` is a robust AI model that converts various docu
 Source: [Upstage Official Website](https://www.upstage.ai/blog/en/let-llms-read-your-documents-with-speed-and-accuracy)
 
 
-### `UpstageDocumentParseLoader` in LangChain
-The `UpstageDocumentParseLoader` is a component of the langchain_upstage package that integrates `Upstage's Document Parser API` into the LangChain framework. It enables seamless loading and parsing of documents within LangChain applications. 
+### ```UpstageDocumentParseLoader``` in LangChain
+The ```UpstageDocumentParseLoader``` is a component of the langchain_upstage package that integrates ```Upstage's Document Parser API``` into the LangChain framework. It enables seamless loading and parsing of documents within LangChain applications. 
 
 
 ```python
@@ -326,7 +328,7 @@ display(Image(data=img_data))  # Display the image
     
 
 
-This process generates multimodal descriptions of images detected on each page using the `Gemini 1.5 Flash 8B API`. These descriptions are combined with the previously extracted text to create a complete embedding, enabling a RAG pipeline capable of understanding images as well.
+This process generates multimodal descriptions of images detected on each page using the ```Gemini 1.5 Flash 8B API```. These descriptions are combined with the previously extracted text to create a complete embedding, enabling a RAG pipeline capable of understanding images as well.
 
 ```python
 from langchain_core.messages import HumanMessage
@@ -515,21 +517,21 @@ print(merged_documents[3].page_content[:500])
     **pace 
 </pre>
 
-## Building a RAG Pipeline with `LangGraph`
+## Building a RAG Pipeline with ```LangGraph```
 
-This guide demonstrates how to use `LangGraph` to build a unified RAG (Retrieval-Augmented Generation) application. By combining retrieval and generation into a single flow, `LangGraph` offers streamlined execution, deployment, and additional features like persistence and human-in-the-loop approval.
+This guide demonstrates how to use ```LangGraph``` to build a unified RAG (Retrieval-Augmented Generation) application. By combining retrieval and generation into a single flow, ```LangGraph``` offers streamlined execution, deployment, and additional features like persistence and human-in-the-loop approval.
 
 ### Key Components
 
 1. **Application State**:
-   - Tracks input (`question`), intermediate (`context`), and output (`answer`) data using a `TypedDict`.
+   - Tracks input (```question```), intermediate (```context```), and output (```answer```) data using a ```TypedDict```.
 
 2. **Application Steps**:
-   - **Retrieve**: Uses `Chroma` for similarity-based document retrieval.
-   - **Generate**: Formats retrieved context and question, then invokes `ChatOpenAI` to generate an answer.
+   - **Retrieve**: Uses ```Chroma``` for similarity-based document retrieval.
+   - **Generate**: Formats retrieved context and question, then invokes ```ChatOpenAI``` to generate an answer.
 
 3. **Control Flow**:
-   - Uses `StateGraph` to define the sequence and connections between steps.
+   - Uses ```StateGraph``` to define the sequence and connections between steps.
 
 ```python
 from langchain_text_splitters import RecursiveCharacterTextSplitter

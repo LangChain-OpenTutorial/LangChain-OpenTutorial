@@ -21,13 +21,13 @@ pre {
 
 - Author: [YooKyung Jeon](https://github.com/sirena1)
 - Peer Review: [choincnp](https://github.com/choincnp), [Hye-yoonJeong](https://github.com/Hye-yoonJeong)
+- Proofread : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/07-MultiVectorRetriever.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/07-MultiVectorRetriever.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/07-MultiVectorRetriever.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/07-MultiVectorRetriever.ipynb)
 ## Overview
 
-`MultiVectorRetriever` enables efficient querying of documents in various contexts. 
+```MultiVectorRetriever``` enables efficient querying of documents in various contexts. 
 It allows documents to be stored and managed with **multiple vectors**, significantly enhancing the accuracy and efficiency of information retrieval.
 
 ### Table of Contents
@@ -49,8 +49,8 @@ It allows documents to be stored and managed with **multiple vectors**, signific
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -94,7 +94,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-Alternatively, environment variables can also be set using a `.env` file.
+Alternatively, environment variables can also be set using a ```.env``` file.
 
 **[Note]**
 
@@ -118,7 +118,7 @@ load_dotenv(override=True)
 There are several approaches to creating multiple vectors for a given document.
 Some of them include:
 
-1. **Creating Smaller Chunks**: Split the document into smaller chunks and embed them. This method enables a more granular focus on specific parts of the document. It can be implemented using the `ParentDocumentRetriever`, making it easier to explore detailed information.
+1. **Creating Smaller Chunks**: Split the document into smaller chunks and embed them. This method enables a more granular focus on specific parts of the document. It can be implemented using the ```ParentDocumentRetriever```, making it easier to explore detailed information.
 
 2. **Storing Summary Embeddings**: Create a summary for each document and embed it along with the original document. Summary embeddings are particularly useful for quickly grasping the core content of a document. By focusing only on the summary instead of analyzing the entire document, efficiency can be significantly improved.
 
@@ -137,7 +137,7 @@ loader = PyMuPDFLoader("data/A European Approach to Artificial Intelligence - A 
 docs = loader.load()
 ```
 
-The original documents loaded from the data are stored in the `docs` variable.
+The original documents loaded from the data are stored in the ```docs``` variable.
 
 ```python
 print(docs[5].page_content[:500])
@@ -158,10 +158,10 @@ print(docs[5].page_content[:500])
 
 When searching through large volumes of information, embedding data into smaller chunks can be highly beneficial.
 
-With `MultiVectorRetriever`, documents can be stored and managed as multiple vectors.
+With ```MultiVectorRetriever```, documents can be stored and managed as multiple vectors.
 
-- The original documents are stored in the `docstore`.
-- The embedded documents are stored in the `vectorstore`.
+- The original documents are stored in the ```docstore```.
+- The embedded documents are stored in the ```vectorstore```.
 
 This allows for splitting documents into smaller units, enabling more accurate searches. Additionally, the contents of the original document can be accessed when needed.
 
@@ -202,7 +202,7 @@ print(doc_ids[:2])
 <pre class="custom">['46aba7dd-39cd-4852-beed-e8e0560e7a98', 'dc741e0e-89a0-41b5-8090-688ec75748b8']
 </pre>
 
-Here we define a `parent_text_splitter` for splitting into larger chunks and a `child_text_splitter` for splitting into smaller chunks.
+Here we define a ```parent_text_splitter``` for splitting into larger chunks and a ```child_text_splitter``` for splitting into smaller chunks.
 
 ```python
 # Create a RecursiveCharacterTextSplitter object for larger chunks
@@ -229,7 +229,7 @@ for i, doc in enumerate(docs):
     parent_docs.extend(parent_doc)
 ```
 
-Verify the `doc_id` assigned to `parent_docs`
+Verify the ```doc_id``` assigned to ```parent_docs```
 
 
 ```python
@@ -273,7 +273,7 @@ for i, doc in enumerate(docs):
     child_docs.extend(child_doc)
 ```
 
-Verify the `doc_id` assigned to `child_docs`.
+Verify the ```doc_id``` assigned to ```child_docs```.
 
 ```python
 # Check the metadata of the generated child documents.
@@ -314,9 +314,9 @@ print(f"Number of split child_docs: {len(child_docs)}")
 
 Add the newly created smaller child document set to the vector store.
 
-Then, map the parent documents to the generated UUIDs and add them to the `docstore`.
+Then, map the parent documents to the generated UUIDs and add them to the ```docstore```.
 
-- Use the `mset` method to store document IDs and their content as key-value pairs in the document store.
+- Use the ```mset``` method to store document IDs and their content as key-value pairs in the document store.
 
 ```python
 # Add both parent and child documents to the vector store
@@ -329,7 +329,7 @@ retriever.docstore.mset(list(zip(doc_ids, docs)))
 
 Perform similarity search, and display the most similar document chunks.
 
-Use the `retriever.vectorstore.similarity_search` method to search within the child and parent document chunks.
+Use the ```retriever.vectorstore.similarity_search``` method to search within the child and parent document chunks.
 
 The first document chunk with the highest similarity will be displayed.
 
@@ -376,9 +376,9 @@ for chunk in relevant_chunks:
     
 </pre>
 
-Execute a query using the `retriever.invoke` method.
+Execute a query using the ```retriever.invoke``` method.
 
-The `retriever.invoke` method performs a search across the full content of the original documents.
+The ```retriever.invoke``` method performs a search across the full content of the original documents.
 
 ```python
 relevant_docs = retriever.invoke(
@@ -477,11 +477,11 @@ print(relevant_docs[0].page_content)
 
 The default search type performed by the retriever in the vector database is similarity search.
 
-LangChain's `VectorStore` also support searching using [Max Marginal Relevance](https://api.python.langchain.com/en/latest/vectorstores/langchain_core.vectorstores.VectorStore.html#langchain_core.vectorstores.VectorStore.max_marginal_relevance_search). 
+LangChain's ```VectorStore``` also support searching using [Max Marginal Relevance](https://api.python.langchain.com/en/latest/vectorstores/langchain_core.vectorstores.VectorStore.html#langchain_core.vectorstores.VectorStore.max_marginal_relevance_search). 
 
-If you want to use this method instead, you can configure the `search_type` property as follows.
+If you want to use this method instead, you can configure the ```search_type``` property as follows.
 
-- Set the `search_type` property of the `retriever` object to `SearchType.mmr`.
+- Set the ```search_type``` property of the ```retriever``` object to ```SearchType.mmr```.
   - This specifies that the MMR (Maximal Marginal Relevance) algorithm should be used during the search.
 
 ```python
@@ -749,8 +749,8 @@ summary_chain = (
 )
 ```
 
-Summarize the documents in the `docs` list in batch using the `chain.batch` method.
-- Here, we set the `max_concurrency` parameter to 10 to allow up to 10 documents to be processed simultaneously.
+Summarize the documents in the ```docs``` list in batch using the ```chain.batch``` method.
+- Here, we set the ```max_concurrency``` parameter to 10 to allow up to 10 documents to be processed simultaneously.
 
 ```python
 # Handling batches of documents
@@ -794,9 +794,9 @@ print(summaries[33])
     - Advancements in technology may provide new tools to measure the impact of input variables on algorithm outputs, and research is ongoing to make algorithms more adaptable.  
 </pre>
 
-Initialize the `Chroma` vector store to index the child chunks. Use `OpenAIEmbeddings` as the embedding function.
+Initialize the ```Chroma``` vector store to index the child chunks. Use ```OpenAIEmbeddings``` as the embedding function.
 
-- Use `“doc_id”` as the key representing the document ID.
+- Use ```“doc_id”``` as the key representing the document ID.
 
 
 ```python
@@ -824,7 +824,7 @@ retriever = MultiVectorRetriever(
 doc_ids = [str(uuid.uuid4()) for _ in split_docs]
 ```
 
-Save the summarized document and its metadata (here, the `Document ID` for the summary you created).
+Save the summarized document and its metadata (here, the ```Document ID``` for the summary you created).
 
 
 ```python
@@ -850,8 +850,8 @@ len(summary_docs)
 
 
 
-- Add `summary_docs` to the vector store with `retriever.vectorstore.add_documents(summary_docs)`.
-- Map `doc_ids` and `docs` with `retriever.docstore.mset(list(zip(doc_ids, docs))))` to store them in the document store.
+- Add ```summary_docs``` to the vector store with ```retriever.vectorstore.add_documents(summary_docs)```.
+- Map ```doc_ids``` and ```docs``` with ```retriever.docstore.mset(list(zip(doc_ids, docs))))``` to store them in the document store.
 
 
 ```python
@@ -863,7 +863,7 @@ retriever.vectorstore.add_documents(
 retriever.docstore.mset(list(zip(doc_ids, split_docs)))
 ```
 
-Perform a similarity search using the `similarity_search` method of the `vectorstore` object.
+Perform a similarity search using the ```similarity_search``` method of the ```vectorstore``` object.
 
 
 ```python
@@ -883,7 +883,7 @@ print(result_docs[0].page_content)
     - The 2020 White Paper outlines a European approach to AI, emphasizing the importance of excellence and trust in AI systems.
 </pre>
 
-Use the `invoke` method of the `retriever` object to retrieve documents related to the query.
+Use the ```invoke``` method of the ```retriever``` object to retrieve documents related to the query.
 
 
 ```python
@@ -935,10 +935,10 @@ functions = [
 ]
 ```
 
-Use `ChatPromptTemplate` to define a prompt template that generates three hypothetical questions based on the given document.
+Use ```ChatPromptTemplate``` to define a prompt template that generates three hypothetical questions based on the given document.
 
-- Set `functions` and `function_call` to call the virtual question generation functions.
-- Use `JsonKeyOutputFunctionsParser` to parse the generated virtual questions and extract the values corresponding to the `questions` key.
+- Set ```functions``` and ```function_call``` to call the virtual question generation functions.
+- Use ```JsonKeyOutputFunctionsParser``` to parse the generated virtual questions and extract the values corresponding to the ```questions``` key.
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate
@@ -980,7 +980,7 @@ hypothetical_query_chain.invoke(split_docs[33])
 
 
 
-Use the `chain.batch` method to process multiple requests for `split_docs` data at the same time.
+Use the ```chain.batch``` method to process multiple requests for ```split_docs``` data at the same time.
 
 ```python
 # Create a batch of hypothetical questions for a list of articles
@@ -1023,7 +1023,7 @@ retriever = MultiVectorRetriever(
 doc_ids = [str(uuid.uuid4()) for _ in split_docs]  # Create a document ID
 ```
 
-Add metadata (document IDs) to the `question_docs` list.
+Add metadata (document IDs) to the ```question_docs``` list.
 
 
 ```python
@@ -1036,7 +1036,7 @@ for i, question_list in enumerate(hypothetical_questions):
     )
 ```
 
-Add the `hypothetical_questions` to the document, and add the original document to `docstore`.
+Add the ```hypothetical_questions``` to the document, and add the original document to ```docstore```.
 
 
 ```python
@@ -1047,7 +1047,7 @@ retriever.vectorstore.add_documents(question_docs)
 retriever.docstore.mset(list(zip(doc_ids, split_docs)))
 ```
 
-Perform a similarity search using the `similarity_search` method of the `vectorstore` object.
+Perform a similarity search using the ```similarity_search``` method of the ```vectorstore``` object.
 
 
 ```python
@@ -1079,7 +1079,7 @@ for doc in result_docs:
     {'doc_id': 'ba58ee93-5bad-4ba9-958b-4e0af5fc0162'}
 </pre>
 
-Use the `invoke` method of the `retriever` object to retrieve documents related to the query.
+Use the ```invoke``` method of the ```retriever``` object to retrieve documents related to the query.
 
 
 ```python

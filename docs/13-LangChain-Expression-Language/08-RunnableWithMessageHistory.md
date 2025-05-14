@@ -20,15 +20,14 @@ pre {
 # RunnableWithMessageHistory
 
 - Author: [Secludor](https://github.com/Secludor)
-- Design: 
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/02-CommaSeparatedListOutputParser.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/02-CommaSeparatedListOutputParser.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/08-RunnableWithMessageHistory.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/08-RunnableWithMessageHistory.ipynb)
 ## Overview
 
-`RunnableWithMessageHistory` in LangChain's Expression Language (LCEL) for **managing conversation history** in chatbots, virtual assistants, and other conversational AI applications. It seamlessly integrates with existing LangChain components **to automatically handle message history management and updates.**
+```RunnableWithMessageHistory``` in LangChain's Expression Language (LCEL) for **managing conversation history** in chatbots, virtual assistants, and other conversational AI applications. It seamlessly integrates with existing LangChain components **to automatically handle message history management and updates.**
 
 ### Key Features
 
@@ -63,7 +62,7 @@ pre {
 - Provides improved integration with modern LangChain components.
 
 ### Summary
-`RunnableWithMessageHistory` is the recommended standard for conversation management in LangChain, offering:
+```RunnableWithMessageHistory``` is the recommended standard for conversation management in LangChain, offering:
 - Simplified conversation state management.
 - An enhanced user experience through context preservation.
 - Flexible configuration options for diverse use cases.
@@ -91,8 +90,8 @@ pre {
 Setting up your environment is the first step. See the [Environment Setup](https://wikidocs.net/257836) guide for more details.
 
 **[Note]**
-- The `langchain-opentutorial` is a bundle of easy-to-use environment setup guidance, useful functions and utilities for tutorials. 
-- Check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- The ```langchain-opentutorial``` is a bundle of easy-to-use environment setup guidance, useful functions and utilities for tutorials. 
+- Check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -133,9 +132,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-Alternatively, you can set and load `OPENAI_API_KEY` from a `.env` file.
+Alternatively, you can set and load ```OPENAI_API_KEY``` from a ```.env``` file.
 
-**[Note]** This is only necessary if you haven't already set `OPENAI_API_KEY` in previous steps.
+**[Note]** This is only necessary if you haven't already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -150,12 +149,12 @@ load_dotenv(override=True)
 
 
 
-## Getting Started with `RunnableWithMessageHistory`
+## Getting Started with ```RunnableWithMessageHistory```
 
-Managing conversation history is crucial for conversational applications and complex data processing tasks. `RunnableWithMessageHistory` simplifies the message history implementation. To use it effectively, you need these two key components:
+Managing conversation history is crucial for conversational applications and complex data processing tasks. ```RunnableWithMessageHistory``` simplifies the message history implementation. To use it effectively, you need these two key components:
 
 1. **Runnable objects**,
-  - Creating Runnable objects, such as `retriever` or `chain`, are the primary components that interacts with `BaseChatMessageHistory`. 
+  - Creating Runnable objects, such as ```retriever``` or ```chain```, are the primary components that interacts with ```BaseChatMessageHistory```. 
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -180,7 +179,7 @@ runnable = (
 
 2. **Message History Manager (callable)**
 
-- This is a callable that returns an instance of `BaseChatMessageHistory`. It handles message storage, retrieval, updates, and maintains conversation context for contextual responses.
+- This is a callable that returns an instance of ```BaseChatMessageHistory```. It handles message storage, retrieval, updates, and maintains conversation context for contextual responses.
 
 ### Implementation Options
 
@@ -188,12 +187,12 @@ LangChain offers several implementations for managing message history. You can e
 
 This tutorial covers two primary approaches in implementation:
 
-1. **In-Memory `ChatMessageHistory`**
+1. **In-Memory ```ChatMessageHistory```**
    - Manages message history in memory, making it ideal for development and simple applications.
    - Provides fast access speeds.
    - Message history is lost on application restart.
 
-2. **Persistent Storage with `RedisChatMessageHistory`**
+2. **Persistent Storage with ```RedisChatMessageHistory```**
    - Enables permanent message storage using Remote Dictionary Server (Redis), a high-performance, open-source in-memory data structure store.
    - Suitable for distributed environments.
    - Ideal for complex applications and long-running services.
@@ -213,10 +212,10 @@ In-memory conversation history provides a simple and fast way to manage chat mes
 ### Core Configuration Parameters
 
 **Required Components**
-- `runnable`: The chain or model (e.g., ChatOpenAI) to execute.
-- `get_session_history`: A function returning a `BaseChatMessageHistory` instance.
-- `input_messages_key`: Specifies the key for user input in `invoke()` calls.
-- `history_messages_key`: Defines the key for accessing conversation history.
+- ```runnable```: The chain or model (e.g., ChatOpenAI) to execute.
+- ```get_session_history```: A function returning a ```BaseChatMessageHistory``` instance.
+- ```input_messages_key```: Specifies the key for user input in ```invoke()``` calls.
+- ```history_messages_key```: Defines the key for accessing conversation history.
 
 ```python
 from langchain_community.chat_message_histories import ChatMessageHistory
@@ -244,7 +243,7 @@ with_message_history = RunnableWithMessageHistory(
 ```
 
 ### Default Session Implementation
-`RunnableWithMessageHistory` uses `session_id` as its default identifier for managing conversation threads, as shown in its core implementation:
+```RunnableWithMessageHistory``` uses ```session_id``` as its default identifier for managing conversation threads, as shown in its core implementation:
 
 ```python
 if history_factory_config:
@@ -282,7 +281,7 @@ with_message_history.invoke(
 
 
 
-Using the same `session_id` continues the conversation by retrieving the previous thread's content (this continuous conversation is called a **session**):
+Using the same ```session_id``` continues the conversation by retrieving the previous thread's content (this continuous conversation is called a **session**):
 
 ```python
 # Call with message history
@@ -304,9 +303,9 @@ with_message_history.invoke(
 
 
 
-However, using a different `session_id` will result in an inaccurate response because there is no corresponding history. 
+However, using a different ```session_id``` will result in an inaccurate response because there is no corresponding history. 
 
-For example, if `session_id` is `def234` and no history exists for that ID, you'll see an irrelevant response (see the following code snippet).
+For example, if ```session_id``` is ```def234``` and no history exists for that ID, you'll see an irrelevant response (see the following code snippet).
 
 ```python
 # New session_id means no previous conversation memory
@@ -328,11 +327,11 @@ with_message_history.invoke(
 
 
 
-You can customize the configuration parameters for tracking message history by passing a list of `ConfigurableFieldSpec` objects through the `history_factory_config` parameter.
+You can customize the configuration parameters for tracking message history by passing a list of ```ConfigurableFieldSpec``` objects through the ```history_factory_config``` parameter.
 
-Setting a new `history_factory_config` overrides the existing `session_id` configuration.
+Setting a new ```history_factory_config``` overrides the existing ```session_id``` configuration.
 
-The following example demonstrates using two parameters: `user_id` and `conversation_id`.
+The following example demonstrates using two parameters: ```user_id``` and ```conversation_id```.
 
 ```python
 from langchain_core.runnables import ConfigurableFieldSpec
@@ -392,12 +391,12 @@ with_message_history.invoke(
 
 ## Example of Runnables Using Different Keys
 
-This example demonstrates how to handle inputs and output messages with `RunnableWithMessageHistory`.
+This example demonstrates how to handle inputs and output messages with ```RunnableWithMessageHistory```.
 
 ### Messages Input with Dictionary Output
 
 **Direct Message Object Handling**
-- Omitting `input_messages_key="input"` configures the system to accept `Message` objects as input.
+- Omitting ```input_messages_key="input"``` configures the system to accept ```Message``` objects as input.
 
 ```python
 from langchain_core.messages import HumanMessage
@@ -454,17 +453,17 @@ with_message_history.invoke(
 
 
 This configuration provides:
-- Direct handling of the input `Message` object.
+- Direct handling of the input ```Message``` object.
 -  Outputting data in a dictionary format.
 - Maintaining conversation history across sessions.
 - Continuing conversations seamlessly using session IDs.
 
-### `Message` Objects for both Input and Output
+### ```Message``` Objects for both Input and Output
 
-Continuing from the previous example, you can also configure `RunnableWithMessageHistory` to handle `Message` objects directly for both input and output.
+Continuing from the previous example, you can also configure ```RunnableWithMessageHistory``` to handle ```Message``` objects directly for both input and output.
 
 **Direct Message Object Handling**
-- Omitting `output_messages_key="output_message"` configures the system to return `Message` objects as output.
+- Omitting ```output_messages_key="output_message"``` configures the system to return ```Message``` objects as output.
 
 ```python
 with_message_history = RunnableWithMessageHistory(
@@ -494,7 +493,7 @@ with_message_history.invoke(
 
 **Using a Single Key for Input/Output**
 - This approach uses one key for both input and output messages.
-- It utilizes `itemgetter("input_messages")` to extract input messages from the dictionary.
+- It utilizes ```itemgetter("input_messages")``` to extract input messages from the dictionary.
 
 
 ```python
@@ -524,7 +523,7 @@ with_message_history.invoke(
 
 
 This configuration enables:
-- Direct handling of `Message` objects.
+- Direct handling of ```Message``` objects.
 - Simplified input/output processing.
 - Flexible conversion between different message formats.
 - Consistent session management.
@@ -542,7 +541,7 @@ Persistent storage is **essential for long-term data preservation** in applicati
 
 ### Implementation Options
 
-`RunnableWithMessageHistory` offers flexible storage options that are independent of how `get_session_history` retrieves the chat message history.
+```RunnableWithMessageHistory``` offers flexible storage options that are independent of how ```get_session_history``` retrieves the chat message history.
 - It supports the local file system (see an example [here](https://github.com/langchain-ai/langserve/blob/main/examples/chat_with_persistence_and_user/server.py))
 - It integrates with various storage providers (see [LangChain's message histories: memory integrations](https://python.langchain.com/docs/integrations/memory/))
 
@@ -567,17 +566,17 @@ Launch a local Redis Stack server using Docker:
 docker run -d -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
 ```
 Configuration options:
-- `-d` : Run in daemon mode (background).
-- `-p {port}:6379` : Redis server port mapping.
-- `-p 8001:8001` : RedisInsight UI port mapping.
-- `redis/redis-stack:latest` : Latest Redis Stack image.
+- ```-d``` : Run in daemon mode (background).
+- ```-p {port}:6379``` : Redis server port mapping.
+- ```-p 8001:8001``` : RedisInsight UI port mapping.
+- ```redis/redis-stack:latest``` : Latest Redis Stack image.
 
 **Tips for Troubleshooting**
 - Verify Docker is running.
 - Check port availability (terminate any processes using the port or use different ports).
 
 3. **Redis Connection**
-- Set up the Redis connection URL: `"redis://localhost:{port}/0"`
+- Set up the Redis connection URL: ```"redis://localhost:{port}/0"```
 
 
 ```python
@@ -586,7 +585,7 @@ REDIS_URL = "redis://localhost:6379/0"
 
 ### Implementing Redis Message History
 
-To use Redis for message history, define a new callable that returns an instance of `RedisChatMessageHistory` :
+To use Redis for message history, define a new callable that returns an instance of ```RedisChatMessageHistory``` :
 
 ```python
 from langchain_community.chat_message_histories.redis import RedisChatMessageHistory
@@ -626,7 +625,7 @@ with_message_history.invoke(
 
 
 **Continuing the Conversation**
-- Make the second call using the same `session_id` .
+- Make the second call using the same ```session_id``` .
 
 ```python
 # Second query using same session ID
@@ -644,7 +643,7 @@ with_message_history.invoke(
 
 
 **Testing with Different Session**
-- We will ask the question using a different `session_id` for this time.
+- We will ask the question using a different ```session_id``` for this time.
 
 ```python
 # Query with different session ID
@@ -661,4 +660,4 @@ with_message_history.invoke(
 
 
 
-**[Note]** The last response will be inaccurate because there's no conversation history associated with that session ID `redis456`.
+**[Note]** The last response will be inaccurate because there's no conversation history associated with that session ID ```redis456```.

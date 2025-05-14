@@ -22,17 +22,17 @@ pre {
 - Author: [Youngin Kim](https://github.com/Normalist-K)
 - Design: [Teddy](https://github.com/teddylee777)
 - Peer Review :
+- Proofread : [frimer](https://github.com/brian604)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/11-Gemini-Video.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/11-Gemini-Video.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/12-Gemini-Video.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/12-Gemini-Video.ipynb)
 ## Overview
 
-This tutorial demonstrates how to use the `Gemini API` to process and analyze video content. 
+This tutorial demonstrates how to use the ```Gemini API``` to process and analyze video content. 
 
-Specifically, it shows how to **upload a video file** using `File API`, and then use a generative model to extract descriptive information about the video. 
+Specifically, it shows how to **upload a video file** using ```File API```, and then use a generative model to extract descriptive information about the video. 
 
-The workflow utilizes the `gemini-1.5-flash` model to generate a text-based description of a given video clip.
+The workflow utilizes the ```gemini-1.5-flash``` model to generate a text-based description of a given video clip.
 
 Additionally, it provides an example of Integrating the Gemini Model into a LangChain Workflow for Video Data, showcasing how to build a chain that processes and analyzes video content seamlessly within the LangChain framework.
 
@@ -58,8 +58,8 @@ Additionally, it provides an example of Integrating the Gemini Model into a Lang
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -89,11 +89,11 @@ package.install(
 
 **Important:**
 
-- The `File API` used in this tutorial requires `API keys` for authentication and access.
+- The ```File API``` used in this tutorial requires ```API keys``` for authentication and access.
 
-- Uploaded files are linked to the cloud project associated with the `API key`.
+- Uploaded files are linked to the cloud project associated with the ```API key```.
 
-Unlike other `Gemini APIs`, the `API key` also grants access to data uploaded via the `File API`, so it's crucial to store the `API key` securely.
+Unlike other ```Gemini APIs```, the ```API key``` also grants access to data uploaded via the ```File API```, so it's crucial to store the ```API key``` securely.
 
 ```python
 # Set environment variables
@@ -132,7 +132,7 @@ license free video from pexels
 - author: [SwissHumanity Stories](https://www.pexels.com/ko-kr/@swisshumanity-stories-1686058/)
 - link: [SwissHumanity Stories's pexels](https://www.pexels.com/video/drone-footage-of-a-train-traveling-on-a-valley-8290926/)
 
-Please download the video and copy it to the `./data` folder for the tutorial
+Please download the video and copy it to the ```./data``` folder for the tutorial
 
 ```python
 # Set video file name
@@ -158,9 +158,9 @@ print(f"Upload complete: {video_file.uri}")
     Upload complete: https://generativelanguage.googleapis.com/v1beta/files/ycq94nkeb9gd
 </pre>
 
-After uploading the file, you can call `get_file` to verify if the API has successfully processed the file.
+After uploading the file, you can call ```get_file``` to verify if the API has successfully processed the file.
 
-`get_file` allows you to check the uploaded file associated with the File API in the cloud project linked to the API key.
+```get_file``` allows you to check the uploaded file associated with the File API in the cloud project linked to the API key.
 
 ```python
 import time
@@ -189,7 +189,7 @@ print(
 
 ## Generate content (Gemini API)
 
-After the video is preprocessed, you can use the `generate_content` function from Gemini API to request questions about the video.
+After the video is preprocessed, you can use the ```generate_content``` function from Gemini API to request questions about the video.
 
 ```python
 # Prompt message
@@ -225,7 +225,7 @@ print(response.text)
     
 </pre>
 
-Below is an example of stream output (with the `stream=True` option added).
+Below is an example of stream output (with the ```stream=True``` option added).
 
 ```python
 # Prompt message
@@ -251,7 +251,7 @@ for chunk in response:
 
 Here is an example of using LangChain with the Gemini model.
 
-The model is loaded via `ChatGoogleGenerativeAI` from `langchain_google_genai`, allowing multimodal data to be included in the content of `HumanMessage` using the `media` type.
+The model is loaded via ```ChatGoogleGenerativeAI``` from ```langchain_google_genai```, allowing multimodal data to be included in the content of ```HumanMessage``` using the ```media``` type.
 
 ```python
 from langchain_google_genai import ChatGoogleGenerativeAI

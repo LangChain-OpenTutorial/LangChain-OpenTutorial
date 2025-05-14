@@ -20,18 +20,17 @@ pre {
 # Microsoft Word(doc, docx) With Langchain
 
 - Author: [Suhyun Lee](https://github.com/suhyun0115)
-- Design: 
 - Peer Review: [Sunyoung Park (architectyou)](https://github.com/Architectyou), [Teddy Lee](https://github.com/teddylee777)
+- Proofread : [Youngjun cho](https://github.com/choincnp)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/06-WordLoader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/06-WordLoader.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/06-WordLoader.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/06-WordLoader.ipynb)
 ## Overview
 
-This tutorial covers two methods for loading `Microsoft Word` documents into a document format that can be used in RAG. 
+This tutorial covers two methods for loading ```Microsoft Word``` documents into a document format that can be used in RAG. 
 
 
-We will demonstrate the usage of `Docx2txtLoader` and `UnstructuredWordDocumentLoader` , exploring their functionalities to process and load `.docx` files effectively. 
+We will demonstrate the usage of ```Docx2txtLoader``` and ```UnstructuredWordDocumentLoader``` , exploring their functionalities to process and load ```.docx``` files effectively. 
 
 
 Additionally, we provide a comparison to help users choose the appropriate loader for their requirements.
@@ -56,8 +55,8 @@ Additionally, we provide a comparison to help users choose the appropriate loade
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -86,14 +85,14 @@ package.install(
 
 ## Docx2txtLoader
 
-**Used Library** : A lightweight Python module such as `docx2txt` for text extraction.
+**Used Library** : A lightweight Python module such as ```docx2txt``` for text extraction.
 
 **Key Features** :
-- Extracts text from `.docx` files quickly and simply.
+- Extracts text from ```.docx``` files quickly and simply.
 - Suitable for efficient and straightforward tasks.
 
 **Use Case** :
-- When you need to quickly retrieve text data from `.docx` files.
+- When you need to quickly retrieve text data from ```.docx``` files.
 
 ```python
 from langchain_community.document_loaders import Docx2txtLoader
@@ -487,7 +486,7 @@ print(docs[0])
 
 ## UnstructuredWordDocumentLoader
 
-**Used Library** : A comprehensive document analysis library called `unstructured` .
+**Used Library** : A comprehensive document analysis library called ```unstructured``` .
 
 **Key Features** :
 - Capable of understanding the structure of a document, such as titles and body, and separating them into distinct elements.
@@ -500,16 +499,16 @@ print(docs[0])
 
 | **Parameter**           | **Option**              | **Description**                                                                               |
 |-------------------------|-------------------------|---------------------------------------------------------------------------------------------|
-| `mode`                  | `single` (default)      | Returns the entire document as a single `Document` object.                                  |
-|                         | `elements`              | Splits the document into elements (e.g., title, body) and returns each as a `Document` object. |
-| `strategy`              | `None` (default)        | No specific strategy is applied.                                                           |
-|                         | `fast`                  | Prioritizes speed (may reduce accuracy).                                                    |
-|                         | `hi_res`                | Prioritizes high accuracy (slower processing).                                              |
-| `include_page_breaks`   | `True` (default)        | Detects page breaks and adds `PageBreak` elements.                                          |
-|                         | `False`                 | Ignores page breaks.                                                                        |
-| `infer_table_structure` | `True` (default)        | Infers table structure and includes it in HTML format.                                      |
-|                         | `False`                 | Does not infer table structure.                                                            |
-| `starting_page_number`  | `1` (default)           | Specifies the starting page number of the document.                                         |
+| ```mode```                  | ```single``` (default)      | Returns the entire document as a single ```Document``` object.                                  |
+|                         | ```elements```              | Splits the document into elements (e.g., title, body) and returns each as a ```Document``` object. |
+| ```strategy```              | ```None``` (default)        | No specific strategy is applied.                                                           |
+|                         | ```fast```                  | Prioritizes speed (may reduce accuracy).                                                    |
+|                         | ```hi_res```                | Prioritizes high accuracy (slower processing).                                              |
+| ```include_page_breaks```   | ```True``` (default)        | Detects page breaks and adds ```PageBreak``` elements.                                          |
+|                         | ```False```                 | Ignores page breaks.                                                                        |
+| ```infer_table_structure``` | ```True``` (default)        | Infers table structure and includes it in HTML format.                                      |
+|                         | ```False```                 | Does not infer table structure.                                                            |
+| ```starting_page_number```  | ```1``` (default)           | Specifies the starting page number of the document.                                         |
 
 ### mode: Single (default)
 
@@ -846,7 +845,7 @@ print(docs[1].page_content)
 
 ### Efficient Document Loader Configuration with Various Parameter Combinations
 
-By combining various parameters, you can configure a document loader that fits your specific needs efficiently. Adjusting settings such as `mode` , `strategy` , and `include_page_breaks` allows for tailored handling of different document structures and processing requirements.
+By combining various parameters, you can configure a document loader that fits your specific needs efficiently. Adjusting settings such as ```mode``` , ```strategy``` , and ```include_page_breaks``` allows for tailored handling of different document structures and processing requirements.
 
 
 ```python

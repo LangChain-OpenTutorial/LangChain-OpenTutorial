@@ -20,11 +20,12 @@ pre {
 # OpenAI API Key Generation and Testing Guide
 
 - Author: [Minji](https://github.com/r14minji)
-- Design: 
-- Peer Review: 
+- Peer Review: [Chang-Jun Lee](https://powersolution.notion.site/), [Wooseok Jeong](https://github.com/jeong-wooseok)
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/03-OpenAIAPIKeyGeneration.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/03-OpenAIAPIKeyGeneration.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/03-OpenAIAPI-Key-Generation.ipynb)
+[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/03-OpenAIAPI-Key-Generation.ipynb)
 
 ## Overview
 
@@ -72,7 +73,7 @@ Click the "Add to credit balance" button to enter the amount in USD you wish to 
 
 
 
-You can add funds starting from `$5` (meaning you must pay at least the minimum amount of $5).
+You can add funds starting from ```$5``` (meaning you must pay at least the minimum amount of $5).
 
 After entering the amount, click "Continue" to proceed with the payment.
 
@@ -116,16 +117,16 @@ If your key is leaked, others can use your API KEY to access GPT services, and c
 
 ## Environment Setup
 
-Setting up the `.env` File
+Setting up the ```.env``` File
 
-1. Create a `.env` file in your project's root directory.
-2. In the `.env` file, enter `OPENAI_API_KEY=your-copied-key` then press Ctrl + S (or Command + S on Mac) to save and close the file.
+1. Create a ```.env``` file in your project's root directory.
+2. In the ```.env``` file, enter ```OPENAI_API_KEY=your-copied-key``` then press Ctrl + S (or Command + S on Mac) to save and close the file.
 
 ![step12](./img/02-OpenAIAPIKeyGeneration-12.png)
 
 Setting up the .gitignore File
-1. Create a `.gitignore` file in your project's root directory.
-2. Add `.env` to your `.gitignore` file to prevent it from being tracked by Git.
+1. Create a ```.gitignore``` file in your project's root directory.
+2. Add ```.env``` to your ```.gitignore``` file to prevent it from being tracked by Git.
 
 ![step13](./img/02-OpenAIAPIKeyGeneration-13.png)
 

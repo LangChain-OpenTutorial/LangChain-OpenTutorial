@@ -12,7 +12,7 @@ from elasticsearch.exceptions import NotFoundError
 from langchain_openai import OpenAIEmbeddings
 
 # Interface
-from utils.vectordbinterface import DocumentManager
+from utils.base import DocumentManager
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -116,7 +116,7 @@ class ElasticsearchIndexManager:
             raise
 
 
-class ElasticsearchCRUDManager(DocumentManager):
+class ElasticsearchDocumentManager(DocumentManager):
     def __init__(self, client, index_name, embedding):
         self.es = client
         self.index_name = index_name
@@ -235,7 +235,7 @@ class ElasticsearchCRUDManager(DocumentManager):
         from langchain.schema import Document
         try:
             query_vector = self.embedding.embed_query(query)
-            # filter 쿼리 생성
+            # Create filter query
             filter_clauses = []
             if filters:
                 for key, value in filters.items():

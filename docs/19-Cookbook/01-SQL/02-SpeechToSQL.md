@@ -19,12 +19,11 @@ pre {
 
 # SpeechToSQL 
 - Author: [Dooil Kwak](https://github.com/back2zion)
-- Design: -
 - Peer Review : [Ilgyun Jeong](https://github.com/johnny9210), [Jaehun Choi](https://github.com/ash-hun)
+- Proofread  : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/01-SQL/02-SpeechToSQL.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/01-SQL/02-SpeechToSQL.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/01-SQL/02-SpeechToSQL.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/01-SQL/02-SpeechToSQL.ipynb)
 
 ## Overview
 
@@ -65,33 +64,33 @@ The Speech to SQL system is a powerful tool that converts spoken language into S
 Before we begin, let's install all necessary packages. This tutorial requires several Python packages for speech processing, SQL operations, and machine learning:
 
 1. LangChain Components:
-   - `langchain-community`: Core LangChain functionality and community components
-   - `langchain-openai`: OpenAI integration
-   - `langchain-core`: Essential LangChain components
+   - ```langchain-community```: Core LangChain functionality and community components
+   - ```langchain-openai```: OpenAI integration
+   - ```langchain-core```: Essential LangChain components
 
 2. Database and API:
-   - `openai`: For OpenAI API access
-   - `sqlalchemy`: For database operations
-   - `python-dotenv`: For environment variable management
-   - `torch`: For faster-whisper
+   - ```openai```: For OpenAI API access
+   - ```sqlalchemy```: For database operations
+   - ```python-dotenv```: For environment variable management
+   - ```torch```: For faster-whisper
 
 3. Audio Processing:
-   - `sounddevice`: For audio capture
-   - `numpy`: For data processing
-   - `wavio`: For audio file handling
-   - `faster-whisper`: For speech recognition
+   - ```sounddevice```: For audio capture
+   - ```numpy```: For data processing
+   - ```wavio```: For audio file handling
+   - ```faster-whisper```: For speech recognition
 
 4. Additional dependencies:
-   - `blosc2`: For data compression
-   - `cython`: For Python-C integration
-   - `black`: For code formatting
+   - ```blosc2```: For data compression
+   - ```cython```: For Python-C integration
+   - ```black```: For code formatting
    
 After running the installation cell, you may need to restart the kernel for the changes to take effect. We'll verify the installation in the next step.   
 
 ### Windows Users: Important Note
 If you encounter a permission error during installation such as "Access is denied", you have two options:
 
-1. Use the `--user` option with pip (recommended):
+1. Use the ```--user``` option with pip (recommended):
    - This installs packages in your user directory, avoiding permission issues
    - We've already included this option in the installation command
 
@@ -396,7 +395,7 @@ Let's implement the core components for speech-to-SQL conversion. We'll create a
 
 ### **Step 1: Record Audio from Your Microphone**
 
-The `AudioRecorder` class records audio input from the user's microphone and saves it as a temporary audio file.
+The ```AudioRecorder``` class records audio input from the user's microphone and saves it as a temporary audio file.
 
 ```python
 # 1. Record audio from your microphone

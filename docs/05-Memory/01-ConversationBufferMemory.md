@@ -21,17 +21,17 @@ pre {
 
 - Author: [Sungchul Kim](https://github.com/rlatjcj)
 - Peer Review : [Shinar12](https://github.com/Shinar12), [BAEM1N](https://github.com/BAEM1N), [YellowGangneng](https://github.com/YellowGangneng)
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/01-ConversationBufferMemory.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/01-ConversationBufferMemory.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/01-ConversationBufferMemory.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/01-ConversationBufferMemory.ipynb)
 ## Overview
 
-This tutorial introduces `ConversationBufferMemory`, a memory class that stores conversation history in a buffer.
+This tutorial introduces ```ConversationBufferMemory```, a memory class that stores conversation history in a buffer.
 
 Typically, no additional processing is required. Sometimes, however, it may be necessary when the conversation history exceeds the model's context window.
 
-In this tutorial, we will learn how to use `ConversationBufferMemory` to store and retrieve conversation history.
+In this tutorial, we will learn how to use ```ConversationBufferMemory``` to store and retrieve conversation history.
 
 
 ### Table of Contents
@@ -51,8 +51,8 @@ In this tutorial, we will learn how to use `ConversationBufferMemory` to store a
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -92,10 +92,10 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it.
 
 **[Note]**  
-- This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+- This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -135,12 +135,12 @@ memory
 
 
 
-You can use the `save_context(inputs, outputs)` method to save conversation records.
+You can use the ```save_context(inputs, outputs)``` method to save conversation records.
 
-- This method accepts two arguments, `inputs` and `outputs`.
-- `inputs` stores the user's question, and `outputs` stores the AI's answer.
-- The conversation record is stored internally under the `history` key.
-- You can then use the `load_memory_variables` method to retrieve and inspect the saved conversation history.
+- This method accepts two arguments, ```inputs``` and ```outputs```.
+- ```inputs``` stores the user's question, and ```outputs``` stores the AI's answer.
+- The conversation record is stored internally under the ```history``` key.
+- You can then use the ```load_memory_variables``` method to retrieve and inspect the saved conversation history.
 
 
 ```python
@@ -167,7 +167,7 @@ memory
 
 
 
-The `load_memory_variables({})` method of the memory object returns the complete message history as a string.
+The ```load_memory_variables({})``` method of the memory object returns the complete message history as a string.
 
 ```python
 # Check the message history stored in the 'history' key.
@@ -274,9 +274,9 @@ print(memory.load_memory_variables({})["history"])
     AI: Yes, the account has been opened. Your account number and related information have been sent to the email you registered. If you need additional help, please contact us at any time. Thank you!
 </pre>
 
-## Extracting messages as `HumanMessage` and `AIMessage` objects
+## Extracting messages as ```HumanMessage``` and ```AIMessage``` objects
 
-Setting `return_messages=True` returns `HumanMessage` and `AIMessage` objects.
+Setting ```return_messages=True``` returns ```HumanMessage``` and ```AIMessage``` objects.
 
 ```python
 memory = ConversationBufferMemory(return_messages=True)
@@ -328,7 +328,7 @@ memory.load_memory_variables({})["history"]
 
 ## Applying to a Chain
 
-Let's apply `ConversationBufferMemory` to a `ConversationChain`.
+Let's apply ```ConversationBufferMemory``` to a ```ConversationChain```.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -349,7 +349,7 @@ conversation = ConversationChain(
       conversation = ConversationChain(
 </pre>
 
-Proceed with the conversation using the `ConversationChain`.
+Proceed with the conversation using the ```ConversationChain```.
 
 ```python
 # Start the conversation.

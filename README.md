@@ -64,6 +64,7 @@ Unless stated otherwise, the codebase is released under the [MIT Licence][1]. Th
 | Youngjun Cho | [LinkedIn](https://www.linkedin.com/in/choincnp/) | Jinu Cho | [LinkedIn](https://www.linkedin.com/in/jinucho/) | Hwayoung Cha | [LinkedIn](https://www.linkedin.com/in/hwayoung-cha/) |
 | Ash-hun | [LinkedIn](https://www.linkedin.com/in/choijaehun/) | Yeonhee Han | [LinkedIn](https://www.linkedin.com/in/yeonhee-han-64160a177/) | Sooyoung Her | [LinkedIn](https://www.linkedin.com/in/sooyoung-her-3b0720b3) |
 | Seongmin Hong (Solon) | [LinkedIn](https://www.linkedin.com/in/oursophy/) | Jaemin Hong | [LinkedIn](https://www.linkedin.com/in/geminii01/) | Chaeyoon Kim | [GitHub](https://github.com/chaeyoonyunakim/) |
+| SY Shin | [LinkedIn](https://github.com/syshin0116)| | | | |
 
 
 [![Contributors](https://contrib.rocks/image?repo=LangChain-OpenTutorial/LangChain-OpenTutorial&max=5000)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/graphs/contributors)

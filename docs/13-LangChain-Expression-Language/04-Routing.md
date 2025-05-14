@@ -21,35 +21,34 @@ pre {
 
 - Author: [Jinu Cho](https://github.com/jinucho), [Lee Jungbin](https://github.com/leebeanbin)
 - Peer Review: [Teddy Lee](https://github.com/teddylee777), [김무상](https://github.com/musangk), [전창원](https://github.com/changwonjeon)
-- Proofread:
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/06-ConversationSummaryMemory.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/06-ConversationSummaryMemory.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/04-Routing.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/04-Routing.ipynb)
 ## Overview
 
-This tutorial introduces three key tools in LangChain: `RunnableSequence`, `RunnableBranch`, and `RunnableLambda`, essential for building efficient and powerful AI applications.
+This tutorial introduces three key tools in LangChain: ```RunnableSequence```, ```RunnableBranch```, and ```RunnableLambda```, essential for building efficient and powerful AI applications.
 
-`RunnableSequence` is a fundamental component that enables sequential processing pipelines, allowing structured and efficient handling of AI-related tasks. It provides automatic data flow management, error handling, and seamless integration with other LangChain components.
+```RunnableSequence``` is a fundamental component that enables sequential processing pipelines, allowing structured and efficient handling of AI-related tasks. It provides automatic data flow management, error handling, and seamless integration with other LangChain components.
 
-`RunnableBranch` enables structured decision-making by routing input through predefined conditions, simplifying complex branching scenarios.
+```RunnableBranch``` enables structured decision-making by routing input through predefined conditions, simplifying complex branching scenarios.
 
-`RunnableLambda` offers a flexible, function-based approach, ideal for lightweight transformations and inline processing.
+```RunnableLambda``` offers a flexible, function-based approach, ideal for lightweight transformations and inline processing.
 
 **Key Features of these components:**
 
-- **`RunnableSequence`:**
+- **```RunnableSequence```:**
   - Sequential processing pipeline creation
   - Automatic data flow management
   - Error handling and monitoring
   - Support for async operations  
 
-- **`RunnableBranch`:**
+- **```RunnableBranch```:**
   - Dynamic routing based on conditions
   - Structured decision trees
   - Complex branching logic
 
-- **`RunnableLambda`:**
+- **```RunnableLambda```:**
   - Lightweight transformations
   - Function-based processing
   - Inline data manipulation
@@ -62,6 +61,7 @@ This tutorial introduces three key tools in LangChain: `RunnableSequence`, `Runn
 - [What is the RunnableBranch](#what-is-the-runnablebranch)
 - [RunnableLambda](#runnablelambda)
 - [RunnableBranch](#runnablebranch)
+- [Building An AI Learning Assistant](#building-an-ai-learning-assistant)
 - [Comparison of RunnableBranch and RunnableLambda](#comparison-of-runnablesequence-runnablebranch-and-runnablelambda)
 
 ### References
@@ -76,8 +76,8 @@ This tutorial introduces three key tools in LangChain: `RunnableSequence`, `Runn
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 [Note]
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -101,9 +101,9 @@ package.install(
 )
 ```
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 # Set environment variables
@@ -139,9 +139,9 @@ load_dotenv(override=True)
 
 
 
-## What is the RunnableSequence
+## What is the ```RunnableSequence```
 
-`RunnableSequence` is a fundamental component in LangChain that enables the creation of sequential processing pipelines. It allows developers to chain multiple operations together where the output of one step becomes the input of the next step.
+```RunnableSequence``` is a fundamental component in LangChain that enables the creation of sequential processing pipelines. It allows developers to chain multiple operations together where the output of one step becomes the input of the next step.
 
 ### Key Concepts
 
@@ -194,7 +194,7 @@ print(result)
 
 ### Basic Pipeline Creation
 
-In this section, we'll explore how to create fundamental pipelines using RunnableSequence. We'll start with a simple text generation pipeline and gradually build more complex functionality.
+In this section, we'll explore how to create fundamental pipelines using ```RunnableSequence```. We'll start with a simple text generation pipeline and gradually build more complex functionality.
 
 **Understanding Basic Pipeline Structure**  
 - Sequential Processing: How data flows through the pipeline
@@ -219,23 +219,25 @@ Flow:
 # Step 1: Define the basic text generation chain
 basic_generation_chain = (
     # Create prompt template for AI content generation
-        PromptTemplate.from_template(
-            """Generate a detailed technical explanation about {topic} in AI/ML field.
+    PromptTemplate.from_template(
+        """Generate a detailed technical explanation about {topic} in AI/ML field.
             Include:
             - Core technical concepts
             - Implementation details
             - Real-world applications
             - Technical challenges
             """
-        )
-        # Process with LLM
-        | ChatOpenAI(temperature=0.7)
-        # Convert output to clean string
-        | StrOutputParser()
+    )
+    # Process with LLM
+    | ChatOpenAI(temperature=0.7)
+    # Convert output to clean string
+    | StrOutputParser()
 )
 
 # Example usage
-basic_result = basic_generation_chain.invoke({"topic": "Transformer architecture in LLMs"})
+basic_result = basic_generation_chain.invoke(
+    {"topic": "Transformer architecture in LLMs"}
+)
 print("Generated Content:", result)
 ```
 
@@ -253,7 +255,11 @@ Building upon our basic pipeline, we'll now create a more sophisticated analysis
 - Error Handling: Basic error management implementation
 
 ```python
-from langchain_core.runnables import RunnableSequence, RunnablePassthrough, RunnableLambda
+from langchain_core.runnables import (
+    RunnableSequence,
+    RunnablePassthrough,
+    RunnableLambda,
+)
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
@@ -284,28 +290,28 @@ analysis_prompt = PromptTemplate.from_template(
 
 # Step 2: Define the critical analysis chain
 analysis_chain = RunnableSequence(
-    first=analysis_prompt,
-    middle=[ChatOpenAI(temperature=0)],
-    last=StrOutputParser()
+    first=analysis_prompt, middle=[ChatOpenAI(temperature=0)], last=StrOutputParser()
 )
 
 # Step 3: Define the basic generation chain
-generation_prompt = RunnableLambda(lambda x: f"""Generate technical content about: {x['topic']}""")
+generation_prompt = RunnableLambda(
+    lambda x: f"""Generate technical content about: {x['topic']}"""
+)
 
 basic_generation_chain = RunnableSequence(
     first=RunnablePassthrough(),
     middle=[generation_prompt],
-    last=ChatOpenAI(temperature=0.7)
+    last=ChatOpenAI(temperature=0.7),
 )
+
 
 # Step 4: Define the state initialization function
 def init_state(x):
-    return {
-        "topic": x["topic"],
-        "start_time": time.strftime('%Y-%m-%d %H:%M:%S')
-    }
+    return {"topic": x["topic"], "start_time": time.strftime("%Y-%m-%d %H:%M:%S")}
+
 
 init_step = RunnableLambda(init_state)
+
 
 # Step 5: Define the content generation function
 def generated_basic_content(x):
@@ -314,20 +320,23 @@ def generated_basic_content(x):
         **x,
         # "generated_basic_content": content.content
         # To create a comprehensive wrap-up, you can combine the previous basic result with new annotated analysis.
-        "generated_basic_content": basic_result
+        "generated_basic_content": basic_result,
     }
+
 
 generate_step = RunnableLambda(generated_basic_content)
 
+
 # Step 6: Define the analysis function
 def perform_analysis(x):
-    analysis = analysis_chain.invoke({"generated_basic_content": x["generated_basic_content"]})
-    return {
-        **x,
-        "key_insights": analysis
-    }
+    analysis = analysis_chain.invoke(
+        {"generated_basic_content": x["generated_basic_content"]}
+    )
+    return {**x, "key_insights": analysis}
+
 
 analysis_step = RunnableLambda(perform_analysis)
+
 
 # Step 7: Define the output formatting function
 def format_output(x):
@@ -346,19 +355,15 @@ Generated: {x['start_time']}
 ---
 
 {x['key_insights']}
-"""
+""",
     }
+
 
 format_step = RunnableLambda(format_output)
 
 # Step 8: Create the complete analysis pipeline
 analysis_pipeline = RunnableSequence(
-    first=init_step,
-    middle=[
-        generate_step,
-        analysis_step
-    ],
-    last=format_step
+    first=init_step, middle=[generate_step, analysis_step], last=format_step
 )
 ```
 
@@ -374,6 +379,7 @@ def run_analysis(topic: str):
     print("Analysis Timestamp:", result["timestamp"])
     print("\nTopic:", result["topic"])
     print("\nFormatted Output:", result["formatted_output"])
+
 
 if __name__ == "__main__":
     run_analysis("Transformer attention mechanisms")
@@ -435,7 +441,12 @@ This demonstrates:
 2. Error handling at each pipeline stage
 3. Comprehensive validation system
 """
-from langchain_core.runnables import RunnableSequence, RunnablePassthrough, RunnableLambda
+
+from langchain_core.runnables import (
+    RunnableSequence,
+    RunnablePassthrough,
+    RunnableLambda,
+)
 from langchain.output_parsers import ResponseSchema, StructuredOutputParser
 from langchain_openai import ChatOpenAI
 import json
@@ -450,44 +461,48 @@ response_schemas = [
         properties={
             "core_concepts": {
                 "type": "array",
-                "description": "Key technical concepts identified"
+                "description": "Key technical concepts identified",
             },
             "implementation_details": {
                 "type": "object",
                 "properties": {
                     "complexity": {"type": "string"},
                     "requirements": {"type": "array"},
-                    "challenges": {"type": "array"}
-                }
+                    "challenges": {"type": "array"},
+                },
             },
             "quality_metrics": {
                 "type": "object",
                 "properties": {
                     "technical_accuracy": {"type": "number"},
                     "completeness": {"type": "number"},
-                    "clarity": {"type": "number"}
-                }
-            }
-        }
+                    "clarity": {"type": "number"},
+                },
+            },
+        },
     )
 ]
 
 evaluation_parser = StructuredOutputParser.from_response_schemas(response_schemas)
 
 # Step 2: Create basic generation chain
-generation_prompt = RunnableLambda(lambda x: f"""Generate technical content about: {x['topic']}""")
+generation_prompt = RunnableLambda(
+    lambda x: f"""Generate technical content about: {x['topic']}"""
+)
 basic_generation_chain = RunnableSequence(
     first=RunnablePassthrough(),
     middle=[generation_prompt],
-    last=ChatOpenAI(temperature=0.7)
+    last=ChatOpenAI(temperature=0.7),
 )
 
 # Step 3: Create analysis chain
-analysis_prompt = RunnableLambda(lambda x: f"""Analyze the following content: {x['generated_content']}""")
+analysis_prompt = RunnableLambda(
+    lambda x: f"""Analyze the following content: {x['generated_content']}"""
+)
 analysis_chain = RunnableSequence(
     first=RunnablePassthrough(),
     middle=[analysis_prompt],
-    last=ChatOpenAI(temperature=0)
+    last=ChatOpenAI(temperature=0),
 )
 
 # Step 4: Create evaluation chain
@@ -508,8 +523,9 @@ evaluation_prompt = RunnableLambda(
 evaluation_chain = RunnableSequence(
     first=RunnablePassthrough(),
     middle=[evaluation_prompt, ChatOpenAI(temperature=0)],
-    last=evaluation_parser
+    last=evaluation_parser,
 )
+
 
 # Helper function for error handling
 def try_or_error(func, error_list):
@@ -519,47 +535,52 @@ def try_or_error(func, error_list):
         error_list.append(str(e))
         return None
 
+
 # Step 5: Create pipeline components
 def init_state(x):
-    return {
-        "topic": x["topic"],
-        "errors": [],
-        "start_time": time.time()
-    }
+    return {"topic": x["topic"], "errors": [], "start_time": time.time()}
+
 
 def generate_content(x):
     return {
         **x,
         "generated_content": try_or_error(
             lambda: basic_generation_chain.invoke({"topic": x["topic"]}).content,
-            x["errors"]
-        )
+            x["errors"],
+        ),
     }
+
 
 def perform_analysis(x):
     return {
         **x,
         "analysis": try_or_error(
-            lambda: analysis_chain.invoke({"generated_content": x["generated_content"]}).content,
-            x["errors"]
-        )
+            lambda: analysis_chain.invoke(
+                {"generated_content": x["generated_content"]}
+            ).content,
+            x["errors"],
+        ),
     }
+
 
 def perform_evaluation(x):
     return {
         **x,
-        "evaluation": try_or_error(
-            lambda: evaluation_chain.invoke(x),
-            x["errors"]
-        ) if not x["errors"] else None
+        "evaluation": (
+            try_or_error(lambda: evaluation_chain.invoke(x), x["errors"])
+            if not x["errors"]
+            else None
+        ),
     }
+
 
 def finalize_output(x):
     return {
         **x,
         "completion_time": time.time() - x["start_time"],
-        "status": "success" if not x["errors"] else "error"
+        "status": "success" if not x["errors"] else "error",
     }
+
 
 # Step 6: Create integrated pipeline
 def create_evaluation_pipeline():
@@ -568,10 +589,11 @@ def create_evaluation_pipeline():
         middle=[
             RunnableLambda(generate_content),
             RunnableLambda(perform_analysis),
-            RunnableLambda(perform_evaluation)
+            RunnableLambda(perform_evaluation),
         ],
-        last=RunnableLambda(finalize_output)
+        last=RunnableLambda(finalize_output),
     )
+
 
 # Example usage
 def demonstrate_evaluation():
@@ -585,6 +607,7 @@ def demonstrate_evaluation():
         print("\nErrors Encountered:", result["errors"])
 
     print(f"\nProcessing Time: {result['completion_time']:.2f} seconds")
+
 
 if __name__ == "__main__":
     demonstrate_evaluation()
@@ -614,17 +637,17 @@ if __name__ == "__main__":
     Processing Time: 9.55 seconds
 </pre>
 
-## What is the RunnableBranch
+## What is the ```RunnableBranch```
 
-`RunnableBranch` is a powerful tool that allows dynamic routing of logic based on input. It enables developers to flexibly define different processing paths depending on the characteristics of the input data.  
+```RunnableBranch``` is a powerful tool that allows dynamic routing of logic based on input. It enables developers to flexibly define different processing paths depending on the characteristics of the input data.  
 
-`RunnableBranch` helps implement complex decision trees in a simple and intuitive way. This greatly improves code readability and maintainability while promoting logic modularization and reusability.  
+```RunnableBranch``` helps implement complex decision trees in a simple and intuitive way. This greatly improves code readability and maintainability while promoting logic modularization and reusability.  
 
-Additionally, `RunnableBranch` can dynamically evaluate branching conditions at runtime and select the appropriate processing routine, enhancing the system's adaptability and scalability.  
+Additionally, ```RunnableBranch``` can dynamically evaluate branching conditions at runtime and select the appropriate processing routine, enhancing the system's adaptability and scalability.  
 
-Due to these features, `RunnableBranch` can be applied across various domains and is particularly useful for developing applications with high input data variability and volatility.
+Due to these features, ```RunnableBranch``` can be applied across various domains and is particularly useful for developing applications with high input data variability and volatility.
 
-By effectively utilizing `RunnableBranch`, developers can reduce code complexity and improve system flexibility and performance.
+By effectively utilizing ```RunnableBranch```, developers can reduce code complexity and improve system flexibility and performance.
 
 ### Dynamic Logic Routing Based on Input
 
@@ -634,8 +657,8 @@ Routing allows you to create non-deterministic chains where the output of a prev
 
 There are two primary methods for performing routing:
 
-1. Returning a Conditionally Executable Object from `RunnableLambda` (*Recommended*)  
-2. Using `RunnableBranch`
+1. Returning a Conditionally Executable Object from ```RunnableLambda``` (*Recommended*)  
+2. Using ```RunnableBranch```
 
 Both methods can be explained using a two-step sequence, where the first step classifies the input question as related to math, science, or other, and the second step routes it to the corresponding prompt chain.
 
@@ -704,18 +727,18 @@ chain.invoke({"question": "What is LangChain?"})
 
 
 
-## RunnableLambda  
+## ```RunableLambda```  
 
-`RunnableLambda` is a type of `Runnable` designed to simplify the execution of a single transformation or operation using a lambda (anonymous) function. 
+```RunnableLambda``` is a type of Runnable designed to simplify the execution of a single transformation or operation using a ```lambda``` (anonymous) function. 
 
-It is primarily used for lightweight, stateless operations where defining an entire custom `Runnable` class would be overkill.  
+It is primarily used for lightweight, stateless operations where defining an entire custom Runnable class would be overkill.  
 
-Unlike `RunnableBranch`, which focuses on conditional branching logic, `RunnableLambda` excels in straightforward data transformations or function applications.
+Unlike ```RunnableBranch```, which focuses on conditional branching logic, ```RunnableLambda``` excels in straightforward data transformations or function applications.
 
 Syntax  
-- `RunnableLambda` is initialized with a single lambda function or callable object.  
-- When invoked, the input value is passed directly to the lambda function.  
-- The lambda function processes the input and returns the result.  
+- ```RunnableLambda``` is initialized with a single ```lambda``` function or callable object.  
+- When invoked, the input value is passed directly to the ```lambda``` function.  
+- The ```lambda``` function processes the input and returns the result.  
 
 Now, let's create three sub-chains.
 
@@ -757,7 +780,7 @@ Answer:"""
 
 ### Using Custom Functions  
 
-This is the recommended approach in the official LangChain documentation. You can wrap custom functions with `RunnableLambda` to handle routing between different outputs.
+This is the recommended approach in the official LangChain documentation. You can wrap custom functions with ```RunnableLambda``` to handle routing between different outputs.
 
 ```python
 # Return each chain based on the contents included in the topic.
@@ -820,18 +843,18 @@ full_chain.invoke({"question": "What is RAG (Retrieval Augmented Generation)?"})
 
 
 
-## RunnableBranch
+## ```RunnableBranch```
 
-`RunnableBranch` is a special type of `Runnable` that allows you to define conditions and corresponding Runnable objects based on input values.
+```RunnableBranch``` is a special type of Runnable that allows you to define conditions and corresponding Runnable objects based on input values.
 
 However, it does not provide functionality that cannot be achieved with custom functions, so using custom functions is generally recommended.
 
 Syntax
 
-- `RunnableBranch` is initialized with a list of (condition, Runnable) pairs and a default Runnable.
+- ```RunnableBranch``` is initialized with a list of (condition, Runnable) pairs and a default Runnable.
 - When invoked, the input value is passed to each condition sequentially.
 - The first condition that evaluates to True is selected, and the corresponding Runnable is executed with the input value.
-- If no condition matches, the `default Runnable` is executed.
+- If no condition matches, the default Runnable is executed.
 
 ```python
 from operator import itemgetter
@@ -916,7 +939,7 @@ question_classifier = RunnableSequence(
         Return only the classification word in lowercase."""
     ),
     middle=[ChatOpenAI(temperature=0)],
-    last=StrOutputParser()
+    last=StrOutputParser(),
 )
 
 # Example Generator Component
@@ -929,7 +952,7 @@ example_generator = RunnableSequence(
         If code is needed, provide it in appropriate markdown format."""
     ),
     middle=[ChatOpenAI(temperature=0.7)],
-    last=StrOutputParser()
+    last=StrOutputParser(),
 )
 ```
 
@@ -948,8 +971,8 @@ response_strategy = RunnableBranch(
                 Use simple analogies and avoid technical jargon."""
             ),
             middle=[ChatOpenAI(temperature=0.3)],
-            last=StrOutputParser()
-        )
+            last=StrOutputParser(),
+        ),
     ),
     (
         lambda x: x["level"] == "intermediate",
@@ -961,8 +984,8 @@ response_strategy = RunnableBranch(
                 Include relevant technical concepts and use cases."""
             ),
             middle=[ChatOpenAI(temperature=0.3)],
-            last=StrOutputParser()
-        )
+            last=StrOutputParser(),
+        ),
     ),
     # Default case (advanced)
     RunnableSequence(
@@ -973,8 +996,8 @@ response_strategy = RunnableBranch(
             Include advanced concepts and detailed technical information."""
         ),
         middle=[ChatOpenAI(temperature=0.3)],
-        last=StrOutputParser()
-    )
+        last=StrOutputParser(),
+    ),
 )
 ```
 
@@ -987,27 +1010,29 @@ def format_response(x):
         "level": x["level"],
         "explanation": x["response"],
         "example": x["example"],
-        "metadata": {
-            "difficulty": x["level"],
-            "timestamp": datetime.now().isoformat()
-        }
+        "metadata": {"difficulty": x["level"], "timestamp": datetime.now().isoformat()},
     }
+
 
 # Main Learning Assistant Pipeline
 learning_assistant = RunnableSequence(
     first=RunnableLambda(lambda x: {"question": x["question"]}),
     middle=[
-        RunnableLambda(lambda x: {
-            **x,
-            "level": question_classifier.invoke({"question": x["question"]})
-        }),
-        RunnableLambda(lambda x: {
-            **x,
-            "response": response_strategy.invoke(x),
-            "example": example_generator.invoke(x)
-        })
+        RunnableLambda(
+            lambda x: {
+                **x,
+                "level": question_classifier.invoke({"question": x["question"]}),
+            }
+        ),
+        RunnableLambda(
+            lambda x: {
+                **x,
+                "response": response_strategy.invoke(x),
+                "example": example_generator.invoke(x),
+            }
+        ),
     ],
-    last=RunnableLambda(format_response)
+    last=RunnableLambda(format_response),
 )
 ```
 
@@ -1019,19 +1044,21 @@ async def run_assistant():
     questions = [
         "What is a variable in Python?",
         "How does dependency injection work?",
-        "Explain quantum computing qubits"
+        "Explain quantum computing qubits",
     ]
-    
+
     for question in questions:
         result = await learning_assistant.ainvoke({"question": question})
         print(f"\nQuestion: {result['question']}")
         print(f"Difficulty Level: {result['level']}")
         print(f"\nExplanation: {result['explanation']}")
         print(f"\nExample: {result['example']}")
-        print("\n" + "="*50)
+        print("\n" + "=" * 50)
+
 
 # For Jupyter environments
 import nest_asyncio
+
 nest_asyncio.apply()
 
 # Run the assistant
@@ -1212,16 +1239,16 @@ if __name__ == "__main__":
     ==================================================
 </pre>
 
-## Comparison of RunnableSequence, RunnableBranch, and RunnableLambda
+## Comparison of ```RunnableSequence```, ```RunnableBranch```, and ```RunnableLambda```
 
-| Criteria | RunnableSequence | RunnableBranch | RunnableLambda |
+| Criteria | ```RunnableSequence``` | ```RunnableBranch``` | ```RunnableLambda``` |
 |----------|------------------|----------------|----------------|
 | Primary Purpose | Sequential pipeline processing | Conditional routing and branching | Simple transformations and functions |
-| Condition Definition | No conditions, sequential flow | Each condition defined as `(condition, runnable)` pair | All conditions within single function (`route`) |
+| Condition Definition | No conditions, sequential flow | Each condition defined as ```(condition, runnable)``` pair | All conditions within single function (```route```) |
 | Structure | Linear chain of operations | Tree-like branching structure | Function-based transformation |
 | Readability | Very clear for sequential processes | Becomes clearer as conditions increase | Very clear for simple logic |
 | Maintainability | Easy to maintain step-by-step flow | Clear separation between conditions and runnables | Can become complex if function grows large |
-| Flexibility | Flexible for linear processes | Must follow `(condition, runnable)` pattern | Allows flexible condition writing |
+| Flexibility | Flexible for linear processes | Must follow ```(condition, runnable)``` pattern | Allows flexible condition writing |
 | Scalability | Add or modify pipeline steps | Requires adding new conditions and runnables | Expandable by modifying function |
 | Error Handling | Pipeline-level error management | Branch-specific error handling | Basic error handling |
 | State Management | Maintains state throughout pipeline | State managed per branch | Typically stateless |
