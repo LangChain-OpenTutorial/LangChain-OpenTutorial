@@ -99,7 +99,7 @@ class MongoDBAtlasCollectionManager:
             self.collection.drop_search_index(index_name)
 
 
-class MongoDBAtlasCRUDManager(DocumentManager):
+class MongoDBAtlasDocumentManager(DocumentManager):
     """A document manager that handles document processing and CRUD operations in MongoDB Atlas."""
 
     def __init__(self, client, db_name, collection_name, embedding) -> None:
