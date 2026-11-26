@@ -20,12 +20,11 @@ pre {
 # Multi Agent Collaboration Network 
 
 - Author: [Youngin Kim](https://github.com/Normalist-K)
-- Design: 
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/06-LangGraph-Multi-Agent-Collaboration.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/06-LangGraph-Multi-Agent-Collaboration.ipynb)
 ## Overview
 
 In this tutorial, we'll explore how to implement a **multi-agent network** using LangGraph.  
@@ -76,7 +75,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -106,9 +105,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -141,7 +140,7 @@ This structure enhances efficiency and simplifies the management of complex work
 
 ## Defining States
 
-`messages` is a list of messages shared between agents, and `sender` refers to the sender of the most recent message.
+```messages``` is a list of messages shared between agents, and ```sender``` refers to the sender of the most recent message.
 
 ```python
 import operator
@@ -162,8 +161,8 @@ class AgentState(TypedDict):
 
 Here, we define a few tools that agents will use in the network:
 
-- `TavilySearch` : A tool for searching information on the internet. It is used by the `research_agent` to find the necessary data.  
-- `PythonREPL` : A tool for executing Python code. It is used by the `chart_agent` to create charts.  
+- ```TavilySearch``` : A tool for searching information on the internet. It is used by the ```research_agent``` to find the necessary data.  
+- ```PythonREPL``` : A tool for executing Python code. It is used by the ```chart_agent``` to create charts.  
 
 ```python
 from typing import Annotated
@@ -227,7 +226,7 @@ def make_system_prompt(suffix: str) -> str:
 
 ### Research Agent
 
-Create an agent that performs research using the `TavilySearch` tool. This agent is used to gather the required information.
+Create an agent that performs research using the ```TavilySearch``` tool. This agent is used to gather the required information.
 
 ```python
 from langchain_core.messages import HumanMessage
@@ -261,7 +260,7 @@ def research_node(state: MessagesState) -> MessagesState:
 
 ### Chart Generator Agent
 
-Create an agent that generates charts using the `PythonREPL` tool. This agent is used to create charts.
+Create an agent that generates charts using the ```PythonREPL``` tool. This agent is used to create charts.
 
 ```python
 chart_generator_system_prompt = """
@@ -293,9 +292,9 @@ def chart_node(state: MessagesState) -> MessagesState:
 
 This workflow uses LangGraph to build a **multi-agent system** where agents collaborate dynamically. 
 
-The `router` decides the next step by analyzing messages—either continuing to the next node or ending the workflow. 
+The ```router``` decides the next step by analyzing messages—either continuing to the next node or ending the workflow. 
 
-Each node, like `researcher` and `chart_generator`, is connected using **conditional edges** that determine the workflow’s flow based on the router's logic. The system starts with the `researcher` and alternates between agents until a "FINAL ANSWER" is reached.
+Each node, like ```researcher``` and ```chart_generator```, is connected using **conditional edges** that determine the workflow’s flow based on the router's logic. The system starts with the ```researcher``` and alternates between agents until a "FINAL ANSWER" is reached.
 
 ```python
 from langgraph.graph import StateGraph, START, END
@@ -350,7 +349,7 @@ visualize_graph(app, xray=True)
 
 Now it’s time to execute the multi-agent workflow we’ve built! 
 
-Using the `RunnableConfig`, we set up necessary configurations like recursion limits and unique thread IDs. 
+Using the ```RunnableConfig```, we set up necessary configurations like recursion limits and unique thread IDs. 
 
 Then, we input a query and invoke the graph, allowing the agents to collaborate and generate results based on the workflow.
 

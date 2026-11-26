@@ -21,13 +21,13 @@ pre {
 
 - Author: [ranian963](https://github.com/ranian963)
 - Peer Review:
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/05-langgraph-plan-and-execute.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/05-langgraph-plan-and-execute.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/05-LangGraph-Plan-and-Execute.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/05-LangGraph-Plan-and-Execute.ipynb)
 ## Overview
-This tutorial introduces how to create a `plan-and-execute` style agent and explains, step by step, how to implement it using [LangGraph](https://langchain-ai.github.io/langgraph/).  
-The `plan-and-execute` approach is useful for tackling complex tasks by first establishing a long-term plan, then executing each step of that plan, and revising it as needed.
+This tutorial introduces how to create a ```plan-and-execute``` style agent and explains, step by step, how to implement it using [LangGraph](https://langchain-ai.github.io/langgraph/).  
+The ```plan-and-execute``` approach is useful for tackling complex tasks by first establishing a long-term plan, then executing each step of that plan, and revising it as needed.
 
 ![](./img/05-langgraph-plan-and-execute.png)
 
@@ -63,7 +63,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -90,9 +90,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -114,26 +114,26 @@ if not load_dotenv():
 
 ## Plan-and-Execute Definition
 
-A `plan-and-execute` approach is characterized by:
+A ```plan-and-execute``` approach is characterized by:
 - Long-Term Planning: Before performing a complex task, it first establishes a high-level plan.
 - Step-by-Step Execution and Replanning: It carries out the plan in stages, checking at each step whether the plan is still valid and updating it if necessary.
 
-This method is inspired by the [Plan-and-Solve Peper](https://arxiv.org/abs/2305.04091) and the [Baby-AGI Project](https://github.com/yoheinakajima/babyagi). Unlike the more traditional [ReAct Style](https://arxiv.org/abs/2210.03629), which focuses on short-term reasoning one step at a time, `plan-and-execute` explicitly emphasizes long-term planning.
+This method is inspired by the [Plan-and-Solve Peper](https://arxiv.org/abs/2305.04091) and the [Baby-AGI Project](https://github.com/yoheinakajima/babyagi). Unlike the more traditional [ReAct Style](https://arxiv.org/abs/2210.03629), which focuses on short-term reasoning one step at a time, ```plan-and-execute``` explicitly emphasizes long-term planning.
 
 Advantages:
 
 1. **Clear Long-Term Structure**: Even powerful LLMs can struggle to handle extended plans in a single pass. By explicitly defining a long-term plan, the process becomes more robust.
 2. **Efficient Model Usage**: A larger or more powerful model can be used for the planning phase, while a smaller or lighter model can handle the execution phase, optimizing resource utilization.
 
-The sections below explain how to implement a `plan-and-execute` agent in LangGraph, step by step.
+The sections below explain how to implement a ```plan-and-execute``` agent in LangGraph, step by step.
 
 ### Defining the Model Name for the Examples
 
 We will define the model name to be used in these demonstrations.
 
 > **Note**  
-> 1. Since `MODEL_NAME` appears frequently, we declare it as a separate variable.  
-> 2. It is recommended to run this with a model such as `gpt-4o` (or another GPT-4-level model). If you use a smaller model like `gpt-40-mini`, you may encounter frequent replanning.
+> 1. Since ```MODEL_NAME``` appears frequently, we declare it as a separate variable.  
+> 2. It is recommended to run this with a model such as ```gpt-4o``` (or another GPT-4-level model). If you use a smaller model like ```gpt-40-mini```, you may encounter frequent replanning.
 
 
 
@@ -145,7 +145,7 @@ MODEL_NAME = "gpt-4o"
 
 We first define the tools to be used.
 
-In this simple example, we will use the built-in search tool provided by `Tavily`. Of course, it is equally straightforward to create your own custom tools as needed.
+In this simple example, we will use the built-in search tool provided by ```Tavily```. Of course, it is equally straightforward to create your own custom tools as needed.
 
 For more details, refer to the [Tools](https://langchain-opentutorial.gitbook.io/langchain-opentutorial/15-agent/01-tools) documentation.
 
@@ -162,9 +162,9 @@ tools
 
 ## Defining the Execution Agent
 
-We now create the `execution agent` responsible for performing tasks.
+We now create the ```execution agent``` responsible for performing tasks.
 
-In this example, the same `execution agent` will be used for each task, but that is not mandatory.
+In this example, the same ```execution agent``` will be used for each task, but that is not mandatory.
 
 
 ```python
@@ -197,10 +197,10 @@ agent_executor.invoke({"messages": [("user", "Tell me about LangChain")]})
 ```
 
 ## State Definition
-- `input`: User’s input  
-- `plan`: The current plan  
-- `past_steps`: The plan and results of previous executions  
-- `response`: The final response
+- ```input```: User’s input  
+- ```plan```: The current plan  
+- ```past_steps```: The plan and results of previous executions  
+- ```response```: The final response
 
 ```python
 import operator
@@ -218,7 +218,7 @@ class PlanExecute(TypedDict):
 
 ## Plan Step
 
-We will generate a long-term plan using **function calling** . Specifically, we define a `Plan` model and a prompt for the planner that instructs the LLM to produce an itemized plan of steps needed to solve the user's request. We keep each step focused and avoid adding unnecessary detail.
+We will generate a long-term plan using **function calling** . Specifically, we define a ```Plan``` model and a prompt for the planner that instructs the LLM to produce an itemized plan of steps needed to solve the user's request. We keep each step focused and avoid adding unnecessary detail.
 
 
 ```python
@@ -255,7 +255,7 @@ planner = planner_prompt | ChatOpenAI(
 ).with_structured_output(Plan)
 ```
 
-We will run `planner` to verify the plan generation result.
+We will run ```planner``` to verify the plan generation result.
 
 ```python
 # Run planner
@@ -327,7 +327,7 @@ replanner = replanner_prompt | ChatOpenAI(
 We now build the LangGraph workflow by connecting the defined nodes:
 
 1. **planner** : Generates the plan.  
-2. **execute** : Uses the `execution agent` to perform the next step.  
+2. **execute** : Uses the ```execution agent``` to perform the next step.  
 3. **replan** : Decides whether to continue with a new plan or provide the final answer.  
 4. **final_report** : Summarizes all steps and provides a polished final response.
 
@@ -468,7 +468,7 @@ Finally, we run the entire workflow by providing user input. The workflow procee
 3. The **Re-plan** step checks if more actions are needed. If so, it updates the plan and goes back to **Execute** ; otherwise, it proceeds to **Final Report** .  
 4. The **Final Report** step generates a comprehensive markdown summary of all executed steps and the final answer.
 
-By following these steps, you can build a `plan-and-execute` agent in LangGraph, enabling structured, multi-step problem-solving with explicit long-term planning and flexible re-planning capabilities.
+By following these steps, you can build a ```plan-and-execute``` agent in LangGraph, enabling structured, multi-step problem-solving with explicit long-term planning and flexible re-planning capabilities.
 
 
 ```python

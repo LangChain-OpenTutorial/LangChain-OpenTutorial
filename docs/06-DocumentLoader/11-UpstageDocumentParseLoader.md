@@ -19,16 +19,15 @@ pre {
 
 # UpstageDocumentParseLoader 
 - Author: [Taylor(Jihyun Kim)](https://github.com/Taylor0819)
-- Design: 
 - Peer Review : [JoonHo Kim](https://github.com/jhboyo), [Jaemin Hong](https://github.com/geminii01), [leebeanbin](https://github.com/leebeanbin), [Dooil Kwak](https://github.com/back2zion)
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/11-UpstageDocumentParseLoader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/3ad956cceef62c6e1adc831f6a11fac1977f8932/06-DocumentLoader/11-UpstageDocumentParseLoader.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/11-UpstageDocumentParseLoader.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/11-UpstageDocumentParseLoader.ipynb)
 
 ## Overview 
 
-The `UpstageDocumentParseLoader` is a robust document analysis tool designed by Upstage that seamlessly integrates with the LangChain framework as a document loader. It specializes in transforming documents into structured HTML by analyzing their layout and content.
+The ```UpstageDocumentParseLoader``` is a robust document analysis tool designed by Upstage that seamlessly integrates with the LangChain framework as a document loader. It specializes in transforming documents into structured HTML by analyzing their layout and content.
 
 **Key Features** :
 
@@ -41,11 +40,11 @@ The `UpstageDocumentParseLoader` is a robust document analysis tool designed by 
 -	Optional OCR Support : 
 	Includes optical character recognition for handling scanned or image-based documents. The OCR mode supports:
 	
-	`force` : Extracts text from images using OCR.
+	```force``` : Extracts text from images using OCR.
 	
-	`auto` : Extracts text from PDFs (throws an error if the input is not in PDF format).
+	```auto``` : Extracts text from PDFs (throws an error if the input is not in PDF format).
 
-By recognizing and preserving the relationships between document elements, the `UpstageDocumentParseLoader` enables precise and context-aware document analysis.
+By recognizing and preserving the relationships between document elements, the ```UpstageDocumentParseLoader``` enables precise and context-aware document analysis.
 
 **Migration from Layout Analysis** :
 Upstage has launched Document Parse to replace Layout Analysis! Document Parse now supports a wider range of document types, markdown output, chart detection, equation recognition, and additional features planned for upcoming releases. The last version of Layout Analysis, layout-analysis-0.4.0, will be officially discontinued by November 10, 2024.
@@ -61,17 +60,17 @@ Upstage has launched Document Parse to replace Layout Analysis! Document Parse n
 ### Key Changes from Layout Analysis
 
 **Changes to Existing Options** :
-1. `use_ocr` → `ocr` 
+1. ```use_ocr``` → ```ocr``` 
    
-   `use_ocr` option has been replaced with `ocr` . Instead of `True/False` , it now accepts `force` or `auto` for more precise control.
+   ```use_ocr``` option has been replaced with ```ocr``` . Instead of ```True/False``` , it now accepts ```force``` or ```auto``` for more precise control.
 
-2. `output_type` → `output_format` 
+2. ```output_type``` → ```output_format``` 
    
-   `output_type` option has been renamed to `output_format` for specifying the format of the output.
+   ```output_type``` option has been renamed to ```output_format``` for specifying the format of the output.
 
-3. `exclude` → `base64_encoding`
+3. ```exclude``` → ```base64_encoding```
 
-    The `exclude` option has been replaced with `base64_encoding` . While `exclude` was used to exclude specific elements from the output, `base64_encoding` specifies whether to encode elements of certain categories in Base64.
+    The ```exclude``` option has been replaced with ```base64_encoding``` . While ```exclude``` was used to exclude specific elements from the output, ```base64_encoding``` specifies whether to encode elements of certain categories in Base64.
    
 
 ### References
@@ -86,14 +85,14 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 **[Note]** 
 
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 
 ### API Key Configuration
-To use `UpstageDocumentParseLoader` , you need to [obtain a Upstage API key](https://console.upstage.ai/api-keys).
+To use ```UpstageDocumentParseLoader``` , you need to [obtain a Upstage API key](https://console.upstage.ai/api-keys).
 
-Once you have your API key, set it as the value for the variable `UPSTAGE_API_KEY` .
+Once you have your API key, set it as the value for the variable ```UPSTAGE_API_KEY``` .
 
 
 ```python
@@ -133,9 +132,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `UPSTAGE_API_KEY` in .env file and load it.
+You can alternatively set ```UPSTAGE_API_KEY``` in .env file and load it.
 
-[Note] This is not necessary if you've already set `UPSTAGE_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```UPSTAGE_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -160,16 +159,16 @@ nest_asyncio.apply()
 
 ## UpstageDocumentParseLoader Key Parameters
 
-- `file_path` : Path(s) to the document(s) to be analyzed
-- `split` : Document splitting mode [default: 'none', 'element', 'page']
-- `model` : Model name for document parsing [default: 'document-parse']
-- `ocr` : OCR mode ["force" (always OCR), "auto" (PDF-only)]
-- `output_format` : Format of the analysis results [default: 'html', 'text', 'markdown']
-- `coordinates` : Include OCR coordinates in the output [default: True]
-- `base64_encoding` : List of element categories to be base64-encoded ['paragraph', 'table', 'figure', 'header', 'footer', 'list', 'chart', '...']
+- ```file_path``` : Path(s) to the document(s) to be analyzed
+- ```split``` : Document splitting mode [default: 'none', 'element', 'page']
+- ```model``` : Model name for document parsing [default: 'document-parse']
+- ```ocr``` : OCR mode ["force" (always OCR), "auto" (PDF-only)]
+- ```output_format``` : Format of the analysis results [default: 'html', 'text', 'markdown']
+- ```coordinates``` : Include OCR coordinates in the output [default: True]
+- ```base64_encoding``` : List of element categories to be base64-encoded ['paragraph', 'table', 'figure', 'header', 'footer', 'list', 'chart', '...']
 
 ## Usage Example
-Let's try running a code example here using `UpstageDocumentParseLoader` .
+Let's try running a code example here using ```UpstageDocumentParseLoader``` .
 
 ### Data Preparation
 

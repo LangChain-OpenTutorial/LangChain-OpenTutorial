@@ -21,15 +21,15 @@ pre {
 
 - Author: [Jaemin Hong](https://github.com/geminii01)
 - Peer Review: [Hye-yoon Jeong](https://github.com/Hye-yoonJeong), [JoonHo Kim](https://github.com/jhboyo)
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/02-Bind-Tools.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/02-Bind-Tools.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/02-Bind-Tools.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/02-Bind-Tools.ipynb)
 ## Overview
 
-`bind_tools` is a powerful function in LangChain for integrating custom tools with LLMs, enabling enriched AI workflows.
+```bind_tools``` is a powerful function in LangChain for integrating custom tools with LLMs, enabling enriched AI workflows.
 
-This tutorial will show you how to create, bind tools, parse and execute outputs, and integrate them into an `AgentExecutor` .
+This tutorial will show you how to create, bind tools, parse and execute outputs, and integrate them into an ```AgentExecutor``` .
 
 ### Table of Contents
 
@@ -52,8 +52,8 @@ This tutorial will show you how to create, bind tools, parse and execute outputs
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -94,7 +94,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -116,13 +116,13 @@ load_dotenv(override=True)
 
 Let's define tools for experimentation:
 
-- `get_word_length` : Returns the length of a word.
-- `add_function` : Adds two numbers.
-- `bbc_news_crawl` : Crawls BBC news and extracts main content.
+- ```get_word_length``` : Returns the length of a word.
+- ```add_function``` : Adds two numbers.
+- ```bbc_news_crawl``` : Crawls BBC news and extracts main content.
 
 [Note]
 
-- Use the `@tool` decorator for defining tools, and provide clear docstrings.
+- Use the ```@tool``` decorator for defining tools, and provide clear docstrings.
 
 ```python
 import requests
@@ -171,7 +171,7 @@ tools = [get_word_length, add_function, bbc_news_crawl]
 
 ## Binding Tools
 
-Now, let's use the `bind_tools` function to associate the defined tools with a specific LLM.
+Now, let's use the ```bind_tools``` function to associate the defined tools with a specific LLM.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -185,12 +185,12 @@ llm_with_tools = llm.bind_tools(tools)
 
 Let's check the results!
 
-The results are stored in `tool_calls` . Let's print `tool_calls` .
+The results are stored in ```tool_calls``` . Let's print ```tool_calls``` .
 
 [Note]
 
-- `name` indicates the name of the tool.
-- `args` contains the arguments that were passed to the tool.
+- ```name``` indicates the name of the tool.
+- ```args``` contains the arguments that were passed to the tool.
 
 ```python
 # Execution result
@@ -209,12 +209,12 @@ llm_with_tools.invoke(
 
 
 
-Next, we will connect `llm_with_tools` with `JsonOutputToolsParser` to parse `tool_calls` and review the results.
+Next, we will connect ```llm_with_tools``` with ```JsonOutputToolsParser``` to parse ```tool_calls``` and review the results.
 
 [Note]
 
-- `type` indicates the type of the tool.
-- `args` contains the arguments that were passed to the tool.
+- ```type``` indicates the type of the tool.
+- ```args``` contains the arguments that were passed to the tool.
 
 ```python
 from langchain_core.output_parsers.openai_tools import JsonOutputToolsParser
@@ -264,7 +264,7 @@ tool_call_results[0]["type"], tools[0].name
 
 
 
-The `execute_tool_calls` function identifies the appropriate tool, passes the corresponding `args` , and then executes the tool.
+The ```execute_tool_calls``` function identifies the appropriate tool, passes the corresponding ```args``` , and then executes the tool.
 
 ```python
 def execute_tool_calls(tool_call_results):
@@ -307,9 +307,9 @@ execute_tool_calls(tool_call_results)
 
 This time, we will combine the entire process of binding tools, parsing the results, and executing the tool calls into a single step.
 
-- `llm_with_tools` : The LLM model with bound tools.
-- `JsonOutputToolsParser` : The parser that processes the results of tool calls.
-- `execute_tool_calls` : The function that executes the results of tool calls.
+- ```llm_with_tools``` : The LLM model with bound tools.
+- ```JsonOutputToolsParser``` : The parser that processes the results of tool calls.
+- ```execute_tool_calls``` : The function that executes the results of tool calls.
 
 [Flow Summary]
 
@@ -385,15 +385,15 @@ chain.invoke("Crawl the news article: https://www.bbc.com/news/articles/cew52g8p
     Listen to the best of BBC Radio Merseyside on Sounds and follow BBC Merseyside on Facebook, X, and Instagram and watch BBC North West Tonight on BBC iPlayer.
 </pre>
 
-## Binding tools with Agent and `AgentExecutor`
+## Binding tools with Agent and ```AgentExecutor```
 
-`bind_tools` provides schemas (tools) that can be used by the model.
+```bind_tools``` provides schemas (tools) that can be used by the model.
 
-`AgentExecutor` creates an execution loop for tasks such as invoking the LLM, routing to the appropriate tool, executing it, and re-invoking the model.
+```AgentExecutor``` creates an execution loop for tasks such as invoking the LLM, routing to the appropriate tool, executing it, and re-invoking the model.
 
 [Note]
 
-- Agent and `AgentExecutor` will be covered in detail in the *next chapter* .
+- Agent and ```AgentExecutor``` will be covered in detail in the *next chapter* .
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder

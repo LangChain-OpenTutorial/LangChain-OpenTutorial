@@ -20,18 +20,17 @@ pre {
 # How to transform the input and output of a subgraph
 
 - Author: [BokyungisaGod](https://github.com/BokyungisaGod)
-- Design: 
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/14-LangGraph-Subgraph-Transform-State.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/14-LangGraph-Subgraph-Transform-State.ipynb)
 ## Overview
-The **state** of a `subgraph` can be completely independent of the state of the `parent graph`.
+The **state** of a ```subgraph``` can be completely independent of the state of the ```parent graph```.
 This means that the two graphs can operate in isolation, with no direct sharing or dependency on specific state keys. In other words, there may be no overlapping state keys between the two graphs, making it necessary to bridge the gap between their respective states for seamless execution.
 
 
-In such cases, the input should be transformed before invoking the `subgraph` to ensure compatibility, and the output should be transformed back into the format expected by the `parent graph` before returning. This transformation process acts as a connector, allowing the independent components to interact without modifying their internal structures or logic. By doing so, we maintain the modularity and flexibility of each graph while enabling efficient communication between them.
+In such cases, the input should be transformed before invoking the ```subgraph``` to ensure compatibility, and the output should be transformed back into the format expected by the ```parent graph``` before returning. This transformation process acts as a connector, allowing the independent components to interact without modifying their internal structures or logic. By doing so, we maintain the modularity and flexibility of each graph while enabling efficient communication between them.
 
 ### Table of Contents
 
@@ -55,7 +54,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -76,9 +75,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -97,18 +96,18 @@ if not load_dotenv():
     )
 ```
 
-## Definitions of `graph` and `subgraph`
+## Definitions of ```graph``` and ```subgraph```
 
-We will define the following three `graphs`:
+We will define the following three ```graphs```:
 
-- `parent graph`
+- ```parent graph```
 
-- `child subgraph` invoked by the `parent graph`
+- ```child subgraph``` invoked by the ```parent graph```
 
-- `grandchild subgraph` invoked by the `child graph`
+- ```grandchild subgraph``` invoked by the ```child graph```
 
-## Definition of `grandchild`
-The `grandchild` is the smallest unit in the hierarchical structure of our graph system. It operates independently of the `child` and `parent graphs` and processes its unique `state`. By defining the `grandchild graph` and its `state` transformations, we ensure modularity and reusability within the larger system.
+## Definition of ```grandchild```
+The ```grandchild``` is the smallest unit in the hierarchical structure of our graph system. It operates independently of the ```child``` and ```parent graphs``` and processes its unique ```state```. By defining the ```grandchild graph``` and its ```state``` transformations, we ensure modularity and reusability within the larger system.
 
 ```python
 # Import modules for state management using TypedDict and StateGraph
@@ -168,8 +167,8 @@ for chunk in grandchild_graph.stream(
 <pre class="custom">((), {'grandchild_1': {'my_grandchild_key': '([GrandChild] Hi, Teddy!)'}})
 </pre>
 
-## Definition of `child`
-The `child graph` acts as an intermediary unit between the `parent graph` and the `grandchild graph`. It is responsible for managing its own `state` while interacting with the `grandchild graph`. The `child graph` ensures that input from the `parent` is transformed appropriately before invoking the `grandchild graph` and vice versa.
+## Definition of ```child```
+The ```child graph``` acts as an intermediary unit between the ```parent graph``` and the ```grandchild graph```. It is responsible for managing its own ```state``` while interacting with the ```grandchild graph```. The ```child graph``` ensures that input from the ```parent``` is transformed appropriately before invoking the ```grandchild graph``` and vice versa.
 
 ```python
 # TypedDict class definition for the child state type
@@ -218,18 +217,18 @@ for chunk in child_graph.stream({"my_child_key": "Hi, Teddy!"}, subgraphs=True):
     ((), {'child_1': {'my_child_key': '([Child] ([GrandChild] Hi, Teddy!))'}})
 </pre>
 
-The invocation of `grandchild_graph` is wrapped in a separate function (`call_grandchild_graph`).
+The invocation of ```grandchild_graph``` is wrapped in a separate function (```call_grandchild_graph```).
 
-This function transforms the input state before invoking the `grandchild_graph` and converts the output of the `grandchild_graph` back into the state format of the child graph.
+This function transforms the input state before invoking the ```grandchild_graph``` and converts the output of the ```grandchild_graph``` back into the state format of the child graph.
 
-If `grandchild_graph` is passed directly to `.add_node` without such a transformation, LangGraph will raise an error because there is no shared state key between the child and grandchild states.
+If ```grandchild_graph``` is passed directly to ```.add_node``` without such a transformation, LangGraph will raise an error because there is no shared state key between the child and grandchild states.
 
 **Important**
 
->Please note that the `child subgraph` and `grandchild subgraph` have their own **independent** `state` that is not shared with the `parent graph`.
+>Please note that the ```child subgraph``` and ```grandchild subgraph``` have their own **independent** ```state``` that is not shared with the ```parent graph```.
 
-## Definition of `parent`
-The `parent graph` serves as the highest-level unit in the hierarchical graph system. It manages its own `state` and orchestrates the invocation of the `child graph`. The `parent graph` also ensures that its `state` is properly transformed to interact with the `child graph` and processes the resulting output.
+## Definition of ```parent```
+The ```parent graph``` serves as the highest-level unit in the hierarchical graph system. It manages its own ```state``` and orchestrates the invocation of the ```child graph```. The ```parent graph``` also ensures that its ```state``` is properly transformed to interact with the ```child graph``` and processes the resulting output.
 
 This structure allows for a clear separation of responsibilities and ensures modularity in the overall design.
 
@@ -289,9 +288,9 @@ visualize_graph(parent_graph, xray=True)
     
 
 
-The `child_graph` invocation is wrapped in a separate function `call_child_graph`, which transforms the input state before invoking the child graph and converts the child graph's output back into the parent graph's state.
+The ```child_graph``` invocation is wrapped in a separate function ```call_child_graph```, which transforms the input state before invoking the child graph and converts the child graph's output back into the parent graph's state.
 
-If `child_graph` is passed directly to `.add_node` without transformation, LangGraph will throw an error due to the absence of shared state keys between the parent and child states.
+If ```child_graph``` is passed directly to ```.add_node``` without transformation, LangGraph will throw an error due to the absence of shared state keys between the parent and child states.
 
 Let's execute the parent graph to verify that the child and grandchild subgraphs are invoked correctly.
 

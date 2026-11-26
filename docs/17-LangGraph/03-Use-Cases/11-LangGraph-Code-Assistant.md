@@ -22,22 +22,22 @@ pre {
 - Author: [Junseong Kim](https://www.linkedin.com/in/%EC%A4%80%EC%84%B1-%EA%B9%80-591b351b2/)
 - Design: [Junseong Kim](https://www.linkedin.com/in/%EC%A4%80%EC%84%B1-%EA%B9%80-591b351b2/)
 - Peer Review:
+- Proofread : [fastjw](https://github.com/fastjw)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/05-langgraph-plan-and-execute.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/05-langgraph-plan-and-execute.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/11-LangGraph-Code-Assistant.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/11-LangGraph-Code-Assistant.ipynb)
 ## Overview
 
 In this tutorial, we will build a simple code assistant workflow using **langgraph** and LangChain. We will demonstrate how to:
 
-- Load and parse documentation from a URL using `RecursiveUrlLoader`.
-- Create a Pydantic model (`code`) to structure code-generation responses.
+- Load and parse documentation from a URL using ```RecursiveUrlLoader```.
+- Create a Pydantic model (```code```) to structure code-generation responses.
 - Use an LLM (Anthropic’s Claude) with a specialized prompt to generate code solutions.
 - Integrate a custom parsing function to handle raw and structured outputs.
-- Construct a state machine with `langgraph` to:
-  - Generate code (`generate` node)
-  - Check imports and execution (`check_code` node)
-  - Reflect and retry if needed (`reflect` node)
+- Construct a state machine with ```langgraph``` to:
+  - Generate code (```generate``` node)
+  - Check imports and execution (```check_code``` node)
+  - Reflect and retry if needed (```reflect``` node)
 - Visualize the workflow graph and finally display the generated code in a clean Markdown format.
 
 By the end of this tutorial, you’ll be able to set up a multi-step code assistant pipeline that can iteratively generate, validate, and reflect on generated code.
@@ -71,7 +71,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -101,9 +101,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -136,7 +136,7 @@ We will demonstrate each step with a combination of Markdown explanations and co
 
 ## Loading and Preparing Documentation
 
-We use the `RecursiveUrlLoader` (from `langchain_community`) to fetch and parse documentation. We’ll store the documents in `docs`, sort them, and then concatenate the page content into a single string for use in our prompt.
+We use the ```RecursiveUrlLoader``` (from ```langchain_community```) to fetch and parse documentation. We’ll store the documents in ```docs```, sort them, and then concatenate the page content into a single string for use in our prompt.
 
 
 ```python
@@ -160,7 +160,7 @@ concatenated_content = "\n\n\n --- \n\n\n".join(
 
 ## Defining a Pydantic Model for Code
 
-We define a Pydantic model named `code` to capture structured outputs for code generation. This model enforces a specific schema with fields for `prefix`, `imports`, and `code`.
+We define a Pydantic model named ```code``` to capture structured outputs for code generation. This model enforces a specific schema with fields for ```prefix```, ```imports```, and ```code```.
 
 
 ```python
@@ -182,7 +182,7 @@ class code(BaseModel):
 
 ## Setting Up the Prompt and LLM Chain
 
-We construct a prompt that instructs the LLM (Anthropic’s Claude) to produce answers in our specified `code` format.
+We construct a prompt that instructs the LLM (Anthropic’s Claude) to produce answers in our specified ```code``` format.
 
 
 ```python
@@ -212,14 +212,14 @@ llm = ChatAnthropic(
 )
 ```
 
-Next, we wrap this language model with `with_structured_output` to ensure it returns data that can be parsed into our `code` Pydantic model:
+Next, we wrap this language model with ```with_structured_output``` to ensure it returns data that can be parsed into our ```code``` Pydantic model:
 
 
 ```python
 structured_llm_claude = llm.with_structured_output(code, include_raw=True)
 ```
 
-Finally, we define a function `parse_output` to extract the parsed solution from the LLM’s raw response, and then we combine everything into a single chain:
+Finally, we define a function ```parse_output``` to extract the parsed solution from the LLM’s raw response, and then we combine everything into a single chain:
 
 
 ```python
@@ -235,7 +235,7 @@ code_gen_chain = code_gen_prompt_claude | structured_llm_claude | parse_output
 
 ## Parsing the LLM Output
 
-We run a quick test by asking a sample question. The chain returns a structured `code` object with `prefix`, `imports`, and `code`.
+We run a quick test by asking a sample question. The chain returns a structured ```code``` object with ```prefix```, ```imports```, and ```code```.
 
 
 ```python
@@ -258,7 +258,7 @@ solution
 
 To handle multiple steps—generating code, checking it, and reflecting on errors—we can use a **langgraph** state machine.
 
-First, we create a `TypedDict` called `GraphState` to store our pipeline’s state. We also define some global parameters:
+First, we create a ```TypedDict``` called ```GraphState``` to store our pipeline’s state. We also define some global parameters:
 
 
 ```python
@@ -288,7 +288,7 @@ class GraphState(TypedDict):
 We have three main nodes in our state machine:
 
 1. **generate**: Calls the LLM chain to produce code.
-2. **code_check**: Attempts to `exec` the code. If it fails, we raise a flag.
+2. **code_check**: Attempts to ```exec``` the code. If it fails, we raise a flag.
 3. **reflect**: Optionally reflect on errors and refine the solution.
 
 We’ll define each one in its own cell for clarity.
@@ -296,7 +296,7 @@ We’ll define each one in its own cell for clarity.
 
 **1.1 generate Node**
 
-This node invokes the `code_gen_chain` to generate a new code solution. If there was a previous error, it adds a user message instructing the LLM to try again.
+This node invokes the ```code_gen_chain``` to generate a new code solution. If there was a previous error, it adds a user message instructing the LLM to try again.
 
 
 ```python
@@ -356,7 +356,7 @@ def generate(state: GraphState):
 
 **1.2 code_check Node**
 
-This node checks the generated code by attempting to `exec` the imports and the main code block. If anything fails, it appends an error message and flags the state.
+This node checks the generated code by attempting to ```exec``` the imports and the main code block. If anything fails, it appends an error message and flags the state.
 
 
 ```python
@@ -457,7 +457,7 @@ def reflect(state: GraphState):
 
 **2. Defining the Workflow**
 
-Next, we tie these nodes together with **langgraph** to create our state machine. We also define a helper function `decide_to_finish` that determines whether we have encountered an error or exceeded our iteration limit.
+Next, we tie these nodes together with **langgraph** to create our state machine. We also define a helper function ```decide_to_finish``` that determines whether we have encountered an error or exceeded our iteration limit.
 
 
 ```python
@@ -517,7 +517,7 @@ app = workflow.compile()
 
 **3. Visualizing the Workflow**
 
-We can visualize the state machine using the `visualize_graph` function from `langchain_opentutorial.graphs`.
+We can visualize the state machine using the ```visualize_graph``` function from ```langchain_opentutorial.graphs```.
 
 
 ```python

@@ -20,15 +20,14 @@ pre {
 # TXT Loader
 
 - Author: [seofield](https://github.com/seofield)
-- Design:
 - Peer Review : [Kane](https://github.com/HarryKane11), [Suhyun Lee](https://github.com/suhyun0115)
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/08-TXTLoader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/08-TXTLoader.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/08-TXTLoader.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/08-TXTLoader.ipynb)
 ## Overview
 
-This tutorial focuses on using LangChain’s `TextLoader` to efficiently load and process individual text files. 
+This tutorial focuses on using LangChain’s ```TextLoader``` to efficiently load and process individual text files. 
 
 You’ll learn how to extract metadata and content, making it easier to prepare text data.
 
@@ -47,8 +46,8 @@ You’ll learn how to extract metadata and content, making it easier to prepare 
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -114,8 +113,8 @@ In this example, we explore several strategies for using the TextLoader class to
 
 To illustrate the problem, we’ll first attempt to load multiple text files with arbitrary encodings.
 
-- `silent_errors`: By passing the `silent_errors` parameter to the `DirectoryLoader`, you can skip files that cannot be loaded and continue the loading process without interruptions.
-- `autodetect_encoding`: Additionally, you can enable automatic encoding detection by passing the `autodetect_encoding` parameter to the loader class, allowing it to detect file encodings before failing.
+- ```silent_errors```: By passing the ```silent_errors``` parameter to the ```DirectoryLoader```, you can skip files that cannot be loaded and continue the loading process without interruptions.
+- ```autodetect_encoding```: Additionally, you can enable automatic encoding detection by passing the ```autodetect_encoding``` parameter to the loader class, allowing it to detect file encodings before failing.
 
 
 ```python

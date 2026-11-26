@@ -20,12 +20,11 @@ pre {
 # TextToSQL
 
 - Author: [Jaehun Choi](https://github.com/ash-hun)
-- Design: 
 - Peer Review: [Dooil Kwak](https://github.com/back2zion), [Ilgyun Jeong](https://github.com/johnny9210)
+- Proofread  : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/01-SQL/01-TextToSQL.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/01-SQL/01-TextToSQL.ipynb)
 ## Overview
 
 This tutorial provides a feature for generating SQL query statements based on arbitrary database information. While it does not cover extracting database information directly, it may include details about column information and descriptions for specific tables. Using OpenAI’s GPT models (e.g., gpt-4o) and prompt templates, the tutorial demonstrates how to generate SQL queries.
@@ -57,8 +56,8 @@ This tutorial provides a feature for generating SQL query statements based on ar
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -99,7 +98,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 

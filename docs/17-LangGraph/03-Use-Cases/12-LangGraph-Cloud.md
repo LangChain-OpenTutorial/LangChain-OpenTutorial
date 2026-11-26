@@ -20,12 +20,11 @@ pre {
 # Deploy on LangGraph Cloud
 
 - Author: [JoonHo Kim](https://github.com/jhboyo)
-- Design: []()
 - Peer Review :
+- Proofread : [fastjw](https://github.com/fastjw)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/04-CSV-Loader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/04-CSV-Loader.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/12-LangGraph-Cloud.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/12-LangGraph-Cloud.ipynb)
 
 ## Overview
 **LangGraph Cloud** is a cloud-based framework designed to simplify the development, deployment, and management of graph-based workflows for AI applications. It extends the functionality of **LangGraph** by providing a scalable, distributed, and user-friendly environment to build complex AI agents, workflows, and pipelines.
@@ -70,8 +69,8 @@ Now, let's dive in and explore how to boost performance with **LangGraph Cloud**
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -120,8 +119,8 @@ Before we start, ensure we have the following:
 To deploy a **LangGraph** application on **LangGraph Cloud**, your application's code must be stored in a **GitHub** repository. 
 You can deploy any **LangGraph** applications to **LangGraph Cloud** with ease. 
 
-For this guide, we'll use the pre-built **Python** [`ReAct Agent`](https://github.com/langchain-ai/react-agent) template. You can go to **GitHub** and fork the repository.
-This [`ReAct Agent`](https://github.com/langchain-ai/react-agent) application requires API keys from **Anthropic** and **Tavily**.
+For this guide, we'll use the pre-built **Python** [```ReAct Agent```](https://github.com/langchain-ai/react-agent) template. You can go to **GitHub** and fork the repository.
+This [```ReAct Agent```](https://github.com/langchain-ai/react-agent) application requires API keys from **Anthropic** and **Tavily**.
 
 ## Deployment to LangGraph Cloud
 
@@ -215,9 +214,9 @@ async for chunk in client.runs.stream(
 
 Now, you can verify the message data.
 
-If you append `/docs` to the end of the **Endpoint URL** and enter it in a web browser, you can check the web API. We can refer to this document and use API testing tools like Postman or Scalar to conduct tests.
+If you append ```/docs``` to the end of the **Endpoint URL** and enter it in a web browser, you can check the web API. We can refer to this document and use API testing tools like Postman or Scalar to conduct tests.
 
-ex) `GET https://{{endpoint_url}}threads/{{thread_id}}/history`
+ex) ```GET https://{{endpoint_url}}threads/{{thread_id}}/history```
 
 <img src="./assets/12-langgraph-cloud-web-api-1.png" width="650">
 

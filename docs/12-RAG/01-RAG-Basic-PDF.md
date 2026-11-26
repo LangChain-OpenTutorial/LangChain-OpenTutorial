@@ -19,14 +19,12 @@ pre {
 
 # Understanding the basic structure of RAG
 
-- Author: [Sun Hyoung Lee](https://github.com/LEE1026icarus)
-- Design: 
+- Author: [Sun Hyoung Lee](https://github.com/LEE1026icarus) 
 - Peer Review: 
-- Proofread: 
+- Proofread : [BokyungisaGod](https://github.com/BokyungisaGod)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/langchain-ai/langchain-academy/blob/main/module-4/sub-graph.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/01-RAG-Basic-PDF.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/01-RAG-Basic-PDF.ipynb)
 ## Overview
 
 ### 1. Pre-processing - Steps 1 to 4
@@ -46,7 +44,7 @@ The pre-processing stage involves four steps to load, split, embed, and store do
   - **Dense** : Similarity-based search.
   - **Sparse** : Keyword-based search.
 
-- **Step 6: Prompt** : Create a prompt for executing RAG. The `context` in the prompt includes content retrieved from the document. Through prompt engineering, you can specify the format of the answer.  
+- **Step 6: Prompt** : Create a prompt for executing RAG. The ```context``` in the prompt includes content retrieved from the document. Through prompt engineering, you can specify the format of the answer.  
 
 - **Step 7: LLM** : Define the language model (e.g., GPT-3.5, GPT-4, Claude).  
 
@@ -78,8 +76,8 @@ A European Approach to Artificial Intelligence - A Policy Perspective
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
  **[Note]** 
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [ `langchain-opentutorial` ](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [ ```langchain-opentutorial``` ](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 
 ```python

@@ -20,14 +20,13 @@ pre {
 # GPT4ALL
 
 - Author: [Yoonji Oh](https://github.com/samdaseuss)
-- Design:
 - Peer Review : [Joseph](https://github.com/XaviereKU), [Normalist-K](https://github.com/Normalist-K)
+- Proofread : [frimer](https://github.com/brian604)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/langchain-ai/langchain-academy/blob/main/module-4/sub-graph.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/10-GPT4ALL.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/11-GPT4ALL.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/11-GPT4ALL.ipynb)
 ## Overview
-In this tutorial, we’re exploring `GPT4ALL` together! From picking the perfect model for your hardware to running it on your own, we’ll walk you through the process **step by step**. 
+In this tutorial, we’re exploring ```GPT4ALL``` together! From picking the perfect model for your hardware to running it on your own, we’ll walk you through the process **step by step**. 
 
 Ready? Let’s dive in and have some fun along the way!
 
@@ -53,8 +52,8 @@ Ready? Let’s dive in and have some fun along the way!
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -95,7 +94,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can also create and use a `.env` file in the root directory as shown below.
+You can also create and use a ```.env``` file in the root directory as shown below.
 
 ```python
 from dotenv import load_dotenv
@@ -112,17 +111,17 @@ load_dotenv()
 
 ## Installation
 
-Ready to get started with `gpt4all`? Let’s make sure you’ve got everything set up! We’ll guide you through installing the package using `pip` or `poetry`. Don’t worry, it’s easy and quick.
+Ready to get started with ```gpt4all```? Let’s make sure you’ve got everything set up! We’ll guide you through installing the package using ```pip``` or ```poetry```. Don’t worry, it’s easy and quick.
 
 ---
 
 ### **Install the Python Package**
 
-You can install `gpt4all` using **pip** or **poetry**, depending on your preferred package manager. Here’s how:
+You can install ```gpt4all``` using **pip** or **poetry**, depending on your preferred package manager. Here’s how:
 
 #### **1. Installation using pip**
 
-If you’re using `pip`, run the following command in your terminal:
+If you’re using ```pip```, run the following command in your terminal:
 
 
 ```python
@@ -132,11 +131,11 @@ If you’re using `pip`, run the following command in your terminal:
 
 #### **2. Installation using poetry**
 
-Prefer `poetry`? No problem! Here’s how to install `gpt4all` using poetry:
+Prefer ```poetry```? No problem! Here’s how to install ```gpt4all``` using poetry:
 
 
-**Step 1: Add `gpt4all` to your project**  
-Run this command to add the package to your `pyproject.toml`:
+**Step 1: Add ```gpt4all``` to your project**  
+Run this command to add the package to your ```pyproject.toml```:
 
 ```python
 !poetry add gpt4all
@@ -154,7 +153,7 @@ Poetry will sync your environment and install all required dependencies.
 
 ## What is GPT4ALL
 
-`GitHub:nomic-ai/gpt4all` is an open-source chatbot ecosystem trained on a large amount of data, including code and chat-form conversations. 
+```GitHub:nomic-ai/gpt4all``` is an open-source chatbot ecosystem trained on a large amount of data, including code and chat-form conversations. 
 
 In this example, we will explain how to interact with the GPT4All model using LangChain.
 
@@ -179,25 +178,25 @@ It's the most crucial and decision-making time. Before diving into writing code,
 
 #### Based on Use Case
 Choose your model depending on the tasks you plan to perform:
-- **Lightweight tasks** (e.g., simple conversation): `orca-mini-3b-gguf2-q4_0.gguf` or `Phi-3-mini-4k-instruct.Q4_0.gguf`.  
-- **Moderate tasks** (e.g., summarization or grammar correction): `Meta-Llama-3-8B-Instruct.Q4_0.gguf` or `Nous-Hermes-2-Mistral-7B-DPO.Q4_0.gguf`.  
-- **Advanced tasks** (e.g., long text generation, research): `gpt4all-13b-snoozy-q4_0.gguf`.
+- **Lightweight tasks** (e.g., simple conversation): ```orca-mini-3b-gguf2-q4_0.gguf``` or ```Phi-3-mini-4k-instruct.Q4_0.gguf```.  
+- **Moderate tasks** (e.g., summarization or grammar correction): ```Meta-Llama-3-8B-Instruct.Q4_0.gguf``` or ```Nous-Hermes-2-Mistral-7B-DPO.Q4_0.gguf```.  
+- **Advanced tasks** (e.g., long text generation, research): ```gpt4all-13b-snoozy-q4_0.gguf```.
 
 #### Based on System Specifications
 Select a model based on your available hardware:
-- For **4GB RAM or less**, use `orca-mini-3b-gguf2-q4_0.gguf` or `Phi-3-mini-4k-instruct.Q4_0.gguf`.  
-- For **8GB RAM or more**, use `Meta-Llama-3-8B-Instruct.Q4_0.gguf` or `Nous-Hermes-2-Mistral-7B-DPO.Q4_0.gguf`.  
-- For **16GB RAM or more**, use `gpt4all-13b-snoozy-q4_0.gguf`.
+- For **4GB RAM or less**, use ```orca-mini-3b-gguf2-q4_0.gguf``` or ```Phi-3-mini-4k-instruct.Q4_0.gguf```.  
+- For **8GB RAM or more**, use ```Meta-Llama-3-8B-Instruct.Q4_0.gguf``` or ```Nous-Hermes-2-Mistral-7B-DPO.Q4_0.gguf```.  
+- For **16GB RAM or more**, use ```gpt4all-13b-snoozy-q4_0.gguf```.
 
 
 [NOTE]
 
-- **`GGML`**: CPU-friendly and low memory usage.  
-- **`GGUF`**: Latest format with GPU acceleration support.  
-- **`q4_0 Quantization`**: Efficient for both CPU and GPU workloads, with reduced memory requirements.
+- **```GGML```**: CPU-friendly and low memory usage.  
+- **```GGUF```**: Latest format with GPU acceleration support.  
+- **```q4_0 Quantization```**: Efficient for both CPU and GPU workloads, with reduced memory requirements.
 
 ## Downloading a Model
-In this tutorial, we will be using Microsoft's `Phi-3-Mini-4K-Instruct` model.
+In this tutorial, we will be using Microsoft's ```Phi-3-Mini-4K-Instruct``` model.
 
 1. **Download the Model**: Visit [HuggingFace](https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/tree/main) to download the required model (2.39 GB).
 
@@ -205,13 +204,13 @@ In this tutorial, we will be using Microsoft's `Phi-3-Mini-4K-Instruct` model.
     <img src="./assets/10-GPT4ALL-02.png" alt="Image Description" width="500">
 </div>
 
-2. **Load Models in Python**: After downloading the model, create a folder named `models` and place the downloaded file in that folder. 
+2. **Load Models in Python**: After downloading the model, create a folder named ```models``` and place the downloaded file in that folder. 
 
 <div style="text-align: center;">
     <img src="./assets/10-GPT4ALL-03.png" alt="Image Description" width="500">
 </div>
 
-- Assign the local file path (e.g., `Phi-3-mini-4k-instruct-q4.gguf`) to the `local_path` variable.
+- Assign the local file path (e.g., ```Phi-3-mini-4k-instruct-q4.gguf```) to the ```local_path``` variable.
 
 
 ```python
@@ -224,11 +223,11 @@ Use the [Python Documentation](https://docs.gpt4all.io/gpt4all_python/home.html#
 
 ## Running GPT4ALL Models
 
-`GPT4All` is a `powerful large-scale language model`, similar to `GPT-3`, designed to support a variety of natural language processing tasks.  
+```GPT4All``` is a ```powerful large-scale language model```, similar to ```GPT-3```, designed to support a variety of natural language processing tasks.  
 
-This module allows you to `easily load the GPT4All model` and perform inference seamlessly.  
+This module allows you to ```easily load the GPT4All model``` and perform inference seamlessly.  
 
-In the following example, we demonstrate how to `load the GPT4All model` and utilize it to `answer a question` by leveraging a `custom prompt` and `inference pipeline`.
+In the following example, we demonstrate how to ```load the GPT4All model``` and utilize it to ```answer a question``` by leveraging a ```custom prompt``` and ```inference pipeline```.
 
 ```python
 from langchain_core.prompts.chat import ChatPromptTemplate
@@ -239,7 +238,7 @@ from langchain_core.callbacks.streaming_stdout import StreamingStdOutCallbackHan
 
 [NOTE]
 
-Due to structural changes, in version `0.3.13`, you need to replace `from langchain.prompts import ChatPromptTemplate` with `from langchain_core.prompts import ChatPromptTemplate`.
+Due to structural changes, in version ```0.3.13```, you need to replace ```from langchain.prompts import ChatPromptTemplate``` with ```from langchain_core.prompts import ChatPromptTemplate```.
 
 ### Creating a Prompt and Checking the Result
 
@@ -264,14 +263,14 @@ print(result.messages[0].content)
     
 </pre>
 
-The `ChatPromptTemplate` is responsible for creating prompt templates in LangChain and dynamically substituting variables. Without using the `invoke()` method, you can utilize the class's template methods to generate prompts. In this case, the template can be returned as a string using the `format` method.
+The ```ChatPromptTemplate``` is responsible for creating prompt templates in LangChain and dynamically substituting variables. Without using the ```invoke()``` method, you can utilize the class's template methods to generate prompts. In this case, the template can be returned as a string using the ```format``` method.
 
 ```python
 # Using format() instead of invoke()
 result = prompt.format(question="What is the capital of United States?")
 ```
 
-In a nutshell, the `invoke()` method is great for `chain-based tasks`, while the `format()` method is perfect for `returning simple strings`. 
+In a nutshell, the ```invoke()``` method is great for ```chain-based tasks```, while the ```format()``` method is perfect for ```returning simple strings```. 
 
 |       | **.invoke()** | **.format()**  |
 |-------|---------------|----------------|
@@ -294,7 +293,7 @@ print(result)
     
 </pre>
 
-You might notice that `Human:` is automatically added to the output. If you'd like to avoid this behavior, you can use LangChain's `PromptTemplate` class instead of `ChatPromptTemplate`. The `PromptTemplate` class doesn’t add any extra prefixes like this.
+You might notice that ```Human:``` is automatically added to the output. If you'd like to avoid this behavior, you can use LangChain's ```PromptTemplate``` class instead of ```ChatPromptTemplate```. The ```PromptTemplate``` class doesn’t add any extra prefixes like this.
 
 ```python
 from langchain_core.prompts.prompt import PromptTemplate
@@ -311,7 +310,7 @@ print(formatted_prompt)
     
 </pre>
 
-We'll be using invoke for `chain-based tasks`, so go ahead and forget about the format method for now! 😉
+We'll be using invoke for ```chain-based tasks```, so go ahead and forget about the format method for now! 😉
 
 ### Using Chains to Display Results in Real-Time
 
@@ -351,4 +350,4 @@ response = chain.invoke({"question": "where is the capital of United States?"})
 
 Today, we explored GPT4ALL together! **We didn’t just run models** — we took part in the decision-making process, from selecting a model to suit our needs to choosing the right methods based on our desired outcomes or execution direction. Along the way, we compared the performance of popular models and even ran the code ourselves.
 
-Next time, we’ll dive into `Video Q&A LLM (Gemini)`. Until then, try running today’s code with different models and see how they perform. See you soon! 😊
+Next time, we’ll dive into ```Video Q&A LLM (Gemini)```. Until then, try running today’s code with different models and see how they perform. See you soon! 😊

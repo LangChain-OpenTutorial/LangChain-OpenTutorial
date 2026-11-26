@@ -21,17 +21,17 @@ pre {
 
 - Author: [Jaemin Hong](https://github.com/geminii01)
 - Peer Review: [ranian963](https://github.com/ranian963), [Jinu Cho](https://github.com/jinucho)
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/05-RunnableParallel.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/05-RunnableParallel.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/05-RunnableParallel.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/05-RunnableParallel.ipynb)
 ## Overview
 
-This tutorial covers `RunnableParallel`, a core component of the LangChain Expression Language(LCEL).
+This tutorial covers ```RunnableParallel```, a core component of the LangChain Expression Language(LCEL).
 
-`RunnableParallel` is designed to execute multiple Runnable objects in parallel and return a mapping of their outputs.
+```RunnableParallel``` is designed to execute multiple Runnable objects in parallel and return a mapping of their outputs.
 
-This class delivers the same input to each Runnable, making it ideal for running independent tasks concurrently. Moreover, we can instantiate `RunnableParallel` directly or use a dictionary literal within a sequence.
+This class delivers the same input to each Runnable, making it ideal for running independent tasks concurrently. Moreover, we can instantiate ```RunnableParallel``` directly or use a dictionary literal within a sequence.
 
 ### Table of Contents
 
@@ -54,8 +54,8 @@ This class delivers the same input to each Runnable, making it ideal for running
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -97,7 +97,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -117,11 +117,11 @@ load_dotenv(override=True)
 
 ## Handling Input and Output
 
-`RunnableParallel` is useful for manipulating the output of one Runnable within a sequence to match the input format requirements of the next Runnable.
+```RunnableParallel``` is useful for manipulating the output of one Runnable within a sequence to match the input format requirements of the next Runnable.
 
-Let's suppose a prompt expects input as a map with keys (`context` , `question`).
+Let's suppose a prompt expects input as a map with keys (```context``` , ```question```).
 
-The user input is simply the question, providing content. Therefore, you'll need to use a retriever to get the context and pass the user input under the `question` key.
+The user input is simply the question, providing content. Therefore, you'll need to use a retriever to get the context and pass the user input under the ```question``` key.
 
 ```python
 from langchain_community.vectorstores import FAISS
@@ -170,7 +170,7 @@ retrieval_chain.invoke("What is Teddy's occupation?")
 
 
 
-Note that type conversion is handled automatically when configuring `RunnableParallel` with other Runnables. We don't need to manually wrap the dictionary input provided to the `RunnableParallel` class.
+Note that type conversion is handled automatically when configuring ```RunnableParallel``` with other Runnables. We don't need to manually wrap the dictionary input provided to the ```RunnableParallel``` class.
 
 The following three methods present different initialization approaches that produce the same result:
 
@@ -185,9 +185,9 @@ The following three methods present different initialization approaches that pro
 
 ## Using itemgetter as a Shortcut
 
-Python’s `itemgetter` function offers a shortcut for extracting specific data from a map when it is combined with `RunnableParallel` .
+Python’s ```itemgetter``` function offers a shortcut for extracting specific data from a map when it is combined with ```RunnableParallel``` .
 
-For example, `itemgetter` extracts specific keys from a map.
+For example, ```itemgetter``` extracts specific keys from a map.
 
 ```python
 from operator import itemgetter
@@ -241,7 +241,7 @@ chain.invoke({"question": "What is Teddy's occupation?", "language": "English"})
 
 ## Understanding Parallel Processing Step-by-Step
 
-Using `RunnableParallel` can easily run multiple Runnables in parallel and return a map of their outputs.
+Using ```RunnableParallel``` can easily run multiple Runnables in parallel and return a map of their outputs.
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate
@@ -314,9 +314,9 @@ map_chain2.invoke({"country1": "Republic of Korea", "country2": "United States"}
 
 ## Parallel Processing
 
-`RunnableParallel` is particularly useful for running independent processes in parallel because each Runnable in the map is executed concurrently.
+```RunnableParallel``` is particularly useful for running independent processes in parallel because each Runnable in the map is executed concurrently.
 
-For example, you can see that `area_chain`, `capital_chain`, and `map_chain` take almost the same execution time, even though `map_chain` runs the other two chains in parallel.
+For example, you can see that ```area_chain```, ```capital_chain```, and ```map_chain``` take almost the same execution time, even though ```map_chain``` runs the other two chains in parallel.
 
 ```python
 %%timeit

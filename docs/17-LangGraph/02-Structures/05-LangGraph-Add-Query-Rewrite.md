@@ -22,11 +22,10 @@ pre {
 - Author: [Sunworl Kim](https://github.com/sunworl)
 - Design: [LeeYuChul](https://github.com/LeeYuChul)
 - Peer Review:
-- Proofread:
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/langchain-ai/langchain-academy/blob/main/module-4/sub-graph.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/05-LangGraph-Add-Query-Rewrite.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/05-LangGraph-Add-Query-Rewrite.ipynb)
 ## Overview
 
 In this tutorial, we will cover the process of restructuring the original question by incorporating a **Query Rewrite** step. When a user's question is received, it enables more effective searching. While using Naive RAG as a foundation, this process aims for us to add supplementary mechanisms through query rewriting and web search. The procedure is as follows:
@@ -66,9 +65,9 @@ As this builds upon a previous tutorial, there may be overlapping content. For a
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -94,7 +93,7 @@ package.install(
 )
 ```
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -140,17 +139,17 @@ pdf_retriever = pdf.retriever
 pdf_chain = pdf.chain
 ```
 
-## Defining `GraphState`
+## Defining ```GraphState```
 
-The `GraphState` object defines the shared state between nodes in the Langgraph.
+The ```GraphState``` object defines the shared state between nodes in the Langgraph.
 
-Generally, using a `TypedDict` is to ensure type safety and maintain a clear structure for the graph's state management.
+Generally, using a ```TypedDict``` is to ensure type safety and maintain a clear structure for the graph's state management.
 
 In this case, we'll add a field for relevance check results to the state.
 
 **[Note]**
 
-Here, we define `question` as a list to accomodate the rewritten queries that are additionally stored.
+Here, we define ```question``` as a list to accomodate the rewritten queries that are additionally stored.
 
 ```python
 from typing import Annotated, TypedDict
@@ -168,11 +167,11 @@ class GraphState(TypedDict):
 
 ## Defining Nodes
 
-**Nodes** represent individual processing steps. They are typically implemented as Python functions. Both input and output are `state` values.
+**Nodes** represent individual processing steps. They are typically implemented as Python functions. Both input and output are ```state``` values.
 
 **[Note]**
 
-Each Node takes a `state` as input, performs its designated logic, and returns an updated `state`.
+Each Node takes a ```state``` as input, performs its designated logic, and returns an updated ```state```.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -324,7 +323,7 @@ question_rewriter = (
 )
 ```
 
-This node utilizes a `question_rewriter` function to rewrite the question.
+This node utilizes a ```question_rewriter``` function to rewrite the question.
 
 ```python
 # Query Rewriting
@@ -350,7 +349,7 @@ def query_rewrite(state: GraphState) -> GraphState:
 
 ## Defining Edges
 
-**Edges** determine the next **Node** to execute based on the current `state`.
+**Edges** determine the next **Node** to execute based on the current ```state```.
 
 There are different types such as regular edges and conditional edges.
 
@@ -413,14 +412,14 @@ visualize_graph(app)
 
 ## Running Graph
 
-- `config` parameter: Passes configuration settings required for running the graph.
+- ```config``` parameter: Passes configuration settings required for running the graph.
 
-- `recursion_limit`: Sets a limit on the number of recursions when running the graph.
+- ```recursion_limit```: Sets a limit on the number of recursions when running the graph.
 
-- `inputs`: Passes the input information required for running the graph.
+- ```inputs```: Passes the input information required for running the graph.
 
 
-If the `relevance_check` of the initial search results fails, it performs web search and provides web search results.
+If the ```relevance_check``` of the initial search results fails, it performs web search and provides web search results.
 
 ```python
 from langchain_core.runnables import RunnableConfig

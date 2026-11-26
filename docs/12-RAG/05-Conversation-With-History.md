@@ -22,11 +22,10 @@ pre {
 - Author: [Sunworl Kim](https://github.com/sunworl)
 - Design:
 - Peer Review: [Yun Eun](https://github.com/yuneun92)
-- Proofread:
+- Proofread : [Yun Eun](https://github.com/yuneun92)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/05-Conversation-With-History.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/05-Conversation-With-History.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/05-Conversation-With-History.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/05-Conversation-With-History.ipynb)
 ## Overview
 
 This tutorial provides a comprehensive guide to implementing **conversational AI systems** with memory capabilities using LangChain in two main approaches.
@@ -69,8 +68,8 @@ This tutorial provides a comprehensive guide to implementing **conversational AI
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -113,7 +112,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -137,15 +136,15 @@ Background knowledge needed to understand this content : [RunnableWithMessageHis
 
 ### 1. Adding Chat History to the Core Chain
 
-- Implement `MessagesPlaceholder` to incorporate conversation history
+- Implement ```MessagesPlaceholder``` to incorporate conversation history
 
 - Define a prompt template that handles user input queries
 
-- Initialize a `ChatOpenAI` instance configured to use the **ChatGPT** model
+- Initialize a ```ChatOpenAI``` instance configured to use the **ChatGPT** model
 
 - Construct a chain by connecting the prompt template, language model, and output parser
 
-- Implement `StrOutputParser` to format the model's response as a string
+- Implement ```StrOutputParser``` to format the model's response as a string
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -179,9 +178,9 @@ Creating a Chain with Conversation History (```chain_with_history```)
 
 - Initialize a dictionary to store conversation session records
 
-- Create the function `get_session_history` that retrieves chat history by session ID and creates a new `ChatMessageHistory` instance if none exists
+- Create the function ```get_session_history``` that retrieves chat history by session ID and creates a new ```ChatMessageHistory``` instance if none exists
 
-- Instantiate a `RunnableWithMessageHistory` object to handle persistent conversation history
+- Instantiate a ```RunnableWithMessageHistory``` object to handle persistent conversation history
 
 
 ```python
@@ -256,21 +255,21 @@ chain_with_history.invoke(
 
 Build a PDF-based Question Answering system that incorporates conversational context.
 
-Create a standard RAG Chain, ensuring to include `{chat_history}` in the prompt template at step 6.
+Create a standard RAG Chain, ensuring to include ```{chat_history}``` in the prompt template at step 6.
 
-- (step 1) Load PDF documents using `PDFPlumberLoader`
+- (step 1) Load PDF documents using ```PDFPlumberLoader```
 
-- (step 2) Segment documents into manageable chunks with `RecursiveCharacterTextSplitter`
+- (step 2) Segment documents into manageable chunks with ```RecursiveCharacterTextSplitter```
 
-- (step 3) Create vector embeddings of text chunks using `OpenAIEmbeddings`
+- (step 3) Create vector embeddings of text chunks using ```OpenAIEmbeddings```
 
-- (step 4) Index and store embeddings in a `FAISS` vector database
+- (step 4) Index and store embeddings in a ```FAISS``` vector database
 
-- (step 5) Implement a `retriever` to query relevant information from the vector database
+- (step 5) Implement a ```retriever``` to query relevant information from the vector database
 
 - (step 6) Design a QA prompt template that incorporates **conversation history** , user queries, and retrieved context with response instructions
 
-- (step 7) Initialize a `ChatOpenAI` instance configured to use the `GPT-4o` model
+- (step 7) Initialize a ```ChatOpenAI``` instance configured to use the ```GPT-4o``` model
 
 - (step 8) Build the complete chain by connecting the retriever, prompt template, and language model
 
@@ -332,9 +331,9 @@ chain = (
 
 **Implementing Conversation History Management**
 
-- Initialize the `store` dictionary to maintain conversation histories indexed by session IDs, and create the `get_session_history` function to retrieve or create session records
+- Initialize the ```store``` dictionary to maintain conversation histories indexed by session IDs, and create the ```get_session_history``` function to retrieve or create session records
 
-- Create a `RunnableWithMessageHistory` instance to enhance the RAG chain with conversation tracking capabilities, handling both user queries and historical context
+- Create a ```RunnableWithMessageHistory``` instance to enhance the RAG chain with conversation tracking capabilities, handling both user queries and historical context
 
 ```python
 # Dictionary for storing session records

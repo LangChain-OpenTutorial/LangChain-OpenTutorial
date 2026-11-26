@@ -20,12 +20,11 @@ pre {
 # Multi-Agent Supervisor
 
 - Author: [Sungchul Kim](https://github.com/rlatjcj)
-- Design:
 - Peer Review:
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/07-LangGraph-Multi-Agent-Supervisor.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/07-LangGraph-Multi-Agent-Supervisor.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/07-LangGraph-Multi-Agent-Supervisor.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/07-LangGraph-Multi-Agent-Supervisor.ipynb)
 ## Overview
 
 In the previous tutorial, we showed how to automatically route messages based on the output of the initial Researcher agent.
@@ -77,8 +76,8 @@ This use of "advanced agents" is meant to demonstrate specific design patterns i
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -123,7 +122,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -167,8 +166,8 @@ In this example, we'll create agents that use a search engine to perform web res
 
 Define the tools to be used below.
 
-- **Research** : Use `TavilySearch` tool to perform web research. To use this tool, you need to set the `TAVILY_API_KEY` . Please refer to [previous tutorial](https://langchain-opentutorial.gitbook.io/langchain-opentutorial/15-agent/01-tools#search-api-tooltavily) for more details.
-- **Coder** : Use `PythonREPLTool` tool to run code.
+- **Research** : Use ```TavilySearch``` tool to perform web research. To use this tool, you need to set the ```TAVILY_API_KEY``` . Please refer to [previous tutorial](https://langchain-opentutorial.gitbook.io/langchain-opentutorial/15-agent/01-tools#search-api-tooltavily) for more details.
+- **Coder** : Use ```PythonREPLTool``` tool to run code.
 
 ```python
 from langchain_community.tools.tavily_search import TavilySearchResults
@@ -190,9 +189,9 @@ When building a multi-agent system using LangGraph, **helper functions** play a 
 - **Managing Workflow** : Provide utilities to manage the workflow between agents
 - **Error Handling** : Include mechanisms to handle errors that may occur during agent execution
 
-The following is an example of defining a function called `agent_node` .
+The following is an example of defining a function called ```agent_node``` .
 
-This function creates an agent node using the given state and agent. We will call this function later using `functools.partial` .
+This function creates an agent node using the given state and agent. We will call this function later using ```functools.partial``` .
 
 ```python
 from langchain_core.messages import HumanMessage
@@ -210,7 +209,7 @@ def agent_node(state, agent, name):
     }
 ```
 
-Below is an example of creating a `research_node` using `functools.partial` .
+Below is an example of creating a ```research_node``` using ```functools.partial``` .
 
 ```python
 import functools
@@ -229,9 +228,9 @@ research_node = functools.partial(agent_node, agent=research_agent, name="Resear
 
 > **Note**
 >
-> Role of `functools.partial`
+> Role of ```functools.partial```
 >
-> `functools.partial` is used to create a new function by fixing some arguments or keyword arguments of an existing function. In other words, it helps simplify commonly used function call patterns.
+> ```functools.partial``` is used to create a new function by fixing some arguments or keyword arguments of an existing function. In other words, it helps simplify commonly used function call patterns.
 >
 > **Roles**
 >
@@ -244,11 +243,11 @@ research_node = functools.partial(agent_node, agent=research_agent, name="Resear
 > research_node = functools.partial(agent_node, agent=research_agent, names="Researcher")
 > ```
 >
-> 1. Assume there is an existing function called `agent_node` .
+> 1. Assume there is an existing function called ```agent_node``` .
 >    - This function can accept multiple arguments and keyword arguments.
 >
-> 2. `functools.partial` fixes the values `agent=research_agent` and `names="Researcher"` for this function.
->    - This means that `research_node` no longer needs to specify the `agent` and `names` values when calling `agent_node` .
+> 2. ```functools.partial``` fixes the values ```agent=research_agent``` and ```names="Researcher"``` for this function.
+>    - This means that ```research_node``` no longer needs to specify the ```agent``` and ```names``` values when calling ```agent_node``` .
 >    - For example:
 >     ```python
 >     agent_node(state, agent=research_agent, names="Researcher")
@@ -338,7 +337,7 @@ def supervisor_agent(state):
 
 ## Constructing the Graph
 
-Now, we're ready to build the graph. Below, we'll use the functions we just defined to define `state` and `worker` nodes.
+Now, we're ready to build the graph. Below, we'll use the functions we just defined to define ```state``` and ```worker``` nodes.
 
 ```python
 import functools

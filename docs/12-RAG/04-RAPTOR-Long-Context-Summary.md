@@ -20,12 +20,11 @@ pre {
 # RAPTOR: Recursive Abstractive Processing for Tree-Organized Retrieval
 
 - Author: [Yoonji Oh](https://github.com/samdaseuss)
-- Design: 
 - Peer Review: 
+- Proofread : [Yun Eun](https://github.com/yuneun92)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/04-RAPTOR-Long-Context-Summary.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/04-RAPTOR-Long-Context-Summary.ipynb)
 ## Overview
 
 ### Welcome to the RAPTOR Tutorial!
@@ -58,8 +57,8 @@ This tutorial is inspired by the paper "RAPTOR: Recursive Abstractive Processing
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -103,7 +102,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -123,7 +122,7 @@ load_dotenv(override=True)
 
 ## Installation
 
-To proceed with this tutorial, you'll need to install the following packages: `langchain`, `umap-learn`, `scikit-learn`, `langchain_community`, `tiktoken`, `langchain-openai`, `langchainhub`, `chromadb`, `langchain-anthropic` and `matplotlib`. You can install them all at once using the command below:
+To proceed with this tutorial, you'll need to install the following packages: ```langchain```, ```umap-learn```, ```scikit-learn```, ```langchain_community```, ```tiktoken```, ```langchain-openai```, ```langchainhub```, ```chromadb```, ```langchain-anthropic``` and ```matplotlib```. You can install them all at once using the command below:
 
 ```python
 %pip install -qU langchain umap-learn scikit-learn langchain_community tiktoken langchain-openai langchainhub chromadb langchain-anthropic matplotlib 
@@ -135,7 +134,7 @@ To proceed with this tutorial, you'll need to install the following packages: `l
 
 2. **umap-learn** ([Github](https://github.com/lmcinnes/umap)) - Uniform Manifold Approximation and Projection (UMAP) is a dimensionality reduction technique that can be used for visualization, similar to t-SNE, but also for general non-linear dimensionality reduction. UMAP depends on scikit-learn and its dependencies like numpy and scipy. UMAP also requires numba for performance reasons.
 
-3. **scikit-learn** ([Github](https://github.com/scikit-learn/scikit-learn)) - scikit-learn is a Python module for machine learning built on top of SciPy and distributed under the 3-Clause BSD license. If you want to use the `umap-learn` library, this module is highly recommended.
+3. **scikit-learn** ([Github](https://github.com/scikit-learn/scikit-learn)) - scikit-learn is a Python module for machine learning built on top of SciPy and distributed under the 3-Clause BSD license. If you want to use the ```umap-learn``` library, this module is highly recommended.
 
 4. **langchain_community** - An extension package provided by the LangChain community, including tools and resources created by the community.
 
@@ -180,16 +179,16 @@ The context sizes range from fewer than 2,000 tokens to over 10,000 tokens.
 The process describes extracting text data from web documents and calculating the token count of the text, which is visualized in a histogram.
 
 1. **Token Counting**:  
-   - Use the `tiktoken` library to calculate the number of tokens in a string based on a given encoding name.
+   - Use the ```tiktoken``` library to calculate the number of tokens in a string based on a given encoding name.
 2. **Recursive URL Loading**:  
-   - Use the `RecursiveUrlLoader` class to recursively load web documents from specified URLs.  
+   - Use the ```RecursiveUrlLoader``` class to recursively load web documents from specified URLs.  
    - Extract text from HTML documents using BeautifulSoup during this process.
 3. **Aggregating Text Data**:  
    - Load documents from multiple URLs and combine all text data into a single list.
 4. **Token Calculation**:  
-   - Call the `num_tokens_from_string` function for each document text to calculate the number of tokens, then store the results in a list.
+   - Call the ```num_tokens_from_string``` function for each document text to calculate the number of tokens, then store the results in a list.
 5. **Histogram Visualization**:  
-   - Use `matplotlib` to visualize the distribution of token counts in a histogram.  
+   - Use ```matplotlib``` to visualize the distribution of token counts in a histogram.  
    - The histogram plots token counts on the x-axis and the frequency of documents with that token count on the y-axis.
 
 A histogram helps to understand the distribution of data, especially for visually identifying the length distribution of the text data.
@@ -276,10 +275,10 @@ plt.show
 
 Explaining the Process of Sorting, Concatenating Document Text, and Calculating Token Count
 
-- The documents (`docs`) are sorted based on the value of the "source" key in their metadata.
+- The documents (```docs```) are sorted based on the value of the "source" key in their metadata.
 - The sorted list of documents is then reversed.
-- The text content of the reversed documents is concatenated using a specific delimiter (`"\n\n\n --- \n\n\n"`).
-- The number of tokens in the concatenated text is calculated using the `num_tokens_from_string` function and printed. The "cl100k_base" model is used for tokenization.
+- The text content of the reversed documents is concatenated using a specific delimiter (```"\n\n\n --- \n\n\n"```).
+- The number of tokens in the concatenated text is calculated using the ```num_tokens_from_string``` function and printed. The "cl100k_base" model is used for tokenization.
 
 ```python
 # Concatenating Document Text
@@ -302,11 +301,11 @@ print(
 <pre class="custom">Num tokens in all context: 9282
 </pre>
 
-Explaining the Process of Splitting Text Using `RecursiveCharacterTextSplitter`
+Explaining the Process of Splitting Text Using ```RecursiveCharacterTextSplitter```
 
-- Set the `chunk_size_tok` variable to specify the size of each text chunk as 2000 tokens.
-- Initialize the text splitter using the `from_tiktoken_encoder` method of `RecursiveCharacterTextSplitter`. Set the `chunk_size` to 2000 and the `chunk_overlap` to 0 to ensure there is no overlap between chunks.
-- Call the `split_text` method of the initialized text splitter to split the concatenated text stored in the `concatenated_content` variable. The split results are stored in the `texts_split` variable.
+- Set the ```chunk_size_tok``` variable to specify the size of each text chunk as 2000 tokens.
+- Initialize the text splitter using the ```from_tiktoken_encoder``` method of ```RecursiveCharacterTextSplitter```. Set the ```chunk_size``` to 2000 and the ```chunk_overlap``` to 0 to ensure there is no overlap between chunks.
+- Call the ```split_text``` method of the initialized text splitter to split the concatenated text stored in the ```concatenated_content``` variable. The split results are stored in the ```texts_split``` variable.
 
 ```python
 # Code for Text Splitting
@@ -327,12 +326,12 @@ texts_split = text_splitter.split_text(
 Various models can be tested, including the new Claude3 series.
 
 Don’t forget to set the relevant API keys:
-- `OPENAI_API_KEY` for OpenAI and `ANTHROPIC_API_KEY` for Anthropic if using their services.
+- ```OPENAI_API_KEY``` for OpenAI and ```ANTHROPIC_API_KEY``` for Anthropic if using their services.
 
-Implement a chatbot model using `ChatOpenAI` or `ChatAnthropic` with `OpenAIEmbeddings`.
+Implement a chatbot model using ```ChatOpenAI``` or ```ChatAnthropic``` with ```OpenAIEmbeddings```.
 
-- Instantiate `OpenAIEmbeddings` to initialize OpenAI's embedding functionality.
-- Use `ChatOpenAI` or `ChatAnthropic` to initialize the chatbot model, setting the temperature to 0.
+- Instantiate ```OpenAIEmbeddings``` to initialize OpenAI's embedding functionality.
+- Use ```ChatOpenAI``` or ```ChatAnthropic``` to initialize the chatbot model, setting the temperature to 0.
 
 ```python
 from dotenv import load_dotenv
@@ -347,7 +346,7 @@ load_dotenv()
 
 
 
-The following code illustrates how to set up `Cache Embedding` using `LangChain`. It prevents redundant embedding calculations for identical inputs by storing and reusing cached values.
+The following code illustrates how to set up ```Cache Embedding``` using ```LangChain```. It prevents redundant embedding calculations for identical inputs by storing and reusing cached values.
 
 ```python
 from langchain_openai import OpenAIEmbeddings
@@ -446,11 +445,11 @@ The code for GMM and thresholding is credited to Sarthi et al., as mentioned in 
 
 Full credit is given to both authors.
 
-The `global_cluster_embeddings` function uses UMAP for global dimensionality reduction of embeddings.
+The ```global_cluster_embeddings``` function uses UMAP for global dimensionality reduction of embeddings.
 
-- Reduces the dimensionality of the input embeddings to the specified dimension (`dim`) using UMAP.
-- `n_neighbors` specifies the number of neighbors to consider for each point and defaults to the square root of the number of embeddings if not provided.
-- `metric` specifies the distance metric to be used by UMAP.
+- Reduces the dimensionality of the input embeddings to the specified dimension (```dim```) using UMAP.
+- ```n_neighbors``` specifies the number of neighbors to consider for each point and defaults to the square root of the number of embeddings if not provided.
+- ```metric``` specifies the distance metric to be used by UMAP.
 - The result is a numpy array of embeddings reduced to the specified dimensions.
 
 ```python
@@ -494,10 +493,10 @@ def global_cluster_embeddings(
     ).fit_transform(embeddings)
 ```
 
-The function `local_cluster_embeddings` is implemented to perform local dimensionality reduction on embedding data.
+The function ```local_cluster_embeddings``` is implemented to perform local dimensionality reduction on embedding data.
 
-- The input embeddings (`embeddings`) are reduced to the specified dimension (`dim`) using UMAP.
-- During the dimensionality reduction process, the number of neighbors to consider for each point (`num_neighbors`) and the distance metric (`metric`) are used as parameters.
+- The input embeddings (```embeddings```) are reduced to the specified dimension (```dim```) using UMAP.
+- During the dimensionality reduction process, the number of neighbors to consider for each point (```num_neighbors```) and the distance metric (```metric```) are used as parameters.
 - Finally, the reduced embeddings are returned as a numpy array.
 
 ```python
@@ -523,11 +522,11 @@ def local_cluster_embeddings(
 
 ```
 
-The `get_optimal_clusters` function is used to determine the optimal number of clusters based on the given embedding data. This is achieved by calculating the Bayesian Information Criterion (BIC) using the Gaussian Mixture Model (GMM).
+The ```get_optimal_clusters``` function is used to determine the optimal number of clusters based on the given embedding data. This is achieved by calculating the Bayesian Information Criterion (BIC) using the Gaussian Mixture Model (GMM).
 
 - The input embeddings are provided as a numpy array.
-- The maximum number of clusters (`max_clusters`) specifies the upper limit for the number of clusters to consider. The default value is 50.
-- A fixed `random_state` is used to ensure reproducibility.
+- The maximum number of clusters (```max_clusters```) specifies the upper limit for the number of clusters to consider. The default value is 50.
+- A fixed ```random_state``` is used to ensure reproducibility.
 - The function iterates through multiple cluster numbers for the input embeddings and calculates the BIC value for each.
 - The number of clusters with the lowest BIC value is determined to be the optimal number of clusters and is returned.
   
@@ -564,12 +563,12 @@ def get_optimal_clusters(
 
 ```
 
-The `GMM_cluster` function performs clustering on embeddings using a Gaussian Mixture Model (GMM). This process is based on a probability threshold.
+The ```GMM_cluster``` function performs clustering on embeddings using a Gaussian Mixture Model (GMM). This process is based on a probability threshold.
 
 - The input embeddings are provided as a numpy array.
-- The `threshold` parameter specifies the probability threshold for assigning embeddings to specific clusters.
-- `random_state` is used to ensure reproducibility of the results.
-- The `get_optimal_clusters` function is called to determine the optimal number of clusters.
+- The ```threshold``` parameter specifies the probability threshold for assigning embeddings to specific clusters.
+- ```random_state``` is used to ensure reproducibility of the results.
+- The ```get_optimal_clusters``` function is called to determine the optimal number of clusters.
 - Based on the determined number of clusters, a Gaussian Mixture Model is initialized and trained on the input embeddings.
 - Cluster assignment probabilities are calculated for each embedding, and embeddings are assigned to clusters if their probability exceeds the given threshold.
 - The function returns a tuple containing the cluster labels for the embeddings and the determined number of clusters.
@@ -601,10 +600,10 @@ def GMM_cluster(embeddings: np.ndarray, threshold: float, random_state: int = 0)
 
 ```
 
-The `perform_clustering` function performs dimensionality reduction, global clustering using a Gaussian Mixture Model (GMM), and local clustering within each global cluster to return clustering results.
+The ```perform_clustering``` function performs dimensionality reduction, global clustering using a Gaussian Mixture Model (GMM), and local clustering within each global cluster to return clustering results.
 
-- **Dimensionality Reduction**: The input embeddings are reduced to a specified dimension (`dim`) using UMAP. This step prepares the embeddings for further clustering processes.
-- **Global Clustering**: Global clustering is performed on the reduced embeddings using a Gaussian Mixture Model (GMM). Cluster assignments are determined based on a specified probability threshold (`threshold`).
+- **Dimensionality Reduction**: The input embeddings are reduced to a specified dimension (```dim```) using UMAP. This step prepares the embeddings for further clustering processes.
+- **Global Clustering**: Global clustering is performed on the reduced embeddings using a Gaussian Mixture Model (GMM). Cluster assignments are determined based on a specified probability threshold (```threshold```).
 - **Local Clustering**: Additional local clustering is performed within each global cluster. This involves applying dimensionality reduction and GMM clustering to embeddings that belong to each global cluster, based on the results of the global clustering.
 - **Final Output**: The function assigns global and local cluster IDs to all embeddings and returns a list of cluster IDs. This list contains the cluster assignments for each embedding in the order they appear.
 
@@ -683,11 +682,11 @@ def perform_clustering(
 
 ```
 
-Implement the function `embed` to generate embeddings for a list of text documents.
+Implement the function ```embed``` to generate embeddings for a list of text documents.
 
-- Takes a list of text documents (`texts`) as input.
-- Uses the `embed_documents` method of the `embd` object to generate embeddings for the text documents.
-- Converts the generated embeddings into a `numpy.ndarray` format and returns it.
+- Takes a list of text documents (```texts```) as input.
+- Uses the ```embed_documents``` method of the ```embd``` object to generate embeddings for the text documents.
+- Converts the generated embeddings into a ```numpy.ndarray``` format and returns it.
 
 ```python
 def embed(texts):
@@ -710,11 +709,11 @@ def embed(texts):
 
 ```
 
-The `embed_cluster_texts` function embeds and clusters a list of texts, returning a `pandas.DataFrame` containing the original texts, their embeddings, and assigned cluster labels.
+The ```embed_cluster_texts``` function embeds and clusters a list of texts, returning a ```pandas.DataFrame``` containing the original texts, their embeddings, and assigned cluster labels.
 
 - Generates embeddings for the given list of texts.
-- Performs clustering based on the generated embeddings using the predefined `perform_clustering` function.
-- Initializes a `pandas.DataFrame` to store the results.
+- Performs clustering based on the generated embeddings using the predefined ```perform_clustering``` function.
+- Initializes a ```pandas.DataFrame``` to store the results.
 - Stores the original texts, embedding lists, and cluster labels in the DataFrame.
 
 This function combines the embedding generation and clustering of text data into a single step, facilitating the structural analysis and grouping of text data.
@@ -748,10 +747,10 @@ def embed_cluster_texts(texts):
 
 ```
 
-The `fmt_txt` function formats text documents from a pandas DataFrame into a single string.
+The ```fmt_txt``` function formats text documents from a pandas DataFrame into a single string.
 
-- The input parameter is a DataFrame that must contain a `'text'` column with the text documents to be formatted.
-- All text documents are concatenated into a single string using a specific delimiter (`"--- --- \n --- ---"`).
+- The input parameter is a DataFrame that must contain a ```'text'``` column with the text documents to be formatted.
+- All text documents are concatenated into a single string using a specific delimiter (```"--- --- \n --- ---"```).
 - The function returns a single string containing the concatenated text documents.
 
 ```python
@@ -773,9 +772,9 @@ def fmt_txt(df: pd.DataFrame) -> str:
 
 The process involves embedding text data, clustering it, and generating summaries for each cluster.
 
-- **Embedding and Clustering**: The given list of texts is embedded, and clustering based on similarity is performed. The result is stored in the `df_clusters` DataFrame, which contains the original texts, embeddings, and cluster assignment information.
+- **Embedding and Clustering**: The given list of texts is embedded, and clustering based on similarity is performed. The result is stored in the ```df_clusters``` DataFrame, which contains the original texts, embeddings, and cluster assignment information.
 - **Expanding the DataFrame**: To simplify cluster assignment handling, the DataFrame entries are expanded. Each row is transformed into a new DataFrame containing the text, embedding, and cluster assignment.
-- **Formatting and Summarizing**: Unique cluster identifiers are extracted from the expanded DataFrame. Texts for each cluster are formatted, and summaries are generated. These summaries are stored in the `df_summary` DataFrame, which includes the summary for each cluster, a specified level of detail, and the cluster identifier.
+- **Formatting and Summarizing**: Unique cluster identifiers are extracted from the expanded DataFrame. Texts for each cluster are formatted, and summaries are generated. These summaries are stored in the ```df_summary``` DataFrame, which includes the summary for each cluster, a specified level of detail, and the cluster identifier.
 - **Return Value**: The function returns a tuple containing two DataFrames:
   1. The first DataFrame includes the original texts, embeddings, and cluster assignments.
   2. The second DataFrame contains the summaries for each cluster, their detail level, and cluster identifiers.
@@ -959,15 +958,15 @@ Below is a simplified explanation of this process.
 
 The process of building a vectorized and searchable Chroma vector store using text data is described as follows:
 
-1. The text data stored in `leaf_texts` is initially copied to the `all_texts` variable.
-2. The result data (`results`) is iterated through, extracting the summarized texts at each level and appending them to `all_texts`.
-3. The `summaries` column from the DataFrame at each level is converted into a list and extracted.
-4. The extracted summaries are added to `all_texts`.
-5. Using all the text data (`all_texts`), a Chroma vector store is constructed.
-6. The `Chroma.from_texts` function is called to vectorize the text data and create the vector store.
-7. To make the generated vector store searchable, the `.as_retriever()` method is used to initialize a retriever.
+1. The text data stored in ```leaf_texts``` is initially copied to the ```all_texts``` variable.
+2. The result data (```results```) is iterated through, extracting the summarized texts at each level and appending them to ```all_texts```.
+3. The ```summaries``` column from the DataFrame at each level is converted into a list and extracted.
+4. The extracted summaries are added to ```all_texts```.
+5. Using all the text data (```all_texts```), a Chroma vector store is constructed.
+6. The ```Chroma.from_texts``` function is called to vectorize the text data and create the vector store.
+7. To make the generated vector store searchable, the ```.as_retriever()``` method is used to initialize a retriever.
 
-Through this process, text data, including summaries from various levels, is vectorized and used to build a searchable `Chroma` vector store.
+Through this process, text data, including summaries from various levels, is vectorized and used to build a searchable ```Chroma``` vector store.
 
 ```python
 from langchain_community.vectorstores import FAISS
@@ -1004,7 +1003,7 @@ else:
 
 [NOTE]
 
-The following error may occur when using `FAISS.load_local` :
+The following error may occur when using ```FAISS.load_local``` :
 
 ```bash
 
@@ -1016,7 +1015,7 @@ ValueError: The de-serialization relies on loading a pickle file. Pickle files c
 The FAISS.load_local method uses pickle files for deserialization, which can pose a security risk. Pickle files may execute malicious code if tampered with, so deserialization is disabled by default unless explicitly enabled.
 
 #### How to Fix the Error
-If you trust the source of the pickle file, you can safely enable deserialization by setting `allow_dangerous_deserialization=True` :
+If you trust the source of the pickle file, you can safely enable deserialization by setting ```allow_dangerous_deserialization=True``` :
 
 ```
 local_index = FAISS.load_local(
@@ -1028,7 +1027,7 @@ local_index = FAISS.load_local(
 
 [Warning]
 
-- Only enable `allow_dangerous_deserialization=True` if:
+- Only enable ```allow_dangerous_deserialization=True``` if:
   1. The pickle file was created by you.
   2. You are certain that the file has not been tampered with by others.
 - **Do not enable this for files from untrusted or unknown sources.** 
@@ -1040,12 +1039,12 @@ retriever = vectorstore.as_retriever()
 
 Implement the process of defining a Retrieval Augmented Generation (RAG) chain and handling a specific code example request.
 
-- Use `hub.pull` to fetch the RAG prompt.
-- Define the `format_docs` function for document formatting. This function concatenates the page content of documents and returns it.
-- Construct the RAG chain. This chain retrieves context from the retriever, formats it using the `format_docs` function, and processes the question.
-- Use `RunnablePassthrough()` to pass the question directly through.
-- The chain parses the final output into a string using the prompt, model, and `StrOutputParser()`.
-- Use the `rag_chain.invoke` method to process the question: "How to define a RAG chain? Give me a specific code example."
+- Use ```hub.pull``` to fetch the RAG prompt.
+- Define the ```format_docs``` function for document formatting. This function concatenates the page content of documents and returns it.
+- Construct the RAG chain. This chain retrieves context from the retriever, formats it using the ```format_docs``` function, and processes the question.
+- Use ```RunnablePassthrough()``` to pass the question directly through.
+- The chain parses the final output into a string using the prompt, model, and ```StrOutputParser()```.
+- Use the ```rag_chain.invoke``` method to process the question: "How to define a RAG chain? Give me a specific code example."
 
 ```python
 from langchain import hub

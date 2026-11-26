@@ -22,10 +22,10 @@ pre {
 - Author: [Youngjun cho](https://github.com/choincnp)
 - Design: [LeeYuChul](https://github.com/LeeYuChul)
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/02-LangGraph-Naive-RAG.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/02-LangGraph-Naive-RAG.ipynb)
 ## Overview
 
 In this chapter, Section 02(Naive-RAG) through Section 05(Add-Query-Rewrite) is not an independent section, but cover one topic.
@@ -56,7 +56,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -82,9 +82,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -105,7 +105,7 @@ if not load_dotenv():
 
 ## Procedure
 
-Perform `Naive RAG`, the basic RAG system which has 2 progress, **Retrieve** and **Generate** .
+Perform ```Naive RAG```, the basic RAG system which has 2 progress, **Retrieve** and **Generate** .
 
 You can see the structure in the image below.
 
@@ -115,7 +115,7 @@ You can see the structure in the image below.
 
 This section creates a Retrieval Chain based on a **PDF document** . It is the simplest structure of a Retrieval Chain.
 
-In `LangGraph` , Retrievers and Chains are created separately. This allows detailed processing for each node.
+In ```LangGraph``` , Retrievers and Chains are created separately. This allows detailed processing for each node.
 
 ```python
 
@@ -132,9 +132,9 @@ pdf_retriever = pdf.retriever
 pdf_chain = pdf.chain
 ```
 
-First, use the `pdf_retriever` to fetch search results.
+First, use the ```pdf_retriever``` to fetch search results.
 
-You can control the quantity to retrieve, by changing `self_k` argument in `pdf.py` file.
+You can control the quantity to retrieve, by changing ```self_k``` argument in ```pdf.py``` file.
 
 ```python
 search_result = pdf_retriever.invoke(
@@ -181,9 +181,9 @@ print(answer)
 
 ## Defining State
 
-`State` defines the **shared state** among the nodes and another nodes.
+```State``` defines the **shared state** among the nodes and another nodes.
 
-Typically, the `TypedDict` format is used.
+Typically, the ```TypedDict``` format is used.
 
 ```python
 from typing import Annotated, TypedDict
@@ -199,10 +199,10 @@ class GraphState(TypedDict):
 
 ## Defining Nodes
 
-`Nodes` : These are nodes that handle each stage, typically implemented as Python functions. Inputs and outputs are the State values.
+```Nodes``` : These are nodes that handle each stage, typically implemented as Python functions. Inputs and outputs are the State values.
 
 [ **Note** ]  
-- A `State` is taken as input, performs the defined logic, and returns an **updated** `State` .
+- A ```State``` is taken as input, performs the defined logic, and returns an **updated** ```State``` .
 
 ```python
 from rag.utils import format_docs
@@ -249,7 +249,7 @@ def llm_answer(state: GraphState) -> GraphState:
 
 ## Creating the Graph
 
-`Edges` : Python functions that determine the next `Node` to execute based on the **current** `State` .
+```Edges``` : Python functions that determine the next ```Node``` to execute based on the **current** ```State``` .
 
 There can be general edges and conditional edges.
 
@@ -294,11 +294,11 @@ visualize_graph(app)
 
 ## Executing the Graph
 
-- The `config` parameter provides configuration informations necessary for graph execution.
-- `recursion_limit` : Sets the maximum recursion depth for graph execution.
-- `inputs` : Provides the input data for the graph execution.
+- The ```config``` parameter provides configuration informations necessary for graph execution.
+- ```recursion_limit``` : Sets the maximum recursion depth for graph execution.
+- ```inputs``` : Provides the input data for the graph execution.
 
-The `stream_graph` function below streams only specific nodes.
+The ```stream_graph``` function below streams only specific nodes.
 
 You can easily check the **streaming output** of a **specific node** .
 

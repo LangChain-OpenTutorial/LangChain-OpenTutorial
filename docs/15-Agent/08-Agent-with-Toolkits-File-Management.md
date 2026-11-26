@@ -20,12 +20,11 @@ pre {
 # Agent-with-Toolkits-File-Management
 
 - Author: [Secludor](https://github.com/Secludor)
-- Design: 
 - Peer Review: 
+- Proofread : [BokyungisaGod](https://github.com/BokyungisaGod)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/08-Agent-with-Toolkits-File-Management.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/08-Agent-with-Toolkits-File-Management.ipynb)
 ## Overview
 
 When configuring an agent using LangChain, one of the biggest advantages is **the integration of various features through third-party tools**.
@@ -55,8 +54,8 @@ In this tutorial, we will learn how to manage local files using the **FileManage
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -118,8 +117,8 @@ The **GoogleNews** class is the utility for fetching and parsing news from Googl
     - Returns structured data in a consistent format (URL and content)
 
 - **Main Methods**
-    - `search_latest()`: Retrieves the most recent news articles
-    - `search_by_keyword()`: Searches news based on specific keywords
+    - ```search_latest()```: Retrieves the most recent news articles
+    - ```search_by_keyword()```: Searches news based on specific keywords
 
 **Usage Example**
 
@@ -399,27 +398,27 @@ class AgentStreamParser:
 
 ### Security Considerations
 When using **FileManagementToolkit**, implement these security measures:
-- Limit directory access using `root_dir`
+- Limit directory access using ```root_dir```
 - Configure filesystem permissions
-- Use `selected_tools` to restrict available operations
+- Use ```selected_tools``` to restrict available operations
 - Run agents in sandboxed environments
 
 ### Main Components
 **File Management Tools**
-- `CopyFileTool` : Create a copy of a file in a specified location.
-- `DeleteFileTool` : Delete a file.
-- `FileSearchTool` : Recursively search for files in a subdirectory that match the regex pattern.
-- `MoveFileTool` : Move or rename a file from one location to another.
-- `ReadFileTool` : Read file from disk.
-- `WriteFileTool` : Write file to disk.
-- `ListDirectoryTool` : List files and directories in a specified folder.
+- ```CopyFileTool``` : Create a copy of a file in a specified location.
+- ```DeleteFileTool``` : Delete a file.
+- ```FileSearchTool``` : Recursively search for files in a subdirectory that match the regex pattern.
+- ```MoveFileTool``` : Move or rename a file from one location to another.
+- ```ReadFileTool``` : Read file from disk.
+- ```WriteFileTool``` : Write file to disk.
+- ```ListDirectoryTool``` : List files and directories in a specified folder.
 
 **Settings**
-- `root_dir` : Set the root directory of workflows.
-- `selected_tools` : Select the tools you want to use.
+- ```root_dir``` : Set the root directory of workflows.
+- ```selected_tools``` : Select the tools you want to use.
 
 **Dynamic Tool Creation**
-- `get_tools` : create instances of the selected tools.
+- ```get_tools``` : create instances of the selected tools.
 
 ### 1. Basic Setup
 The **FileManagementToolkit** provides essential file operation capabilities with security considerations. Let's explore how to set it up and use it safely.
@@ -787,7 +786,7 @@ for step in result:
     Each file contains the respective article's content and URL. If you need any further assistance, feel free to ask!
 </pre>
 
-You can check the contents of the `tmp` folder and see that the files have been created as shown below.
+You can check the contents of the ```tmp``` folder and see that the files have been created as shown below.
 
 ![08-agent-with-toolkits-file-management-demonstration-00](./img/08-agent-with-toolkits-file-management-demonstration-00.png)
 
@@ -888,7 +887,7 @@ for step in result:
     If you need any more changes or assistance, feel free to let me know!
 </pre>
 
-You can check the contents of the `tmp` folder and see that the filenames have been changed as shown below.
+You can check the contents of the ```tmp``` folder and see that the filenames have been changed as shown below.
 
 ![08-agent-with-toolkits-file-management-demonstration-01](./img/08-agent-with-toolkits-file-management-demonstration-01.png)
 
@@ -993,7 +992,7 @@ for step in result:
     I have created a `news` folder and successfully copied all the previously created news files into that folder. The contents have been preserved in the copied files. If you need any further assistance or modifications, just let me know!
 </pre>
 
-You can check the contents of the `tmp` folder and see that the `news` folder has been created and the files have been copied as shown below.
+You can check the contents of the ```tmp``` folder and see that the ```news``` folder has been created and the files have been copied as shown below.
 
 ![08-agent-with-toolkits-file-management-demonstration-02](./img/08-agent-with-toolkits-file-management-demonstration-02.png)
 
@@ -1082,7 +1081,7 @@ for step in result:
     All .txt files outside of the `news` folder have been successfully deleted. The files in the `news` folder remain intact. If you need any further assistance or modifications, feel free to ask!
 </pre>
 
-You can check the contents of the `tmp` folder and see that all files except for the `news` folder have been deleted, as shown below.
+You can check the contents of the ```tmp``` folder and see that all files except for the ```news``` folder have been deleted, as shown below.
 
 ![08-agent-with-toolkits-file-management-demonstration-03](./img/08-agent-with-toolkits-file-management-demonstration-03.png)
 

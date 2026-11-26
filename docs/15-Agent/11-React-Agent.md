@@ -21,12 +21,10 @@ pre {
 
 - Author: [ranian963](https://github.com/ranian963)
 - Peer Review:
-
+- Proofread : [BokyungisaGod](https://github.com/BokyungisaGod)
 - This is part of the [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial)
-
-## Overview
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/11-React-Agent.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/11-React-Agent.ipynb)## Overview
 
 In this tutorial, we explore the concept and implementation of a **ReAct Agent**.
 
@@ -64,8 +62,8 @@ Please follow the sections below to go through the entire process.
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides an easy-to-use environment setup, useful functions, and utilities for tutorials.
-- For more details, check out [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi).
+- ```langchain-opentutorial``` is a package that provides an easy-to-use environment setup, useful functions, and utilities for tutorials.
+- For more details, check out [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi).
 
 
 ```python
@@ -108,9 +106,9 @@ set_env(
 )
 ```
 
-You can alternatively set `OPENAI_API_KEY` in a `.env` file and load it. 
+You can alternatively set ```OPENAI_API_KEY``` in a ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` previously.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` previously.
 
 ```python
 from dotenv import load_dotenv
@@ -134,7 +132,7 @@ A ReAct Agent uses various **tools** to solve problems. In this tutorial, we wil
 
 ### Web Search
 
-We use the `TavilySearch` tool for searching the latest information from the web.
+We use the ```TavilySearch``` tool for searching the latest information from the web.
 The code below creates a web search tool and tests it by retrieving some search results.
 
 
@@ -155,7 +153,7 @@ result
 
 ### File Management
 
-Using `FileManagementToolkit`, you can create, delete, and modify files.
+Using ```FileManagementToolkit```, you can create, delete, and modify files.
 
 
 ```python
@@ -235,7 +233,7 @@ tools
 We will now create a ReAct Agent and visualize the agent graph.
 In LangChain, a **ReAct** agent generates answers through step-by-step reasoning and tool usage.
 
-The code below uses `create_react_agent` from **langgraph** to easily build a ReAct Agent and visualize its structure as a graph.
+The code below uses ```create_react_agent``` from **langgraph** to easily build a ReAct Agent and visualize its structure as a graph.
 
 
 ```python
@@ -276,7 +274,7 @@ def print_stream(stream):
 
 Let's execute the created ReAct Agent. We can track the step-by-step process of generating an answer to a query.
 
-The example code below uses `stream_graph` to stream the agent's execution process. We place the user's query in the `messages` key, and the agent's reasoning will be displayed.
+The example code below uses ```stream_graph``` to stream the agent's execution process. We place the user's query in the ```messages``` key, and the agent's reasoning will be displayed.
 
 
 ```python

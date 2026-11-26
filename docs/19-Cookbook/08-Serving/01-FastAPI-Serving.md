@@ -20,12 +20,11 @@ pre {
 # FastAPI Serving
 
 - Author: [Donghak Lee](https://github.com/stsr1284)
-- Design: 
 - Peer Review: 
+- Proofread : [frimer](https://github.com/brian604)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/08-Serving/01-FastAPI-Serving.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/08-Serving/01-FastAPI-Serving.ipynb)
 ## Overview
 
 This tutorial is about FastAPI Serving.
@@ -55,8 +54,8 @@ In this tutorial, we will implement the following FastAPI examples.
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -107,7 +106,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -150,11 +149,11 @@ Key Features:
 
 ### How to run a server
 
-You can find the API documentation in the `/docs` path and interact with it directly via the `Try it out` button.
+You can find the API documentation in the ```/docs``` path and interact with it directly via the ```Try it out``` button.
 
-To spin up a live server, you can copy the code to a `.py` file and run it by typing `uvicorn [file name]:[FastAPI instance] --reload` in a shell.
+To spin up a live server, you can copy the code to a ```.py``` file and run it by typing ```uvicorn [file name]:[FastAPI instance] --reload``` in a shell.
 
-For this tutorial, we'll temporarily run the server from the `.ipynb` file with the following code
+For this tutorial, we'll temporarily run the server from the ```.ipynb``` file with the following code
 ```python
 import uvicorn
 import nest_asynci
@@ -165,13 +164,13 @@ uvicorn.run(app)
 
 ## FastAPI Fast Tutorial
 Quickly learn how to communicate with the API via FastAPI.
-- Create an instance of FastAPI with `FastAPI()`.
+- Create an instance of FastAPI with ```FastAPI()```.
 - Define a path operation decorator to communicate with the path by setting the HTTP Method on the path.
 
 ### How to run code
 When you run the code block, it's loading infinitely, which means the server is running.
 
-We recommend testing the API at `http://127.0.0.1:8000/docs`
+We recommend testing the API at ```http://127.0.0.1:8000/docs```
 
 ```python
 import uvicorn
@@ -247,7 +246,7 @@ uvicorn.run(app)
 
 ### Define Query Parameters
 - If you declare a function parameter other than as part of a path parameter, FastAPI automatically interprets it as a query parameter.
-- Query parameters can be declared as optional parameters by setting their default value to `None`.
+- Query parameters can be declared as optional parameters by setting their default value to ```None```.
 
 
 ```python
@@ -276,11 +275,11 @@ uvicorn.run(app)
 </pre>
 
 ### Define Request Model
-- It can be defined using the `Pydantic` model.
+- It can be defined using the ```Pydantic``` model.
 - Request is the data sent from the client to the API. Response is the data that the API sends back to the client.
 - You can declare the request body, path, and query parameters together.
 
-**Note:** It is not recommended to include a body in a `GET` request.
+**Note:** It is not recommended to include a body in a ```GET``` request.
 
 ```python
 from pydantic import BaseModel
@@ -325,7 +324,7 @@ uvicorn.run(app)
 
 ### Define Response Model
 
-You can define the return type by adding the `response_model` parameter to the path operation decorator.
+You can define the return type by adding the ```response_model``` parameter to the path operation decorator.
 
 This allows you to exclude sensitive data received from the input model from the output.
 

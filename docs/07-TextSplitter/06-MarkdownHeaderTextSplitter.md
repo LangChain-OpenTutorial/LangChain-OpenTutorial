@@ -20,19 +20,18 @@ pre {
 # MarkdownHeaderTextSplitter
 
 - Author: [HeeWung Song(Dan)](https://github.com/kofsitho87)
-- Design: 
-- Peer Review :, [BokyungisaGod](https://github.com/BokyungisaGod), [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
+- Peer Review : [BokyungisaGod](https://github.com/BokyungisaGod), [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/07-TextSplitter/06-MarkdownHeaderTextSplitter.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/07-TextSplitter/06-MarkdownHeaderTextSplitter.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/07-TextSplitter/06-MarkdownHeaderTextSplitter.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/07-TextSplitter/06-MarkdownHeaderTextSplitter.ipynb)
 ## Overview
 
-This tutorial introduces how to effectively split **Markdown documents** using LangChain's `MarkdownHeaderTextSplitter`. This tool divides documents into meaningful sections based on Markdown headers, preserving the document's structure for systematic content processing.
+This tutorial introduces how to effectively split **Markdown documents** using LangChain's ```MarkdownHeaderTextSplitter```. This tool divides documents into meaningful sections based on Markdown headers, preserving the document's structure for systematic content processing.
 
 Context and structure of documents are crucial for effective text embedding. Simply dividing text isn't enough; maintaining semantic connections is key to generating more comprehensive vector representations. This is particularly true when dealing with large documents, as preserving context can significantly enhance the accuracy of subsequent analysis and search operations.
 
-The `MarkdownHeaderTextSplitter` splits documents according to specified header sets, managing the content under each header group as separate chunks. This enables efficient content processing while maintaining the document's structural coherence.
+The ```MarkdownHeaderTextSplitter``` splits documents according to specified header sets, managing the content under each header group as separate chunks. This enables efficient content processing while maintaining the document's structural coherence.
 
 
 ### Table of Contents
@@ -53,8 +52,8 @@ The `MarkdownHeaderTextSplitter` splits documents according to specified header 
 Setting up your environment is the first step. See the [Environment Setup](https://wikidocs.net/257836) guide for more details.
 
 **[Note]**
-- The `langchain-opentutorial` is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-- Check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- The ```langchain-opentutorial``` is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
+- Check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -92,9 +91,9 @@ set_env(
 )
 ```
 
-Alternatively, you can set and load `OPENAI_API_KEY` from a `.env` file.
+Alternatively, you can set and load ```OPENAI_API_KEY``` from a ```.env``` file.
 
-**[Note]** This is only necessary if you haven't already set `OPENAI_API_KEY` in previous steps.
+**[Note]** This is only necessary if you haven't already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -111,13 +110,13 @@ load_dotenv()
 
 ## Basic Usage of MarkdownHeaderTextSplitter
 
-The `MarkdownHeaderTextSplitter` splits Markdown-formatted text based on headers. Here's how to use it:
+The ```MarkdownHeaderTextSplitter``` splits Markdown-formatted text based on headers. Here's how to use it:
 
 - First, the splitter divides the text based on standard Markdown headers (#, ##, ###, etc.).
 - Store the Markdown you want to split in a variable called markdown_document.
-- You'll need a list called `headers_to_split_on`. This list uses tuples to define the header levels you want to split on and what you want to call them.
-- Now, create a `markdown_splitter` object using the `MarkdownHeaderTextSplitter` class, and give it that `headers_to_split_on` list.
-- To actually split the text, call the `split_text` method on your `markdown_splitter` object, passing in your `markdown_document`.
+- You'll need a list called ```headers_to_split_on```. This list uses tuples to define the header levels you want to split on and what you want to call them.
+- Now, create a ```markdown_splitter``` object using the ```MarkdownHeaderTextSplitter``` class, and give it that ```headers_to_split_on``` list.
+- To actually split the text, call the ```split_text``` method on your ```markdown_splitter``` object, passing in your ```markdown_document```.
 
 ```python
 from langchain_text_splitters import MarkdownHeaderTextSplitter
@@ -184,9 +183,9 @@ for header in md_header_splits:
 
 ### Header Retention in Split Output
 
-By default, the `MarkdownHeaderTextSplitter` removes headers from the output chunks.
+By default, the ```MarkdownHeaderTextSplitter``` removes headers from the output chunks.
 
-However, you can configure the splitter to retain these headers by setting `strip_headers` parameter to `False`.
+However, you can configure the splitter to retain these headers by setting ```strip_headers``` parameter to ```False```.
 
 Example:
 
@@ -225,7 +224,7 @@ for header in md_header_splits:
 
 After splitting by Markdown headers, you can further process the content within each Markdown group using any desired text splitter.
 
-In this example, we'll use the `RecursiveCharacterTextSplitter` to demonstrate how to effectively combine different splitting methods.
+In this example, we'll use the ```RecursiveCharacterTextSplitter``` to demonstrate how to effectively combine different splitting methods.
 
 ```python
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -257,7 +256,7 @@ print(markdown_document)
     Implementations of Markdown are available for over a dozen programming languages.
 </pre>
 
-First, use `MarkdownHeaderTextSplitter` to split the Markdown document based on its headers.
+First, use ```MarkdownHeaderTextSplitter``` to split the Markdown document based on its headers.
 
 ```python
 headers_to_split_on = [
@@ -293,7 +292,7 @@ for header in md_header_splits:
     =====================
 </pre>
 
-Now, we'll further split the output of the `MarkdownHeaderTextSplitter` using the `RecursiveCharacterTextSplitter`.
+Now, we'll further split the output of the ```MarkdownHeaderTextSplitter``` using the ```RecursiveCharacterTextSplitter```.
 
 ```python
 chunk_size = 200  # Specify the size of each split chunk

@@ -21,19 +21,19 @@ pre {
 
 - Author: [Donghak Lee](https://github.com/stsr1284)
 - Peer Review : [JaeHo Kim](https://github.com/Jae-hoya), [ranian963](https://github.com/ranian963)
+- Proofread : [Two-Jay](https://github.com/Two-Jay)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/06-DatetimeOutputParser.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/06-DatetimeOutputParser.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/06-DatetimeOutputParser.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/06-DatetimeOutputParser.ipynb)
 ## Overview
 
-The `DatetimeOutputParser` is an output parser that generates structured outputs in the form of `datetime` objects.
+The ```DatetimeOutputParser``` is an output parser that generates structured outputs in the form of ```datetime``` objects.
 
-By converting the outputs of LLMs into `datetime` objects, it enables more systematic and consistent processing of date and time data, making it useful for data processing and analysis.
+By converting the outputs of LLMs into ```datetime``` objects, it enables more systematic and consistent processing of date and time data, making it useful for data processing and analysis.
 
-This tutorial demonstrates how to use the `DatetimeOutputParser` to:
-1. Set up and initialize the parser for `datetime` generation
-2. Convert a `datetime` object to a string
+This tutorial demonstrates how to use the ```DatetimeOutputParser``` to:
+1. Set up and initialize the parser for ```datetime``` generation
+2. Convert a ```datetime``` object to a string
 
 ### Table of Contents
 
@@ -54,8 +54,8 @@ This tutorial demonstrates how to use the `DatetimeOutputParser` to:
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -95,9 +95,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it.
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -112,10 +112,10 @@ load_dotenv(override=True)
 
 
 
-## Using the `DatetimeOutputParser`
-If you need to generate output in the form of a date or time, the `DatetimeOutputParser` from LangChain simplifies the process.
+## Using the ```DatetimeOutputParser```
+If you need to generate output in the form of a date or time, the ```DatetimeOutputParser``` from LangChain simplifies the process.
 
-The **format of the `DatetimeOutputParser`** can be specified by referring to the table below.
+The **format of the ```DatetimeOutputParser```** can be specified by referring to the table below.
 | Format Code | Description           | Example              |
 |--------------|-----------------------|----------------------|
 | %Y           | 4-digit year          | 2024                 |
@@ -210,10 +210,10 @@ output.strftime(date_format)
 
 
 
-## Using `DatetimeOutputParser` in `astream`
+## Using ```DatetimeOutputParser``` in ```astream```
 Refer to the [user-defined generator](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/09-Generator.ipynb) to create a generator function.
 
-Let's create a simple example that converts `astream` output to `datetime` objects using a generator function.
+Let's create a simple example that converts ```astream``` output to ```datetime``` objects using a generator function.
 
 
 

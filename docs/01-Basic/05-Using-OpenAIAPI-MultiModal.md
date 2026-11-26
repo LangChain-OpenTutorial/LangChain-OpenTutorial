@@ -20,15 +20,14 @@ pre {
 # Using the OpenAI API (GPT-4o Multimodal)
 
 - Author: [Erika Park](https://www.linkedin.com/in/yeonseo-park-094193198/)
-- Peer Review: 
-- Proofread:
+- Peer Review: [JeongGi Park](https://www.linkedin.com/in/jeonggipark/), [Wooseok Jeong](https://github.com/jeong-wooseok)
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/05-Using-OpenAIAPI-MultiModal.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/05-Using-OpenAIAPI-MultiModal.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/05-Using-OpenAIAPI-MultiModal.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/05-Using-OpenAIAPI-MultiModal.ipynb)
 ## Overview
 
-This tutorial explains how to effectively use OpenAI's `GPT-4o` multimodal model with `LangChain`, a versatile framework for building language model applications. You'll learn to set up and work with the `ChatOpenAI` object for tasks such as generating responses, analyzing model outputs, and leveraging advanced features like real-time response streaming and token log probability analysis. By the end of this guide, you'll have the tools to experiment with and deploy sophisticated AI solutions smoothly and efficiently.
+This tutorial explains how to effectively use OpenAI's ```GPT-4o``` multimodal model with ```LangChain```, a versatile framework for building language model applications. You'll learn to set up and work with the ```ChatOpenAI``` object for tasks such as generating responses, analyzing model outputs, and leveraging advanced features like real-time response streaming and token log probability analysis. By the end of this guide, you'll have the tools to experiment with and deploy sophisticated AI solutions smoothly and efficiently.
 
 
 ### Table of Contents
@@ -51,8 +50,8 @@ This tutorial explains how to effectively use OpenAI's `GPT-4o` multimodal model
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions, and utilities for tutorials. 
-- You can checkout out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions, and utilities for tutorials. 
+- You can checkout out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -88,7 +87,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -113,18 +112,18 @@ This is a chat-specific Large Language Model (LLM) provided by OpenAI.
 
 When creating an object, the following options can be specified. Details about the options are as follows:
 
-`temperature`
+```temperature```
 
 - Specifies the sampling temperature, which can be chosen between 0 and 2. A higher value, such as 0.8, results in more random outputs, while a lower value, such as 0.2, makes the outputs more focused and deterministic.
 
-`max_tokens`
+```max_tokens```
 
 - The maximum number of tokens to generate for the chat completion.
 
-`model_name` : List of available models
-- `gpt-4o`
-- `gpt-4o-mini`
-- `o1-preview`, `o1-preview-mini` : Available only for Tier 5 accounts, which require a minimum recharge of $1,000 to access.
+```model_name``` : List of available models
+- ```gpt-4o```
+- ```gpt-4o-mini```
+- ```o1-preview```, ```o1-preview-mini``` : Available only for Tier 5 accounts, which require a minimum recharge of $1,000 to access.
 
 ![gpt-models.png](./img/04-using-openai-api-gpt4o-get-models.png)
 
@@ -150,25 +149,25 @@ print(f"[Answer]: {llm.invoke(question)}")
 </pre>
 
 ### Response Format (AI Message)
-When using the `ChatOpenAI` object, the response is returned in the format of an AI Message. This includes the text content generated by the model along with any metadata or additional properties associated with the response. These provide structured information about the AI's reply and how it was generated.
+When using the ```ChatOpenAI``` object, the response is returned in the format of an AI Message. This includes the text content generated by the model along with any metadata or additional properties associated with the response. These provide structured information about the AI's reply and how it was generated.
 
 **Key Components of AI Message**
-1. **`content`**  
+1. **```content```**  
    - **Definition:** The primary response text generated by the AI.  
    - **Example:** **"The capital of South Korea is Seoul."**
    - **Purpose:** This is the main part of the response that users interact with.
 
-2. **`response_metadata`**  
+2. **```response_metadata```**  
    - **Definition:** Metadata about the response generation process.  
    - **Key Fields:**
-     - **`model_name` :** Name of the model used (e.g., `"gpt-4o-mini"` ).
-     - **`finish_reason` :** Reason the generation stopped (**stop** for normal completion).
-     - **`token_usage` :** Token usage details:
-       - **`prompt_tokens` :** Tokens used for the input query.
-       - **`completion_tokens` :** Tokens used for the response.
-       - **`total_tokens` :** Combined token count.
+     - **```model_name``` :** Name of the model used (e.g., ```"gpt-4o-mini"``` ).
+     - **```finish_reason``` :** Reason the generation stopped (**stop** for normal completion).
+     - **```token_usage``` :** Token usage details:
+       - **```prompt_tokens``` :** Tokens used for the input query.
+       - **```completion_tokens``` :** Tokens used for the response.
+       - **```total_tokens``` :** Combined token count.
 
-3. **`id`**  
+3. **```id```**  
    - **Definition:** A unique identifier for the API call.  
    - **Purpose:** Useful for tracking or debugging specific interactions.
 
@@ -205,15 +204,15 @@ print(f"Total Tokens Used: {total_tokens}")
     Total Tokens Used: 27
 </pre>
 
-### Activating `LogProb`
+### Activating ```LogProb```
 
-`LogProb` represents the **logarithmic probabilities** assigned by the model to predicted tokens. A token is an individual unit of text, such as a word, character, or part of a word. The probability indicates the **model's confidence in predicting each token**.
+```LogProb``` represents the **logarithmic probabilities** assigned by the model to predicted tokens. A token is an individual unit of text, such as a word, character, or part of a word. The probability indicates the **model's confidence in predicting each token**.
 
 **Use Cases**:
-`LogProb` is useful for evaluating the model's prediction confidence, debugging issues, and optimizing prompts. By analyzing `LogProb` data, you can understand why the model selected specific tokens.
+```LogProb``` is useful for evaluating the model's prediction confidence, debugging issues, and optimizing prompts. By analyzing ```LogProb``` data, you can understand why the model selected specific tokens.
 
 **Caution**:
-Enabling `LogProb` increases the response data size, which may affect API speed and cost. It is recommended to activate it only when necessary.
+Enabling ```LogProb``` increases the response data size, which may affect API speed and cost. It is recommended to activate it only when necessary.
 
 ```python
 # Object creation with LogProb enabled
@@ -297,11 +296,11 @@ Multimodal refers to technologies or approaches that integrate and process multi
 - Audio: Auditory information, such as speech, music, or sound effects.
 - Video: A combination of visual and auditory information, including video clips or real-time streaming.
 
-`gpt-4o` and `gpt-4-turbo` are equipped with vision capabilities, enabling them to process and recognize images alongside textual inputs. 
+```gpt-4o``` and ```gpt-4-turbo``` are equipped with vision capabilities, enabling them to process and recognize images alongside textual inputs. 
 
 ### Step 1. Setting up ChatOpenAI
 
-First, create a `ChatOpenAI` object with the `gpt-4o` model and streaming capabilities enabled.
+First, create a ```ChatOpenAI``` object with the ```gpt-4o``` model and streaming capabilities enabled.
 
 ```python
 # Create the ChatOpenAI object
@@ -554,7 +553,7 @@ Gives task-specific instructions to guide the AI:
 * Example: "Analyze this financial table and summarize the insights."
 
 ### Step 1: Set Up the ChatOpenAI Object
-The `ChatOpenAI` object initializes the model with the desired configurations, such as temperature and model type.
+The ```ChatOpenAI``` object initializes the model with the desired configurations, such as temperature and model type.
 
 ```python
 # Create the ChatOpenAI object

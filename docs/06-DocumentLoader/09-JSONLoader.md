@@ -19,19 +19,17 @@ pre {
 
 # JSON
 
-Let's look at how to load files with the `.json` extension using a loader.
+Let's look at how to load files with the ```.json``` extension using a loader.
 
 - Author: [leebeanbin](https://github.com/leebeanbin)
-- Design:
 - Peer Review : [syshin0116](https://github.com/syshin0116), [Teddy Lee](https://github.com/teddylee777)
-- Proofread:
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/tree/main/06-DocumentLoader)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/10-JSON-Loader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/10-JSON-Loader.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/09-JSONLoader.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/09-JSONLoader.ipynb)
 
 ## Overview
-This tutorial demonstrates how to use LangChain's `JSONLoader` to load and process JSON files. We'll explore how to extract specific data from structured JSON files using jq-style queries.
+This tutorial demonstrates how to use LangChain's ```JSONLoader``` to load and process JSON files. We'll explore how to extract specific data from structured JSON files using jq-style queries.
 
 ### Table of Contents
 - [Environment Set up](#environment-setup)
@@ -40,7 +38,7 @@ This tutorial demonstrates how to use LangChain's `JSONLoader` to load and proce
 - [Generate JSON Data](#generate-json-data)
 - [JSONLoader](#jsonloader)
   
-When you want to extract values under the content field within the message key of JSON data, you can easily do this using `JSONLoader` as shown below.
+When you want to extract values under the content field within the message key of JSON data, you can easily do this using ```JSONLoader``` as shown below.
 
 
 ### References
@@ -54,8 +52,8 @@ When you want to extract values under the content field within the message key o
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 [Note]
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -103,9 +101,9 @@ set_env(
 )
 ```
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 # Load environment variables
@@ -408,11 +406,11 @@ print(type(data))
 <pre class="custom"><class 'dict'>
 </pre>
 
-## `JSONLoader`
+## ```JSONLoader```
 
 ---
 
-When you want to extract values under the content field within the message key of JSON data, you can easily do this using `JSONLoader` as shown below.
+When you want to extract values under the content field within the message key of JSON data, you can easily do this using ```JSONLoader``` as shown below.
 
 ### Basic Usage
 
@@ -442,7 +440,7 @@ pprint(docs)
 
 ### Loading Each Person as a Separate Document
 
-We can load each person object from `people.json` as an individual document using the `jq_schema=".people[]"`
+We can load each person object from ```people.json``` as an individual document using the ```jq_schema=".people[]"```
 
 ```python
 loader = JSONLoader(
@@ -466,9 +464,9 @@ data
 
 
 
-### Using `content_key` within `jq_schema`
+### Using ```content_key``` within ```jq_schema```
 
-To load documents from a JSON file using `content_key` within the `jq_schema`, set `is_content_key_jq_parsable=True`. Ensure that `content_key` is compatible and can be parsed using the `jq_schema`.
+To load documents from a JSON file using ```content_key``` within the ```jq_schema```, set ```is_content_key_jq_parsable=True```. Ensure that ```content_key``` is compatible and can be parsed using the ```jq_schema```.
 
 ```python
 loader = JSONLoader(
@@ -493,9 +491,9 @@ data
 
 
 
-### Extracting Metadata from `people.json`
+### Extracting Metadata from ```people.json```
 
-Let's define a `metadata_func` to extract relevant information like name, age, and city from each person object.
+Let's define a ```metadata_func``` to extract relevant information like name, age, and city from each person object.
 
 
 ```python
@@ -530,18 +528,18 @@ data
 
 ### Understanding JSON Query Syntax
 
-Let's explore the basic syntax of jq-style queries used in `JSONLoader`:
+Let's explore the basic syntax of jq-style queries used in ```JSONLoader```:
 
 Basic Selectors
-   - **`.`** : Current object
-   - **`.key`** : Access specific key in object
-   - **`.[]`** : Iterate over array elements
+   - **```.```** : Current object
+   - **```.key```** : Access specific key in object
+   - **```.[]```** : Iterate over array elements
 
 Pipe Operator
-   - **`|`** : Pass result of left expression as input to right expression
+   - **```|```** : Pass result of left expression as input to right expression
    
 Object Construction
-   - **`{key: value}`** : Create new object
+   - **```{key: value}```** : Create new object
 
 Example JSON:
 ```json
@@ -554,13 +552,13 @@ Example JSON:
 ```
 
 **Common Query Patterns**:
-- `.people[]` : Access each array element
-- `.people[].name` : Get all names
-- `.people[] | {name: .name}` : Create new object with name
-- `.people[] | {name, email: .contact.email}` : Extract nested data
+- ```.people[]``` : Access each array element
+- ```.people[].name``` : Get all names
+- ```.people[] | {name: .name}``` : Create new object with name
+- ```.people[] | {name, email: .contact.email}``` : Extract nested data
 
 [Note] 
-- Always use `text_content=False` when working with complex JSON data
+- Always use ```text_content=False``` when working with complex JSON data
 - This ensures proper handling of non-string values (objects, arrays, numbers)
 
 ### Advanced Queries

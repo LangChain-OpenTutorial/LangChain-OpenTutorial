@@ -20,12 +20,11 @@ pre {
 # Tree of Thoughts (ToT)
 
 - Author: [Sunworl Kim](https://github.com/sunworl)
-- Design:
 - Peer Review:
+- Proofread : [fastjw](https://github.com/fastjw)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/13-LangGraph-Tree-of-Thoughts.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/13-LangGraph-Tree-of-Thoughts.ipynb)
 ## Overview
 
 Tree of Thoughts (ToT) is a systematic problem-solving framework that enhances language models' reasoning capabilities by exploring and maintaining multiple paths of thought simultaneously. 
@@ -77,7 +76,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 
 **[Note]**
 - The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials. 
-- Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -101,9 +100,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -128,9 +127,9 @@ if not load_dotenv():
 ## Mathematical Equation Exploration and Evaluation Framework 
 
 
-Define a class that uilizes `Pydantic` to calculate RPN formulas.
+Define a class that uilizes ```Pydantic``` to calculate RPN formulas.
 
-`Pydantic` is a library that simplifies data validation.
+```Pydantic``` is a library that simplifies data validation.
 
 ```python
 import operator

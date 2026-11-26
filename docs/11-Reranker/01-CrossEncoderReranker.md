@@ -20,12 +20,11 @@ pre {
 # Cross Encoder Reranker
 
 - Author: [JeongHo Shin](https://github.com/ThePurpleCollar)
-- Design:
 - Peer Review:
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/05-Using-OpenAIAPI-MultiModal.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/05-Using-OpenAIAPI-MultiModal.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/11-Reranker/01-CrossEncoderReranker.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/11-Reranker/01-CrossEncoderReranker.ipynb)
 ## Overview
 
 The **Cross Encoder Reranker** is a technique designed to enhance the performance of **Retrieval-Augmented Generation (RAG)** systems.<br>This guide explains how to implement a reranker using Hugging Face's Cross Encoders to refine the ranking of retrieved documents, promoting those most relevant to a query.
@@ -52,8 +51,8 @@ The **Cross Encoder Reranker** is a technique designed to enhance the performanc
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 # Set environment variables
@@ -114,8 +113,8 @@ load_dotenv(override=True)
 - A **Cross Encoder** refines these results by deeply analyzing the semantic relationship between the **query** and the retrieved **documents** .
 
 ## Implementation
-- Use Hugging Face cross encoders or `BAAI/bge-reranker` models.
-- Easily integrate with frameworks like **LangChain** through the `CrossEncoderReranker` component.
+- Use Hugging Face cross encoders or ```BAAI/bge-reranker``` models.
+- Easily integrate with frameworks like **LangChain** through the ```CrossEncoderReranker``` component.
 
 ## Key Advantages of Reranker
 - **Precise Similarity Scoring** :  
@@ -269,10 +268,10 @@ pretty_print_docs(docs)
     Related Keywords: Natural Language Processing (NLP), Text Generation, Deep Learning
 </pre>
 
-Now, let's wrap the `base_retriever` with a `ContextualCompressionRetriever` . The `CrossEncoderReranker` leverages `HuggingFaceCrossEncoder` to re-rank the retrieved results.
+Now, let's wrap the ```base_retriever``` with a ```ContextualCompressionRetriever``` . The ```CrossEncoderReranker``` leverages ```HuggingFaceCrossEncoder``` to re-rank the retrieved results.
 
 
-Multilingual Support BGE Reranker: [`bge-reranker-v2-m3`](https://huggingface.co/BAAI/bge-reranker-v2-m3)
+Multilingual Support BGE Reranker: [```bge-reranker-v2-m3```](https://huggingface.co/BAAI/bge-reranker-v2-m3)
 
 ```python
 from langchain.retrievers import ContextualCompressionRetriever

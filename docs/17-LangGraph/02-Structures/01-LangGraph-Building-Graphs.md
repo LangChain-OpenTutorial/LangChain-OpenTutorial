@@ -20,15 +20,14 @@ pre {
 # LangGraph-Building-Graphs
 
 - Author: [Donghak Lee](https://github.com/stsr1284)
-- Design: 
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/01-LangGraph-Building-Graphs.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/01-LangGraph-Building-Graphs.ipynb)
 ## Overview
 
-In this tutorial, you will learn how to use `LangGraph` to create foundational graph structures.
+In this tutorial, you will learn how to use ```LangGraph``` to create foundational graph structures.
 
 You will learn the following:
 
@@ -57,8 +56,8 @@ You will learn the following:
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -82,9 +81,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 # Set environment variables
@@ -104,7 +103,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -116,15 +115,15 @@ load_dotenv(override=True)
 ```
 
 ## Steps for Defining a Graph  
-To define a graph with `LangGraph`, you need to define **State** , **Node** , and **Graph** , and then compile them.  
+To define a graph with ```LangGraph```, you need to define **State** , **Node** , and **Graph** , and then compile them.  
 
-If necessary, you can flexibly adjust the graph flow by adding conditional edges to nodes using `add_conditional_edges()`.
+If necessary, you can flexibly adjust the graph flow by adding conditional edges to nodes using ```add_conditional_edges()```.
 
 ### Define State  
 
 **State** defines the shared state between the nodes in the graph.  
 
-It uses the `TypedDict` format and adds metadata to type hints using `Annotated` to provide detailed information.
+It uses the ```TypedDict``` format and adds metadata to type hints using ```Annotated``` to provide detailed information.
 
 ```python
 from typing import TypedDict, Annotated, List
@@ -287,13 +286,13 @@ The graph structures you will learn are as follows:
 4. SQL RAG graph structure
 
 ### Re-search Graph Structure
-The Re-search Graph inspects the output from the GPT model and selects either `re_search` or `exit`. This allows you to obtain more relevant results for the query.
+The Re-search Graph inspects the output from the GPT model and selects either ```re_search``` or ```exit```. This allows you to obtain more relevant results for the query.
 
 The execution flow is as follows:
 
-- A conditional edge is added to the `Aggregation_results` node.
-- The `GPT_relevance_check` node checks the relevance of the output from the `GPT_request` node.  
-- Based on the result of the relevance check, the `Aggregation_results` node decides whether to `re_search` or `exit` using the **State** information.
+- A conditional edge is added to the ```Aggregation_results``` node.
+- The ```GPT_relevance_check``` node checks the relevance of the output from the ```GPT_request``` node.  
+- Based on the result of the relevance check, the ```Aggregation_results``` node decides whether to ```re_search``` or ```exit``` using the **State** information.
 
 ```python
 # Import StateGraph and END from langgraph.graph.
@@ -392,7 +391,7 @@ display(Image(app.get_graph().draw_mermaid_png()))
 
 
 ### Query Rewrite Graph  
-The Query Rewrite Graph is a structure that adds the `rewrite_query` node to the Re-search Graph structure.  
+The Query Rewrite Graph is a structure that adds the ```rewrite_query``` node to the Re-search Graph structure.  
 
 The rewrite node for the query rewrites the question to obtain more refined results.
 

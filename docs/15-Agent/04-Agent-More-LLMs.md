@@ -20,31 +20,30 @@ pre {
 # Tool Calling Agent with More LLM Models
 
 - Author: [JoonHo Kim](https://github.com/jhboyo)
-- Design: []()
 - Peer Review :
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/04-CSV-Loader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/04-CSV-Loader.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/04-Agent-More-LLMs.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/04-Agent-More-LLMs.ipynb)
 
 ## Overview
-LangChain is not limited to `OpenAI` models. It also supports implementations from diverse LLM providers such as `Anthropic`, `Google Gemini`, `Together.ai`, `Ollama`, and `Mistral`. This flexibility allows developers to leverage the unique characteristics and strengths of each model to create agents optimized specific requirements for their applications.
+LangChain is not limited to ```OpenAI``` models. It also supports implementations from diverse LLM providers such as ```Anthropic```, ```Google Gemini```, ```Together.ai```, ```Ollama```, and ```Mistral```. This flexibility allows developers to leverage the unique characteristics and strengths of each model to create agents optimized specific requirements for their applications.
 
 **Key Topics**
 
-In this chapter, we will delve into the process of creating and executing tool-calling agents using various `LLMs`. Here are the key topics covered, we'll explore:
+In this chapter, we will delve into the process of creating and executing tool-calling agents using various ```LLMs```. Here are the key topics covered, we'll explore:
 
 - Tool Selection: How agents choose the most suitable tools for specific tasks.
-- `LLM` Integration: Integrating `LLMs` from `OpenAI` and other providers into LangChain to enable agent functionality.
+- ```LLM``` Integration: Integrating ```LLMs``` from ```OpenAI``` and other providers into LangChain to enable agent functionality.
 - Agent Creation: Creating agents using LangChain's agent classes.
 - Agent Execution: Executing agents to perform tasks.
 
 Objectives
 By the end of this chapter, you will be able to:
 
-- How to create and execute tool-calling agents using various `LLMs`.
+- How to create and execute tool-calling agents using various ```LLMs```.
 - Create automated workflows that call various tools using LangChain's agent classes.
-- Combine multiple `LLMs` to implement agents with optimized performance.
+- Combine multiple ```LLMs``` to implement agents with optimized performance.
 
 Now, let’s explore how to maximize productivity using LangChain’s flexible agent framework. 🚀
 
@@ -73,9 +72,9 @@ Now, let’s explore how to maximize productivity using LangChain’s flexible a
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
-- `langchain-ollama` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-ollama``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
 
 ```python
 %%capture --no-stderr
@@ -141,37 +140,37 @@ package.install(
 
 Before we proceed with the hands-on tutorial, you'll need to complete the following setup steps for each LLM you want to use:
 
-1. Obtain an API Kye: Follow the provided link to requiest an API key for each `LLM` call.
-2. Add the issued key to the `.env` file.
+1. Obtain an API Kye: Follow the provided link to requiest an API key for each ```LLM``` call.
+2. Add the issued key to the ```.env``` file.
 
 
 **Anthropic**
 
 - [Anthropic API Key Issuance](https://console.anthropic.com/settings/keys)
-- Add the issued key `ANTHROPIC_API_KEY` to `.env` file.
+- Add the issued key ```ANTHROPIC_API_KEY``` to ```.env``` file.
 
 
 **Gemini**
 
 - [Gemini API Key Issuance](https://aistudio.google.com/app/apikey?hl=ko)
-- Add the issued key `GOOGLE_API_KEY` to `.env` file.
+- Add the issued key ```GOOGLE_API_KEY``` to ```.env``` file.
 
 
 **Ollama**
 - [List of Ollama Tool Calling Supported Models](https://ollama.com/search?c=tools)
 - Ollama uses a different approach. Instead of API keys, you'll need to install Ollama itself. Follow the instructions here to install Ollama: [Ollama installation](https://ollama.com)
 - This tutorial will use the [lama3.1 model](https://ollama.com/library/llama3.1)
-- After installing Ollama, you can download it using the following commands: `ollama pull llama3.1`
-- You can also download the `qwen2.5` model using the following command: `ollama pull qwen2.5`
+- After installing Ollama, you can download it using the following commands: ```ollama pull llama3.1```
+- You can also download the ```qwen2.5``` model using the following command: ```ollama pull qwen2.5```
 
 
 **Together AI**
 - [Together API Key Issuance](https://api.together.ai/)
-- Add the issued key `TOGETHER_API_KEY` to `.env` file.
+- Add the issued key ```TOGETHER_API_KEY``` to ```.env``` file.
 
 
 ## Working with Multiple LLM Integrations in LangChain
-This section guides you through integrating and configuring various `LLMs` in LangChain, allowing you to do experiments with different models from providers like `OpenAI`, `Anthropic`, `Google`, and others.
+This section guides you through integrating and configuring various ```LLMs``` in LangChain, allowing you to do experiments with different models from providers like ```OpenAI```, ```Anthropic```, ```Google```, and others.
 
 ```python
 from langchain_anthropic import ChatAnthropic
@@ -209,17 +208,17 @@ qwen = ChatOllama(
 
 Before creating tools, we will build some functions to fetch news from websites based on user's input keywords.
 
-`_fetch_news(url: str, k: int = 3) -> List[Dict[str, str]]`: This funtion takes a URL as input and retrieves news articles from that source. The function returns a list of dictionaries.
- * Args: `url: str` is for fetching news articles. The `k: int = 3` (default: 3) is a number of news to fetch.
- * Return: `List[Dict[str, str]]` is a list of dictionaries that contains news title and link.
+```_fetch_news(url: str, k: int = 3) -> List[Dict[str, str]]```: This funtion takes a URL as input and retrieves news articles from that source. The function returns a list of dictionaries.
+ * Args: ```url: str``` is for fetching news articles. The ```k: int = 3``` (default: 3) is a number of news to fetch.
+ * Return: ```List[Dict[str, str]]``` is a list of dictionaries that contains news title and link.
 
-`_collect_news(news_list: List[Dict[str, str]] -> List[Dict[str, str]]`: This function return a sorted list of the same news items.
- * Args: `news_list: List[Dict[str, str]]` is a list of dictionaries that contains news information.
- * Return: `List[Dict[str, str]]` is a list of dictionaries containing the URL and the full contents.
+```_collect_news(news_list: List[Dict[str, str]] -> List[Dict[str, str]]```: This function return a sorted list of the same news items.
+ * Args: ```news_list: List[Dict[str, str]]``` is a list of dictionaries that contains news information.
+ * Return: ```List[Dict[str, str]]``` is a list of dictionaries containing the URL and the full contents.
 
-`search_by_keyword(keyword: str, k: int = 3) -> List[Dict[str, str]]`: This funtion is the main entry point for searching news. It accepts a keyword and returns a list of dictionaries.
- * Args: `keyword: str` is a keyword to search. `k: int = 3`(default: 3) is a number of news to fetch.
- * Return: `List[Dict[str, str]]` is a list of dictionaries that contains the URL and contents.
+```search_by_keyword(keyword: str, k: int = 3) -> List[Dict[str, str]]```: This funtion is the main entry point for searching news. It accepts a keyword and returns a list of dictionaries.
+ * Args: ```keyword: str``` is a keyword to search. ```k: int = 3```(default: 3) is a number of news to fetch.
+ * Return: ```List[Dict[str, str]]``` is a list of dictionaries that contains the URL and contents.
 
 
 ```python
@@ -294,9 +293,9 @@ tools = [search_news]
 A prompt is text that describes the task the model will perform whose input is the tool name and its role.
 
 
-- `chat_history`: A variable that stores previous conversation history (can be omitted if multi-turn support is not required).
-- `agent_scratchpad`: A variable for temporary storage used by the agent.
-- `input`: The user's input.
+- ```chat_history```: A variable that stores previous conversation history (can be omitted if multi-turn support is not required).
+- ```agent_scratchpad```: A variable for temporary storage used by the agent.
+- ```input```: The user's input.
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate
@@ -315,7 +314,7 @@ prompt = ChatPromptTemplate.from_messages(
 )
 ```
 
-Let's generate agents per each `LLM` basis.
+Let's generate agents per each ```LLM``` basis.
 
 ```python
 gpt_agent = create_tool_calling_agent(gpt, tools, prompt)
@@ -328,7 +327,7 @@ qwen_agent = create_tool_calling_agent(qwen, tools, prompt)
 
 ## Generating an AgentExecutor
 
-Now, let's import `AgentExecutor`, run agents, and review the outputs.
+Now, let's import ```AgentExecutor```, run agents, and review the outputs.
 
 ```python
 from langchain.agents import AgentExecutor
@@ -375,7 +374,7 @@ print(result["output"])
     
 </pre>
 
-The following function generates and runs an `agent` using the provided `LLM` and outputs the results.
+The following function generates and runs an ```agent``` using the provided ```LLM``` and outputs the results.
 
 ```python
 def execute_agent(llm, tools, input_text, label):

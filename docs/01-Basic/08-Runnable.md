@@ -20,27 +20,28 @@ pre {
 # Runnable
 
 - Author: [hyeyeoon](https://github.com/hyeyeoon)
-- Design: []()
-- Peer Review : [Wooseok Jeong](https://github.com/jeong-wooseok)
+- Peer Review : [hong-seongmin](https://github.com/hong-seongmin), [Wooseok Jeong](https://github.com/jeong-wooseok)
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/08-Runnable.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/08-Runnable.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/08-Runnable.ipynb)
+[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/08-Runnable.ipynb)
 
 ## Overview
 
-LangChain's `Runnable` objects provide a modular and flexible approach to designing workflows by enabling the chaining, parallel execution, and transformation of data. These utilities allow for efficient handling of structured inputs and outputs, with minimal code overhead.
+LangChain's ```Runnable``` objects provide a modular and flexible approach to designing workflows by enabling the chaining, parallel execution, and transformation of data. These utilities allow for efficient handling of structured inputs and outputs, with minimal code overhead.
 
 Key Components is:
 
-- **`RunnableLambda`**: A lightweight utility that enables the application of custom logic through lambda functions, ideal for dynamic and quick data transformations.
-- **`RunnablePassthrough`**: Designed to pass input data unchanged or augment it with additional attributes when paired with the `.assign()` method.
-- **`itemgetter`**: A Python `operator` module utility for efficiently extracting specific keys or indices from structured data such as dictionaries or tuples.
+- **```RunnableLambda```**: A lightweight utility that enables the application of custom logic through lambda functions, ideal for dynamic and quick data transformations.
+- **```RunnablePassthrough```**: Designed to pass input data unchanged or augment it with additional attributes when paired with the ```.assign()``` method.
+- **```itemgetter```**: A Python ```operator``` module utility for efficiently extracting specific keys or indices from structured data such as dictionaries or tuples.
 
 These tools can be combined to build powerful workflows, such as:
 
-- Extracting and processing specific data elements using `itemgetter`.
-- Performing custom transformations with `RunnableLambda`.
-- Creating end-to-end data pipelines with `Runnable` chains.
+- Extracting and processing specific data elements using ```itemgetter```.
+- Performing custom transformations with ```RunnableLambda```.
+- Creating end-to-end data pipelines with ```Runnable``` chains.
 
 By leveraging these components, users can design scalable and reusable pipelines for machine learning and data processing workflows.
 
@@ -67,8 +68,8 @@ By leveraging these components, users can design scalable and reusable pipelines
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -91,7 +92,7 @@ package.install(
 )
 ```
 
-You can also load the `OPEN_API_KEY` from the `.env` file.
+You can also load the ```OPEN_API_KEY``` from the ```.env``` file.
 
 ```python
 from dotenv import load_dotenv
@@ -124,7 +125,7 @@ set_env(
 
 ## Efficient Data Handling with RunnablePassthrough
 
-`RunnablePassthrough` is a utility designed to streamline data processing workflows by either passing input data unchanged or enhancing it with additional attributes. Its flexibility makes it a valuable tool for handling data in pipelines where minimal transformation or selective augmentation is required.
+```RunnablePassthrough``` is a utility designed to streamline data processing workflows by either passing input data unchanged or enhancing it with additional attributes. Its flexibility makes it a valuable tool for handling data in pipelines where minimal transformation or selective augmentation is required.
 
 1. **Simple Data Forwarding**
 
@@ -135,9 +136,9 @@ set_env(
 - Enables the addition of metadata or context to input data for use in machine learning pipelines or analytics systems.
 
 ---
-- `RunnablePassthrough` can either pass the input unchanged or append additional keys to it.
-- When `RunnablePassthrough()` is called on its own, it simply takes the input and passes it as is.
-- When called using `RunnablePassthrough.assign(...)`, it takes the input and adds additional arguments provided to the assign function.
+- ```RunnablePassthrough``` can either pass the input unchanged or append additional keys to it.
+- When ```RunnablePassthrough()``` is called on its own, it simply takes the input and passes it as is.
+- When called using ```RunnablePassthrough.assign(...)```, it takes the input and adds additional arguments provided to the assign function.
 
 ### RunnablePassthrough
 
@@ -153,7 +154,7 @@ llm = ChatOpenAI(temperature=0)
 chain = prompt | llm
 ```
 
-When invoking the chain with `invoke()`, the input data must be of type `dictionary`.
+When invoking the chain with ```invoke()```, the input data must be of type ```dictionary```.
 
 ```python
 # Execute the chain : input dtype as 'dictionary'
@@ -181,12 +182,12 @@ chain.invoke(5)
 
 
 
-Here is an example using `RunnablePassthrough`.
-`RunnablePassthrough` is a `runnable` object with the following characteristics:
+Here is an example using ```RunnablePassthrough```.
+```RunnablePassthrough``` is a ```runnable``` object with the following characteristics:
 
 1. **Basic Operation**
    - Performs a simple pass-through function that forwards input values directly to output
-   - Can be executed independently using the `invoke()` method
+   - Can be executed independently using the ```invoke()``` method
 
 2. **Use Cases**
    - Useful when you need to pass data through chain steps without modification
@@ -212,7 +213,7 @@ RunnablePassthrough().invoke({"num": 10})
 
 
 
-Here is an example of creating a chain using `RunnablePassthrough`.
+Here is an example of creating a chain using ```RunnablePassthrough```.
 
 ```python
 runnable_chain = {"num": RunnablePassthrough()} | prompt | ChatOpenAI()
@@ -228,7 +229,7 @@ runnable_chain.invoke(10)
 
 
 
-Here is a comparison of the results when using `RunnablePassthrough.assign()`.
+Here is a comparison of the results when using ```RunnablePassthrough.assign()```.
 
 ```python
 RunnablePassthrough().invoke({"num": 1})
@@ -241,7 +242,7 @@ RunnablePassthrough().invoke({"num": 1})
 
 
 
-`RunnablePassthrough.assign()`
+```RunnablePassthrough.assign()```
 - Combines the key/value pairs from the input with the newly assigned key/value pairs.
 
 ```python
@@ -258,11 +259,11 @@ RunnablePassthrough().invoke({"num": 1})
 
 ## Efficient Parallel Execution with RunnableParallel
 
-`RunnableParallel` is a utility designed to execute multiple `Runnable` objects concurrently, streamlining workflows that require parallel processing. It distributes input data across different components, collects their results, and combines them into a unified output. This functionality makes it a powerful tool for optimizing workflows where tasks can be performed independently and simultaneously.
+```RunnableParallel``` is a utility designed to execute multiple ```Runnable``` objects concurrently, streamlining workflows that require parallel processing. It distributes input data across different components, collects their results, and combines them into a unified output. This functionality makes it a powerful tool for optimizing workflows where tasks can be performed independently and simultaneously.
 
 
 1. **Concurrent Execution**
-   - Executes multiple `Runnable` objects simultaneously, reducing the time required for tasks that can be parallelized.
+   - Executes multiple ```Runnable``` objects simultaneously, reducing the time required for tasks that can be parallelized.
 
 2. **Unified Output Management**
    - Combines the results from all parallel executions into a single, cohesive output, simplifying downstream processing.
@@ -326,7 +327,7 @@ combined_chain.invoke("United States of America")
 
 ## Dynamic Processing with RunnableLambda
 
-`RunnableLambda` is a flexible utility that allows developers to define custom data transformation logic using lambda functions. By enabling quick and easy implementation of custom processing workflows, `RunnableLambda` simplifies the creation of tailored data pipelines while ensuring minimal setup overhead.
+```RunnableLambda``` is a flexible utility that allows developers to define custom data transformation logic using lambda functions. By enabling quick and easy implementation of custom processing workflows, ```RunnableLambda``` simplifies the creation of tailored data pipelines while ensuring minimal setup overhead.
 
 1. **Customizable Data Transformation**
    - Allows users to define custom logic for transforming input data using lambda functions, offering unparalleled flexibility.
@@ -388,9 +389,9 @@ print(chain.invoke(3))
     3. **Michael Stipe** - Born on January 4, 1960, he is an American singer-songwriter and the lead vocalist of the alternative rock band R.E.M.
 </pre>
 
-## Extracting Specific Keys Using `itemgetter`
+## Extracting Specific Keys Using ```itemgetter```
 
-`itemgetter` is a utility function from Python's `operator` module with the following features and benefits:
+```itemgetter``` is a utility function from Python's ```operator``` module with the following features and benefits:
 
 1. **Core Functionality**
    - Efficiently extracts values from specific keys or indices in dictionaries, tuples, and lists

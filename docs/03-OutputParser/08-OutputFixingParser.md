@@ -20,34 +20,33 @@ pre {
 # Output Fixing Parser
 
 - Author: [Jeongeun Lim](https://www.linkedin.com/in/jeongeun-lim-808978188/)
-- Design: []()
 - Peer Review : [Junseong Kim](https://www.linkedin.com/in/%EC%A4%80%EC%84%B1-%EA%B9%80-591b351b2/)
+- Proofread : [Two-Jay](https://github.com/Two-Jay)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/08-OutputFixingParser.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/08-OutputFixingParser.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/08-OutputFixingParser.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/08-OutputFixingParser.ipynb)
 ## Overview
 
-The `OutputFixingParser` in LangChain provides an automated mechanism for correcting errors that may occur during the output parsing process. This parser is designed to wrap around another parser, such as the `PydanticOutputParser`, and intervenes when the underlying parser encounters outputs that are malformed or do not conform to the expected format. It achieves this by leveraging additional LLM calls to fix the errors and ensure proper formatting.
+The ```OutputFixingParser``` in LangChain provides an automated mechanism for correcting errors that may occur during the output parsing process. This parser is designed to wrap around another parser, such as the ```PydanticOutputParser```, and intervenes when the underlying parser encounters outputs that are malformed or do not conform to the expected format. It achieves this by leveraging additional LLM calls to fix the errors and ensure proper formatting.
 
-At its core, the `OutputFixingParser` addresses situations where the initial output does not comply with a predefined schema. If such an issue arises, the parser automatically detects the formatting errors and submits a new request to the model, including specific instructions for correcting the issue. These instructions highlight the problem areas and provide clear guidelines for restructuring the data in the correct format.
+At its core, the ```OutputFixingParser``` addresses situations where the initial output does not comply with a predefined schema. If such an issue arises, the parser automatically detects the formatting errors and submits a new request to the model, including specific instructions for correcting the issue. These instructions highlight the problem areas and provide clear guidelines for restructuring the data in the correct format.
 
-This functionality is particularly useful in scenarios where strict adherence to a schema is critical. For example, when using the `PydanticOutputParser` to generate outputs conforming to a particular data schema, issues such as missing fields or incorrect data types might occur. 
+This functionality is particularly useful in scenarios where strict adherence to a schema is critical. For example, when using the ```PydanticOutputParser``` to generate outputs conforming to a particular data schema, issues such as missing fields or incorrect data types might occur. 
 
-- The `OutputFixingParser` steps in as follows:
+- The ```OutputFixingParser``` steps in as follows:
 
 1. **Error Detection** : It recognizes that the output does not meet the schema requirements.
 2. **Error Correction** : It generates a follow-up request to the LLM with explicit instructions to address the issues.
-3. **Reformatted Output with Specific Instructions** : The `OutputFixingParser` ensures that the correction instructions precisely identify the errors, such as missing fields or incorrect data types. The instructions guide the LLM to reformat the output to meet the schema requirements accurately.
+3. **Reformatted Output with Specific Instructions** : The ```OutputFixingParser``` ensures that the correction instructions precisely identify the errors, such as missing fields or incorrect data types. The instructions guide the LLM to reformat the output to meet the schema requirements accurately.
 
 
 ---- 
 Practical Example:
 
-Suppose you are using the `PydanticOutputParser` to enforce a schema requiring specific fields like `name` (string), `age` (integer), and `email` (string). If the LLM produces an output where the `age` field is missing or the `email` field is not a valid string, the `OutputFixingParser` automatically intervenes. It would issue a new request to the LLM with detailed instructions such as:
+Suppose you are using the ```PydanticOutputParser``` to enforce a schema requiring specific fields like ```name``` (string), ```age``` (integer), and ```email``` (string). If the LLM produces an output where the ```age``` field is missing or the ```email``` field is not a valid string, the ```OutputFixingParser``` automatically intervenes. It would issue a new request to the LLM with detailed instructions such as:
 
-- "The output is missing the `age` field. Add an appropriate integer value for `age`."
-- "The `email` field contains an invalid format. Correct it to match a valid email string."
+- "The output is missing the ```age``` field. Add an appropriate integer value for ```age```."
+- "The ```email``` field contains an invalid format. Correct it to match a valid email string."
 
 This iterative process ensures the final output conforms to the specified schema without requiring manual intervention.
 
@@ -63,13 +62,13 @@ Key Benefits:
 ---- 
 Implementation Steps: 
 
-To use the `OutputFixingParser` effectively, follow these steps:
+To use the ```OutputFixingParser``` effectively, follow these steps:
 
-1. **Wrap a Parser**: Instantiate the `OutputFixingParser` with another parser, such as the `PydanticOutputParser`, as its base.
+1. **Wrap a Parser**: Instantiate the ```OutputFixingParser``` with another parser, such as the ```PydanticOutputParser```, as its base.
 2. **Define the Schema**: Specify the schema or format that the output must adhere to.
-3. **Enable Error Correction**: Allow the `OutputFixingParser` to detect and correct errors automatically through additional LLM calls, ensuring that correction instructions precisely identify and address issues for accurate reformatting.
+3. **Enable Error Correction**: Allow the ```OutputFixingParser``` to detect and correct errors automatically through additional LLM calls, ensuring that correction instructions precisely identify and address issues for accurate reformatting.
 
-By integrating the `OutputFixingParser` into your workflow, you can ensure robust error handling and maintain consistent output quality in your LangChain applications.
+By integrating the ```OutputFixingParser``` into your workflow, you can ensure robust error handling and maintain consistent output quality in your LangChain applications.
 
 
 ### Table of Contents
@@ -89,8 +88,8 @@ By integrating the `OutputFixingParser` into your workflow, you can ensure robus
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -131,9 +130,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -151,7 +150,7 @@ load_dotenv(override=True)
 ## Define Data Model and Set Up PydanticOutputParser
 
 - The Actor class is defined using the Pydantic model, where name and film_names are fields representing the actor's name and a list of films they starred in.
-- The `PydanticOutputParser` is used to parse outputs into an Actor object.
+- The ```PydanticOutputParser``` is used to parse outputs into an Actor object.
 
 ```python
 from langchain_core.output_parsers import PydanticOutputParser
@@ -301,8 +300,8 @@ parser.parse(misformatted)
 
 ## Using OutputFixingParser to Correct Incorrect Formatting
 ### Set Up OutputFixingParser to Automatically Correct the Error
-- `OutputFixingParser` wraps around the existing `PydanticOutputParser` and automatically fixes errors by making additional calls to the LLM.
-- The from_llm() method connects `OutputFixingParser` with `ChatOpenAI` to correct the formatting issues in the output.
+- ```OutputFixingParser``` wraps around the existing ```PydanticOutputParser``` and automatically fixes errors by making additional calls to the LLM.
+- The from_llm() method connects ```OutputFixingParser``` with ```ChatOpenAI``` to correct the formatting issues in the output.
 
 ```python
 from langchain_openai import ChatOpenAI

@@ -20,12 +20,11 @@ pre {
 # Asking Humans for Help: Customizing State in LangGraph
 
 - Author: [Hwayoung Cha](https://github.com/forwardyoung)
-- Design: []()
 - Peer Review: []()
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/langchain-ai/langchain-academy/blob/main/module-4/sub-graph.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/08-LangGraph-State-Customization.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/08-LangGraph-State-Customization.ipynb)
 ## Overview
 
 This tutorial demonstrates how to extend a chatbot using LangGraph by adding a **"human" node**, allowing the system to optionally ask humans for help. It introduces state customization with an "ask_human" flag and shows how to handle interruptions and manual state updates. The tutorial also covers graph visualization, conditional logic, and integrating tools like web search and human assistance.
@@ -46,8 +45,8 @@ This tutorial demonstrates how to extend a chatbot using LangGraph by adding a *
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -116,7 +115,7 @@ load_dotenv(override=True)
 
 ## Setting Up the Node to Ask Humans for Help
 
-Extends the `State` class to include an `ask_human` flag and defines the `HumanRequest` tool schema using `TypedDict` and `BaseModel`. This allows the chatbot to formally request human assistance when needed, adding flexibility to its decision-making process.
+Extends the ```State``` class to include an ```ask_human``` flag and defines the ```HumanRequest``` tool schema using ```TypedDict``` and ```BaseModel```. This allows the chatbot to formally request human assistance when needed, adding flexibility to its decision-making process.
 
 ```python
 from typing import Annotated
@@ -128,7 +127,7 @@ from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
 ```
 
-This time, we will add a state (`ask_human`) to determine whether the chatbot should ask a human for help during the conversation.
+This time, we will add a state (```ask_human```) to determine whether the chatbot should ask a human for help during the conversation.
 
 ```python
 class State(TypedDict):
@@ -138,7 +137,7 @@ class State(TypedDict):
     ask_human: bool
 ```
 
-We define the schema for the `human` request.
+We define the schema for the ```human``` request.
 
 ```python
 from pydantic import BaseModel
@@ -153,7 +152,7 @@ class HumanRequest(BaseModel):
 ```
 
 Next, we define the chatbot node. 
-The key modification here is that the chatbot will toggle the `ask_human` flag if it calls the `RequestAssistance` flag.
+The key modification here is that the chatbot will toggle the ```ask_human``` flag if it calls the ```RequestAssistance``` flag.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -185,7 +184,7 @@ def chatbot(state: State):
     return {"messages": [response], "ask_human": ask_human}
 ```
 
-Next, we create the graph builder and add the `chatbot` and `tools` nodes to the graph, as before.
+Next, we create the graph builder and add the ```chatbot``` and ```tools``` nodes to the graph, as before.
 
 ```python
 # Initialize the state graph
@@ -207,11 +206,11 @@ graph_builder.add_node("tools", ToolNode(tools=[tool]))
 
 ## Setting Up the Human Node
 
-Next, we create the `human` node. 
+Next, we create the ```human``` node. 
 
-This node primarily serves as a placeholder to trigger an interrupt in the graph. If the user does not manually update the state during the `interrupt`, the LLM will insert a tool message to indicate that the human was asked for help but did not respond.
+This node primarily serves as a placeholder to trigger an interrupt in the graph. If the user does not manually update the state during the ```interrupt```, the LLM will insert a tool message to indicate that the human was asked for help but did not respond.
 
-This node also resets the `ask_human` flag to ensure the graph does not revisit the node unless another request is made.
+This node also resets the ```ask_human``` flag to ensure the graph does not revisit the node unless another request is made.
 
 > Reference Image
 
@@ -249,11 +248,11 @@ if "human" not in graph_builder.nodes:
 
 Next, we define the conditional logic.
 
-The `select_next_node` function routes the path to the `human` node if the flag is set. Otherwise, it uses the prebuilt `tools_condition` function to select the next node.
+The ```select_next_node``` function routes the path to the ```human``` node if the flag is set. Otherwise, it uses the prebuilt ```tools_condition``` function to select the next node.
 
-The `tools_condition` function simply checks if the `chatbot` used `tool_calls` in the response message.
+The ```tools_condition``` function simply checks if the ```chatbot``` used ```tool_calls``` in the response message.
 
-If so, it routes to the `action` node. Otherwise, it ends the graph.
+If so, it routes to the ```action``` node. Otherwise, it ends the graph.
 
 ```python
 from langgraph.graph import END
@@ -326,13 +325,13 @@ display(
     
 
 
-The `chatbot` node behaves as follows:
+The ```chatbot``` node behaves as follows:
 
 - The chatbot can ask a human for help (chatbot->select->human)
 - It can call a search engine tool (chatbot->select->action)
 - Or it can respond directly (chatbot->select-> **end** ).
 
-Once an action or request is made, the graph switches back to the `chatbot` node to continue the task.
+Once an action or request is made, the graph switches back to the ```chatbot``` node to continue the task.
 
 ```python
 # user_input = "I need expert help to build this AI agent. Please search for an answer." (Case where it performs a web search instead of asking a human)
@@ -362,7 +361,7 @@ for event in events:
         request: I need assistance in building an AI agent. I'm looking for guidance on the design, implementation, and best practices for developing an effective AI agent.
 </pre>
 
-**Notice:** The `LLM` has called the provided "`HumanRequest`" tool, and an interrupt has been set. Let's check the graph state.
+**Notice:** The ```LLM``` has called the provided "```HumanRequest```" tool, and an interrupt has been set. Let's check the graph state.
 
 ```python
 # Create a snapshot of the graph state
@@ -379,12 +378,12 @@ snapshot.next
 
 
 
-The graph state is actually **interrupted** before the `'human'` node. In this scenario, you can act as the "expert" and manually update the state by adding a new `ToolMessage` with your input.
+The graph state is actually **interrupted** before the ```'human'``` node. In this scenario, you can act as the "expert" and manually update the state by adding a new ```ToolMessage``` with your input.
 
 To respond to the chatbot's request, follow these steps:
 
-1. Create a `ToolMessage` containing your response. This will be passed back to the `chatbot`.
-2. Call `update_state` to manually update the graph state.
+1. Create a ```ToolMessage``` containing your response. This will be passed back to the ```chatbot```.
+2. Call ```update_state``` to manually update the graph state.
 
 ```python
 # Extract the AI message
@@ -429,7 +428,7 @@ graph.get_state(config).values["messages"]
 
 
 
-Next, we **resume** the graph by passing `None` as the input.
+Next, we **resume** the graph by passing ```None``` as the input.
 
 ```python
 # Generate an event stream from the graph

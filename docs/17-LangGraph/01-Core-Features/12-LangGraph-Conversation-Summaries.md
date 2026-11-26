@@ -21,10 +21,10 @@ pre {
 
 - Author: [Junseong Kim](https://www.linkedin.com/in/%EC%A4%80%EC%84%B1-%EA%B9%80-591b351b2/)
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/02-CommaSeparatedListOutputParser.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/02-CommaSeparatedListOutputParser.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/12-LangGraph-Conversation-Summaries.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/12-LangGraph-Conversation-Summaries.ipynb)
 ## Overview
 
 One of the most common use cases of conversation persistence is keeping track of a conversation's history. By summarizing and referencing past messages, we can maintain essential context without overloading the system with the entire conversation. This becomes especially important for long conversations, where a large context window can lead to increased computational costs and potential inaccuracies. 
@@ -61,8 +61,8 @@ This tutorial will guide you through setting up a conversation flow that automat
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -106,9 +106,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -125,10 +125,10 @@ load_dotenv(override=True)
 
 ## Checking the Conversation Length
 
-Below, we set up our custom `State` to store both messages and summaries. We'll also define a helper function in a **separate cell** to determine if the conversation has exceeded a certain length.
+Below, we set up our custom ```State``` to store both messages and summaries. We'll also define a helper function in a **separate cell** to determine if the conversation has exceeded a certain length.
 
-- The `State` class extends `MessagesState`, holding `messages` and `summary`.
-- We initialize a `ChatOpenAI` model with the name `gpt-4o-mini`.
+- The ```State``` class extends ```MessagesState```, holding ```messages``` and ```summary```.
+- We initialize a ```ChatOpenAI``` model with the name ```gpt-4o-mini```.
 
 ```python
 from typing import Literal, Annotated
@@ -152,7 +152,7 @@ class State(MessagesState):
 model = ChatOpenAI(model_name="gpt-4o-mini", temperature=1)
 ```
 
-Here is a separate code cell for the `should_continue` function, which checks if the conversation has more than 6 messages.
+Here is a separate code cell for the ```should_continue``` function, which checks if the conversation has more than 6 messages.
 
 ```python
 from langgraph.graph import END
@@ -172,9 +172,9 @@ def should_continue(state: State) -> Literal["summarize_conversation", END]:
 
 ## Summarizing and Managing the Conversation
 
-When the conversation exceeds the threshold, we summarize it and remove older messages to preserve only a recent segment and the overall summary. We also create a node (`ask_llm`) to handle new messages, optionally including the existing summary.
+When the conversation exceeds the threshold, we summarize it and remove older messages to preserve only a recent segment and the overall summary. We also create a node (```ask_llm```) to handle new messages, optionally including the existing summary.
 
-- `ask_llm` checks if a summary exists and prepends it as a `SystemMessage` if so.
+- ```ask_llm``` checks if a summary exists and prepends it as a ```SystemMessage``` if so.
 
 ```python
 def ask_llm(state: State):
@@ -194,7 +194,7 @@ def ask_llm(state: State):
     return {"messages": [response]}
 ```
 
-- `summarize_conversation` either creates or extends a summary and removes older messages.
+- ```summarize_conversation``` either creates or extends a summary and removes older messages.
 
 ```python
 def summarize_conversation(state: State):
@@ -225,10 +225,10 @@ def summarize_conversation(state: State):
 
 ## Building Graph Workflow
 
-Here, we construct a `StateGraph`, add our nodes, and compile the application. We also use `visualize_graph(app)` to see how the workflow is structured.
+Here, we construct a ```StateGraph```, add our nodes, and compile the application. We also use ```visualize_graph(app)``` to see how the workflow is structured.
 
-- Use `StateGraph` to define nodes and edges.
-- Use `visualize_graph(app)` to see the workflow.
+- Use ```StateGraph``` to define nodes and edges.
+- Use ```visualize_graph(app)``` to see the workflow.
 
 ```python
 # Build the workflow graph
@@ -247,7 +247,7 @@ workflow.add_edge("summarize_conversation", END)
 app = workflow.compile(checkpointer=memory)
 ```
 
-Below is an example code snippet that visualizes the current workflow graph. We define custom node styles for the graph and then use IPython utilities to display the rendered image inline. The `NodeStyles` data class customizes fill colors, stroke styles, and overall appearance of the nodes.
+Below is an example code snippet that visualizes the current workflow graph. We define custom node styles for the graph and then use IPython utilities to display the rendered image inline. The ```NodeStyles``` data class customizes fill colors, stroke styles, and overall appearance of the nodes.
 
 ```python
 # Required imports for graph visualization
@@ -300,10 +300,10 @@ display(
 
 You can interact with the application by sending messages. Once the conversation exceeds 6 messages, it automatically summarizes and shortens.
 
-- The `app.stream` method handles streaming of messages and triggers the nodes accordingly.
-- Check the internal state with `app.get_state(config)` to see how messages and summaries are updated.
+- The ```app.stream``` method handles streaming of messages and triggers the nodes accordingly.
+- Check the internal state with ```app.get_state(config)``` to see how messages and summaries are updated.
 
-Here is a helper function, `print_update`, which prints updates in real time during streaming.
+Here is a helper function, ```print_update```, which prints updates in real time during streaming.
 
 ```python
 def print_update(update):
@@ -317,7 +317,7 @@ def print_update(update):
             print(v["summary"])
 ```
 
-Below is a single code cell demonstrating how we handle user messages and process them through streaming mode. We import `HumanMessage`, configure the session with a thread ID, and send three user messages in sequence. After each message, the updates are streamed and printed in real time.
+Below is a single code cell demonstrating how we handle user messages and process them through streaming mode. We import ```HumanMessage```, configure the session with a thread ID, and send three user messages in sequence. After each message, the updates are streamed and printed in real time.
 
 ```python
 # Initialize a configuration object with thread ID
@@ -449,7 +449,7 @@ values
 
 
 
-As you can see, the summary has been added, and the older messages have been replaced by `RemoveMessage` actions. Only the most recent messages and the newly created summary remain.
+As you can see, the summary has been added, and the older messages have been replaced by ```RemoveMessage``` actions. Only the most recent messages and the newly created summary remain.
 
 You can now continue the conversation, and despite only having the last two messages visible, the system still retains the overall context through the summary.
 

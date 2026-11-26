@@ -20,15 +20,14 @@ pre {
 # Using Various LLM Models
 
 - Author: [eunhhyy](https://github.com/eunhhyy)
-- Design: []()
 - Peer Review : [Wooseok Jeong](https://github.com/jeong-wooseok)
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/00-Models.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/00-Models.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/01-Models.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/01-Models.ipynb)
 ## Overview
 
-This tutorial provides a comprehensive guide to major `Large Language Models (LLMs)` in the AI Market.
+This tutorial provides a comprehensive guide to major ```Large Language Models (LLMs)``` in the AI Market.
 
 ### Table of Contents
 

@@ -20,15 +20,14 @@ pre {
 # New Employee Onboarding Chatbot
 
 - Author: [Mark](https://github.com/obov)
-- Design:
 - Peer Review :
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/19-NewEmployeeOnboardingChatbot.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/19-NewEmployeeOnboardingChatbot.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/19-NewEmployeeOnboardingChatbot.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/19-NewEmployeeOnboardingChatbot.ipynb)
 ## Overview
 
-This tutorial demonstrates how to build an Onboarding Helper using `LangChain`, designed to centralize and leverage Notion-based documentation for new employees. By integrating structured data from Notion pages, databases, and wikis into a Retrieval-Augmented Generation (RAG) system, this solution enables seamless access to company protocols, role-specific guides, and FAQs. New hires can query this unified knowledge base in natural language, helping them quickly adapt to their roles without sifting through scattered documents.
+This tutorial demonstrates how to build an Onboarding Helper using ```LangChain```, designed to centralize and leverage Notion-based documentation for new employees. By integrating structured data from Notion pages, databases, and wikis into a Retrieval-Augmented Generation (RAG) system, this solution enables seamless access to company protocols, role-specific guides, and FAQs. New hires can query this unified knowledge base in natural language, helping them quickly adapt to their roles without sifting through scattered documents.
 
 ### Why This Matters
 
@@ -76,8 +75,8 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 [Note]
 
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 
 ```python
@@ -232,11 +231,11 @@ All the data used in this tutorial is synthetic. Company names, personal names, 
 ## Langchain Only RAG
 
 
-In this section, we will implement RAG using only `LangChain`. Since the data prepared for this tutorial is not very long, we have skipped the chunking process during the data preprocessing stage of RAG. To enhance RAG performance, we have enabled similarity search based on the titles of the documents.
+In this section, we will implement RAG using only ```LangChain```. Since the data prepared for this tutorial is not very long, we have skipped the chunking process during the data preprocessing stage of RAG. To enhance RAG performance, we have enabled similarity search based on the titles of the documents.
 
-If you are already familiar with `LangChain`, this should be a very straightforward example. The core concepts—retrieving relevant documents and passing them to an LLM—are fundamental to `LangChain`’s functionality, making this implementation relatively simple.
+If you are already familiar with ```LangChain```, this should be a very straightforward example. The core concepts—retrieving relevant documents and passing them to an LLM—are fundamental to ```LangChain```’s functionality, making this implementation relatively simple.
 
-However, if you are new to `LangChain` or unfamiliar with key concepts such as vector stores, RAG (Retrieval-Augmented Generation), and similarity search, some parts of this section might feel a bit challenging. These components are essential for building powerful AI-driven retrieval systems, so taking the time to understand them will be highly beneficial.
+However, if you are new to ```LangChain``` or unfamiliar with key concepts such as vector stores, RAG (Retrieval-Augmented Generation), and similarity search, some parts of this section might feel a bit challenging. These components are essential for building powerful AI-driven retrieval systems, so taking the time to understand them will be highly beneficial.
 
 If you find certain steps difficult to follow, consider revisiting the basics of how vector stores index and retrieve information or how similarity search helps match queries with relevant documents. Once you gain a solid grasp of these foundational ideas, integrating them into a LangChain-based RAG system will become much more intuitive.
 
@@ -379,7 +378,7 @@ The responses generated by the basic RAG implementation above are generally acce
 ## Apply Langgraph Basic
 
 
-To address the issue I mentioned above, in this section, we will implement a simple filtering agent using `LangGraph` to verify whether the retrieved documents are truly useful for generating an answer. Instead of blindly relying on similarity scores, this agent will act as an additional validation layer, ensuring that only relevant information is passed to the response generation stage.
+To address the issue I mentioned above, in this section, we will implement a simple filtering agent using ```LangGraph``` to verify whether the retrieved documents are truly useful for generating an answer. Instead of blindly relying on similarity scores, this agent will act as an additional validation layer, ensuring that only relevant information is passed to the response generation stage.
 
 By integrating this additional verification step, we expect to see more accurate and contextually appropriate responses while reducing the inclusion of unnecessary or misleading information. Importantly, this modification requires only a small adjustment to the retriever component of our original RAG implementation, keeping the rest of the process unchanged.
 
@@ -476,7 +475,7 @@ graph.add_edge("retrieve", "filter_relevant_docs")
 langgraph_retriever = graph.compile()
 ```
 
-`LangGraph` is fundamentally implemented by inheriting Runnable from `LangChain`, allowing it to leverage various built-in functionalities such as structured execution, dependency management, and asynchronous processing. This enables seamless integration with LangChain’s existing components while providing enhanced control over workflow orchestration.
+```LangGraph``` is fundamentally implemented by inheriting Runnable from ```LangChain```, allowing it to leverage various built-in functionalities such as structured execution, dependency management, and asynchronous processing. This enables seamless integration with LangChain’s existing components while providing enhanced control over workflow orchestration.
 
 Therefore, it can be used as follows:
 
@@ -496,9 +495,9 @@ print(len(langgraph_retriever_result["relevant_docs"]))
     5
 </pre>
 
-The most important aspect is that`LangGraph` can be seamlessly integrated into an existing response chain by utilizing LCEL (LangChain Expression Language) syntax. This means that rather than introducing a completely separate process, it can be directly embedded as a natural extension of the existing pipeline.
+The most important aspect is that```LangGraph``` can be seamlessly integrated into an existing response chain by utilizing LCEL (LangChain Expression Language) syntax. This means that rather than introducing a completely separate process, it can be directly embedded as a natural extension of the existing pipeline.
 
-By leveraging LCEL, it not only enhances modularity but also improves flexibility, making it easier to modify or expand the workflow without disrupting the overall system. This ability to integrate smoothly while maintaining the structured execution of `LangChain` makes it a highly effective tool for optimizing retrieval-augmented generation (RAG) pipelines.
+By leveraging LCEL, it not only enhances modularity but also improves flexibility, making it easier to modify or expand the workflow without disrupting the overall system. This ability to integrate smoothly while maintaining the structured execution of ```LangChain``` makes it a highly effective tool for optimizing retrieval-augmented generation (RAG) pipelines.
 
 
 ```python
@@ -549,7 +548,7 @@ print(result)
     By following these steps, you can effectively book and use a conference room for your meetings.
 </pre>
 
-In fact, the previous example was more about optimization rather than an overall process improvement. It was designed as a lightweight example for users who may not be familiar with `LangGraph`, providing an easy introduction to its capabilities.
+In fact, the previous example was more about optimization rather than an overall process improvement. It was designed as a lightweight example for users who may not be familiar with ```LangGraph```, providing an easy introduction to its capabilities.
 
 Now that we’ve warmed up, we can move on to the next stage. Although we’re using the term "advanced", don’t be intimidated—it’s not as complex as it might sound. The following concepts build upon what we’ve already covered, making the transition smooth and intuitive.
 
@@ -777,13 +776,13 @@ print(response.content)
 
 ## Wrap up
 
-Throughout this tutorial, we explored various ways to enhance a basic RAG system using `LangChain` and `LangGraph`. We started with a simple similarity search-based RAG implementation, then introduced an agent to filter retrieved documents, ensuring they contribute meaningfully to the final response. Finally, we refined the user query handling by segmenting and processing sub-questions in parallel, creating a more structured and intelligent response system.
+Throughout this tutorial, we explored various ways to enhance a basic RAG system using ```LangChain``` and ```LangGraph```. We started with a simple similarity search-based RAG implementation, then introduced an agent to filter retrieved documents, ensuring they contribute meaningfully to the final response. Finally, we refined the user query handling by segmenting and processing sub-questions in parallel, creating a more structured and intelligent response system.
 
-One point I want to highlight—though it may seem functionally less critical—is the tight integration between `LangChain` and `LangGraph`. Rather than thinking of them as separate choices, it's more effective to use them flexibly depending on the situation.
+One point I want to highlight—though it may seem functionally less critical—is the tight integration between ```LangChain``` and ```LangGraph```. Rather than thinking of them as separate choices, it's more effective to use them flexibly depending on the situation.
 
-`LangGraph` builds on LangChain's Runnable-based architecture, meaning you don’t have to choose one over the other. Instead, you can seamlessly invoke `LangGraph` workflows within a standard `LangChain` chain, or even integrate LCEL (LangChain Expression Language) to construct more modular and expressive logic.
+```LangGraph``` builds on LangChain's Runnable-based architecture, meaning you don’t have to choose one over the other. Instead, you can seamlessly invoke ```LangGraph``` workflows within a standard ```LangChain``` chain, or even integrate LCEL (LangChain Expression Language) to construct more modular and expressive logic.
 
-Ultimately, the key takeaway is that `LangChain` and `LangGraph` complement each other—leveraging both increases adaptability, whether you're optimizing retrieval, structuring workflows, or improving response generation. The best approach isn't about choosing one, but about knowing when and how to use each effectively.
+Ultimately, the key takeaway is that ```LangChain``` and ```LangGraph``` complement each other—leveraging both increases adaptability, whether you're optimizing retrieval, structuring workflows, or improving response generation. The best approach isn't about choosing one, but about knowing when and how to use each effectively.
 
 
 ---

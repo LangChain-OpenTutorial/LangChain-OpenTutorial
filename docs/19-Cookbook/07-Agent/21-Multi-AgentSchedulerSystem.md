@@ -20,34 +20,33 @@ pre {
 # Multi-Agent Scheduler System
 
 - Author: [Ilgyun Jeong](https://github.com/johnny9210)
-- Design: 
 - Peer Review: [Mark()](https://github.com/obov), [Taylor(Jihyun Kim)](https://github.com/Taylor0819)
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/03-MultiAgentSystem/01-MultiAgentScheduler.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/03-MultiAgentSystem/01-MultiAgentScheduler.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/21-Multi-AgentSchedulerSystem.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/21-Multi-AgentSchedulerSystem.ipynb)
 
 ## Overview
 
 The Multi-Agent Scheduler System represents an innovative approach to automating information retrieval and delivery through a coordinated network of specialized AI agents. At its core, this system transforms simple natural language requests into scheduled, automated search and delivery operations, making it particularly valuable for researchers, analysts, and anyone needing regular, scheduled information updates.
 
-Imagine asking "Find me the latest RAG papers at 7 AM tomorrow." Instead of manually searching and compiling information early in the morning, the system automatically handles the entire process - from understanding your request to delivering a well-formatted email with relevant research papers at precisely 7 AM. This automation eliminates the need for manual intervention while ensuring timely delivery of crucial information.
+Imagine asking "Find me the latest RAG papers at 7 AM tomorrow." Instead of manually searching and compiling information early in the morning, the system automatically handles the entire process - from understanding your request to delivering a well-formatted email with relevant research papers at precisely 7 AM. This automation removes the need for manual intervention while ensuring timely delivery of critical information.
 
 ### System Architecture
 
 The system's architecture is built around five specialized agents, each handling a crucial aspect of the information retrieval and delivery process:
 
-1. `Query Analysis Agent`
+1. ```Query Analysis Agent```
    This agent serves as the system's front door, interpreting natural language queries to extract critical information 
 
-2. `Search Router`
+2. ```Search Router```
    Acting as the system's traffic controller, the Search Router directs queries to the most appropriate specialized search agent:
    
-3. `Response Agent`
+3. ```Response Agent```
    This agent transforms raw search results into well-structured, readable content by:
 
-4. `Scheduling System and Email Service`
+4. ```Scheduling System and Email Service```
    The scheduling component manages the temporal aspects of the system:
    This ensures that all operations occur at their specified times without conflicts.
    The system implements a robust email delivery service using yagmail that provides:
@@ -82,8 +81,8 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 **[Note]**
 
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 
 ```python
@@ -276,7 +275,7 @@ class QueryAnalysisAgent:
 
 Core Methods 1
 
-`extract_time()`
+extract_time()
 - Functionality: Extracts and processes time information from natural language queries
 - Features:
   - Converts various time formats (e.g., "morning 7", "afternoon 3:30") to standardized datetime objects
@@ -320,7 +319,7 @@ QueryAnalysisAgent.extract_time = extract_time
 
 Core Methods 2
 
-`analyze_task()`
+analyze_task()
 - Functionality: Breaks down queries into structured task components
 - Features:
   - Identifies search type (research_paper, news, general)
@@ -353,7 +352,7 @@ QueryAnalysisAgent.analyze_task = analyze_task
 
 Core Methods 3
 
-`analyze_query()`
+analyze_query()
 - Functionality: Combines time extraction and task analysis into a complete query interpretation
 - Features:
   - Coordinates between time extraction and task analysis
@@ -401,7 +400,7 @@ QueryAnalysisAgent.analyze_query = analyze_query
 
 Core Methods 4
 
-`datetime_handler(obj)`
+datetime_handler(obj)
 * Functionality: Converts datetime objects to JSON-serializable string format
 * Features:
    * Accepts any object and checks if it's a datetime instance
@@ -414,8 +413,8 @@ Core Methods 4
    * Database storage of temporal data
    * Logging and debugging timestamp formatting
 * Examples:
-   * Input: `datetime(2024, 2, 6, 15, 30, tzinfo=pytz.UTC)`
-   * Output: `"2024-02-06 15:30:00+0000"`
+   * Input: ```datetime(2024, 2, 6, 15, 30, tzinfo=pytz.UTC)```
+   * Output: ```"2024-02-06 15:30:00+0000"```
 
 The function serves as a critical utility for converting Python's datetime objects into a standardized string format that can be easily stored, transmitted, and later reconstructed. This is particularly important in our scheduling system where accurate time representation and timezone awareness are essential for reliable task execution.
 
@@ -501,20 +500,26 @@ class SearchRouter:
 ```
 Each specialized agent is designed to handle specific types of searches:
 
-1. `Paper Search Agent`
+1. Paper Search Agent
+
 This agent specializes in academic paper searches, interfacing with arXiv's API to retrieve scholarly articles and research papers.
 
-2. `News Search Agent`
+
+2. News Search Agent
+
 This agent handles news-related searches, connecting to NewsAPI to gather current events and news articles.
 
-3. `General Search Agent`
+
+3. General Search Agent
+
+
 This agent manages general web searches using SerpAPI, handling broader information gathering needs.
 
 This routing system ensures that each query is handled by the most appropriate agent while maintaining consistent error handling and result formatting across all search types. The modular design allows for easy addition of new specialized agents as needed, making the system highly extensible and maintainable.
 
 Each agent provides standardized outputs despite their different data sources and search methodologies, enabling seamless integration with the rest of the system components.
 
-`PaperSearchAgent`
+PaperSearchAgent
 
 This agent focuses on academic content retrieval. It interfaces with the arXiv API to fetch scholarly papers and research documents. Key features include filtering papers by relevance, date ranges, and processing XML responses into structured data. The agent is particularly useful for researchers and academics needing current papers in their field.
 
@@ -597,7 +602,7 @@ class PaperSearchAgent:
         return results
 ```
 
-`NewsSearchAgent`
+NewsSearchAgent
 
 This agent handles current events and news article searches. It connects to NewsAPI to access a wide range of news sources. The agent supports features like language filtering, date range specification, and source selection. It's especially valuable for users needing real-time information or tracking specific topics in the news.
 
@@ -730,7 +735,7 @@ class NewsSearchAgent:
         return response.json()
 ```
 
-`GeneralSearchAgent`
+GeneralSearchAgent
 
 This agent manages broader web searches through SerpAPI. It handles diverse information needs that don't fit strictly into academic or news categories. The agent includes features like language-specific searches, result ranking, and content type filtering. It's particularly useful for general research, product information, or any broad information gathering needs.
 
@@ -835,13 +840,13 @@ class GeneralSearchAgent:
         return min(1.0, relevance_score)
 ```
 
-`SearchRouter`: The System's Traffic Controller
+SearchRouter: The System's Traffic Controller
 
-The `SearchRouter` acts as the central coordinator for our multi-agent search system, intelligently directing queries to specialized search agents based on the type of information needed. Think of it as an expert traffic controller at a busy airport, making sure each "flight" (query) goes to the right "runway" (search agent).
+The SearchRouter acts as the central coordinator for our multi-agent search system, intelligently directing queries to specialized search agents based on the type of information needed. Think of it as an expert traffic controller at a busy airport, making sure each "flight" (query) goes to the right "runway" (search agent).
 
-The `SearchRouter`'s modular design allows for easy expansion - new specialized search agents can be added without modifying the existing code, making the system highly adaptable to evolving search needs.
+The SearchRouter's modular design allows for easy expansion - new specialized search agents can be added without modifying the existing code, making the system highly adaptable to evolving search needs.
 
-Through this central coordination, the `SearchRouter` ensures efficient and reliable information retrieval across different types of searches while maintaining a consistent interface for the rest of the system.
+Through this central coordination, the SearchRouter ensures efficient and reliable information retrieval across different types of searches while maintaining a consistent interface for the rest of the system.
 
 ```python
 class SearchRouter:
@@ -1372,7 +1377,7 @@ if __name__ == "__main__":
 
 ### Scheduling System and Email Service
 
-The `ScheduledSearchSystem` manages the complete lifecycle of search tasks, from scheduling to result delivery. Here's its core structure and functionality:
+The ScheduledSearchSystem manages the complete lifecycle of search tasks, from scheduling to result delivery. Here's its core structure and functionality:
 
 ### Key Components
 
@@ -1635,7 +1640,7 @@ class ScheduledSearchSystem:
 ```
 
 ### Multi-Agent Scheduler System Usage Guide
-The work starts 5 minutes before the work request time.
+The system starts 5 minutes before the scheduled request time.
 
 1. Email Configuration
 - Enable Gmail 2-Step Verification

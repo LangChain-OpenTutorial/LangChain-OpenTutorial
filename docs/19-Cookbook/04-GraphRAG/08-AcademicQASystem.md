@@ -20,12 +20,11 @@ pre {
 # Academic QA System with GraphRAG
 
 - Author: [Yongdam Kim](https://github.com/dancing-with-coffee)
-- Design: 
 - Peer Review: 
+- Proofread  : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/04-GraphRAG/08-AcademicQASystem.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/04-GraphRAG/08-AcademicQASystem.ipynb)
 ## Overview
 
 This tutorial demonstrates how to implement a QA system that better leverages paper (academic) content by using GraphRAG.
@@ -34,9 +33,9 @@ GraphRAG is a novel system introduced by Microsoft that utilizes a graph to extr
 
 However, Microsoft’s official GraphRAG implementation is not readily integrated with LangChain, making it difficult to use.
 
-To solve this, we use `langchain-graphrag` which allows us to implement GraphRAG within LangChain.
+To solve this, we use ```langchain-graphrag``` which allows us to implement GraphRAG within LangChain.
 
-In this tutorial, we’ll learn how to build a QA system for the latest AI papers using `langchain-graphrag`.
+In this tutorial, we’ll learn how to build a QA system for the latest AI papers using ```langchain-graphrag```.
 
 ![GraphRAG](./img/08-academicqasystem-graphrag-pipeline.png)
 
@@ -68,8 +67,8 @@ In this tutorial, we’ll learn how to build a QA system for the latest AI paper
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -98,7 +97,7 @@ package.install(
 )
 ```
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -361,7 +360,7 @@ df_text_units
 
 GraphRAG extracts entities and relationships from the text chunks to automatically build a knowledge graph.
 
-When constructing a Knowledge Graph, an LLM is used. In this tutorial, we use `gpt-4o-mini` for performance and cost reasons. The LLM uses a predefined prompt to extract entity and relationship information.
+When constructing a Knowledge Graph, an LLM is used. In this tutorial, we use ```gpt-4o-mini``` for performance and cost reasons. The LLM uses a predefined prompt to extract entity and relationship information.
 
 ```python
 # This process can take about 20 minutes.
@@ -513,7 +512,7 @@ print(f"Number of edges - {len(graph[0].edges)}")
 
 - We run all steps from Text Chunking to Community Detection and Community Summarization in code.
 - For community detection, we use the Leiden algorithm, known for good performance.
-- In GraphRAG, we create an index called an artifact. We ultimately store the artifact using the `save_artifact` function.
+- In GraphRAG, we create an index called an artifact. We ultimately store the artifact using the ```save_artifact``` function.
 
 ```python
 # Below we define functions to save and load the final Graph Index artifacts.
@@ -760,7 +759,7 @@ print(search_chain.invoke(query))
 
 ## Global Search through Knowledge Graph
 
-We can also perform a global search using the Knowledge Graph built by GraphRAG. A global search is useful for getting answers with broader context. However, global search requires a model with a sufficiently large max token length. For example, `gpt-4o-mini` (max token size = 16k) may not handle the entire content of a large paper-based graph. If possible, try `gpt-4o` (max token size = 32k) for larger contexts!
+We can also perform a global search using the Knowledge Graph built by GraphRAG. A global search is useful for getting answers with broader context. However, global search requires a model with a sufficiently large max token length. For example, ```gpt-4o-mini``` (max token size = 16k) may not handle the entire content of a large paper-based graph. If possible, try ```gpt-4o``` (max token size = 32k) for larger contexts!
 
 ```python
 # Demonstrate global search using the knowledge graph.

@@ -19,39 +19,33 @@ pre {
 
 # Pinecone
 
-- Author: [ro__o_jun](https://github.com/ro-jun)
-- Design: []()
-- Peer Review: 
+- Author: [ro__o_jun](#https://github.com/ro-jun), [Pupba](#https://github.com/pupba)
+- Peer Review: [Ivy Bae](https://github.com/ivybae), [Musang Kim](https://github.com/musangk), [Sohyeon Yim](#https://github.com/sohyunwriter)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/01-OpenAIEmbeddings.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/01-OpenAIEmbeddings.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/09-VectorStore/04-Pinecone.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/09-VectorStore/04-Pinecone.ipynb)
 
 ## Overview
 
-This tutorial provides a comprehensive guide to integrating `Pinecone` with `LangChain` for creating and managing high-performance vector databases.  
+This tutorial covers how to use **Pinecone** with **LangChain** .
 
-It explains how to set up `Pinecone` , `preprocess documents` , and utilize Pinecone's APIs for vector indexing and `document retrieval` .  
+**Pinecone** is a vector database designed for fast and scalable similarity search, offering real-time indexing and retrieval. 
 
-Additionally, it demonstrates advanced features like `hybrid search` using `dense` and `sparse embeddings` , `metadata filtering` , and `dynamic reranking` to build efficient and scalable search systems.  
+Unlike other vector databases, **Pinecone** seamlessly integrates with machine learning workflows and provides fully managed infrastructure, eliminating the need for manual scaling or maintenance.
+
+This tutorial walks you through using **CRUD** operations with the **Pinecone** **storing** , **updating** , **deleting** documents, and performing **similarity-based retrieval** .
 
 ### Table of Contents
 
 - [Overview](#overview)
 - [Environment Setup](#environment-setup)
-- [What is Pinecone?](#what-is-pinecone)
-- [Pinecone setup guide](#Pinecone-setup-guide)
-- [Data preprocessing](#data-preprocessing)
-- [Pinecone and LangChain Integration Guide: Step by Step](#pinecone-and-langchain-integration-guide-step-by-step)
-- [Pinecone: Add to DB Index (Upsert)](#pinecone-add-to-db-index-upsert)
-- [Index inquiry/delete](#index-inquirydelete)
-- [Create HybridRetrieve](#create-hybridretrieve)
+- [What is Pinecone?](#what-is-pinecone?)
+- [Prepare Data](#prepare-data)
+- [Setting up Pinecone](#Setting-up-Pinecone)
+- [Document Manager](#document-manager)
+
 
 ### References
-
-- [Langchain-PineconeVectorStore](https://python.langchain.com/api_reference/pinecone/vectorstores/langchain_pinecone.vectorstores.PineconeVectorStore.html)
-- [Langchain-Retrievers](https://python.langchain.com/docs/integrations/retrievers/pinecone_hybrid_search/)
-- [Pinecone-Docs](https://docs.pinecone.io/guides/get-started/overview)
-- [Pinecone-Docs-integrations](https://docs.pinecone.io/integrations/langchain)
 ----
 
 ## Environment Setup
@@ -59,18 +53,13 @@ Additionally, it demonstrates advanced features like `hybrid search` using `dens
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
 %pip install langchain-opentutorial
 ```
-
-<pre class="custom">
-    [notice] A new release of pip is available: 24.3.1 -> 25.0.1
-    [notice] To update, run: python.exe -m pip install --upgrade pip
-</pre>
 
 ```python
 # Install required packages
@@ -78,13 +67,10 @@ from langchain_opentutorial import package
 
 package.install(
     [
-        "langchain-pinecone",
-        "pinecone[grpc]",
-        "nltk",
-        "langchain_community",
-        "pymupdf",
-        "langchain-openai",
-        "pinecone-text",
+        "langsmith",
+        "langchain-core",
+        "python-dotenv",
+        "pinecone",
     ],
     verbose=False,
     upgrade=False,
@@ -98,19 +84,21 @@ from langchain_opentutorial import set_env
 set_env(
     {
         "OPENAI_API_KEY": "",
-        "PINECONE_API_KEY": "",
         "LANGCHAIN_API_KEY": "",
-        "LANGCHAIN_TRACING_V2": "true",
+        "LANGCHAIN_TRACING_V2": "false",
         "LANGCHAIN_ENDPOINT": "https://api.smith.langchain.com",
         "LANGCHAIN_PROJECT": "Pinecone",
-    },
+        "PINECONE_API_KEY": "",
+    }
 )
 ```
 
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-[Note] If you are using a `.env` file, proceed as follows.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
+
+[Note] This is not necessary if you've already set the required API keys in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -127,891 +115,455 @@ load_dotenv(override=True)
 
 ## What is Pinecone?
 
-`Pinecone` is a **cloud-based** , high-performance vector database for **efficient vector storage and retrieval** in AI and machine learning applications.
+![pinecone_logo](./img/04-pinecone-logo.png)
 
-**Features** :
-1. **Supports SDKs** for Python, Node.js, Java, and Go.
-2. **Fully managed** : Reduces the burden of infrastructure management.
-3. **Real-time updates** : Supports real-time insertion, updates, and deletions.
+```Pinecone``` is a managed vector database that allows developers to build fast, scalable, and cost-efficient vector search applications. 
 
-**Advantages** :
-1. Scalability for large datasets.
-2. Real-time data processing.
-3. High availability with cloud infrastructure.
+It efficiently handles high-dimensional vector data, providing features such as **indexing**, **searching**, and **filtering** for embedding-based applications.
 
-**Disadvantages** :
-1. Relatively higher cost compared to other vector databases.
-2. Limited customization options.
+### Key Features of Pinecone:
 
-## Pinecone setup guide
+1. **Scalable Vector Indexing**: Handles billions of vectors with low latency.
 
-This section explains how to set up `Pinecone` , including `API key` creation.
+2. **Fast and Accurate Search**: Supports similarity search using various distance metrics.
 
-**[steps]**
+3. **Metadata Filtering**: Enables filtering based on metadata tags.
 
-1. Log in to [Pinecone](https://www.pinecone.io/)
-2. Create an API key under the `API Keys` tab.
+4. **Hybrid Search**: Combines semantic search with keyword filtering.
 
-![example](./img/04-pinecone-api-01.png)  
-![example](./img/04-pinecone-api-02.png)  
+5. **Managed Service**: Automatically scales and manages resources.
 
-## Data preprocessing
+6. **Integration**: Works seamlessly with popular machine learning frameworks and embeddings.
 
-Below is the preprocessing process for general documents.  
-Reads all `data/*.pdf` files under `ROOT_DIR` and saves them in `document_lsit.`
+## Prepare Data
 
-```python
-from utils.pinecone import DocumentProcessor
+This section guides you through the **data preparation process** .
 
-directory_path = "data/*.pdf"
-doc_processor = DocumentProcessor(
-    directory_path=directory_path,
-    chunk_size=300,
-    chunk_overlap=50,
-    use_basename=True,
-)
-split_docs = doc_processor.process_pdf_files(directory_path)
+This section includes the following components:
 
-print(f"Number of processed documents: {len(split_docs)}")
-```
+- Data Introduction
 
-<pre class="custom">[INFO] Processed 414 documents from 1 files.
-    Number of processed documents: 414
-</pre>
+- Preprocess Data
+
+
+### Data Introduction
+
+In this tutorial, we will use the fairy tale **📗 The Little Prince** in PDF format as our data.
+
+This material complies with the **Apache 2.0 license** .
+
+The data is used in a text (.txt) format converted from the original PDF.
+
+You can view the data at the link below.
+- [Data Link](https://huggingface.co/datasets/sohyunwriter/the_little_prince)
+
+### Preprocess Data
+
+In this tutorial section, we will preprocess the text data from The Little Prince and convert it into a list of ```LangChain Document``` objects with metadata. 
+
+Each document chunk will include a ```title``` field in the metadata, extracted from the first line of each section.
 
 ```python
-split_docs[12].page_content
-```
-
-
-
-
-<pre class="custom">'up. I have a serious reason: he is the best friend I have in the world. I have another reason: this grown-up understands everything, even books about children. I have a third reason: he lives in France where he is hungry and cold. He needs cheering up. If all these'</pre>
-
-
-
-```python
-split_docs[12].metadata
-```
-
-
-
-
-<pre class="custom">{'source': 'TheLittlePrince.pdf',
-     'file_path': 'data\\TheLittlePrince.pdf',
-     'page': 2,
-     'total_pages': 64,
-     'format': 'PDF 1.3',
-     'title': '',
-     'author': 'Paula MacDowell',
-     'subject': '',
-     'keywords': '',
-     'creator': 'Safari',
-     'producer': 'Mac OS X 10.10.5 Quartz PDFContext',
-     'creationDate': "D:20160209011144Z00'00'",
-     'modDate': "D:20160209011144Z00'00'",
-     'trapped': ''}</pre>
-
-
-
-Performs document processing to save DB in Pinecone. You can select `metadata_keys` during this process.
-
-You can additionally tag metadata and, if desired, add and process metadata ahead of time in a preprocessing task.
-
-- `split_docs` : List[Document] containing the results of document splitting.
-- `metadata_keys` : List containing metadata keys to be added to the document.
-- `min_length` : Specifies the minimum length of the document. Documents shorter than this length are excluded.
-- `use_basename` : Specifies whether to use the file name based on the source path. The default is `False` .
-
-**Preprocessing of documents**
-
-- Extract the required `metadata` information.
-- Filters only data longer than the minimum length.
-- Specifies whether to use the document's `basename` . The default is `False` .
-- Here, `basename` refers to the very last part of the file.
-- For example, `/data/TheLittlePrince.pdf` becomes `TheLittlePrince.pdf`.
-
-
-```python
-contents, metadatas = doc_processor.preprocess_documents(docs=split_docs, min_length=10)
-
-print(f"Number of processed documents: {len(contents)}")
-print(f"Metadata keys: {list(metadatas.keys())}")
-print(f"Sample 'source' metadata: {metadatas['source'][:5]}")
-```
-
-<pre class="custom">Preprocessing documents: 100%|██████████| 414/414 [00:00<00:00, 31331.84it/s]</pre>
-
-    Number of processed documents: 414
-    Metadata keys: ['source', 'page', 'author']
-    Sample 'source' metadata: ['TheLittlePrince.pdf', 'TheLittlePrince.pdf', 'TheLittlePrince.pdf', 'TheLittlePrince.pdf', 'TheLittlePrince.pdf']
-    
-
-    
-    
-
-```python
-# Check number of documents, check number of sources, check number of pages
-len(contents), len(metadatas["source"]), len(metadatas["page"]), len(
-    metadatas["author"]
-)
-```
-
-
-
-
-<pre class="custom">(414, 414, 414, 414)</pre>
-
-
-
-## Pinecone and LangChain Integration Guide: Step by Step
-
-This guide outlines the integration of Pinecone and LangChain to set up and utilize a vector database. 
-
-Below are the key steps to complete the integration.
-
-### Pinecone client initialization and vector database setup
-
-The provided code performs the initialization of a Pinecone client, sets up an index in Pinecone, and defines a vector database to store embeddings.
-
-**[caution]**    
-
-If you are considering HybridSearch, specify the metric as dotproduct.  
-Basic users cannot use PodSpec.  
-
-### Pinecone index settings
-
-**This explains how to create and check indexes.**
-
-```python
-import os
-from utils.pinecone import PineconeDocumentManager
-
-# Initialize Pinecone client with API key from environment variables
-pc_db = PineconeDocumentManager(api_key=os.environ.get("PINECONE_API_KEY"))
-pc_db
-```
-
-
-
-
-<pre class="custom"><utils.pinecone.PineconeDocumentManager at 0x18a2d5fffd0></pre>
-
-
-
-```python
-# Check existing index names
-pc_db.check_indexes()
-```
-
-<pre class="custom">Existing Indexes: [{
-        "name": "langchain-opentutorial-index",
-        "dimension": 3072,
-        "metric": "dotproduct",
-        "host": "langchain-opentutorial-index-9v46jum.svc.aped-4627-b74a.pinecone.io",
-        "spec": {
-            "serverless": {
-                "cloud": "aws",
-                "region": "us-east-1"
-            }
-        },
-        "status": {
-            "ready": true,
-            "state": "Ready"
-        },
-        "deletion_protection": "disabled"
-    }, {
-        "name": "langchain-opentutorial-multimodal-1024",
-        "dimension": 1024,
-        "metric": "dotproduct",
-        "host": "langchain-opentutorial-multimodal-1024-9v46jum.svc.aped-4627-b74a.pinecone.io",
-        "spec": {
-            "serverless": {
-                "cloud": "aws",
-                "region": "us-east-1"
-            }
-        },
-        "status": {
-            "ready": true,
-            "state": "Ready"
-        },
-        "deletion_protection": "disabled"
-    }]
-</pre>
-
-```python
-from pinecone import ServerlessSpec, PodSpec
-
-# Create or reuse the index
-index_name = "langchain-opentutorial-index"
-
-# Set to True when using the serverless method, and False when using the PodSpec method.
-use_serverless = True
-if use_serverless:
-    spec = ServerlessSpec(cloud="aws", region="us-east-1")
-else:
-    spec = PodSpec(environment="us-west1-gcp", pod_type="p1.x1", pods=1)
-
-pc_db.create_index(
-    index_name=index_name,
-    dimension=3072,
-    metric="dotproduct",
-    spec=spec,
-)
-```
-
-<pre class="custom">Using existing index: langchain-opentutorial-index
-</pre>
-
-
-
-
-    <pinecone.grpc.index_grpc.GRPCIndex at 0x18a2dea3c50>
-
-
-
-**This is how to check the inside of an index.**
-
-```python
-index = pc_db.get_index(index_name)
-print(index.describe_index_stats())
-```
-
-<pre class="custom">{'dimension': 3072,
-     'index_fullness': 0.0,
-     'namespaces': {'langchain-opentutorial-01': {'vector_count': 414}},
-     'total_vector_count': 414}
-</pre>
-
-![04-pinecone-index.png](./img/04-pinecone-index.png)
-
-**This is how to clear an index.**
-
-**[Note]** If you want to delete the index, uncomment the lines below and run the code.
-
-```python
-# index_name = "langchain-opentutorial-index2"
-
-# pc_db.delete_index(index_name)
-# print(pc_db.list_indexes())
-```
-
-## Create Sparse Encoder
-
-- Create a sparse encoder.
-
-- Perform stopword processing.
-
-- Learn contents using Sparse Encoder. The encode learned here is used to create a Sparse Vector when storing documents in VectorStore.
-
-
-Simplified NLTK-based BM25 tokenizer
-
-```python
-from utils.pinecone import NLTKBM25Tokenizer
-
-tokenizer = NLTKBM25Tokenizer()
-```
-
-<pre class="custom">[INFO] Downloading NLTK stopwords and punkt tokenizer...
-    [INFO] NLTK setup completed.
-</pre>
-
-    [nltk_data] Downloading package stopwords to
-    [nltk_data]     C:\Users\thdgh\AppData\Roaming\nltk_data...
-    [nltk_data]   Package stopwords is already up-to-date!
-    [nltk_data] Downloading package punkt to
-    [nltk_data]     C:\Users\thdgh\AppData\Roaming\nltk_data...
-    [nltk_data]   Package punkt is already up-to-date!
-    
-
-Tokenization test
-
-```python
-text = "This is an example text, and it contains some punctuation and stop words."
-tokens = tokenizer(text)
-
-print("Before stop words modification:", tokenizer(text))
-tokenizer.add_stop_words(["text", "stop"])
-print("\nAfter adding stop words:", tokenizer(text))
-tokenizer.remove_stop_words(["text", "stop"])
-print("\nAfter removing stop words:", tokenizer(text))
-```
-
-<pre class="custom">Before stop words modification: ['example', 'text', 'contains', 'punctuation', 'stop', 'words']
-    
-    After adding stop words: ['example', 'contains', 'punctuation', 'words']
-    
-    After removing stop words: ['example', 'text', 'contains', 'punctuation', 'stop', 'words']
-</pre>
-
-Create Sparse Encoder
-
-```python
-from pinecone_text.sparse import BM25Encoder
-
-sparse_encoder = BM25Encoder()
-
-# Connect custom tokenizer
-sparse_encoder._tokenizer = tokenizer
-```
-
-```python
-# sparse_encoder test
-test_corpus = ["This is a text document.", "Another document for testing."]
-sparse_encoder.fit(test_corpus)
-
-print(sparse_encoder.encode_documents("Test document."))
-```
-
-
-<pre class="custom">  0%|          | 0/2 [00:00<?, ?it/s]</pre>
-
-
-    {'indices': [3127628307, 3368723024], 'values': [0.49504950495049505, 0.49504950495049505]}
-    
-
-Train the corpus on Sparse Encoder.
-
-- `save_path` : Path to save Sparse Encoder. Later, the Sparse Encoder saved in pickle format will be loaded and used for query embedding. Therefore, specify the path to save it.
-
-```python
-import pickle
-
-save_path = "./sparse_encoder.pkl"
-
-# Learn and save Sparse Encoder.
-sparse_encoder.fit(contents)
-with open(save_path, "wb") as f:
-    pickle.dump(sparse_encoder, f)
-print(f"[fit_sparse_encoder]\nSaved Sparse Encoder to: {save_path}")
-```
-
-
-<pre class="custom">  0%|          | 0/414 [00:00<?, ?it/s]</pre>
-
-
-    [fit_sparse_encoder]
-    Saved Sparse Encoder to: ./sparse_encoder.pkl
-    
-
-[Optional]  
-Below is the code to use when you need to reload the learned and saved Sparse Encoder later.
-
-```python
-file_path = "./sparse_encoder.pkl"
-
-# It is used later to load the learned sparse encoder.
-try:
-    with open(file_path, "rb") as f:
-        loaded_file = pickle.load(f)
-    print(f"[load_sparse_encoder]\nLoaded Sparse Encoder from: {file_path}")
-    sparse_encoder = loaded_file
-except Exception as e:
-    print(f"[load_sparse_encoder]\n{e}")
-    sparse_encoder = None
-```
-
-<pre class="custom">[load_sparse_encoder]
-    Loaded Sparse Encoder from: ./sparse_encoder.pkl
-</pre>
-
-## Pinecone: Add to DB Index (Upsert)
-
-![04-pinecone-upsert](./img/04-pinecone-upsert.png)
-
-- `context`: This is the context of the document.
-- `page` : The page number of the document.
-- `source` : This is the source of the document.
-- `values` : This is an embedding of a document obtained through Embedder.
-- `sparse values` : This is an embedding of a document obtained through Sparse Encoder.
-
-Upsert documents in batches without distributed processing.
-If the amount of documents is not large, use the method below.
-
-```python
-from langchain_openai import OpenAIEmbeddings
-
-openai_embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-
-# Please set
-embedder = openai_embeddings
-batch_size = 32
-namespace = "langchain-opentutorial-01"
-
-# Running upsert on Pinecone
-pc_db.upsert_documents(
-    index=index,
-    contents=contents,
-    metadatas=metadatas,
-    embedder=openai_embeddings,
-    sparse_encoder=sparse_encoder,
-    namespace=namespace,
-    batch_size=batch_size,
-)
-```
-
-<pre class="custom">Processing Batches: 100%|██████████| 13/13 [00:59<00:00,  4.59s/it]</pre>
-
-    {'dimension': 3072,
-     'index_fullness': 0.0,
-     'namespaces': {'langchain-opentutorial-01': {'vector_count': 414}},
-     'total_vector_count': 414}
-    
-
-    
-    
-
-Below, distributed processing is performed to quickly upsert large documents. Use this for large uploads.
-
-```python
-from langchain_openai import OpenAIEmbeddings
-
-openai_embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-
-embedder = openai_embeddings
-# Set batch size and number of workers
-batch_size = 32
-max_workers = 8
-namespace = "langchain-opentutorial-02"
-
-# Running Upsert in Parallel on Pinecone
-pc_db.upsert_documents_parallel(
-    index=index,
-    contents=contents,
-    metadatas=metadatas,
-    embedder=openai_embeddings,
-    sparse_encoder=sparse_encoder,
-    namespace=namespace,
-    batch_size=batch_size,
-    max_workers=max_workers,
-)
-```
-
-<pre class="custom">Processing Batches in Parallel: 100%|██████████| 13/13 [00:12<00:00,  1.03it/s]
-</pre>
-
-    {'dimension': 3072,
-     'index_fullness': 0.0,
-     'namespaces': {'langchain-opentutorial-01': {'vector_count': 414},
-                    'langchain-opentutorial-02': {'vector_count': 0}},
-     'total_vector_count': 414}
-    
-
-```python
-print(index.describe_index_stats())
-```
-
-<pre class="custom">{'dimension': 3072,
-     'index_fullness': 0.0,
-     'namespaces': {'langchain-opentutorial-01': {'vector_count': 414},
-                    'langchain-opentutorial-02': {'vector_count': 414}},
-     'total_vector_count': 828}
-</pre>
-
-![04-pinecone-namespaces-01.png](./img/04-pinecone-namespaces-01.png)
-
-## Index inquiry/delete
-
-The `describe_index_stats` method provides statistical information about the contents of an index. This method allows you to obtain information such as the number of vectors and dimensions per namespace.
-
-**Parameter** * `filter` (Optional[Dict[str, Union[str, float, int, bool, List, dict]]]): A filter that returns statistics only for vectors that meet certain conditions. Default is None * `**kwargs`: Additional keyword arguments
-
-**Return value** * `DescribeIndexStatsResponse`: Object containing statistical information about the index
-
-**Usage example** * Default usage: `index.describe_index_stats()` * Apply filter: `index.describe_index_stats(filter={'key': 'value'})`
-
-```python
-# Index lookup
-index.describe_index_stats()
-```
-
-
-
-
-<pre class="custom">{'dimension': 3072,
-     'index_fullness': 0.0,
-     'namespaces': {'langchain-opentutorial-01': {'vector_count': 414},
-                    'langchain-opentutorial-02': {'vector_count': 414}},
-     'total_vector_count': 828}</pre>
-
-
-
-**Search for documents in the index**
-
-```python
-# Define your query
-question = "If you come at 4 PM, I will be happy from 3 PM. As time goes by, I will become happier."
-
-# Convert the query into dense and sparse vectors
-dense_vector = embedder.embed_query(question)
-sparse_vector = sparse_encoder.encode_documents(question)
-
-results = pc_db.search(
-    index = index,
-    namespace="langchain-opentutorial-01",
-    query=dense_vector,
-    sparse_vector=sparse_vector,
-    top_k=3,
-    include_metadata=True,
-)
-
-print(results)
-```
-
-<pre class="custom">{'matches': [{'id': 'doc-303',
-                  'metadata': {'author': 'Paula MacDowell',
-                               'context': "o'clock in the afternoon, then at three "
-                                          "o'clock I shall begin to be happy. I "
-                                          'shall feel happier and happier as the '
-                                          "hour advances. At four o'clock, I shall "
-                                          'already be worrying and jumping about. '
-                                          'I shall show you how',
-                               'page': 46.0,
-                               'source': 'TheLittlePrince.pdf'},
-                  'score': 1.3499277,
-                  'sparse_values': {'indices': [], 'values': []},
-                  'values': []},
-                 {'id': 'doc-304',
-                  'metadata': {'author': 'Paula MacDowell',
-                               'context': 'happy I am! But if you come at just any '
-                                          'time, I shall never know at what hour '
-                                          'my heart is to be ready to greet you . '
-                                          '. . One must observe the proper rites . '
-                                          '. ." "What is a rite?" asked the little '
-                                          'prince.',
-                               'page': 46.0,
-                               'source': 'TheLittlePrince.pdf'},
-                  'score': 1.1850042,
-                  'sparse_values': {'indices': [], 'values': []},
-                  'values': []},
-                 {'id': 'doc-98',
-                  'metadata': {'author': 'Paula MacDowell',
-                               'context': '"I am very fond of sunsets. Come, let '
-                                          'us go look at a sunset now." "But we '
-                                          'must wait," I said. "Wait? For what?" '
-                                          '"For the sunset. We must wait until it '
-                                          'is time." At first you seemed to be '
-                                          'very much surprised. And then you '
-                                          'laughed to yourself. You said to me:',
-                               'page': 15.0,
-                               'source': 'TheLittlePrince.pdf'},
-                  'score': 0.84356034,
-                  'sparse_values': {'indices': [], 'values': []},
-                  'values': []}],
-     'namespace': 'langchain-opentutorial-01',
-     'usage': {'read_units': 11}}
-</pre>
-
-**Delete namespace**
-
-```python
-index.delete(delete_all=True, namespace="langchain-opentutorial-02")
-```
-
-
-
-
-<pre class="custom"></pre>
-
-
-
-![04-pinecone-namespaces-02.png](./img/04-pinecone-namespaces-02.png)
-
-```python
-index.describe_index_stats()
-```
-
-
-
-
-<pre class="custom">{'dimension': 3072,
-     'index_fullness': 0.0,
-     'namespaces': {'langchain-opentutorial-01': {'vector_count': 414}},
-     'total_vector_count': 414}</pre>
-
-
-
-Below are features exclusive to paid users. Metadata filtering is available to paid users.
-
-```python
-from pinecone.exceptions import PineconeException
-
-try:
-    index.delete(
-        filter={"source": {"$eq": "TheLittlePrince.pdf"}},
-        namespace="langchain-opentutorial-01",
+from langchain.schema import Document
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+import re
+from typing import List
+
+
+def preprocessing_data(content: str) -> List[Document]:
+    # 1. Split the text by double newlines to separate sections
+    blocks = content.split("\n\n")
+
+    # 2. Initialize the text splitter
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=500,  # Maximum number of characters per chunk
+        chunk_overlap=50,  # Overlap between chunks to preserve context
+        separators=["\n\n", "\n", " "],  # Order of priority for splitting
     )
-except PineconeException as e:
-    print(f"Error while deleting using filter:\n{e}")
 
-index.describe_index_stats()
+    documents = []
+
+    # 3. Loop through each section
+    for block in blocks:
+        lines = block.strip().splitlines()
+        if not lines:
+            continue
+
+        # Extract title from the first line using square brackets [ ]
+        first_line = lines[0]
+        title_match = re.search(r"\[(.*?)\]", first_line)
+        title = title_match.group(1).strip() if title_match else ""
+
+        # Remove the title line from content
+        body = "\n".join(lines[1:]).strip()
+        if not body:
+            continue
+
+        # 4. Chunk the section using the text splitter
+        chunks = text_splitter.split_text(body)
+
+        # 5. Create a LangChain Document for each chunk with the same title metadata
+        for chunk in chunks:
+            documents.append(Document(page_content=chunk, metadata={"title": title}))
+
+    print(f"Generated {len(documents)} chunked documents.")
+
+    return documents
 ```
 
-<pre class="custom">Error while deleting using filter:
-    UNKNOWN:Error received from peer  {grpc_message:"Invalid request.", grpc_status:3, created_time:"2025-02-15T15:26:54.3610786+00:00"}
+```python
+# Load the entire text file
+with open("./data/the_little_prince.txt", "r", encoding="utf-8") as f:
+    content = f.read()
+
+# Preprocessing Data
+docs = preprocessing_data(content=content)
+```
+
+<pre class="custom">Generated 262 chunked documents.
 </pre>
 
+## Setting up Pinecone
 
+This part walks you through the initial setup of ```Pinecone``` .
 
+This section includes the following components:
 
-    {'dimension': 3072,
-     'index_fullness': 0.0,
-     'namespaces': {'langchain-opentutorial-01': {'vector_count': 414}},
-     'total_vector_count': 414}
+- Load Embedding Model
 
+- Load Pinecone Client
 
+### Load Embedding Model
 
-## Create HybridRetrieve
+In this section, you'll learn how to load an embedding model.
 
-**PineconeHybridRetriever initialization parameter settings**
+This tutorial uses **OpenAI's** **API-Key** for loading the model.
 
-The `init_pinecone_index` function and the `PineconeHybridRetriever` class implement a hybrid search system using Pinecone. This system combines dense and sparse vectors to perform effective document retrieval.
-
-Pinecone index initialization
-
-The `init_pinecone_index` function initializes the Pinecone index and sets up the necessary components.
-
-Parameters 
-* `index_name` (str): Pinecone index name 
-* `namespace` (str): Namespace to use 
-* `api_key` (str): Pinecone API key 
-* `sparse_encoder_pkl_path` (str): Sparse encoder pickle file path 
-* `stopwords` (List[str]): List of stop words 
-* `tokenizer` (str): Tokenizer to use (default: "nltk") 
-* `embeddings` (Embeddings): Embedding model 
-* `alpha` (float): Weight of dense and sparse vectors Adjustment parameter (default: 0.5)
-* `top_k` (int): Maximum number of documents to return (default: 4) 
-
-**Main features** 
-1. Pinecone index initialization and statistical information output
-2. Sparse encoder (BM25) loading and tokenizer settings
-3. Specify namespace
-
+*💡 If you prefer to use another embedding model, see the instructions below.*
+- [Embedding Models](https://python.langchain.com/docs/integrations/text_embedding/)
 
 ```python
+import os
 from langchain_openai import OpenAIEmbeddings
-from utils.pinecone import PineconeDocumentManager
+
+embedding = OpenAIEmbeddings(model="text-embedding-3-large", dimensions=1536)
+```
+
+### Load Pinecone Client
+
+In this section, we'll show you how to load the **database client object** using the **Python SDK** for ```Pinecone``` .
+- [Python SDK Docs](https://docs.pinecone.io/guides/get-started/overview)
+
+```python
+# Create Database Client Object Function
+from pinecone import Pinecone
 import os
 
-pc_db = PineconeDocumentManager(api_key=os.environ.get("PINECONE_API_KEY"))
 
-# Settings
-index_name = "langchain-opentutorial-index"
-namespace = "langchain-opentutorial-01"
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-sparse_encoder = sparse_encoder  # Pre-initialized BM25Encoder
+def get_db_client():
+    """
+    Initializes and returns a VectorStore client instance.
+    This function loads configuration (e.g., API key, host) from environment
+    variables or default values and creates a client object to interact
+    with the Pinecone Python SDK.
 
-# Create Hybrid Search Retriever
-retriever = pc_db.create_hybrid_search_retriever(
-    index_name=index_name,
-    embeddings=embeddings,
-    sparse_encoder=sparse_encoder,
-    namespace=namespace,
-    alpha=0.5,
-    top_k=4,
+    Returns:
+        client:ClientType - An instance of the Pinecone client.
+    Raises:
+        ValueError: If required configuration is missing.
+    """
+    client = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
+    return client
+```
+
+```python
+# Get DB Client Object
+client = get_db_client()
+```
+
+## Document Manager
+
+For the **LangChain-OpenTutorial**, we have implemented a custom set of **CRUD** functionalities for VectorDBs
+
+The following operations are included:
+
+- ```upsert``` : Update existing documents or insert if they don’t exist
+
+- ```upsert_parallel``` : Perform upserts in parallel for large-scale data
+
+- ```similarity_search``` : Search for similar documents based on embeddings
+
+- ```delete``` : Remove documents based on filter conditions
+
+Each of these features is implemented as class methods specific to each VectorDB.
+
+In this tutorial, you'll learn how to use these methods to interact with your VectorDB.
+
+*We plan to continuously expand the functionality by adding more common operations in the future.*
+
+### Create Instance
+
+First, we create an instance of the **{vectordb}** helper class to use its CRUD functionalities.
+
+This class is initialized with the **{vectordb} Python SDK client instance** and the **embedding model instance** , both of which were defined in the previous section.
+
+```python
+from utils.pinecone import PineconeDocumentManager
+
+crud_manager = PineconeDocumentManager(
+    client=client, embedding=embedding.embed_documents
 )
 ```
 
-<pre class="custom">[INFO] Hybrid Search Retriever initialized for index 'langchain-opentutorial-index'.
-</pre>
+Now you can use the following **CRUD** operations with the ```crud_manager``` instance.
 
-**Main properties** 
-* `embeddings` : Embedding model for dense vector transformations 
-* `sparse_encoder:` Encoder for sparse vector transformations 
-* `index` : Pinecone index object 
-* `top_k` : Maximum number of documents to return 
-* `alpha` : Weight adjustment parameters for dense and sparse vectors 
-* `namespace` : Namespace within the Pinecone index.
+These instance allow you to easily manage documents in your **{vectordb}** .
 
-**Features** 
-* HybridSearch Retriever combining dense and sparse vectors 
-* Search strategy can be optimized through weight adjustment 
-* Various dynamic metadata filtering can be applied (using `search_kwargs` : `filter` , `top_k` , `alpha` , etc.)
+### Upsert Document
 
-**Use example** 
-1. Initialize required components with the `init_pinecone_index` function   
-2. Create a `PineconeHybridRetriever` instance with initialized components.  
-3. Perform a hybrid search using the generated retriever to create a `PineconeHybridRetriever`.
+**Update** existing documents or **insert** if they don’t exist
 
-**general search**
+**✅ Args**
 
-```python
-query = "If you come at 4 PM, I will be happy from 3 PM. As time goes by, I will become happier."
-search_results = retriever(query)
+- ```texts``` : Iterable[str] – List of text contents to be inserted/updated.
 
-for result in search_results:
-    print("Page Content:", result["metadata"]["context"])
-    print("Metadata:", result["metadata"])
-    print("\n====================\n")
-```
+- ```metadatas``` : Optional[List[Dict]] – List of metadata dictionaries for each text (optional).
 
-<pre class="custom">Page Content: o'clock in the afternoon, then at three o'clock I shall begin to be happy. I shall feel happier and happier as the hour advances. At four o'clock, I shall already be worrying and jumping about. I shall show you how
-    Metadata: {'context': "o'clock in the afternoon, then at three o'clock I shall begin to be happy. I shall feel happier and happier as the hour advances. At four o'clock, I shall already be worrying and jumping about. I shall show you how", 'page': 46.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
-    
-    ====================
-    
-    Page Content: happy I am! But if you come at just any time, I shall never know at what hour my heart is to be ready to greet you . . . One must observe the proper rites . . ." "What is a rite?" asked the little prince.
-    Metadata: {'context': 'happy I am! But if you come at just any time, I shall never know at what hour my heart is to be ready to greet you . . . One must observe the proper rites . . ." "What is a rite?" asked the little prince.', 'page': 46.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
-    
-    ====================
-    
-    Page Content: of misunderstandings. But you will sit a little closer to me, every day . . ." The next day the little prince came back. "It would have been better to come back at the same hour," said the fox. "If, for example, you come at four
-    Metadata: {'context': 'of misunderstandings. But you will sit a little closer to me, every day . . ." The next day the little prince came back. "It would have been better to come back at the same hour," said the fox. "If, for example, you come at four', 'page': 46.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
-    
-    ====================
-    
-    Page Content: "I am very fond of sunsets. Come, let us go look at a sunset now." "But we must wait," I said. "Wait? For what?" "For the sunset. We must wait until it is time." At first you seemed to be very much surprised. And then you laughed to yourself. You said to me:
-    Metadata: {'context': '"I am very fond of sunsets. Come, let us go look at a sunset now." "But we must wait," I said. "Wait? For what?" "For the sunset. We must wait until it is time." At first you seemed to be very much surprised. And then you laughed to yourself. You said to me:', 'page': 15.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
-    
-    ====================
-    
-</pre>
+- ```ids``` : Optional[List[str]] – Custom IDs for the documents. If not provided, IDs will be auto-generated.
 
-Using dynamic search_kwargs - k: specify maximum number of documents to return
+- ```**kwargs``` : Extra arguments for the underlying vector store.
+
+**🔄 Return**
+
+- None
 
 ```python
-query = "If you come at 4 PM, I will be happy from 3 PM. As time goes by, I will become happier."
+from uuid import uuid4
 
-search_kwargs = {"top_k": 2}
-search_results = retriever(query, **search_kwargs)
+args = {
+    "texts": [doc.page_content for doc in docs[:2]],
+    "metadatas": [doc.metadata for doc in docs[:2]],
+    "ids": [str(uuid4()) for _ in docs[:2]],
+    # Add additional parameters if you need
+}
 
-for result in search_results:
-    print("Page Content:", result["metadata"]["context"])
-    print("Metadata:", result["metadata"])
-    print("\n====================\n")
+crud_manager.upsert(**args)
 ```
 
-<pre class="custom">Page Content: o'clock in the afternoon, then at three o'clock I shall begin to be happy. I shall feel happier and happier as the hour advances. At four o'clock, I shall already be worrying and jumping about. I shall show you how
-    Metadata: {'context': "o'clock in the afternoon, then at three o'clock I shall begin to be happy. I shall feel happier and happier as the hour advances. At four o'clock, I shall already be worrying and jumping about. I shall show you how", 'page': 46.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
-    
-    ====================
-    
-    Page Content: happy I am! But if you come at just any time, I shall never know at what hour my heart is to be ready to greet you . . . One must observe the proper rites . . ." "What is a rite?" asked the little prince.
-    Metadata: {'context': 'happy I am! But if you come at just any time, I shall never know at what hour my heart is to be ready to greet you . . . One must observe the proper rites . . ." "What is a rite?" asked the little prince.', 'page': 46.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
-    
-    ====================
-    
+<pre class="custom">2 data upserted
 </pre>
 
+### Upsert Parallel
 
-Use dynamic `search_kwargs` - `alpha` : Weight adjustment parameters for dense and sparse vectors. Specify a value between 0 and 1. `0.5` is the default, the closer it is to 1, the higher the weight of the dense vector is.
+Perform **upsert** in **parallel** for large-scale data
+
+**✅ Args**
+
+- ```texts``` : Iterable[str] – List of text contents to be inserted/updated.
+
+- ```metadatas``` : Optional[List[Dict]] – List of metadata dictionaries for each text (optional).
+
+- ```ids``` : Optional[List[str]] – Custom IDs for the documents. If not provided, IDs will be auto-generated.
+
+- ```batch_size``` : int – Number of documents per batch (default: 32).
+
+- ```workers``` : int – Number of parallel workers (default: 10).
+
+- ```**kwargs``` : Extra arguments for the underlying vector store.
+
+**🔄 Return**
+
+- None
 
 ```python
-query = "If you come at 4 PM, I will be happy from 3 PM. As time goes by, I will become happier."
+from uuid import uuid4
 
-search_kwargs = {"alpha": 1, "top_k": 2}
-search_results = retriever(query, **search_kwargs)
+args = {
+    "texts": [doc.page_content for doc in docs],
+    "metadatas": [doc.metadata for doc in docs],
+    "ids": [str(uuid4()) for _ in docs],
+     # Add additional parameters if you need
+}
 
-for result in search_results:
-    print("Page Content:", result["metadata"]["context"])
-    print("Metadata:", result["metadata"])
-    print("\n====================\n")
+crud_manager.upsert_parallel(**args)
 ```
 
-<pre class="custom">Page Content: o'clock in the afternoon, then at three o'clock I shall begin to be happy. I shall feel happier and happier as the hour advances. At four o'clock, I shall already be worrying and jumping about. I shall show you how
-    Metadata: {'context': "o'clock in the afternoon, then at three o'clock I shall begin to be happy. I shall feel happier and happier as the hour advances. At four o'clock, I shall already be worrying and jumping about. I shall show you how", 'page': 46.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
-    
-    ====================
-    
-    Page Content: of misunderstandings. But you will sit a little closer to me, every day . . ." The next day the little prince came back. "It would have been better to come back at the same hour," said the fox. "If, for example, you come at four
-    Metadata: {'context': 'of misunderstandings. But you will sit a little closer to me, every day . . ." The next day the little prince came back. "It would have been better to come back at the same hour," said the fox. "If, for example, you come at four', 'page': 46.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
-    
-    ====================
-    
+<pre class="custom">262 data upserted
 </pre>
 
-```python
-query = "If you come at 4 PM, I will be happy from 3 PM. As time goes by, I will become happier."
+### Similarity Search
 
-search_kwargs = {"alpha": 0, "top_k": 2}
-search_results = retriever(query, **search_kwargs)
+Search for **similar documents** based on **embeddings** .
 
-for result in search_results:
-    print("Page Content:", result["metadata"]["context"])
-    print("Metadata:", result["metadata"])
-    print("\n====================\n")
-```
+This method uses **"cosine similarity"** .
 
-<pre class="custom">Page Content: o'clock in the afternoon, then at three o'clock I shall begin to be happy. I shall feel happier and happier as the hour advances. At four o'clock, I shall already be worrying and jumping about. I shall show you how
-    Metadata: {'context': "o'clock in the afternoon, then at three o'clock I shall begin to be happy. I shall feel happier and happier as the hour advances. At four o'clock, I shall already be worrying and jumping about. I shall show you how", 'page': 46.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
-    
-    ====================
-    
-    Page Content: happy I am! But if you come at just any time, I shall never know at what hour my heart is to be ready to greet you . . . One must observe the proper rites . . ." "What is a rite?" asked the little prince.
-    Metadata: {'context': 'happy I am! But if you come at just any time, I shall never know at what hour my heart is to be ready to greet you . . . One must observe the proper rites . . ." "What is a rite?" asked the little prince.', 'page': 46.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
-    
-    ====================
-    
-</pre>
 
-**Metadata filtering**
+**✅ Args**
 
-![04-pinecone-filter](./img/04-pinecone-filter.png)
+- ```query``` : str – The text query for similarity search.
 
-Using dynamic search_kwargs - filter: Apply metadata filtering
+- ```k``` : int – Number of top results to return (default: 10).
 
-(Example) Search with a value less than 25 pages.
+```**kwargs``` : Additional search options (e.g., filters).
+
+**🔄 Return**
+
+- ```results``` : List[Document] – A list of LangChain Document objects ranked by similarity.
 
 ```python
-query = "If you come at 4 PM, I will be happy from 3 PM. As time goes by, I will become happier."
-
-search_kwargs = {"alpha": 1, "top_k": 3, "filter": {"page": {"$lt": 25}}}
-search_results = retriever(query, **search_kwargs)
-
-for result in search_results:
-    print("Page Content:", result["metadata"]["context"])
-    print("Metadata:", result["metadata"])
-    print("\n====================\n")
+# Search by query
+results = crud_manager.search(query="What is essential is invisible to the eye.", k=3)
+for idx, doc in enumerate(results):
+    print(f"Rank {idx} | Title : {doc.metadata['title']}")
+    print(f"Contents : {doc.page_content}")
+    print()
 ```
 
-<pre class="custom">Page Content: "I am very fond of sunsets. Come, let us go look at a sunset now." "But we must wait," I said. "Wait? For what?" "For the sunset. We must wait until it is time." At first you seemed to be very much surprised. And then you laughed to yourself. You said to me:
-    Metadata: {'context': '"I am very fond of sunsets. Come, let us go look at a sunset now." "But we must wait," I said. "Wait? For what?" "For the sunset. We must wait until it is time." At first you seemed to be very much surprised. And then you laughed to yourself. You said to me:', 'page': 15.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
+<pre class="custom">Rank 0 | Title : Chapter 24
+    Contents : "Yes," I said to the little prince. "The house, the stars, the desert-- what gives them their beauty is something that is invisible!" 
+    "I am glad," he said, "that you agree with my fox."
     
-    ====================
+    Rank 1 | Title : Chapter 21
+    Contents : And he went back to meet the fox. 
+    "Goodbye," he said. 
+    "Goodbye," said the fox. "And now here is my secret, a very simple secret: It is only with the heart that one can see rightly; what is essential is invisible to the eye." 
+    "What is essential is invisible to the eye," the little prince repeated, so that he would be sure to remember.
+    "It is the time you have wasted for your rose that makes your rose so important."
     
-    Page Content: Hum! That will be about--about--that will be this evening about twenty minutes to eight. And you will see how well I am obeyed!" The little prince yawned. He was regretting his lost sunset. And then, too, he was already beginning to be a little bored.
-    Metadata: {'context': 'Hum! That will be about--about--that will be this evening about twenty minutes to eight. And you will see how well I am obeyed!" The little prince yawned. He was regretting his lost sunset. And then, too, he was already beginning to be a little bored.', 'page': 24.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
-    
-    ====================
-    
-    Page Content: "I am always thinking that I am at home!" Just so. Everybody knows that when it is noon in the United States the sun is setting over France. If you could fly to France in one minute, you could go straight into the sunset, right from noon.
-    Metadata: {'context': '"I am always thinking that I am at home!" Just so. Everybody knows that when it is noon in the United States the sun is setting over France. If you could fly to France in one minute, you could go straight into the sunset, right from noon.', 'page': 15.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
-    
-    ====================
+    Rank 2 | Title : Chapter 25
+    Contents : "The men where you live," said the little prince, "raise five thousand roses in the same garden-- and they do not find in it what they are looking for." 
+    "They do not find it," I replied. 
+    "And yet what they are looking for could be found in one single rose, or in a little water." 
+    "Yes, that is true," I said. 
+    And the little prince added: 
+    "But the eyes are blind. One must look with the heart..."
     
 </pre>
 
 ```python
-query = "If you come at 4 PM, I will be happy from 3 PM. As time goes by, I will become happier."
-
-search_kwargs = {"alpha": 1, "top_k": 4, "filter": {"page": {"$in": [25, 16]}}}
-search_results = retriever(query, **search_kwargs)
-
-for result in search_results:
-    print("Page Content:", result["metadata"]["context"])
-    print("Metadata:", result["metadata"])
-    print("\n====================\n")
+# Search by query with filters
+results = crud_manager.search(
+    query="Which asteroid did the little prince come from?",
+    k=3,
+    filter={"title": "Chapter 4"},
+)
+for idx, doc in enumerate(results):
+    print(f"Rank {idx} | Title : {doc.metadata['title']}")
+    print(f"Contents : {doc.page_content}")
+    print()
 ```
 
-<pre class="custom">Page Content: He should be able, for example, to order me to be gone by the end of one minute. It seems to me that conditions are favorable . . ." As the king made no answer, the little prince hesitated a moment. Then, with a sigh, he took his leave.
-    Metadata: {'context': 'He should be able, for example, to order me to be gone by the end of one minute. It seems to me that conditions are favorable . . ." As the king made no answer, the little prince hesitated a moment. Then, with a sigh, he took his leave.', 'page': 25.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
+<pre class="custom">Rank 0 | Title : Chapter 4
+    Contents : I have serious reason to believe that the planet from which the little prince came is the asteroid known as B-612. This asteroid has only once been seen through the telescope. That was by a Turkish astronomer, in 1909. 
+    (picture)
+    On making his discovery, the astronomer had presented it to the International Astronomical Congress, in a great demonstration. But he was in Turkish costume, and so nobody would believe what he said.
+    Grown-ups are like that...
     
-    ====================
+    Rank 1 | Title : Chapter 4
+    Contents : - the narrator speculates as to which asteroid from which the little prince came　　
+    I had thus learned a second fact of great importance: this was that the planet the little prince came from was scarcely any larger than a house!
     
-    Page Content: way." "No," said the king. But the little prince, having now completed his preparations for departure, had no wish to grieve the old monarch. "If Your Majesty wishes to be promptly obeyed," he said, "he should be able to give me a reasonable order.
-    Metadata: {'context': 'way." "No," said the king. But the little prince, having now completed his preparations for departure, had no wish to grieve the old monarch. "If Your Majesty wishes to be promptly obeyed," he said, "he should be able to give me a reasonable order.', 'page': 25.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
+    Rank 2 | Title : Chapter 4
+    Contents : Just so, you might say to them: "The proof that the little prince existed is that he was charming, that he laughed, and that he was looking for a sheep. If anybody wants a sheep, that is a proof that he exists." And what good would it do to tell them that? They would shrug their shoulders, and treat you like a child. But if you said to them: "The planet he came from is Asteroid B-612," then they would be convinced, and leave you in peace from their questions.
     
-    ====================
-    
-    Page Content: "And you actually believe that the flowers--" "Oh, no!" I cried. "No, no, no! I don't believe anything. I answered you with the first thing that came into my head. Don't you see--I am very busy with matters of consequence!" He stared at me, thunderstruck. "Matters of consequence!"
-    Metadata: {'context': '"And you actually believe that the flowers--" "Oh, no!" I cried. "No, no, no! I don\'t believe anything. I answered you with the first thing that came into my head. Don\'t you see--I am very busy with matters of consequence!" He stared at me, thunderstruck. "Matters of consequence!"', 'page': 16.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
-    
-    ====================
-    
-    Page Content: I did not answer. At that instant I was saying to myself: "If this bolt still won't turn, I am going to knock it out with the hammer." Again the little prince disturbed my thoughts: "And you actually believe that the flowers--"
-    Metadata: {'context': 'I did not answer. At that instant I was saying to myself: "If this bolt still won\'t turn, I am going to knock it out with the hammer." Again the little prince disturbed my thoughts: "And you actually believe that the flowers--"', 'page': 16.0, 'author': 'Paula MacDowell', 'source': 'TheLittlePrince.pdf'}
-    
-    ====================
-    
+</pre>
+
+### as_retriever
+
+The ```as_retriever()``` method creates a LangChain-compatible retriever wrapper.
+
+This function allows a ```DocumentManager``` class to return a retriever object by wrapping the internal ```search()``` method, while staying lightweight and independent from full LangChain ```VectorStore``` dependencies.
+
+The retriever obtained through this function is compatible with existing LangChain retrievers and can be used in LangChain Pipelines (e.g., RetrievalQA, ConversationalRetrievalChain, Tool, etc.)
+
+**✅ Args**
+
+- ```search_fn``` : Callable - The function used to retrieve relevant documents. Typically this is ```self.search``` from a ```DocumentManager``` instance.
+
+- ```search_kwargs``` : Optional[Dict] - A dictionary of keyword arguments passed to ```search_fn```, such as ```k``` for top-K results or metadata filters.
+
+**🔄 Return**
+
+- ```LightCustomRetriever``` :BaseRetriever - A lightweight LangChain-compatible retriever that internally uses the given ```search_fn``` and ```search_kwargs```.
+
+```python
+# Search without filters
+ret = crud_manager.as_retriever(
+    search_fn=crud_manager.search, search_kwargs={"k": 1}
+)
+```
+
+```python
+ret.invoke("Which asteroid did the little prince come from?")
+```
+
+
+
+
+<pre class="custom">[Document(metadata={'text': 'I have serious reason to believe that the planet from which the little prince came is the asteroid known as B-612. This asteroid has only once been seen through the telescope. That was by a Turkish astronomer, in 1909. \n(picture)\nOn making his discovery, the astronomer had presented it to the International Astronomical Congress, in a great demonstration. But he was in Turkish costume, and so nobody would believe what he said.\nGrown-ups are like that...', 'title': 'Chapter 4'}, page_content='I have serious reason to believe that the planet from which the little prince came is the asteroid known as B-612. This asteroid has only once been seen through the telescope. That was by a Turkish astronomer, in 1909. \n(picture)\nOn making his discovery, the astronomer had presented it to the International Astronomical Congress, in a great demonstration. But he was in Turkish costume, and so nobody would believe what he said.\nGrown-ups are like that...')]</pre>
+
+
+
+```python
+# Search with filters
+ret = crud_manager.as_retriever(
+    search_fn=crud_manager.search,
+    search_kwargs={
+        "k": 2,
+        "where": {"title": "Chapter 4"}  # Filter to only search in Chapter 4
+    }
+)
+```
+
+```python
+print("Example 2: Search with title filter (Chapter 4)")
+print(ret.invoke("Which asteroid did the little prince come from?"))
+```
+
+<pre class="custom">Example 2: Search with title filter (Chapter 4)
+    [Document(metadata={'text': 'I have serious reason to believe that the planet from which the little prince came is the asteroid known as B-612. This asteroid has only once been seen through the telescope. That was by a Turkish astronomer, in 1909. \n(picture)\nOn making his discovery, the astronomer had presented it to the International Astronomical Congress, in a great demonstration. But he was in Turkish costume, and so nobody would believe what he said.\nGrown-ups are like that...', 'title': 'Chapter 4'}, page_content='I have serious reason to believe that the planet from which the little prince came is the asteroid known as B-612. This asteroid has only once been seen through the telescope. That was by a Turkish astronomer, in 1909. \n(picture)\nOn making his discovery, the astronomer had presented it to the International Astronomical Congress, in a great demonstration. But he was in Turkish costume, and so nobody would believe what he said.\nGrown-ups are like that...'), Document(metadata={'text': '- the narrator speculates as to which asteroid from which the little prince came\u3000\u3000\nI had thus learned a second fact of great importance: this was that the planet the little prince came from was scarcely any larger than a house!', 'title': 'Chapter 4'}, page_content='- the narrator speculates as to which asteroid from which the little prince came\u3000\u3000\nI had thus learned a second fact of great importance: this was that the planet the little prince came from was scarcely any larger than a house!')]
+</pre>
+
+### Delete Document
+
+Remove documents based on filter conditions
+
+**✅ Args**
+
+- ```ids``` : Optional[List[str]] – List of document IDs to delete. If None, deletion is based on filter.
+
+- ```filters``` : Optional[Dict] – Dictionary specifying filter conditions (e.g., metadata match).
+
+- ```**kwargs``` : Any additional parameters.
+
+**🔄 Return**
+
+- None
+
+```python
+# Delete by ids
+ids = args["ids"][:3]  # The 'ids' value you want to delete
+crud_manager.delete(ids=ids)
+```
+
+<pre class="custom">Delete by ids: 3 data deleted
+</pre>
+
+```python
+# Delete by ids with filters
+# It takes a lot of time to check how many I deleted...
+# If you don't see the number of drops, it's done in a very short time.
+ids = args["ids"][3:]  # The `ids` value corresponding to chapter 6
+crud_manager.delete(ids=ids, filters={"title": "Chapter 6"})
+```
+
+<pre class="custom">4 Data Deleted
+</pre>
+
+```python
+# Delete All
+crud_manager.delete()
+```
+
+<pre class="custom">All Data Deleted..
 </pre>

@@ -20,12 +20,11 @@ pre {
 # Meta Prompt Generator based on User Requirements
 
 - Author: [Kenny Jung](https://www.linkedin.com/in/kwang-yong-jung)
-- Design:
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Case/rag/02-LangGraph-Prompt-Generation.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Case/rag/02-LangGraph-Prompt-Generation.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/02-LangGraph-Prompt-Generation.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/02-LangGraph-Prompt-Generation.ipynb)
 
 ## Overview
 
@@ -71,8 +70,8 @@ A graphical representation of the system can be found below.
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -114,9 +113,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it.
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -323,10 +322,10 @@ def prompt_gen_chain(state):
 
 We describe the logic for determining the state of the chatbot.
 
-- If the last message is a `tool call`, the chatbot is in the "prompt creator"(`prompt`) state.
-- If the last message is not a `HumanMessage`, the user needs to respond next, so the chatbot is in the `END` state.
-- If the last message is a `HumanMessage`, the chatbot is in the `prompt` state if there was a `tool call` before.
-- Otherwise, the chatbot is in the `info` state.
+- If the last message is a ```tool call```, the chatbot is in the "prompt creator"(```prompt```) state.
+- If the last message is not a ```HumanMessage```, the user needs to respond next, so the chatbot is in the ```END``` state.
+- If the last message is a ```HumanMessage```, the chatbot is in the ```prompt``` state if there was a ```tool call``` before.
+- Otherwise, the chatbot is in the ```info``` state.
 
 ```python
 from langgraph.graph import END
@@ -350,7 +349,7 @@ def get_state(state):
 
 ## Create the graph
 
-Now, we can create a graph. We will use `MemorySaver` to save the conversation history.
+Now, we can create a graph. We will use ```MemorySaver``` to save the conversation history.
 
 ```python
 from langgraph.checkpoint.memory import MemorySaver

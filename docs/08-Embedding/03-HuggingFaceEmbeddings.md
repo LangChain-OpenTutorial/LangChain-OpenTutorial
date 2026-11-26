@@ -22,14 +22,14 @@ pre {
 - Author: [liniar](https://github.com/namyoungkim)
 - Design: [liniar](https://github.com/namyoungkim)
 - Peer Review : [byoon](https://github.com/acho98), [Sun Hyoung Lee](https://github.com/LEE1026icarus)
+- Proofread : [Youngjun cho](https://github.com/choincnp)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/03-HuggingFaceEmbeddings.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/03-HuggingFaceEmbeddings.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embedding/03-HuggingFaceEmbeddings.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embedding/03-HuggingFaceEmbeddings.ipynb)
 
 ## Overview  
-- `Hugging Face` offers a wide range of **embedding models** for free, enabling various embedding tasks with ease.
-- In this tutorial, we’ll use `langchain_huggingface` to build a **simple text embedding-based search system.** 
+- ```Hugging Face``` offers a wide range of **embedding models** for free, enabling various embedding tasks with ease.
+- In this tutorial, we’ll use ```langchain_huggingface``` to build a **simple text embedding-based search system.** 
 - The following models will be used for **Text Embedding**  
 
     - 1️⃣ **multilingual-e5-large-instruct:** A multilingual instruction-based embedding model.  
@@ -67,24 +67,24 @@ pre {
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.  
 
 **[Note]**  
-- `langchain-opentutorial` is a package that provides a set of **easy-to-use environment setup,** **useful functions,** and **utilities for tutorials.**  
-- You can check out the [`langchain-opentutorial` ](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.  
+- ```langchain-opentutorial``` is a package that provides a set of **easy-to-use environment setup,** **useful functions,** and **utilities for tutorials.**  
+- You can check out the [```langchain-opentutorial``` ](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.  
 
 ---
 
 ### 🛠️ **The following configurations will be set up**  
 
 - **Jupyter Notebook Output Settings**
-    - Display standard error ( `stderr` ) messages directly instead of capturing them.  
+    - Display standard error ( ```stderr``` ) messages directly instead of capturing them.  
 - **Install Required Packages** 
     - Ensure all necessary dependencies are installed.  
 - **API Key Setup** 
     - Configure the API key for authentication.  
 - **PyTorch Device Selection Setup** 
     - Automatically select the optimal computing device (CPU, CUDA, or MPS).
-        - `{"device": "mps"}` : Perform embedding calculations using **MPS** instead of GPU. (For Mac users)
-        - `{"device": "cuda"}` : Perform embedding calculations using **GPU.** (For Linux and Windows users, requires CUDA installation)
-        - `{"device": "cpu"}` : Perform embedding calculations using **CPU.** (Available for all users)
+        - ```{"device": "mps"}``` : Perform embedding calculations using **MPS** instead of GPU. (For Mac users)
+        - ```{"device": "cuda"}``` : Perform embedding calculations using **GPU.** (For Linux and Windows users, requires CUDA installation)
+        - ```{"device": "cpu"}``` : Perform embedding calculations using **CPU.** (Available for all users)
 - **Embedding Model Local Storage Path** 
     - Define a local path for storing embedding models.  
 
@@ -129,10 +129,10 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set OPENAI_API_KEY in `.env` file and load it.
+You can alternatively set OPENAI_API_KEY in ```.env``` file and load it.
 
 **[Note]** 
-- This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+- This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -306,12 +306,12 @@ This **magnitude** represents the **length** or **size** of the vector in multi-
 Understanding these mathematical foundations helps ensure precise similarity calculations, enabling better performance in tasks like **semantic search,**  **retrieval systems,**  and **recommendation engines.**  🚀
 
 ----
-### Similarity calculation between `embedded_query` and `embedded_document` 
-- `embed_documents` : For embedding multiple texts (documents)
-- `embed_query` : For embedding a single text (query)
+### Similarity calculation between ```embedded_query``` and ```embedded_document``` 
+- ```embed_documents``` : For embedding multiple texts (documents)
+- ```embed_query``` : For embedding a single text (query)
 
 We've implemented a method to search for the most relevant documents using **text embeddings.** 
-- Let's use `search_similar_documents(q, docs, hf_embeddings)` to find the most relevant documents.
+- Let's use ```search_similar_documents(q, docs, hf_embeddings)``` to find the most relevant documents.
 
 ```python
 import numpy as np
@@ -383,10 +383,10 @@ def search_similar_documents(q, docs, hf_embeddings):
 
 ### ⚙️ **Key Parameters**
 
-- `model` : The Hugging Face model ID (e.g., `BAAI/bge-m3` )  
-- `task` : The task to perform (usually `"feature-extraction"` )  
-- `api_key` : Your Hugging Face API token  
-- `model_kwargs` : Additional model configuration parameters  
+- ```model``` : The Hugging Face model ID (e.g., ```BAAI/bge-m3``` )  
+- ```task``` : The task to perform (usually ```"feature-extraction"``` )  
+- ```api_key``` : Your Hugging Face API token  
+- ```model_kwargs``` : Additional model configuration parameters  
 
 ---
 
@@ -406,7 +406,7 @@ def search_similar_documents(q, docs, hf_embeddings):
 With **HuggingFaceEndpointEmbeddings,**  you can easily integrate Hugging Face’s powerful embedding models into your **LangChain workflows** for efficient and scalable NLP solutions. 🚀
 
 ---
-Let’s use the `intfloat/multilingual-e5-large-instruct` model via the API to search for the most relevant documents using text embeddings.
+Let’s use the ```intfloat/multilingual-e5-large-instruct``` model via the API to search for the most relevant documents using text embeddings.
 
 - [intfloat/multilingual-e5-large-instruct](https://huggingface.co/intfloat/multilingual-e5-large-instruct)
 
@@ -478,9 +478,9 @@ print(f"Query Dimension: \t{len(embedded_query)}")
     Query Dimension: 	1024
 </pre>
 
-We can verify that the dimensions of `embedded_documents` and `embedded_query` are consistent.  
+We can verify that the dimensions of ```embedded_documents``` and ```embedded_query``` are consistent.  
 
-You can also perform searches using the `search_similar_documents` method we implemented earlier.  
+You can also perform searches using the ```search_similar_documents``` method we implemented earlier.  
 From now on, let's use this method for our searches.  
 
 ```python
@@ -529,9 +529,9 @@ embedded_query, embedded_documents = search_similar_documents(q, docs, hf_endpoi
 
 ### ⚙️ **Key Parameters**
 
-- `model_name` : The Hugging Face model ID (e.g., `sentence-transformers/all-MiniLM-L6-v2` )
-- `model_kwargs` : Additional model configuration parameters (e.g., GPU/CPU device settings)
-- `encode_kwargs` : Extra settings for embedding generation
+- ```model_name``` : The Hugging Face model ID (e.g., ```sentence-transformers/all-MiniLM-L6-v2``` )
+- ```model_kwargs``` : Additional model configuration parameters (e.g., GPU/CPU device settings)
+- ```encode_kwargs``` : Extra settings for embedding generation
 
 ---
 
@@ -553,7 +553,7 @@ With **HuggingFaceEmbeddings,** you can efficiently leverage **Hugging Face's po
 ---
 Let's download the embedding model locally, perform embeddings, and search for the most relevant documents.
 
-`intfloat/multilingual-e5-large-instruct` 
+```intfloat/multilingual-e5-large-instruct``` 
 
 - [intfloat/multilingual-e5-large-instruct](https://huggingface.co/intfloat/multilingual-e5-large-instruct)
 
@@ -642,7 +642,7 @@ print(f"Query Dimension: \t{len(embedded_query)}")
 </pre>
 
 ---
-`intfloat/multilingual-e5-large` 
+```intfloat/multilingual-e5-large``` 
 
 - [intfloat/multilingual-e5-large](https://huggingface.co/intfloat/multilingual-e5-large)
 
@@ -731,7 +731,7 @@ print(f"Query Dimension: \t{len(embedded_query)}")
 </pre>
 
 ---
-`BAAI/bge-m3` 
+```BAAI/bge-m3``` 
 
 - [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3)
 
@@ -833,17 +833,17 @@ print(f"Query Dimension: \t{len(embedded_query)}")
 
 ### 📚 **Core Concepts of FlagEmbedding**
 
-1️⃣ `Dense Embedding` 
+1️⃣ ```Dense Embedding``` 
 - Definition: Represents the overall meaning of a text as a single high-density vector.  
 - Advantages: Effectively captures semantic similarity.  
 - Use Cases: Semantic search, document similarity computation.  
 
-2️⃣ `Lexical Embedding` 
+2️⃣ ```Lexical Embedding``` 
 - Definition: Breaks text into word-level components, emphasizing word matching.  
 - Advantages: Ensures precise matching of specific words or phrases.  
 - Use Cases: Keyword-based search, exact word matching.  
 
-3️⃣ `Multi-Vector Embedding` 
+3️⃣ ```Multi-Vector Embedding``` 
 - Definition: Splits a document into multiple vectors for representation.  
 - Advantages: Allows more granular representation of lengthy texts or diverse topics.  
 - Use Cases: Complex document structure analysis, detailed topic matching.  
@@ -852,10 +852,10 @@ print(f"Query Dimension: \t{len(embedded_query)}")
 
 FlagEmbedding offers a **flexible and powerful toolkit** for leveraging embeddings across a wide range of **NLP tasks and semantic search applications.** 🚀
 
-The following code is used to control **tokenizer parallelism** in Hugging Face's `transformers` library:
+The following code is used to control **tokenizer parallelism** in Hugging Face's ```transformers``` library:
 
-- `TOKENIZERS_PARALLELISM = "true"`  → **Optimized for speed,** suitable for large-scale data processing.  
-- `TOKENIZERS_PARALLELISM = "false"`  → **Ensures stability,** prevents conflicts and race conditions.  
+- ```TOKENIZERS_PARALLELISM = "true"```  → **Optimized for speed,** suitable for large-scale data processing.  
+- ```TOKENIZERS_PARALLELISM = "false"```  → **Ensures stability,** prevents conflicts and race conditions.  
 
 ```python
 import os
@@ -870,18 +870,18 @@ os.environ["TOKENIZERS_PARALLELISM"] = "true"  # "false"
 
 ### ⚙️ **Key Parameter**
 
-`BGEM3FlagModel` 
--  `model_name` : The Hugging Face **model ID** (e.g., `BAAI/bge-m3` ).
--  `use_fp16` : When set to **True,** reduces **memory usage** and improves **encoding speed.**
+```BGEM3FlagModel``` 
+-  ```model_name``` : The Hugging Face **model ID** (e.g., ```BAAI/bge-m3``` ).
+-  ```use_fp16``` : When set to **True,** reduces **memory usage** and improves **encoding speed.**
 
-`bge_embeddings.encode` 
-- `batch_size` : Defines the **number of documents** to process at once.  
-- `max_length` : Sets the **maximum token length** for encoding documents.  
+```bge_embeddings.encode``` 
+- ```batch_size``` : Defines the **number of documents** to process at once.  
+- ```max_length``` : Sets the **maximum token length** for encoding documents.  
    - Increase for longer documents to ensure full content encoding.  
    - Excessively large values may **degrade performance.**
-- `return_dense` : When set to **True**, returns **Dense Vectors** only.  
-- `return_sparse` : When set to **True**, returns **Sparse Vectors.**
-- `return_colbert_vecs` : When set to **True,** returns **ColBERT-style vectors.**
+- ```return_dense``` : When set to **True**, returns **Dense Vectors** only.  
+- ```return_sparse``` : When set to **True**, returns **Sparse Vectors.**
+- ```return_colbert_vecs``` : When set to **True,** returns **ColBERT-style vectors.**
 
 
 

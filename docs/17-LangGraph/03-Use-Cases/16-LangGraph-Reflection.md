@@ -21,10 +21,10 @@ pre {
 
 - Author: [Heesun Moon](https://github.com/MoonHeesun)
 - Peer Review:
+- Proofread  : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/16-LangGraph-Reflection.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/16-LangGraph-Reflection.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/16-LangGraph-Reflection.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/16-LangGraph-Reflection.ipynb)
 ## Overview
 
 Reflection in the context of LLM-based agents refers to the process of prompting an LLM to observe its past steps and evaluate the quality of its decisions. This is particularly useful in scenarios like iterative problem-solving, search refinement, and agent evaluation.
@@ -63,8 +63,8 @@ We will implement a **Reflection-based agent in LangGraph** that reviews its own
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -87,9 +87,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -297,7 +297,7 @@ class State(TypedDict):
 
 ### 2. Create Nodes
 
-Two key nodes are defined—one for generating essays and another for evaluating them. The `generation_node` creates a structured essay, while the `reflection_node` critiques and suggests improvements.
+Two key nodes are defined—one for generating essays and another for evaluating them. The ```generation_node``` creates a structured essay, while the ```reflection_node``` critiques and suggests improvements.
 
 ```python
 async def generation_node(state: State) -> State:
@@ -331,7 +331,7 @@ def should_continue(state: State):
 
 ### 4. Compile and Execute
 
-The LangGraph structure is compiled, allowing seamless AI-driven iteration. The process begins with the `generate` node and loops through the `reflect` node until the stopping condition is met.
+The LangGraph structure is compiled, allowing seamless AI-driven iteration. The process begins with the ```generate``` node and loops through the ```reflect``` node until the stopping condition is met.
 
 ```python
 builder = StateGraph(State)

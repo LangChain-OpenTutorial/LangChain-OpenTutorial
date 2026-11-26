@@ -20,12 +20,11 @@ pre {
 # Tool Calling Agent
 
 - Author: [Kenny Jung](https://www.linkedin.com/in/kwang-yong-jung)
-- Design:
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/03-Agent.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/03-Agent.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/03-Agent.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/03-Agent.ipynb)
 
 ## Overview
 
@@ -39,7 +38,7 @@ You can create agents that iteratively call tools and receive results until a qu
  
 This represents a more **generalized version** of the OpenAI tools agent which was specifically designed for OpenAI's particular tool-calling style.
  
-This agent uses LangChain's ToolCall interface to support a broader spectrum of provider implementations beyond OpenAI, including `Anthropic`, `Google Gemini`, and `Mistral`.
+This agent uses LangChain's ToolCall interface to support a broader spectrum of provider implementations beyond OpenAI, including ```Anthropic```, ```Google Gemini```, and ```Mistral```.
 
 
 ### Table of Contents
@@ -68,8 +67,8 @@ This agent uses LangChain's ToolCall interface to support a broader spectrum of 
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -111,9 +110,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it.
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -132,9 +131,9 @@ load_dotenv(override=True)
 
 LangChain allows you to define custom tools that your agents can interact with. You can create tools for searching news or executing Python code.
 
-The `@tool` decorator is used to create tools:
-- `TavilySearchResults` is a tool for searching news.
-- `PythonREPL` is a tool for executing Python code.
+The ```@tool``` decorator is used to create tools:
+- ```TavilySearchResults``` is a tool for searching news.
+- ```PythonREPL``` is a tool for executing Python code.
 
 
 ```python
@@ -196,9 +195,9 @@ tools = [search_news, python_repl_tool]
 
 ## Constructing an Agent Prompt
 
-- `chat_history`: This variable stores the conversation history if your agent supports multi-turn. (Otherwise, you can omit this.)
-- `agent_scratchpad`: This variable serves as temporary storage for intermediate variables.
-- `input`: This variable represents the user's input.
+- ```chat_history```: This variable stores the conversation history if your agent supports multi-turn. (Otherwise, you can omit this.)
+- ```agent_scratchpad```: This variable serves as temporary storage for intermediate variables.
+- ```input```: This variable represents the user's input.
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate
@@ -221,7 +220,7 @@ prompt = ChatPromptTemplate.from_messages(
 
 ## Creating Agent
 
-Define an agent using the `create_tool_calling_agent` function.
+Define an agent using the ```create_tool_calling_agent``` function.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -234,25 +233,25 @@ llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 agent = create_tool_calling_agent(llm, tools, prompt)
 ```
 
-## `AgentExecutor`
+## ```AgentExecutor```
 
-The `AgentExecutor` is a class for managing an agent that uses tools.
+The ```AgentExecutor``` is a class for managing an agent that uses tools.
 
 **Key properties**
-- `agent`: the underlying agent responsible for creating plans and determining actions at each step of the execution loop.
-- `tools`: a list containing all the valid tools that the agent is authorized to use.
-- `return_intermediate_steps`: boolean flag determins whether to return the intermediate steps the agent took along with the final output.
-- `max_iterations`: a maximum number of steps the agent can take before the execution loop is terminated.
-- `max_execution_time`: the maximum amount of time the execution loop is allowed to run.
-- `early_stopping_method`: a defined method how to handle situations when the agent does not return an `AgentFinish`. ("force" or "generate")
-  - `"force"` : returns a string indicating that the execution loop was stopped due to reaching the time or iteration limit.
-  - `"generate"` : calls the agent's LLM chain once to generate a final answer based on the previous steps taken.
-- `handle_parsing_errors` : a specification how to handle parsing errors. (You can set `True`, `False`, or provide a custom error handling function.)
-- `trim_intermediate_steps` : method of trimming intermediate steps. (You can set `-1` to keep all steps, or provide a custom trimming function.)
+- ```agent```: the underlying agent responsible for creating plans and determining actions at each step of the execution loop.
+- ```tools```: a list containing all the valid tools that the agent is authorized to use.
+- ```return_intermediate_steps```: boolean flag determins whether to return the intermediate steps the agent took along with the final output.
+- ```max_iterations```: a maximum number of steps the agent can take before the execution loop is terminated.
+- ```max_execution_time```: the maximum amount of time the execution loop is allowed to run.
+- ```early_stopping_method```: a defined method how to handle situations when the agent does not return an ```AgentFinish```. ("force" or "generate")
+  - ```"force"``` : returns a string indicating that the execution loop was stopped due to reaching the time or iteration limit.
+  - ```"generate"``` : calls the agent's LLM chain once to generate a final answer based on the previous steps taken.
+- ```handle_parsing_errors``` : a specification how to handle parsing errors. (You can set ```True```, ```False```, or provide a custom error handling function.)
+- ```trim_intermediate_steps``` : method of trimming intermediate steps. (You can set ```-1``` to keep all steps, or provide a custom trimming function.)
 
 **Key methods**
-1. `invoke` : Executes the agent.
-2. `stream` : Stream the steps required to reach the final output.
+1. ```invoke``` : Executes the agent.
+2. ```stream``` : Stream the steps required to reach the final output.
 
 **Key features**
 1. **Tool validation** : Ensure that the tool is compatible with the agent.
@@ -262,9 +261,9 @@ The `AgentExecutor` is a class for managing an agent that uses tools.
 5. **Asynchronous support** : Supports asynchronous execution and streaming of results.
 
 **Optimization tips**
-- Set appropriate values for `max_iterations` and `max_execution_time` to manage execution time.
-- Use `trim_intermediate_steps` to optimize memory usage.
-- For complex tasks, use the `stream` method to monitor step-by-step results.
+- Set appropriate values for ```max_iterations``` and ```max_execution_time``` to manage execution time.
+- Use ```trim_intermediate_steps``` to optimize memory usage.
+- For complex tasks, use the ```stream``` method to monitor step-by-step results.
 
 ```python
 from langchain.agents import AgentExecutor
@@ -330,9 +329,9 @@ print(result["output"])
 
 ## Checking step-by-step results using Stream output
 
-We will use the `stream()` method of `AgentExecutor` to stream the intermediate steps of the agent.
+We will use the ```stream()``` method of ```AgentExecutor``` to stream the intermediate steps of the agent.
 
-The output of `stream()` alternates between (Action, Observation) pairs, and finally ends with the agent's answer if the goal is achieved.
+The output of ```stream()``` alternates between (Action, Observation) pairs, and finally ends with the agent's answer if the goal is achieved.
 
 The flow will look like the followings:
 
@@ -349,9 +348,9 @@ The following table summarizes the content you'll encounter in the output:
 
 | Output | Description |
 |--------|-------------|
-| Action | `actions`: Represents the `AgentAction` or its subclass. <br>`messages`: Chat messages corresponding to the action call. |
-| Observation | `steps`: A record of the agent's work, including the current action and its observation. <br>`messages`: Chat messages containing the results from function calls (i.e., observations). |
-| Final Answer | `output`: Represents `AgentFinish` signal. <br>`messages`: Chat messages containing the final output. |
+| Action | ```actions```: Represents the ```AgentAction``` or its subclass. <br>```messages```: Chat messages corresponding to the action call. |
+| Observation | ```steps```: A record of the agent's work, including the current action and its observation. <br>```messages```: Chat messages containing the results from function calls (i.e., observations). |
+| Final Answer | ```output```: Represents ```AgentFinish``` signal. <br>```messages```: Chat messages containing the final output. |
 ```
 
 ```python
@@ -388,9 +387,9 @@ for step in result:
 
 You can define the following 3 functions to customize the intermediate steps output:
 
-- `tool_callback`: This function handles the output generated by tool calls.
-- `observation_callback`: This function deals with the observation data output.
-- `result_callback`: This function allows you to handle the final answer output.
+- ```tool_callback```: This function handles the output generated by tool calls.
+- ```observation_callback```: This function deals with the observation data output.
+- ```result_callback```: This function allows you to handle the final answer output.
 
 Here's an example callback function that demonstrates how to clean up the intermediate steps of the Agent.
 
@@ -646,9 +645,9 @@ for step in result:
 
 ## Communicating Agent with previous conversation history
 
-To remember past conversations, you can wrap the `AgentExecutor` with `RunnableWithMessageHistory`.
+To remember past conversations, you can wrap the ```AgentExecutor``` with ```RunnableWithMessageHistory```.
 
-For more details on `RunnableWithMessageHistory`, please refer to the link below.
+For more details on ```RunnableWithMessageHistory```, please refer to the link below.
 
 **Reference**
 - [LangChain Python API Reference > langchain: 0.3.14 > core > runnables > langchain_core.runnables.history > RunnableWithMessageHistory](https://python.langchain.com/api_reference/core/runnables/langchain_core.runnables.history.RunnableWithMessageHistory.html)

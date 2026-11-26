@@ -20,19 +20,18 @@ pre {
 # LlamaCpp Embeddings With Langchain
 
 - Author: [Yongdam Kim](https://github.com/dancing-with-coffee/)
-- Design: []()
 - Peer Review : [Pupba](https://github.com/pupba), [Teddy Lee](https://github.com/teddylee777)
+- Proofread : [Youngjun cho](https://github.com/choincnp)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/06-LlamaCppEmbeddings.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/06-LlamaCppEmbeddings.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embedding/06-LlamaCppEmbeddings.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embedding/06-LlamaCppEmbeddings.ipynb)
 ## Overview
 
 This tutorial covers how to perform **Text Embedding** using **Llama-cpp** and **Langchain**.
 
 **Llama-cpp** is an open-source package implemented in C++ that allows you to use LLMs such as llama very efficiently locally.
 
-In this tutorial, we will create a simple example to measure similarity between `Documents` and an input `Query` using **Llama-cpp** and **Langchain**.
+In this tutorial, we will create a simple example to measure similarity between ```Documents``` and an input ```Query``` using **Llama-cpp** and **Langchain**.
 
 
 ### Table of Contents
@@ -58,8 +57,8 @@ In this tutorial, we will create a simple example to measure similarity between 
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -98,9 +97,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `LANGCHAIN_API_KEY` in `.env` file and load it. 
+You can alternatively set ```LANGCHAIN_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `LANGCHAIN_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```LANGCHAIN_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -125,9 +124,9 @@ pip install llama-cpp-python
 ```
 
 1. Make sure you have the required environment for C++ compilation (e.g., on Linux or macOS). 
-2. Download or specify your chosen embedding model file (e.g., `CompendiumLabs/bge-large-en-v1.5-gguf`).
-3. Here, we use `bge-large-en-v1.5-q8_0.gguf` as an example and you can download it from [CompendiumLabs/bge-large-en-v1.5-gguf - Hugging Face](https://huggingface.co/CompendiumLabs/bge-large-en-v1.5-gguf/tree/main).
-4. Check that `llama-cpp-python` can find the model path.
+2. Download or specify your chosen embedding model file (e.g., ```CompendiumLabs/bge-large-en-v1.5-gguf```).
+3. Here, we use ```bge-large-en-v1.5-q8_0.gguf``` as an example and you can download it from [CompendiumLabs/bge-large-en-v1.5-gguf - Hugging Face](https://huggingface.co/CompendiumLabs/bge-large-en-v1.5-gguf/tree/main).
+4. Check that ```llama-cpp-python``` can find the model path.
 
 Below, we will demonstrate how to serve a LLaMA model using Llama-cpp. You can follow the official [llama-cpp-python documentation](https://github.com/abetlen/llama-cpp-python) for more details.
 
@@ -142,14 +141,14 @@ You can find a variety of embedding models, which typically come in different qu
 - For instance, you could download from Hugging Face if the model is hosted.
 
 **3. Verify the Model**
-- Check that the `.bin` (or `.gguf`) file is accessible to your environment.
+- Check that the ```.bin``` (or ```.gguf```) file is accessible to your environment.
 
 
 ## Model Load and Embedding
 
-Now that you have installed `llama-cpp-python` and have downloaded a model, let's see how to load it and use it for text embedding.
+Now that you have installed ```llama-cpp-python``` and have downloaded a model, let's see how to load it and use it for text embedding.
 
-Below, we define a `Query` or some `Documents` to embed using `Llama-cpp` within LangChain.
+Below, we define a ```Query``` or some ```Documents``` to embed using ```Llama-cpp``` within LangChain.
 
 ```python
 from langchain_community.embeddings import LlamaCppEmbeddings
@@ -167,9 +166,9 @@ docs = [
 
 ### Load the Embedding Model
 
-Below is how you can initialize the `LlamaCppEmbeddings` class by specifying the path to your LLaMA model file (`model_path`).
+Below is how you can initialize the ```LlamaCppEmbeddings``` class by specifying the path to your LLaMA model file (```model_path```).
 
-For example, you might have a downloaded model path: `./bge-large-en-v1.5-q8_0.gguf`.
+For example, you might have a downloaded model path: ```./bge-large-en-v1.5-q8_0.gguf```.
 
 We demonstrate how to instantiate the embeddings class and then embed queries and documents using Llama-cpp.
 
@@ -612,9 +611,9 @@ print("Embedding model has been successfully loaded.")
 
 ### Embedding Queries and Documents
 
-Now let's embed both the `query` and the `documents`. We will verify the dimension of the output vectors.
+Now let's embed both the ```query``` and the ```documents```. We will verify the dimension of the output vectors.
 
-However, there is currently one issue that cannot be resolved when using the latest model with `LlamaCppEmbeddings`. I will post the link to the issue below, so please check it out and if it is resolved in the latest version, you can use it as instructed in the original langchain official tutorial.
+However, there is currently one issue that cannot be resolved when using the latest model with ```LlamaCppEmbeddings```. I will post the link to the issue below, so please check it out and if it is resolved in the latest version, you can use it as instructed in the original langchain official tutorial.
 
 - Issue link : https://github.com/langchain-ai/langchain/issues/22532
 

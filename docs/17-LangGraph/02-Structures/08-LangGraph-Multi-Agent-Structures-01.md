@@ -20,12 +20,11 @@ pre {
 # Multi-Agent Structures (1)
 
 - Author: [Sunyoung Park (architectyou)](https://github.com/architectyou)
-- Design:
 - Peer Review:
+- Proofread  : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/08-LangGraph-Multi-Agent-Structures-01.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/08-LangGraph-Multi-Agent-Structures-01.ipynb)
 ## Overview
 
 An agent system is a system where LLMs can choose to control the flow of applications. As application systems become increasingly complex over time, managing and handling these systems during development has become more difficult. For example, you may encounter the following problems:
@@ -76,8 +75,8 @@ In this tutorial, we will explore the existing **single agent**, **network**, an
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -116,7 +115,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 **[Note]** This is not necessary if you've already set the required API keys in previous steps.
 
@@ -284,9 +283,9 @@ In a multi-agent architecture, agents can be represented as graph nodes. Each ag
 A common pattern in multi-agent interactions is a handoff, where one agent passes control to another agent. With handoffs, you can specify:
 
 - **Destination**: The target agent to navigate to (e.g., the name of the node to move to)
-- **Payload**: Information to pass to that agent (e.g., `state` updates)
+- **Payload**: Information to pass to that agent (e.g., ```state``` updates)
 
-To implement handoffs in LangGraph, agent nodes can return a `Command` object that combines control flow and state updates.
+To implement handoffs in LangGraph, agent nodes can return a ```Command``` object that combines control flow and state updates.
 
 ```python
 from typing import Literal
@@ -303,7 +302,7 @@ def agent(state) -> Command[Literal["agent", "another_agent"]]:
     )
 ```
 
-In more complex scenarios where each agent node itself is a graph (i.e., a subgraph), a node in one of the agent subgraphs might want to move to another agent. For example, if you have two agents, alice and bob (subgraph nodes in the parent graph), and you need to move from bob to alice, you can set `graph=Command.PARENT` in the `Command` object.
+In more complex scenarios where each agent node itself is a graph (i.e., a subgraph), a node in one of the agent subgraphs might want to move to another agent. For example, if you have two agents, alice and bob (subgraph nodes in the parent graph), and you need to move from bob to alice, you can set ```graph=Command.PARENT``` in the ```Command``` object.
 
 ```python
 def some_node_inside_alice(state):
@@ -347,7 +346,7 @@ def transfer_to_bob(state):
     )
 ```
 
-This is a special case of updating graph state from a tool, which includes control flow in addition to `state` updates.
+This is a special case of updating graph state from a tool, which includes control flow in addition to ```state``` updates.
 
 ## Network Structure
 
@@ -409,7 +408,7 @@ visualize_graph(network)
 
 ## Supervisor Structure
 
-In this architecture, we define agents as nodes and add a supervisor node (LLM) that decides which agent node to call next. We use `Command` to route execution to the appropriate agent node based on the supervisor's decision. This architecture is also suitable for running multiple agents in parallel or using map-reduce patterns.
+In this architecture, we define agents as nodes and add a supervisor node (LLM) that decides which agent node to call next. We use ```Command``` to route execution to the appropriate agent node based on the supervisor's decision. This architecture is also suitable for running multiple agents in parallel or using map-reduce patterns.
 
 ```python
 model = ChatOpenAI(

@@ -20,16 +20,15 @@ pre {
 # RunnableRetry
 
 - Author: [PangPangGod](https://github.com/pangpanggod)
-- Design: []()
 - Peer Review : []()
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/12-RunnableRetry.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/12-RunnableRetry.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/12-RunnableRetry.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/12-RunnableRetry.ipynb)
 ## Overview
 
-This tutorial covers how to use `RunnableRetry` to handle retry logic effectively in LangChain workflows.  
-We'll demonstrate how to configure and use `RunnableRetry` with examples that showcase custom retry policies to make your workflow resilient to failures.
+This tutorial covers how to use ```RunnableRetry``` to handle retry logic effectively in LangChain workflows.  
+We'll demonstrate how to configure and use ```RunnableRetry``` with examples that showcase custom retry policies to make your workflow resilient to failures.
 
 ### Table of Contents
 
@@ -52,8 +51,8 @@ We'll demonstrate how to configure and use `RunnableRetry` with examples that sh
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -92,7 +91,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -112,22 +111,22 @@ load_dotenv(override=True)
 
 ## What is RunnableRetry
 
-`RunnableRetry` is a utility provided by LangChain that allows you to add retry mechanisms for individual `Runnable` objects.  
+```RunnableRetry``` is a utility provided by LangChain that allows you to add retry mechanisms for individual ```Runnable``` objects.  
 Instead of wrapping your entire workflow in retry logic, you can apply retry policies at the level of specific tasks.   
 This helps you handle transient issues, such as network errors or intermittent failures, without restarting the entire workflow.
 
 ## Why use RunnableRetry
 
-By using `RunnableRetry`, you can:
+By using ```RunnableRetry```, you can:
 
-- **Avoid wrapping the entire workflow with retry logic**: Instead of restarting the entire process during frequent network calls or API failures, you can retry individual `Runnable` units.
+- **Avoid wrapping the entire workflow with retry logic**: Instead of restarting the entire process during frequent network calls or API failures, you can retry individual ```Runnable``` units.
 - **Implement retries per task**: This enables more efficient task recovery and makes workflows more robust.
-- **Flexible implementation**: You can implement retries using `.with_retry()` or define a custom retry strategy by creating a `RunnableRetry` with specific events, such as exception types and exponential backoff.
+- **Flexible implementation**: You can implement retries using ```.with_retry()``` or define a custom retry strategy by creating a ```RunnableRetry``` with specific events, such as exception types and exponential backoff.
 
 ## Base RunnableRetry Example
 
-Below is a simple example to demonstrate the effectiveness of `RunnableRetry`.  
-In this example, we simulate a task with a chance of failure and use `RunnableRetry` to automatically retry it up to a maximum attempts.
+Below is a simple example to demonstrate the effectiveness of ```RunnableRetry```.  
+In this example, we simulate a task with a chance of failure and use ```RunnableRetry``` to automatically retry it up to a maximum attempts.
 
 ```python
 import random
@@ -167,7 +166,7 @@ runnable_with_retries.invoke(input)
     Success! The number is 1.
 </pre>
 
-or you can simply implemented with `.with_retry()` method.
+or you can simply implemented with ```.with_retry()``` method.
 
 ```python
 # Bind the function to RunnableLambda
@@ -189,13 +188,13 @@ runnable_with_retries.invoke(None)
 
 ## RunnableRetry Bind with Chains
 
-In this example, we’ll take it a step further and demonstrate how to construct a Chain using `ChatOpenAI`. The example will show not just the basic chain setup but also how to enhance it by incorporating `RunnableRetry` for robust error handling and `PydanticOutputParser` for structured output validation.
+In this example, we’ll take it a step further and demonstrate how to construct a Chain using ```ChatOpenAI```. The example will show not just the basic chain setup but also how to enhance it by incorporating ```RunnableRetry``` for robust error handling and ```PydanticOutputParser``` for structured output validation.
 
 ### Components Used:
-- `RunnableRetry`: Automatically retries failed tasks to handle transient issues, such as API call failures or timeouts.
-- `PydanticOutputParser`: Ensures the output is parsed and validated against a defined schema, making the workflow more reliable and predictable.
+- ```RunnableRetry```: Automatically retries failed tasks to handle transient issues, such as API call failures or timeouts.
+- ```PydanticOutputParser```: Ensures the output is parsed and validated against a defined schema, making the workflow more reliable and predictable.
 
-with `PydanticOutputParser`, check our another tutorial [here](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/01-PydanticOuputParser.ipynb).
+with ```PydanticOutputParser```, check our another tutorial [here](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/01-PydanticOuputParser.ipynb).
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -231,7 +230,7 @@ chain.invoke("programming")
 
 
 
-or you can use `.with_retry()` with Runnables.
+or you can use ```.with_retry()``` with Runnables.
 
 ```python
 chain = prompt | model.with_retry(
@@ -249,17 +248,17 @@ chain.invoke("bear")
 
 
 
-### Combining `RunnableRetry` with `.with_structured_output()`
+### Combining ```RunnableRetry``` with ```.with_structured_output()```
 
-Methods like `.bind()` or `.with_retry()` create a **new `Runnable` object**, making the original instance's chainable methods (e.g., `.with_structured_output()`) unavailable.
+Methods like ```.bind()``` or ```.with_retry()``` create a **new ```Runnable``` object**, making the original instance's chainable methods (e.g., ```.with_structured_output()```) unavailable.
 
 To retain structured output functionality:
-1. **Apply `.with_structured_output()` first** to include parsing logic in the LLM instance.
-2. Then wrap it with `RunnableRetry` or `.with_retry()` to add retry or chaining logic.
+1. **Apply ```.with_structured_output()``` first** to include parsing logic in the LLM instance.
+2. Then wrap it with ```RunnableRetry``` or ```.with_retry()``` to add retry or chaining logic.
 
 ### Why this order is important
-- **Loss of Methods**: The new `Runnable` created by `RunnableRetry` or `.with_retry()` doesn't have the original methods.
-- **Ensure Structured Output**: Adding `.with_structured_output()` before retry logic ensures structured parsing stays intact while allowing retries.
+- **Loss of Methods**: The new ```Runnable``` created by ```RunnableRetry``` or ```.with_retry()``` doesn't have the original methods.
+- **Ensure Structured Output**: Adding ```.with_structured_output()``` before retry logic ensures structured parsing stays intact while allowing retries.
 
 ```python
 from pydantic import BaseModel, Field
@@ -300,7 +299,7 @@ chain.invoke({"topic": "penguin"})
 
 
 
-or you can using `with_structured_output()` method  with `with_retry()` method like this.
+or you can using ```with_structured_output()``` method  with ```with_retry()``` method like this.
 
 ```python
 class Joke(BaseModel):
@@ -336,5 +335,5 @@ chain.invoke({"topic": "clip"})
 
 
 
-**Note:** If the model doesn’t support `.with_structured_output()` or you want to use a custom parsing method,   
+**Note:** If the model doesn’t support ```.with_structured_output()``` or you want to use a custom parsing method,   
 refer to the [LangChain documentation on advanced structured output](https://python.langchain.com/docs/how_to/structured_output/) for more details.

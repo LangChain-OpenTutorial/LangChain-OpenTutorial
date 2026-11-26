@@ -20,12 +20,11 @@ pre {
 # Agent-Based Dynamic Slot Filling
 
 - Author: [Jongcheol Kim](https://github.com/greencode-99)
-- Design: 
 - Peer Review: [kofsitho87](https://github.com/kofsitho87), [Heeah Kim](https://github.com/yellowGangneng) 
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/17-Agent-BasedDynamicSlotFilling.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/17-Agent-BasedDynamicSlotFilling.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/17-Agent-BasedDynamicSlotFilling.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/17-Agent-BasedDynamicSlotFilling.ipynb)
 ## Overview
 
 This tutorial explains how to implement an **Agent-based Dynamic Slot Filling** system. It covers the process of creating an intelligent conversational system that analyzes user requests to automatically collect necessary information and supplements missing information through dialogue.
@@ -90,8 +89,8 @@ The system iterates through conversation with the user until all necessary infor
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -138,7 +137,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -159,12 +158,12 @@ load_dotenv(override=True)
 ## Constants and Prompt Template Definition
 
 Constants is defined as below:
-- `TASK_SLOTS` : Defines the required information for each task type
-- `TASK_RULES` : Defines the rules for information collection for each task type
-- `TASK_EXAMPLES` : Provides examples of user requests for each task type
-- `TASK_CLASSIFICATION_TEMPLATE` : A prompt template for classifying the user's request into a task
-- `SLOT_EXTRACTION_TEMPLATE` : A prompt template for extracting information from the user's message
-- `RESPONSE_TEMPLATE` : A prompt template for generating a response to the user's message
+- ```TASK_SLOTS``` : Defines the required information for each task type
+- ```TASK_RULES``` : Defines the rules for information collection for each task type
+- ```TASK_EXAMPLES``` : Provides examples of user requests for each task type
+- ```TASK_CLASSIFICATION_TEMPLATE``` : A prompt template for classifying the user's request into a task
+- ```SLOT_EXTRACTION_TEMPLATE``` : A prompt template for extracting information from the user's message
+- ```RESPONSE_TEMPLATE``` : A prompt template for generating a response to the user's message
 
 
 ### Task Slots
@@ -256,9 +255,9 @@ TASK_EXAMPLES = {
 ### Task Classification Template
 
 Defines the prompt template for classifying the user's request into a task.
-- `user_message` : The user's message to be analyzed
-- `task_type` : The type of task selected by the agent
-- `confidence` : The confidence score of the task classification (0.0 ~ 1.0)
+- ```user_message``` : The user's message to be analyzed
+- ```task_type``` : The type of task selected by the agent
+- ```confidence``` : The confidence score of the task classification (0.0 ~ 1.0)
 
 ```python
 TASK_CLASSIFICATION_TEMPLATE = """Please analyze the user's message and select the appropriate task for reservation/booking.
@@ -283,11 +282,11 @@ TASK_CLASSIFICATION_TEMPLATE = """Please analyze the user's message and select t
 ### Slot Extraction Template
 
 Defines the prompt template for extracting information from the user's message.
-- `task_type` : The type of task for which information is being extracted
-- `required_slots` : The slots that need to be extracted
-- `slots` : The current state of the slots
-- `messages` : The conversation history
-- `last_message` : The last message from the user
+- ```task_type``` : The type of task for which information is being extracted
+- ```required_slots``` : The slots that need to be extracted
+- ```slots``` : The current state of the slots
+- ```messages``` : The conversation history
+- ```last_message``` : The last message from the user
 
 
 Please follow these rules strictly:
@@ -353,15 +352,15 @@ Please respond with extracted information in the following JSON format:
 ### Response Template
 
 Defines the prompt template for collecting missing information through natural dialogue.
-- `task_type` : The type of task for which information is being collected
-- `required_slots` : The slots that need to be collected
-- `slots` : The current state of the slots
-- `messages` : The conversation history
-- `last_message` : The last message from the user
+- ```task_type``` : The type of task for which information is being collected
+- ```required_slots``` : The slots that need to be collected
+- ```slots``` : The current state of the slots
+- ```messages``` : The conversation history
+- ```last_message``` : The last message from the user
 
 
 Please follow these rules:
-- `task_rules`: The rules specific to the current task type
+- ```task_rules```: The rules specific to the current task type
 - Respond in a natural, conversational manner
 
 ```python
@@ -393,19 +392,19 @@ response_prompt = ChatPromptTemplate.from_template(RESPONSE_TEMPLATE)
 ## State Management
 
 State management plays a crucial role in controlling the flow of the conversation and tracking necessary information.
-Defines the `SupervisorState` class to manage the state of the conversational agent.
-Inherits from `TypedDict` to define and track the state of the conversational agent.
+Defines the ```SupervisorState``` class to manage the state of the conversational agent.
+Inherits from ```TypedDict``` to define and track the state of the conversational agent.
 This state management allows maintaining the conversation context with the user and sequentially collecting necessary information.
 
 
 ### SupervisorState
-- `messages` : Manages conversation history
-- `task_type` : Tracks current task type
-- `confidence` : Task classification confidence score
-- `slots` : Stores collected information
-- `current_slot` : Currently processing slot
-- `completed` : Task completion status
-- `stage` : Current stage ('classify' or 'slot_filling')
+- ```messages``` : Manages conversation history
+- ```task_type``` : Tracks current task type
+- ```confidence``` : Task classification confidence score
+- ```slots``` : Stores collected information
+- ```current_slot``` : Currently processing slot
+- ```completed``` : Task completion status
+- ```stage``` : Current stage ('classify' or 'slot_filling')
 
 ```python
 from typing import TypedDict
@@ -428,33 +427,33 @@ class SupervisorState(TypedDict):
 
 ## Graph Construction
 
-Uses LangGraph's `StateGraph` to construct the conversation flow.
+Uses LangGraph's ```StateGraph``` to construct the conversation flow.
 
 
 ### Main Nodes
-- `classify_task`: Classifies the task type based on the user's message
+- ```classify_task```: Classifies the task type based on the user's message
     - Identifies reservation/booking intent from user message to select appropriate task
     - Proceeds to slot initialization or information extraction based on selected task
 
 
-- `initialize_slots`: Initializes slots for user message
+- ```initialize_slots```: Initializes slots for user message
     - Initializes required slots based on selected task
     - Stores initialized slot state in state variables
 
 
-- `extract_slots`: Extracts necessary information from user message
-    - Uses `LLM` to extract structured information from natural language
+- ```extract_slots```: Extracts necessary information from user message
+    - Uses ```LLM``` to extract structured information from natural language
     - Validates extracted information
     - Updates with new information while maintaining existing slot values
 
 
-- `generate_response`: Generates appropriate response based on current state
+- ```generate_response```: Generates appropriate response based on current state
     - Branches response based on task classification confidence
     - Requests missing information
     - Generates reservation completion message
     
 
-- `should_continue`: Controls conversation flow by determining next step based on:
+- ```should_continue```: Controls conversation flow by determining next step based on:
     - Checks user input waiting status
     - Branches based on task classification confidence
     - Checks if slot initialization is needed
@@ -630,7 +629,7 @@ def should_continue(state: SupervisorState) -> str:
 
 Creates the integrated reservation system Agent graph.
 
-- Uses `StateGraph` to define the conversation flow
+- Uses ```StateGraph``` to define the conversation flow
 - Each node is connected to a function that performs a specific task
 - Conditional edges to control flow based on state
 
@@ -638,10 +637,10 @@ Creates the integrated reservation system Agent graph.
 ### Execution Flow
 
 1. Receive user input
-2. Task type classification (`classify_task`)
-3. Slot initialization (`initialize_slots`)
-4. Information extraction (`extract_slots`)
-5. Generate response (`generate_response`)
+2. Task type classification (```classify_task```)
+3. Slot initialization (```initialize_slots```)
+4. Information extraction (```extract_slots```)
+5. Generate response (```generate_response```)
 6. Repeat 2-5 if necessary
 7. Complete reservation when all information is collected
 

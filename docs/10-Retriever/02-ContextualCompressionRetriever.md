@@ -20,16 +20,15 @@ pre {
 # Contextual Compression Retriever
 
 - Author: [JoonHo Kim](https://github.com/jhboyo)
-- Design: []()
 - Peer Review :
+- Proofread : [jishin86](https://github.com/jishin86)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/04-CSV-Loader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/04-CSV-Loader.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/02-ContextualCompressionRetriever.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/02-ContextualCompressionRetriever.ipynb)
 
 ## Overview
 
-The `ContextualCompressionRetriever` in LangChain is a powerful tool designed to optimize the retrieval process by compressing retrieved documents based on context. This retriever is particularly useful in scenarios where large amounts of data need to be summarized or filtered dynamically, ensuring that only the most relevant information is passed to subsequent processing steps.
+The ```ContextualCompressionRetriever``` in LangChain is a powerful tool designed to optimize the retrieval process by compressing retrieved documents based on context. This retriever is particularly useful in scenarios where large amounts of data need to be summarized or filtered dynamically, ensuring that only the most relevant information is passed to subsequent processing steps.
 
 Key features of the ContextualCompressionRetriever include:
 
@@ -37,7 +36,7 @@ Key features of the ContextualCompressionRetriever include:
 - Flexible Integration: Works seamlessly with other LangChain components, making it easy to integrate into existing pipelines.
 - Customizable Compression: Allows for the use of different compression techniques, including summary models and embedding-based methods, to tailor the retrieval process to your needs.
 
-The `ContextualCompressionRetriever` is particularly suited for applications like:
+The ```ContextualCompressionRetriever``` is particularly suited for applications like:
 
 - Summarizing large datasets for Q&A systems.
 - Enhancing chatbot performance by providing concise and relevant responses.
@@ -70,8 +69,8 @@ By using this retriever, developers can significantly reduce computational overh
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 
 ```python
@@ -115,9 +114,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -240,11 +239,11 @@ print(docs[0].page_content)
 
 ## Contextual Compression 
 
-The `DocumentCompressor` created using `LLMChainExtractor` is exactly what is applied to the retriever, which is the `ContextualCompressionRetriever`.
+The ```DocumentCompressor``` created using ```LLMChainExtractor``` is exactly what is applied to the retriever, which is the ```ContextualCompressionRetriever```.
 
-`ContextualCompressionRetriever` will compress the documents by removing irrelevant information and focusing on the most relevant information.
+```ContextualCompressionRetriever``` will compress the documents by removing irrelevant information and focusing on the most relevant information.
 
-Let's see how the retriever works before and after applying `ContextualCompressionRetriever`.
+Let's see how the retriever works before and after applying ```ContextualCompressionRetriever```.
 
 
 ```python
@@ -313,7 +312,7 @@ pretty_print_docs(compressed_docs)
 
 ### LLMChainFilter
 
-`LLMChainFilter` is a simpler yet powerful compressor that uses an LLM chain to decide which documents to filter and which to return from the initially retrieved documents. 
+```LLMChainFilter``` is a simpler yet powerful compressor that uses an LLM chain to decide which documents to filter and which to return from the initially retrieved documents. 
 
 This filter selectively returns documents without altering (compressing) their content.
 
@@ -349,12 +348,12 @@ pretty_print_docs(compressed_docs)
 ### EmbeddingsFilter
 
 Performing additional LLM calls for each retrieved document is costly and slow. 
-The `EmbeddingsFilter` provides a more affordable and faster option by embedding both the documents and the query, returning only those documents with embeddings that are sufficiently similar to the query. 
+The ```EmbeddingsFilter``` provides a more affordable and faster option by embedding both the documents and the query, returning only those documents with embeddings that are sufficiently similar to the query. 
 
 This allows for maintaining the relevance of search results while saving on computational costs and time.
-The process involves compressing and retrieving relevant documents using `EmbeddingsFilter` and `ContextualCompressionRetriever`. 
+The process involves compressing and retrieving relevant documents using ```EmbeddingsFilter``` and ```ContextualCompressionRetriever```. 
 
-- The `EmbeddingsFilter` is used to filter documents that exceed a specified similarity threshold (0.86).
+- The ```EmbeddingsFilter``` is used to filter documents that exceed a specified similarity threshold (0.86).
 
 ```python
 from langchain.retrievers.document_compressors import EmbeddingsFilter
@@ -391,11 +390,11 @@ pretty_print_docs(compressed_docs)
 
 ## Creating a Pipeline (Compressor + Document Converter)
 
-Using `DocumentCompressorPipeline`, multiple compressors can be sequentially combined.
+Using ```DocumentCompressorPipeline```, multiple compressors can be sequentially combined.
 
-You can add `BaseDocumentTransformer` to the pipeline along with the Compressor, which performs transformations on the document set without performing contextual compression.
+You can add ```BaseDocumentTransformer``` to the pipeline along with the Compressor, which performs transformations on the document set without performing contextual compression.
 
-For example, `TextSplitter` can be used as a document transformer to split documents into smaller pieces, while `EmbeddingsRedundantFilter` can be used to filter out duplicate documents based on the embedding similarity between documents (by default, considering documents with a similarity of 0.95 or higher as duplicates).
+For example, ```TextSplitter``` can be used as a document transformer to split documents into smaller pieces, while ```EmbeddingsRedundantFilter``` can be used to filter out duplicate documents based on the embedding similarity between documents (by default, considering documents with a similarity of 0.95 or higher as duplicates).
 
 Below, we first split the documents into smaller chunks, then remove duplicate documents, and filter based on relevance to the query to create a compressor pipeline."
 
@@ -425,7 +424,7 @@ pipeline_compressor = DocumentCompressorPipeline(
 )
 ```
 
-While initializing the  `ContextualCompressionRetriever`, we use `pipeline_compressor` as the `base_compressor` and `retriever` as the `base_retriever`.
+While initializing the  ```ContextualCompressionRetriever```, we use ```pipeline_compressor``` as the ```base_compressor``` and ```retriever``` as the ```base_retriever```.
 
 ```python
 # 5. Use pipeline_compressor as the base_compressor and retriever as the base_retriever to initialize ContextualCompressionRetriever

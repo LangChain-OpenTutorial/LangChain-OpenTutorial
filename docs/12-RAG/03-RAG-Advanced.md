@@ -20,12 +20,11 @@ pre {
 # Exploring RAG in LangChain
 
 - Author: [Jaeho Kim](https://github.com/Jae-hoya)
-- Design: []()
 - Peer Review:
+- Proofread : [BokyungisaGod](https://github.com/BokyungisaGod)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/langchain-ai/langchain-academy/blob/main/module-4/sub-graph.ipynb) [![Open in LangChain Academy](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66e9eba12c7b7688aa3dbb5e_LCA-badge-green.svg)](https://academy.langchain.com/courses/take/intro-to-langgraph/lessons/58239937-lesson-2-sub-graphs)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/03-RAG-Advanced.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/12-RAG/03-RAG-Advanced.ipynb)
 ![rag-1.png](./img/12-rag-rag-basic-pdf-rag-process-01.png)
 
 ![rag-2.png](./img/12-rag-rag-basic-pdf-rag-process-02.png)
@@ -70,7 +69,7 @@ The entire workflow from raw data to generating an answer is as follows:
 
 1. **Load** : The first step is to load the data. For this, we will use [Document Loaders](https://python.langchain.com/docs/integrations/document_loaders/).
 
-2. **Split** : [Text splitters](https://python.langchain.com/docs/concepts/text_splitters/) divide large `Documents` into smaller chunks.
+2. **Split** : [Text splitters](https://python.langchain.com/docs/concepts/text_splitters/) divide large ```Documents``` into smaller chunks.
 This is useful for indexing data and passing it to the model, as large chunks can be difficult to retrieve and may not fit within the model's limited context window.
 3. **Store** : The split data needs to be stored and indexed in a location for future retrieval. This is often accomplished using [VectorStore](https://python.langchain.com/docs/concepts/vectorstores/) and [Embeddings](https://python.langchain.com/docs/integrations/text_embedding/) Models.
 
@@ -129,8 +128,8 @@ _Please copy the downloaded file into the **data** folder for practice._
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -185,7 +184,7 @@ set_env(
 </pre>
 
 Environment variables have been set successfully.
-You can alternatively set API keys, such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys, such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -217,13 +216,13 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 ```
 
-Below is an example of using a basic RAG model for handling web pages (`WebBaseLoader`) .
+Below is an example of using a basic RAG model for handling web pages (```WebBaseLoader```) .
 
 In each step, you can configure various options or apply new techniques.
 
-If a warning is displayed due to the `USER_AGENT` not being set when using the `WebBaseLoader`,
+If a warning is displayed due to the ```USER_AGENT``` not being set when using the ```WebBaseLoader```,
 
-please add `USER_AGENT = myagent` to the `.env` file.
+please add ```USER_AGENT = myagent``` to the ```.env``` file.
 
 ```python
 # Step 1: Load Documents
@@ -312,11 +311,11 @@ print(docs)
 
 ### Web Page
 
-`WebBaseLoader` uses `bs4.SoupStrainer` to parse only the necessary parts from a specified web page.
+```WebBaseLoader``` uses ```bs4.SoupStrainer``` to parse only the necessary parts from a specified web page.
 
 [Note]
 
-- `bs4.SoupStrainer` makes it convenient to extract desired elements from the web
+- ```bs4.SoupStrainer``` makes it convenient to extract desired elements from the web
 
 (example)
 
@@ -472,7 +471,7 @@ print(f"\n[metadata]\n{docs[0].metadata}\n")
 
 ### Load all files in the folder
 
-Here is an example of loading all `.txt` files in the folder.
+Here is an example of loading all ```.txt``` files in the folder.
 
 
 ```python
@@ -508,7 +507,7 @@ print(f"\n[metadata]\n{docs[1].metadata}\n")
     
     
 
-The following is an example of loading all `.pdf` files in the folder.
+The following is an example of loading all ```.pdf``` files in the folder.
 
 ```python
 from langchain_community.document_loaders import DirectoryLoader
@@ -536,7 +535,7 @@ print(docs[0].page_content[2500:3000])
 
 ### Python
 
-The following is an example of loading `.py` files.
+The following is an example of loading ```.py``` files.
 
 ```python
 from langchain_community.document_loaders import DirectoryLoader
@@ -621,18 +620,18 @@ docs[0].page_content[:500]
 This is the simplest method. It splits the text based on characters (default: "\n\n") and measures the chunk size by the number of characters.
 
 1. **How the text is split** : By single character units.
-2. **How the chunk size is measured** : By the `len` of characters.
+2. **How the chunk size is measured** : By the ```len``` of characters.
 
 Visualization example: https://chunkviz.up.railway.app/
 
 
-The `CharacterTextSplitter` class provides functionality to split text into chunks of a specified size.
+The ```CharacterTextSplitter``` class provides functionality to split text into chunks of a specified size.
 
-- `separator` parameter specifies the string used to separate chunks, with two newline characters ("\n\n") being used in this case.
-- `chunk_size`determines the maximum length of each chunk.
-- `chunk_overlap`specifies the number of overlapping characters between adjacent chunks.
-- `length_function`defines the function used to calculate the length of a chunk, with the default being the `len` function, which returns the length of the string.
-- `is_separator_regex`is a boolean value that determines whether the `separator` is interpreted as a regular expression.
+- ```separator``` parameter specifies the string used to separate chunks, with two newline characters ("\n\n") being used in this case.
+- ```chunk_size```determines the maximum length of each chunk.
+- ```chunk_overlap```specifies the number of overlapping characters between adjacent chunks.
+- ```length_function```defines the function used to calculate the length of a chunk, with the default being the ```len``` function, which returns the length of the string.
+- ```is_separator_regex```is a boolean value that determines whether the ```separator``` is interpreted as a regular expression.
 
 
 ```python
@@ -647,7 +646,7 @@ text_splitter = CharacterTextSplitter(
 )
 ```
 
-This function uses the `create_documents` method of the `text_splitter` object to split the given text (`state_of_the_union`) into multiple documents, storing the results in the `texts` variable. It then outputs the first document from texts. This process can be seen as an initial step for processing and analyzing text data, particularly useful for splitting large text data into manageable chunks.
+This function uses the ```create_documents``` method of the ```text_splitter``` object to split the given text (```state_of_the_union```) into multiple documents, storing the results in the ```texts``` variable. It then outputs the first document from texts. This process can be seen as an initial step for processing and analyzing text data, particularly useful for splitting large text data into manageable chunks.
 
 ```python
 # Load a portion of the "Chain of Density" paper.
@@ -778,12 +777,12 @@ docs[0].page_content[:500]
 ### RecursiveTextSplitter
 This text splitter is recommended for general text.
 
-1. `How the text is split` : Based on a list of separators.
-2. `How the chunk size is measured` : By the len of characters.
+1. ```How the text is split``` : Based on a list of separators.
+2. ```How the chunk size is measured``` : By the len of characters.
 
-The `RecursiveCharacterTextSplitter` class provides functionality to recursively split text. This class takes parameters such as `chunk_size` to specify the size of the chunks to be split, `chunk_overlap` to define the overlap size between adjacent chunks, length_function to calculate the length of the chunks, and `is_separator_regex` to indicate whether the separator is a regular expression.
+The ```RecursiveCharacterTextSplitter``` class provides functionality to recursively split text. This class takes parameters such as ```chunk_size``` to specify the size of the chunks to be split, ```chunk_overlap``` to define the overlap size between adjacent chunks, length_function to calculate the length of the chunks, and ```is_separator_regex``` to indicate whether the separator is a regular expression.
 
-In the example, the chunk size is set to 100, the overlap size to 20, the length calculation function to `len` , and `is_separator_regex` is set to `False` to indicate that the separator is not a regular expression.
+In the example, the chunk size is set to 100, the overlap size to 20, the length calculation function to ```len``` , and ```is_separator_regex``` is set to ```False``` to indicate that the separator is not a regular expression.
 
 ```python
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -900,9 +899,9 @@ from langchain_openai.embeddings import OpenAIEmbeddings
 vectorstore = FAISS.from_documents(documents=splits, embedding=OpenAIEmbeddings(model="text-embedding-3-small"))
 ```
 
-Below is a list of Embedding models supported by `OpenAI` :
+Below is a list of Embedding models supported by ```OpenAI``` :
 
-The default model is `text-embedding-ada-002` .
+The default model is ```text-embedding-ada-002``` .
 
 
 | MODEL                  | ROUGH PAGES PER DOLLAR | EXAMPLE PERFORMANCE ON MTEB EVAL |
@@ -978,12 +977,12 @@ The Retriever does not need to store documents; it only returns (or retrieves) t
 
 - [Link to official documentation - Retriever](https://python.langchain.com/docs/integrations/retrievers/)
 
-The **Retriever** is created by using the `invoke()` method on the generated VectorStore.
+The **Retriever** is created by using the ```invoke()``` method on the generated VectorStore.
 
 
 ### Similarity Retrieval
 
-- The default setting is `similarity` , which uses cosine similarity.
+- The default setting is ```similarity``` , which uses cosine similarity.
 
 
 ```python
@@ -997,7 +996,7 @@ print(search_result)
 <pre class="custom">[Document(metadata={'source': 'https://www.forbes.com/sites/rashishrivastava/2024/05/21/the-prompt-scarlett-johansson-vs-openai/'}, page_content="ForbesInnovationEditors' PickThe Prompt: Scarlett Johansson Vs OpenAIPlus AI-generated kids draw predators on TikTok and Instagram. \nShare to FacebookShare to TwitterShare to Linkedin“I was shocked, angered and in disbelief,” Scarlett Johansson said about OpenAI's Sky voice for ChatGPT that sounds similar to her own.FilmMagic\nThe Prompt is a weekly rundown of AI’s buzziest startups, biggest breakthroughs, and business deals. To get it in your inbox, subscribe here.\n\n\nWelcome back to The Prompt.\n\nScarlett Johansson’s lawyers have demanded that OpenAI take down a voice for ChatGPT that sounds much like her own after she’d declined to work with the company to create it. The actress said in a statement provided to Forbes that her lawyers have asked the AI company to detail the “exact processes” it used to create the voice, which sounds eerily similar to Johansson’s voiceover work in the sci-fi movie Her. “I was shocked, angered and in disbelief,” she said."), Document(metadata={'source': 'https://www.forbes.com/sites/rashishrivastava/2024/05/21/the-prompt-scarlett-johansson-vs-openai/'}, page_content="The actress said in the statement that last September Sam Altman offered to hire her to voice ChatGPT, adding that her voice would be comforting to people. She turned down the offer, citing personal reasons. Two days before OpenAI launched its latest model, GPT-4o, Altman reached out again, asking her to reconsider. But before she could respond, the voice was used in a demo, where it flirted, laughed and sang on stage. (“Oh stop it! You’re making me blush,” the voice said to the employee presenting the demo.)\n\nOn Monday, OpenAI said it would take down the voice, while claiming that it is not “an imitation of Scarlett Johansson” and that it had partnered with professional voice actors to create it. But Altman’s one-word tweet – “Her” – posted after the demo last week only further fueled the connection between the AI’s voice and Johannson’s.\nNow, let’s get into the headlines.\nBIG PLAYSActor and filmmaker Donald Glover tests out Google's new AI video tools.GOOGLE"), Document(metadata={'source': 'https://www.forbes.com/sites/rashishrivastava/2024/05/21/the-prompt-scarlett-johansson-vs-openai/'}, page_content='The departure of these researchers also shone a light on OpenAI’s strict and binding nondisclosure agreements and off-boarding documents. Employees who refused to sign them when they left the company risked losing their vested equity in the company, according to Vox. OpenAI CEO Sam Altman responded on X saying “there was a provision about potential equity cancellation in our previous exit docs; although we never clawed anything back, it should never have been something we had in any documents or communication.”\nAI DEALS OF THE WEEKAlexandr Wang was just 19 when he started Scale. His cofounder, Lucy Guo, was 21.Scale AI'), Document(metadata={'source': 'https://www.forbes.com/sites/rashishrivastava/2024/05/21/the-prompt-scarlett-johansson-vs-openai/'}, page_content='TALENT RESHUFFLE\nKey safety researchers at OpenAI, including cofounder and Chief Scientist Ilya Sutskever and machine learning researcher Jan Leike, have resigned. The two led the company’s efforts to develop ways to control AI systems that might become smarter than humans and prevent them from going rogue at the company’s superalignment team, which now no longer exists, according to Wired. In a thread on X, Leike wrote: “Over the past few months my team has been sailing against the wind. Sometimes we were struggling for compute and it was getting harder and harder to get this crucial research done. Over the past years, safety culture and processes have taken a backseat to shiny products.”')]
 </pre>
 
-The `similarity_score_threshold` returns only the results with a `score_threshold` or higher in similarity-based retrieval.
+The ```similarity_score_threshold``` returns only the results with a ```score_threshold``` or higher in similarity-based retrieval.
 
 ```python
 question = "Why did OpenAI and Scarlett Johansson have a conflict?"
@@ -1015,7 +1014,7 @@ print(search_result)
     []
     
 
-Search using the `maximum marginal search result(mmr)` .
+Search using the ```maximum marginal search result(mmr)``` .
 
 
 ```python
@@ -1037,7 +1036,7 @@ print(search_result)
 ```
 
 ### Create a variety of queries
-With `MultiQueryRetriever`, you can generate similar questions with equivalent meanings based on the original query. This helps diversify question expressions, which can enhance search performance.
+With ```MultiQueryRetriever```, you can generate similar questions with equivalent meanings based on the original query. This helps diversify question expressions, which can enhance search performance.
 
 ```python
 from langchain.retrievers.multi_query import MultiQueryRetriever
@@ -1080,9 +1079,9 @@ len(unique_docs)
 ### Ensemble Retriever
 **BM25 Retriever + Embedding-based Retriever**
 
-- `BM25 retriever` (Keyword Search, Sparse Retriever): Based on TF-IDF, considering term frequency and document length normalization.
-- `Embedding-based retriever` (Contextual Search, Dense Retriever): Transforms text into embedding vectors and retrieves documents based on vector similarity (e.g. cosine similarity, dot product). This reflects the semantic similarity of words.
-- `Ensemble retriever` : Combines BM25 and embedding-based retrievers to combine the term frequency of keyword searches with the semantic similarity of contextual searches.
+- ```BM25 retriever``` (Keyword Search, Sparse Retriever): Based on TF-IDF, considering term frequency and document length normalization.
+- ```Embedding-based retriever``` (Contextual Search, Dense Retriever): Transforms text into embedding vectors and retrieves documents based on vector similarity (e.g. cosine similarity, dot product). This reflects the semantic similarity of words.
+- ```Ensemble retriever``` : Combines BM25 and embedding-based retrievers to combine the term frequency of keyword searches with the semantic similarity of contextual searches.
 
 **Note**
 
@@ -1276,12 +1275,12 @@ pretty_print(relevant_docs)
 
 ## Step 6: Create Prompt
 
-Prompt engineering plays a crucial role in deriving the desired outputs based on the given data( `context` ) .
+Prompt engineering plays a crucial role in deriving the desired outputs based on the given data( ```context``` ) .
 
 [TIP1]
 
-1. If important information is missing from the results provided by the `retriever `, you should modify the `retriever` logic.
-2. If the results from the `retriever` contain sufficient information, but the llm fails to extract the key information or doesn't produce the output in the desired format, you should adjust the prompt.
+1. If important information is missing from the results provided by the ```retriever ```, you should modify the ```retriever``` logic.
+2. If the results from the ```retriever``` contain sufficient information, but the llm fails to extract the key information or doesn't produce the output in the desired format, you should adjust the prompt.
 
 [TIP2]
 
@@ -1312,8 +1311,8 @@ prompt.pretty_print()
 
 Select one of the OpenAI models:
 
-- `gpt-4o` : OpenAI GPT-4o model
-- `gpt-4o-mini` : OpenAI GPT-4o-mini model
+- ```gpt-4o``` : OpenAI GPT-4o model
+- ```gpt-4o-mini``` : OpenAI GPT-4o-mini model
 
 For detailed pricing information, please refer to the [OpenAI API Model List / Pricing](https://openai.com/api/pricing/)
 

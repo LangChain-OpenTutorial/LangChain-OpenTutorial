@@ -20,11 +20,14 @@ pre {
 # Adaptive RAG
 
 - Author: [Yoonji Oh](https://github.com/samdaseuss)
-- Design: [LeeYuChul](https://github.com/LeeYuChul)
-- Peer Review: 
+- Design: [Yuchul Lee](https://github.com/LeeYuChul)
+- Peer Review: [Donghak Lee](https://github.com/stsr1284), [Sunhyung Lee](https://github.com/LEE1026icarus)
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
+
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/07-LangGraph-Adaptive-Rag.ipynb)
+[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/07-LangGraph-Adaptive-Rag.ipynb)
 
 ## Overview
 
@@ -77,8 +80,8 @@ The purpose of this tutorial is to help users understand the concept of Adaptive
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -124,7 +127,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [NOTE] 
 
@@ -159,9 +162,9 @@ While a conventional RAG system would approach information retrieval the same wa
 **Adaptive RAG** is a **RAG** strategy that combines (1) **query analysis** and (2) **Self-Reflective RAG**.
 
 The paper "Adaptive-RAG: Learning to Adapt Retrieval-Augmented Large Language Models through Question Complexity" performs routing through query analysis in the following ways:
-* `No Retrieval` 
-* `Single-shot RAG` 
-* `Iterative RAG` 
+* ```No Retrieval``` 
+* ```Single-shot RAG``` 
+* ```Iterative RAG``` 
 
 We implement this using LangGraph.
 In this implementation, we perform the following routing:
@@ -312,7 +315,7 @@ route_prompt = ChatPromptTemplate(
 question_router = route_prompt | structured_llm_router
 ```
 
-Now let's pass questions to our `rag_chain` to generate responses.
+Now let's pass questions to our ```rag_chain``` to generate responses.
 
 ```python
 # Question that needs document search
@@ -398,7 +401,7 @@ grade_prompt = ChatPromptTemplate(
 retrieval_grader = grade_prompt | structured_llm_grader
 ```
 
-Using the created `retrieval_grader` to evaluate the document retrieval results.
+Using the created ```retrieval_grader``` to evaluate the document retrieval results.
 
 ```python
 # Set user question
@@ -455,7 +458,7 @@ def format_docs(docs):
 rag_chain = prompt | llm | StrOutputParser()
 ```
 
-Now we'll use our `rag_chain` to generate responses by passing questions to it. 
+Now we'll use our ```rag_chain``` to generate responses by passing questions to it. 
 
 ```python
 # Generate answer by passing question to RAG chain
@@ -511,7 +514,7 @@ hallucination_prompt = ChatPromptTemplate(
 hallucination_grader = hallucination_prompt | structured_llm_grader
 ```
 
-Evaluate hallucinations in the generated response using our created `hallucination_grader` .
+Evaluate hallucinations in the generated response using our created ```hallucination_grader``` .
 
 ```python
 # Evaluate hallucinations in generated response using grader
@@ -593,7 +596,7 @@ re_write_prompt = ChatPromptTemplate(
 question_rewriter = re_write_prompt | llm | StrOutputParser()
 ```
 
-Create an enhanced question by submitting a query to the generated `question_rewriter` .
+Create an enhanced question by submitting a query to the generated ```question_rewriter``` .
 
 ```python
 # Generate an improved question by passing a question to the query rewriter
@@ -942,14 +945,14 @@ class GraphState(TypedDict):
 
 Define the nodes to be utilized:
 
-- `retrieve` : Document retrieval node
-- `generate` : Answer generation node
-- `grade_documents` : Document relevance evaluation node
-- `transform_query` : Question rewriting node
-- `web_search` : Web search node
-- `route_question` : Question routing node
-- `decide_to_generate` : Answer generation decision node
-- `hallucination_check` : Hallucination assessment node
+- ```retrieve``` : Document retrieval node
+- ```generate``` : Answer generation node
+- ```grade_documents``` : Document relevance evaluation node
+- ```transform_query``` : Question rewriting node
+- ```web_search``` : Web search node
+- ```route_question``` : Question routing node
+- ```decide_to_generate``` : Answer generation decision node
+- ```hallucination_check``` : Hallucination assessment node
 
 ```python
 from langchain_core.documents import Document
@@ -1241,13 +1244,13 @@ Here's an explanation of the diagram based on the **Graph Compilation** context:
 This diagram represents an **Adaptive RAG** (Retrieval-Augmented Generation) workflow, showing how nodes and edges are connected in the query processing flow:
 
 1. **Node Definition**:
-   - `_start_` and `_end_` define entry and exit states
-   - `web_search` handles web-based information retrieval
-   - `Generate` manages content generation
-   - `transform_query` processes and adapts queries
-   - `retrieve` fetches relevant information
-   - `grade_documents` evaluates document quality
-   - `vectorstore` manages vector-based information storage
+   - ```_start_``` and ```_end_``` define entry and exit states
+   - ```web_search``` handles web-based information retrieval
+   - ```Generate``` manages content generation
+   - ```transform_query``` processes and adapts queries
+   - ```retrieve``` fetches relevant information
+   - ```grade_documents``` evaluates document quality
+   - ```vectorstore``` manages vector-based information storage
 
 2. **Edge Configuration**:
    - Solid arrows represent direct transitions between nodes
@@ -1257,8 +1260,8 @@ This diagram represents an **Adaptive RAG** (Retrieval-Augmented Generation) wor
 3. **Workflow Construction**:
    - Primary path splits into web search and vector retrieval branches
    - Multiple feedback loops ensure quality control
-   - Integration between retrieval (`web_search`, `retrieve`) and generation (`Generate`) components
-   - Document grading system (`grade_documents`) provides quality assurance
+   - Integration between retrieval (```web_search```, ```retrieve```) and generation (```Generate```) components
+   - Document grading system (```grade_documents```) provides quality assurance
 
 ## Graph Utilization
 

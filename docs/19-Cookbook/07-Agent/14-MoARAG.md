@@ -20,12 +20,11 @@ pre {
 # MoA(Mixture of Agents) Search
 
 - Author: [Kane](https://github.com/HarryKane11)
-- Design:
 - Peer Review: 
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/02-RecommendationSystem/03-ResumeRecommendationReview.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/02-RecommendationSystem/03-ResumeRecommendationReview.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/14-MoARAG.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/14-MoARAG.ipynb)
 ## Overview
 
 This code implements a sophisticated Multi-Model Search and Analysis System designed to provide comprehensive answers to user queries through a distributed search and analysis workflow.
@@ -72,8 +71,8 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 **[Note]**
 
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 
 ```python
@@ -166,8 +165,8 @@ def dict_merge(old_dict: dict, new_dict: dict) -> dict:
 ```
 
 ## State and Models Setup
-This section defines the `AgentState` structure for managing the workflow's state, 
-along with the `SearchQueries` model for query generation. It also sets up the search tool 
+This section defines the ```AgentState``` structure for managing the workflow's state, 
+along with the ```SearchQueries``` model for query generation. It also sets up the search tool 
 and initializes multiple models with different characteristics.
 
 ```python
@@ -232,7 +231,7 @@ search_queries
 
 
 ## Search Task Creation
-This section creates tasks using `Send` objects for executing search queries in parallel. 
+This section creates tasks using ```Send``` objects for executing search queries in parallel. 
 Each query will be processed independently.
 
 ```python
@@ -471,11 +470,11 @@ nest_asyncio.apply()
 Functions to manage output display and execute the analysis pipeline with clear progress tracking.
 
 **Key Components**:
-1. Progress Tracking (`print_progress`):
+1. Progress Tracking (```print_progress```):
    - Visual progress indicators for each pipeline stage
    - Emoji-based status updates for better readability
    - Clear tracking of query generation, search execution, and model analyses
-2. Result Display (`display_final_result`):
+2. Result Display (```display_final_result```):
    - Markdown formatting for the final analysis
    - Structured presentation of synthesized results
    - Clean citation and source reference display

@@ -20,19 +20,18 @@ pre {
 # DeleteMessages
 
 - Author: [Suhyun Lee](https://github.com/suhyun0115)
-- Design: 
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/09-LangGraph-DeleteMessages.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/09-LangGraph-DeleteMessages.ipynb)
 ## Overview
 
-In LangChain, you can not only add messages but also delete them when necessary. The `RemoveMessage` tool is used for this purpose.
+In LangChain, you can not only add messages but also delete them when necessary. The ```RemoveMessage``` tool is used for this purpose.
 
-This tool sends a deletion request for a specific message. The deletion is then processed according to the `reducer` rules defined in `MessagesState`.
+This tool sends a deletion request for a specific message. The deletion is then processed according to the ```reducer``` rules defined in ```MessagesState```.
 
-In essence, `RemoveMessage` initiates the deletion, the `reducer` determines how those requests are processed, and `MessagesState` serves as the storage and the management system for messages.
+In essence, ```RemoveMessage``` initiates the deletion, the ```reducer``` determines how those requests are processed, and ```MessagesState``` serves as the storage and the management system for messages.
 
 ### Table of Contents
 
@@ -56,7 +55,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -81,9 +80,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -107,27 +106,27 @@ if not load_dotenv():
 LangGraph offers a powerful way to design workflows that integrate message state management and tool invocation. This section demonstrates the basic process of constructing a LangGraph.
 
 **Key Components**
-1. `MemorySaver`: A memory object for saving checkpoints, allowing you to save and restore conversation states.
-2. `ToolNode`: A node for executing custom tools. In this tutorial, it includes a `search` tool that simulates a web search.
-3. `MessagesState`: Stores and updates message states, serving as the central hub for state-based workflows.
-4. `StateGraph`: A graph object that defines the state-based workflow, controlling the flow of execution between nodes and edges.
-5. `should_continue`: A conditional function that determines the next node to execute based on the current statue of the agent.
+1. ```MemorySaver```: A memory object for saving checkpoints, allowing you to save and restore conversation states.
+2. ```ToolNode```: A node for executing custom tools. In this tutorial, it includes a ```search``` tool that simulates a web search.
+3. ```MessagesState```: Stores and updates message states, serving as the central hub for state-based workflows.
+4. ```StateGraph```: A graph object that defines the state-based workflow, controlling the flow of execution between nodes and edges.
+5. ```should_continue```: A conditional function that determines the next node to execute based on the current statue of the agent.
 
 **Key Workflow Details**
 
 **Defining and Registering Tools:**
-- The `search` function simulates a web search and returns results for a given query.
-- This tool is then wrapped in a `ToolNode` and integrated into the LangGraph.
+- The ```search``` function simulates a web search and returns results for a given query.
+- This tool is then wrapped in a ```ToolNode``` and integrated into the LangGraph.
 
 **Model Initialization and Binding:**
-- Initialize an LLM model, such as `ChatOpenAI` , and bind it with tools to ensure they can be executed during runtime.
+- Initialize an LLM model, such as ```ChatOpenAI``` , and bind it with tools to ensure they can be executed during runtime.
 
 **Defining the Workflow:**
-- The `StateGraph` is used to define the workflow by adding nodes and connecting them with edges.
-- The workflow begins at the `START` node. The `agent` is executed first, calling tools as needed, and then control returns to the agent.
+- The ```StateGraph``` is used to define the workflow by adding nodes and connecting them with edges.
+- The workflow begins at the ```START``` node. The ```agent``` is executed first, calling tools as needed, and then control returns to the agent.
 
 **Conditional Flow Control:**
-- The `should_continue` function checks the state of the last message to determine whether a tool should be executed or the workflow should terminate.
+- The ```should_continue``` function checks the state of the last message to determine whether a tool should be executed or the workflow should terminate.
 
 ```python
 from typing import Literal
@@ -229,34 +228,34 @@ for event in app.stream({"messages": [input_message]}, config, stream_mode="valu
     That's a common preference! Many people enjoy the rich, creamy taste of chocolate more than the often sweeter and more varied flavors of candy. Do you have a favorite type of chocolate, like dark, milk, or white?
 </pre>
 
-The following code snippet, `for event in app.stream({"messages": [input_message]}, config, stream_mode="values")`, operates as follows: 
+The following code snippet, ```for event in app.stream({"messages": [input_message]}, config, stream_mode="values")```, operates as follows: 
 
-1. **Calling `app.stream()`:**
+1. **Calling ```app.stream()```:**
 - This initiates the workflow and streams each event.
 - Parameters:
-   - `{"messages": [input_message]}`: Sets the initial message for the workflow.
-   - `config`: Contains configuration values, including `thread_id` set to `"1"` .
-   - `stream_mode="values"`: Specifies the streaming mode as value-based.
+   - ```{"messages": [input_message]}```: Sets the initial message for the workflow.
+   - ```config```: Contains configuration values, including ```thread_id``` set to ```"1"``` .
+   - ```stream_mode="values"```: Specifies the streaming mode as value-based.
 
 2. **Loop Behavior:**
 - The loop iterates through each event generated by the workflow.
 - Event details:
-   - `event["messages"][-1]`: Retrieves the most recent message.
-   - `pretty_print()`: Prints the retrieved message.
+   - ```event["messages"][-1]```: Retrieves the most recent message.
+   - ```pretty_print()```: Prints the retrieved message.
 
-Key Streaming Modes of `app.stream()`:
+Key Streaming Modes of ```app.stream()```:
 
-1. **`values` Mode**
+1. **```values``` Mode**
 - This mode receives the entire state of the graph after each node execution.
 - Suitable for basic state monitoring.
 - **Example:** Receiving the complete response from an LLM after it finishes its response.
 
-2. **`updates` Mode**
+2. **```updates``` Mode**
 - This mode receives only the changes made to the state after each node execution.
 - Useful for efficient state management.
 - **Example:** Receiving only the newly added content compared to the previous state.
 
-3. **`messages` Mode**
+3. **```messages``` Mode**
 - This mode provides the most detailed, real-time information.
 - Ideal for real-time applications, such as chatbots.
 - **Example:** Observing the step-by-step "thought process" of an LLM in real-time. For instance, "Thinking..." → "Chocolate is..." → "a delicious snack."
@@ -309,25 +308,25 @@ This section demonstrates how to manually retrieve message logs from the LangGra
 
 **Key Steps for Manual Deletion**
 1. **Message Retrieval:**
-- Use the `app.get_state(config)` method to extract the list of messages from the current state.
-- Use `pretty_print()` method to display each message in a user-friendly format.
+- Use the ```app.get_state(config)``` method to extract the list of messages from the current state.
+- Use ```pretty_print()``` method to display each message in a user-friendly format.
 
 2. **Message Deletion:**
-- Utilize a `RemoveMessage` object, specifying the ID of the message to delete.
+- Utilize a ```RemoveMessage``` object, specifying the ID of the message to delete.
 - The code example demonstrates removing the first message in the array.
 
 3. **State Update:**
-- Use the `app.update_state(config, ...)` method to apply the deletion and update the graph's state.
+- Use the ```app.update_state(config, ...)``` method to apply the deletion and update the graph's state.
 - After the update, retrieve and display the message list again to verify the deletion.
 
 **Code Flow**
 1. **Output Stored Messages:**
-- Retrieve the messages from the current state using `messages = app.get_state(config).values["messages"]`.
-- Iterate through the `messsages` list and print each message to review the current conversation history.
+- Retrieve the messages from the current state using ```messages = app.get_state(config).values["messages"]```.
+- Iterate through the ```messsages``` list and print each message to review the current conversation history.
 
 2. **Delete a Specific Message:**
-- Use `RemoveMessage(id=messages[0].id)` to create a delete request for the first message.
-- Update the graph's state using `app.update_state(config, ...)` to reflect the deletion.
+- Use ```RemoveMessage(id=messages[0].id)``` to create a delete request for the first message.
+- Update the graph's state using ```app.update_state(config, ...)``` to reflect the deletion.
 
 3. **Output Updated Messages:**
 - After updating the state, retrieve the updated message list and print it to confirm the deletion.
@@ -383,29 +382,29 @@ Dynamic deletion automates the process of deleting older messages during workflo
 
 **Key Components for Dynamic Deletion**
 
-1. `delete_messages(state: dict) -> dict`:
+1. ```delete_messages(state: dict) -> dict```:
 - This function implements the logic for deleting old messages when it checks if the number of messages exceeds a specific limit (e.g., 3). It retains only the latest ones.
 
-2. `should_continue(state: dict) -> str`:
+2. ```should_continue(state: dict) -> str```:
 - This conditional function determins the next node to execute based on the current state.
-- If there is no function call in the current messages, the workflow proceeds to the `delete_messages` node. If a function call exists, the workflow proceeds to the `action` node.
+- If there is no function call in the current messages, the workflow proceeds to the ```delete_messages``` node. If a function call exists, the workflow proceeds to the ```action``` node.
 
-3. `StateGraph`: Defines the state-based workflow, connecting the `agent`, `action`, and `delete_messages` nodes with appropriate edges.
+3. ```StateGraph```: Defines the state-based workflow, connecting the ```agent```, ```action```, and ```delete_messages``` nodes with appropriate edges.
 
 **Key Details**
 
 **Message Management:**
-- The `delete_messages` function manages the message state by removing older messages during prolonged conversations, thus maintaining memory efficiency.
+- The ```delete_messages``` function manages the message state by removing older messages during prolonged conversations, thus maintaining memory efficiency.
 
 **Conditional Flow Control:**
-- The `should_continue` function inspects the state of the last message to determine if a tool call is required. This determines the next node in the execution flow.
+- The ```should_continue``` function inspects the state of the last message to determine if a tool call is required. This determines the next node in the execution flow.
 
 **Workflow Definition:**
-- The `StateGraph` defines the workflow by adding nodes for `agent`, `action`, and `delete_messages` nodes.
+- The ```StateGraph``` defines the workflow by adding nodes for ```agent```, ```action```, and ```delete_messages``` nodes.
 - Each node is configured to follow the appropriate flow based on state and conditions.
 
 **Memory Checkpoint Integration:**
-- The `MemorySaver` object allows for saving and restoring checkpoints, enabling seamless compilation and resumption of the workflow.
+- The ```MemorySaver``` object allows for saving and restoring checkpoints, enabling seamless compilation and resumption of the workflow.
 
 ```python
 from langchain_core.messages import RemoveMessage
@@ -461,12 +460,12 @@ app = workflow.compile(checkpointer=memory)
 
 **Process Flow**
 
-1. The workflow starts at the `START` node and executes the `agent` node.
-2. The `should_continue` function then determines the next node based on the current state:
-- If no function call is present in the messages, the workflow proceeds to the `delete_messages` node. 
-- If a function call is present, the workflow proceeds to the `action` node.
+1. The workflow starts at the ```START``` node and executes the ```agent``` node.
+2. The ```should_continue``` function then determines the next node based on the current state:
+- If no function call is present in the messages, the workflow proceeds to the ```delete_messages``` node. 
+- If a function call is present, the workflow proceeds to the ```action``` node.
 3. Each node transitions to the next execution path based on the defined conditions.
-4. The `delete_message` node then connects to the `END` node, terminating that branch of the workflow.
+4. The ```delete_message``` node then connects to the ```END``` node, terminating that branch of the workflow.
 
 ```python
 # Dynamic Deletion Visualization

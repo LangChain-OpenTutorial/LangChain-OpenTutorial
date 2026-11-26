@@ -20,12 +20,11 @@ pre {
 # HWP (Hangeul) Loader
 
 - Author: [Sunyoung Park (architectyou)](https://github.com/Architectyou)
-- Design: 
 - Peer Review : [Suhyun Lee](https://github.com/suhyun0115), [Kane](https://github.com/HarryKane11)
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/13-HWP-loader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/13-HWP-loader.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/13-HWPLoader.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/13-HWPLoader.ipynb)
 ## Overview
 
 HWP is Hangeul Word Processor developed by **Hancom** , and it is Korea's representative office software.
@@ -34,10 +33,10 @@ It uses the **.hwp** file extension and is widely used in Businesses, Schools, a
 
 Therefore, if you're a developer in South Korea, you've likely had (or will have) experience dealing with **.hwp** documents.
 
-Unfortunately, it's not yet integrated with LangChain, so we'll need to use a custom-implemented `HWPLoader` with `langchain-teddynote` and `langchain-opentutorial` .
+Unfortunately, it's not yet integrated with LangChain, so we'll need to use a custom-implemented ```HWPLoader``` with ```langchain-teddynote``` and ```langchain-opentutorial``` .
 
 
-In this tutorial, we'll implement a `HWPLoader` that can load **.hwp** files and extract text from them.
+In this tutorial, we'll implement a ```HWPLoader``` that can load **.hwp** files and extract text from them.
 
 
 ### Table of Contents
@@ -58,8 +57,8 @@ In this tutorial, we'll implement a `HWPLoader` that can load **.hwp** files and
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -86,7 +85,7 @@ package.install(
 
 ## HWP Loader Instantiate
 
-You can instantiate HWP Loader with `HWPLoader` class.
+You can instantiate HWP Loader with ```HWPLoader``` class.
 
 ```python
 from langchain_teddynote.document_loaders import HWPLoader
@@ -96,7 +95,7 @@ loader = HWPLoader(file_path="data/Regulations_of_the_Establishment_and_Operatio
 
 ### Loader
 
-You can load the document with `load` method.
+You can load the document with ```load``` method.
 
 ```python
 docs = loader.load()

@@ -21,19 +21,19 @@ pre {
 
 - Author: [Heesun Moon](https://github.com/MoonHeesun)
 - Peer Review: [harheem](https://github.com/harheem), [gyjong](https://github.com/gyjong)
+- Proofread : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/09-Memory-Using-SQLite.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/09-Memory-Using-SQLite.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/09-Memory-Using-SQLite.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/09-Memory-Using-SQLite.ipynb)
 ## Overview
 
-This tutorial explains the `SQLChatMessageHistory` class, which allows storing chat history in any database supported by `SQLAlchemy`.
+This tutorial explains the ```SQLChatMessageHistory``` class, which allows storing chat history in any database supported by ```SQLAlchemy```.
 
-`Structured Query Language (SQL)` is a domain-specific language used in programming and designed for managing data held in a Relational Database Management System (RDBMS), or for stream processing in a Relational Data Stream Management System (RDSMS). It is particularly useful for handling structured data, including relationships between entities and variables.
+```Structured Query Language (SQL)``` is a domain-specific language used in programming and designed for managing data held in a Relational Database Management System (RDBMS), or for stream processing in a Relational Data Stream Management System (RDSMS). It is particularly useful for handling structured data, including relationships between entities and variables.
 
-`SQLAlchemy` is an open-source **SQL** toolkit and Object-Relational Mapper (ORM) for the Python programming language, released under the MIT License.
+```SQLAlchemy``` is an open-source **SQL** toolkit and Object-Relational Mapper (ORM) for the Python programming language, released under the MIT License.
 
-To use a database other than `SQLite`, please make sure to install the appropriate database driver first.
+To use a database other than ```SQLite```, please make sure to install the appropriate database driver first.
 
 ### Table of Contents
 
@@ -53,8 +53,8 @@ To use a database other than `SQLite`, please make sure to install the appropria
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -92,9 +92,9 @@ set_env(
 )
 ```
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it.
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -106,9 +106,9 @@ load_dotenv()
 
 To use the storage, you need to provide only the following 2 things:
 
-1. `session_id` - A unique identifier for the session, such as a user name, email, chat ID, etc.
+1. ```session_id``` - A unique identifier for the session, such as a user name, email, chat ID, etc.
 
-2. `connection` - A string that specifies the database connection. This string will be passed to SQLAlchemy's `create_engine` function.
+2. ```connection``` - A string that specifies the database connection. This string will be passed to SQLAlchemy's ```create_engine``` function.
 
 ```python
 from langchain_community.chat_message_histories import SQLChatMessageHistory
@@ -161,12 +161,12 @@ chat_message_history.messages
 
 ### Adding Metadata
 
-**Metadata** can be added by directly creating `HumanMessage` and `AIMessage` objects. This approach enables flexible data handling and logging.
+**Metadata** can be added by directly creating ```HumanMessage``` and ```AIMessage``` objects. This approach enables flexible data handling and logging.
 
 **Parameters**:
-- `additional_kwargs` - Stores custom tags or metadata, such as priority or task type.
+- ```additional_kwargs``` - Stores custom tags or metadata, such as priority or task type.
 
-- `response_metadata` - Captures AI response details, including model, timestamp, and token count.
+- ```response_metadata``` - Captures AI response details, including model, timestamp, and token count.
 
 These fields enhance debugging and task tracking through detailed data storage.
 
@@ -247,7 +247,7 @@ prompt = ChatPromptTemplate.from_messages(
 chain = prompt | ChatOpenAI(model_name="gpt-4o") | StrOutputParser()
 ```
 
-The following shows how to create a function that returns chat history from `sqlite.db`.
+The following shows how to create a function that returns chat history from ```sqlite.db```.
 
 ```python
 def get_chat_history(user_id, conversation_id):
@@ -258,7 +258,7 @@ def get_chat_history(user_id, conversation_id):
     )
 ```
 
-Set `config_fields` to provide reference information when retrieving conversation details.
+Set ```config_fields``` to provide reference information when retrieving conversation details.
 
 ```python
 from langchain_core.runnables.utils import ConfigurableFieldSpec
@@ -294,7 +294,7 @@ chain_with_history = RunnableWithMessageHistory(
 )
 ```
 
-Set the `"user_id"` and `"conversation_id"` key-value pairs under the `"configurable"` key.
+Set the ```"user_id"``` and ```"conversation_id"``` key-value pairs under the ```"configurable"``` key.
 
 ```python
 # Config settings
@@ -303,8 +303,8 @@ config = {"configurable": {"user_id": "user1", "conversation_id": "conversation1
 
 Let's ask a question about the name. If there is any previously saved conversation history, it will provide the correct response.  
 
-- Use the `invoke` method of the `chain_with_history` object to generate an answer to the question.  
-- Pass a question dictionary and `config` settings to the `invoke` method as inputs.  
+- Use the ```invoke``` method of the ```chain_with_history``` object to generate an answer to the question.  
+- Pass a question dictionary and ```config``` settings to the ```invoke``` method as inputs.  
 
 ```python
 # Execute by passing the question and config
@@ -332,7 +332,7 @@ chain_with_history.invoke({"question": "What is my name?"}, config)
 
 
 
-This time, set the same `user_id` but use a different value for `conversation_id`.
+This time, set the same ```user_id``` but use a different value for ```conversation_id```.
 
 ```python
 # Config settings

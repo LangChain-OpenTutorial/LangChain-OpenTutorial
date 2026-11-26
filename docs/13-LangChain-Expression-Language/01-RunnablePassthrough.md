@@ -20,21 +20,20 @@ pre {
 # RunnablePassthrough
 
 - Author: [Suhyun Lee](https://github.com/suhyun0115)
-- Design: 
 - Peer Review:
+- Proofread : [Yun Eun](https://github.com/yuneun92)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/01-RunnablePassThrough.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/01-RunnablePassThrough.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/01-RunnablePassThrough.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/01-RunnablePassThrough.ipynb)
 ## Overview
 
-`RunnablePassthrough` is a utility that facilitates unmodified data flow through a pipeline. Its `invoke()` method returns input data in its original form without alterations.
+```RunnablePassthrough``` is a utility that facilitates unmodified data flow through a pipeline. Its ```invoke()``` method returns input data in its original form without alterations.
 
 This functionality allows seamless data transmission between pipeline stages.
 
-It frequently works in tandem with `RunnableParallel` for concurrent task execution, enabling the addition of new key-value pairs to the data stream.
+It frequently works in tandem with ```RunnableParallel``` for concurrent task execution, enabling the addition of new key-value pairs to the data stream.
 
-Common use cases for `RunnablePassthrough` include:
+Common use cases for ```RunnablePassthrough``` include:
 
 - Direct data forwarding without transformation
 - Pipeline stage bypassing
@@ -65,8 +64,8 @@ Common use cases for `RunnablePassthrough` include:
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -108,7 +107,7 @@ set_env(
 )
 ```
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -126,53 +125,53 @@ load_dotenv(override=True)
 
 
 
-## Passing Data with `RunnablePassthrough` and `RunnableParallel`
+## Passing Data with ```RunnablePassthrough``` and ```RunnableParallel```
 
-`RunnablePassthrough` is a utility that **passes data through unchanged** or adds minimal information before forwarding.
+```RunnablePassthrough``` is a utility that **passes data through unchanged** or adds minimal information before forwarding.
 
-It commonly integrates with `RunnableParallel` to map data under new keys.
+It commonly integrates with ```RunnableParallel``` to map data under new keys.
 
 - **Standalone Usage**
   
-  When used independently, `RunnablePassthrough()` returns the input data unmodified.
+  When used independently, ```RunnablePassthrough()``` returns the input data unmodified.
 
-- **Usage with `assign`**
+- **Usage with ```assign```**
   
-  When implemented with `assign` as `RunnablePassthrough.assign(...)`, it augments the input data with additional fields before forwarding.
+  When implemented with ```assign``` as ```RunnablePassthrough.assign(...)```, it augments the input data with additional fields before forwarding.
 
-By leveraging `RunnablePassthrough`, you can maintain data integrity through pipeline stages while selectively adding required information.
+By leveraging ```RunnablePassthrough```, you can maintain data integrity through pipeline stages while selectively adding required information.
 
 Let me continue reviewing any additional content. I'm tracking all modifications to provide a comprehensive summary once the review is complete.
 
-### Example of Using `RunnableParallel` and `RunnablePassthrough`
+### Example of Using ```RunnableParallel``` and ```RunnablePassthrough```
 
-While `RunnablePassthrough` is effective independently, it becomes more powerful when combined with `RunnableParallel`.
+While ```RunnablePassthrough``` is effective independently, it becomes more powerful when combined with ```RunnableParallel```.
 
-This section demonstrates how to configure and run **parallel tasks** using the `RunnableParallel` class. The following steps provide a beginner-friendly implementation guide.
+This section demonstrates how to configure and run **parallel tasks** using the ```RunnableParallel``` class. The following steps provide a beginner-friendly implementation guide.
 
-1. **Initialize `RunnableParallel`**
+1. **Initialize ```RunnableParallel```**
    
-   Create a `RunnableParallel` instance to manage concurrent task execution.
+   Create a ```RunnableParallel``` instance to manage concurrent task execution.
 
-2. **Configure `passed` Task**
+2. **Configure ```passed``` Task**
    
-   - Define a `passed` task utilizing `RunnablePassthrough`
+   - Define a ```passed``` task utilizing ```RunnablePassthrough```
    - This task **preserves input data without modification**
 
-3. **Set Up `extra` Task**
+3. **Set Up ```extra``` Task**
    
-   - Implement an `extra` task using `RunnablePassthrough.assign()`
-   - This task computes triple the "num" value and stores it with key `mult`
+   - Implement an ```extra``` task using ```RunnablePassthrough.assign()```
+   - This task computes triple the "num" value and stores it with key ```mult```
 
-4. **Implement `modified` Task**
+4. **Implement ```modified``` Task**
    
-   - Create a `modified` task using a basic function
+   - Create a ```modified``` task using a basic function
    - This function increments the "num" value by 1
 
 5. **Task Execution**
    
-   - Invoke all tasks using `runnable.invoke()`
-   - Example: Input `{"num": 1}` triggers concurrent execution of all defined tasks
+   - Invoke all tasks using ```runnable.invoke()```
+   - Example: Input ```{"num": 1}``` triggers concurrent execution of all defined tasks
 
 
 ```python
@@ -215,24 +214,24 @@ r.invoke({"num": 1})
 
 ### Summary of Results
 
-When provided with input `{"num": 1}`, each task produces the following output:
+When provided with input ```{"num": 1}```, each task produces the following output:
 
-1. **`passed`:** Returns unmodified input data
-   - Output: `{"num": 1}`
+1. **```passed```:** Returns unmodified input data
+   - Output: ```{"num": 1}```
 
-2. **`extra`:** Augments input with `"mult"` key containing triple the `"num"` value
-   - Output: `{"num": 1, "mult": 3}`
+2. **```extra```:** Augments input with ```"mult"``` key containing triple the ```"num"``` value
+   - Output: ```{"num": 1, "mult": 3}```
 
-3. **`modified`:** Increments the `"num"` value by 1
-   - Output: `{"num": 2}`
+3. **```modified```:** Increments the ```"num"``` value by 1
+   - Output: ```{"num": 2}```
 
 ## Search Engine Integration
 
-The following example illustrates an implementation of `RunnablePassthrough`.
+The following example illustrates an implementation of ```RunnablePassthrough```.
 
-### Using `RunnablePassthrough` in a FAISS-Based RAG Pipeline
+### Using ```RunnablePassthrough``` in a FAISS-Based RAG Pipeline
 
-This code uses `RunnablePassthrough` in a FAISS-based RAG pipeline to pass retrieved context into a chat prompt.  
+This code uses ```RunnablePassthrough``` in a FAISS-based RAG pipeline to pass retrieved context into a chat prompt.  
 It enables seamless integration of OpenAI embeddings for efficient retrieval and response generation.
 
 ```python
@@ -314,13 +313,13 @@ retrieval_chain.invoke("What do dogs like?")
 
 - Download the application from the [Ollama official website](https://ollama.com/)
 - For comprehensive Ollama documentation, visit the [GitHub tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/10-Ollama.ipynb)
-- Implementation utilizes the `llama3.2` 1b model for response generation and `mxbai-embed-large` for embedding operations
+- Implementation utilizes the ```llama3.2``` 1b model for response generation and ```mxbai-embed-large``` for embedding operations
 
 **Ollama Installation Guide on Colab**
 
-Google Colab requires the `colab-xterm` extension for terminal functionality. Follow these steps to install Ollama:
+Google Colab requires the ```colab-xterm``` extension for terminal functionality. Follow these steps to install Ollama:
 
-1. **Install and Initialize `colab-xterm`**
+1. **Install and Initialize ```colab-xterm```**
 
 ```python
 !pip install colab-xterm

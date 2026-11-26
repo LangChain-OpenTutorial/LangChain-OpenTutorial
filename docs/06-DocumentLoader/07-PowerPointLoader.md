@@ -22,17 +22,17 @@ pre {
 - Author: [Kane](https://github.com/HarryKane11)
 - Design: [Kane](https://github.com/HarryKane11)
 - Peer Review: [architectyou](https://github.com/architectyou), [jhboyo](https://github.com/jhboyo), [fastjw](https://github.com/fastjw)
+- Proofread : [Youngjun cho](https://github.com/choincnp)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/07-PowerPoint-Loader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/07-PowerPoint-Loader.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/07-PowerPointLoader.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/07-PowerPointLoader.ipynb)
 ## Overview
 
 [Microsoft PowerPoint](https://en.wikipedia.org/wiki/Microsoft_PowerPoint) is a presentation program developed by Microsoft.
 
 This tutorial demonstrates two different approaches to process PowerPoint documents for downstream use:
-1. Using `Unstructured` to load and parse PowerPoint files into document elements
-2. Using `MarkItDown` to convert PowerPoint files into markdown format and LangChain Document objects
+1. Using ```Unstructured``` to load and parse PowerPoint files into document elements
+2. Using ```MarkItDown``` to convert PowerPoint files into markdown format and LangChain Document objects
 
 Both methods enable effective text extraction and processing, with different strengths for various use cases.
 
@@ -54,8 +54,8 @@ Both methods enable effective text extraction and processing, with different str
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -80,7 +80,7 @@ package.install(
 
 ## Converting PPTX to Langchain Documents Using Unstructured
 
-`Unstructured` is a robust document processing library that excels at converting various document formats into clean, structured text. <br/>It is well integrated with LangChain's ecosystem and provides reliable document parsing capabilities. 
+```Unstructured``` is a robust document processing library that excels at converting various document formats into clean, structured text. <br/>It is well integrated with LangChain's ecosystem and provides reliable document parsing capabilities. 
 
 The library includes:
 
@@ -118,9 +118,9 @@ print(docs[0].page_content[:100])
     Lecture 2: Word
 </pre>
 
-`Unstructured` generates various "elements" for different **chunks** of text.
+```Unstructured``` generates various "elements" for different **chunks** of text.
 
-By default, they are combined and returned as a single document, but elements can be easily separated by specifying `mode="elements"`.
+By default, they are combined and returned as a single document, but elements can be easily separated by specifying ```mode="elements"```.
 
 ```python
 # Create UnstructuredPowerPointLoader with elements mode
@@ -197,16 +197,16 @@ for idx, doc in enumerate(docs[:3], 1):
 
 ## Converting PPTX to Langchain Documents Using MarkItDown
 
-[`MarkItDown`](https://github.com/microsoft/markitdown "Visit the GitHub page")
+[```MarkItDown```](https://github.com/microsoft/markitdown "Visit the GitHub page")
  is an open-source library by Microsoft that converts unstructured documents into structured Markdown, a format that LLMs can easily process and understand. This makes it particularly valuable for RAG (Retrieval Augmented Generation) systems by enabling clean, semantic text representation.
 
-Supporting formats like PDF, PowerPoint, Word, Excel, images (with EXIF/OCR), audio (with transcription), HTML, and more, `MarkItDown` preserves semantic structure and handles complex data, such as tables, with precision. This ensures high retrieval quality and enhances LLMs' ability to extract insights from diverse content types.
+Supporting formats like PDF, PowerPoint, Word, Excel, images (with EXIF/OCR), audio (with transcription), HTML, and more, ```MarkItDown``` preserves semantic structure and handles complex data, such as tables, with precision. This ensures high retrieval quality and enhances LLMs' ability to extract insights from diverse content types.
 
 > ⚠️**Note**: MarkItDown does not interpret the content of images embedded in PowerPoint files. Instead, it extracts the images as-is, leaving their semantic meaning inaccessible to LLMs.
 
 For example, an object in the slide would be processed like this:
 
-`![object #](object#.jpg)`
+```![object #](object#.jpg)```
 
 Installation is straightforward:
 
@@ -215,14 +215,14 @@ Installation is straightforward:
 ```
 
 ### Extracting Text from PPTX Using MarkItDown
-In this section, we'll use `MarkItDown` to:
+In this section, we'll use ```MarkItDown``` to:
 * Convert PowerPoint slides to markdown format
 * Preserve the semantic structure and visual formatting
 * Maintain slide numbers and titles
 * Generate clean, readable text output
 
 
-First, we need to initialize `MarkItDown` and run `convert` function to load the `.pptx` from local.
+First, we need to initialize ```MarkItDown``` and run ```convert``` function to load the ```.pptx``` from local.
 
 ```python
 from markitdown import MarkItDown
@@ -254,7 +254,7 @@ print(result_text[:500])
 
 ### Convert markdown format to Langchain Document format
 
-The code below processes PowerPoint slides by splitting them into individual Document objects. <br/>Each slide is converted into a Langchain Document object with metadata including the `slide number` and `title`. 
+The code below processes PowerPoint slides by splitting them into individual Document objects. <br/>Each slide is converted into a Langchain Document object with metadata including the ```slide number``` and ```title```. 
 
 ```python
 from langchain_core.documents import Document
@@ -306,7 +306,7 @@ documents[:2]
 
 
 
-`MarkItDown` efficiently handles tables in PowerPoint slides by converting them into clean Markdown table syntax. 
+```MarkItDown``` efficiently handles tables in PowerPoint slides by converting them into clean Markdown table syntax. 
 
 This makes tabular data easily accessible for LLMs while preserving the original structure and formatting.
 

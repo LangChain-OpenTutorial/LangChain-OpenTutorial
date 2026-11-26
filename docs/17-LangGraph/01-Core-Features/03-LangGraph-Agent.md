@@ -21,11 +21,10 @@ pre {
 - Author: [Erika Park](https://www.linkedin.com/in/yeonseo-park-094193198/)
 - Designer: [Erika Park](https://www.linkedin.com/in/yeonseo-park-094193198/)
 - Peer Review: 
-- Proofread:
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/05-Using-OpenAIAPI-MultiModal.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/05-Using-OpenAIAPI-MultiModal.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/03-LangGraph-Agent.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/03-LangGraph-Agent.ipynb)
 
 ## Overview
 
@@ -64,8 +63,8 @@ By the end of this tutorial, you will understand how to integrate a web search t
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions, and utilities for tutorials. 
-- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions, and utilities for tutorials. 
+- You can check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -109,7 +108,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -132,7 +131,7 @@ load_dotenv(override=True)
 
 To address questions that a chatbot cannot answer from "memory," we will integrate a web search tool. This tool will enable the chatbot to retrieve relevant information and provide more accurate and informed responses.
 
-For this tutorial, we will use the Tavily Search API to implement search functionality. This API provides two primary classes: `TavilySearchResults` and `TavilyAnswer` .
+For this tutorial, we will use the Tavily Search API to implement search functionality. This API provides two primary classes: ```TavilySearchResults``` and ```TavilyAnswer``` .
 
 ### Tavily Search API Tool
 The Tavily Search API tool is designed to facilitate powerful search capabilities within the chatbot. It retrieves comprehensive and reliable search results, making it ideal for answering questions about current events or topics that require external information.
@@ -140,7 +139,7 @@ The Tavily Search API tool is designed to facilitate powerful search capabilitie
 **API Key Setup**
 1. Obtain an API key from the following link: [Tavily API Key Issuance](https://app.tavily.com/).
 2. Set the API key as an environment variable in your project.
-Create a `.env` file in the project directory and include the API key as shown below:
+Create a ```.env``` file in the project directory and include the API key as shown below:
 
 ```
 TAVILY_API_KEY=tvly-abcdefghijklmnopqrstuvwxyz
@@ -172,7 +171,7 @@ tool = TavilySearchResults(
 
 **2. Add the Tool to the Tool List**
 
-* The search tool is added to a list ( `tools` ). In LangChain, multiple tools can be combined to build more advanced workflows.
+* The search tool is added to a list ( ```tools``` ). In LangChain, multiple tools can be combined to build more advanced workflows.
 
 ```python
 tools = [tool]
@@ -180,8 +179,8 @@ tools = [tool]
 
 **3. Execute the Tool**
 
-- The `invoke` method is called to execute the search query "U.S. Presidential Inauguration".
-The search results are returned in JSON format and displayed using the `print` statement.
+- The ```invoke``` method is called to execute the search query "U.S. Presidential Inauguration".
+The search results are returned in JSON format and displayed using the ```print``` statement.
 - The results are page summaries that can be used by the chatbot to answer user questions.
 
 ```python
@@ -193,7 +192,7 @@ print(tool.invoke("U.S. Presidential Inauguration"))
 
 ### Adding bind_tools to Configure LLM + Tools
 
-In this section, we will integrate `bind_tools` into the LLM to enable **LLM + Tools** functionality. 
+In this section, we will integrate ```bind_tools``` into the LLM to enable **LLM + Tools** functionality. 
 
 This allows the LLM to leverage external tools dynamically and respond more effectively to user inputs.
 
@@ -201,9 +200,9 @@ This allows the LLM to leverage external tools dynamically and respond more effe
 
 **1. Define the State Schema**
 
-- The `State` class acts as the schema for storing and passing the graph's state to the next node.
-- Using Python's `TypedDict` and annotations, we define the `messages` property as a list that supports adding new messages via the `add_messages` function from `LangGraph` .
-- While the schema can support additional state properties, this tutorial focuses solely on `messages` .
+- The ```State``` class acts as the schema for storing and passing the graph's state to the next node.
+- Using Python's ```TypedDict``` and annotations, we define the ```messages``` property as a list that supports adding new messages via the ```add_messages``` function from ```LangGraph``` .
+- While the schema can support additional state properties, this tutorial focuses solely on ```messages``` .
 
 ```python
 from typing import Annotated
@@ -218,8 +217,8 @@ class State(TypedDict):
 
 **2. Initialize the LLM and Bind Tools**
 
-- The `ChatOpenAI` instance is initialized as the LLM. 
-- The `bind_tools` method is then used to attach a set of tools to the LLM, enabling it to invoke external functionality.
+- The ```ChatOpenAI``` instance is initialized as the LLM. 
+- The ```bind_tools``` method is then used to attach a set of tools to the LLM, enabling it to invoke external functionality.
 
  By binding the custom tool we created, the LLM gains the ability to perform web searches, adding responsive capabilities to the chatbot.
 
@@ -237,9 +236,9 @@ llm_with_tools = llm.bind_tools(tools)
 
 - Nodes are the building blocks of the graph. 
 - Each node represents a specific operation or step in the process. 
-- Here, we define a node function `chatbot` that uses the `llm_with_tools` instance to process the incoming `messages` from the `State` and returns the updated list of messages.
+- Here, we define a node function ```chatbot``` that uses the ```llm_with_tools``` instance to process the incoming ```messages``` from the ```State``` and returns the updated list of messages.
 
-Since the `add_messages` functionality is already applied, if the tool is deemed necessary during processing, the result of the tool call is stored in `answer` . This result is then accumulated in `messages` through the `add_messages` method, maintaining an updated conversation flow.
+Since the ```add_messages``` functionality is already applied, if the tool is deemed necessary during processing, the result of the tool call is stored in ```answer``` . This result is then accumulated in ```messages``` through the ```add_messages``` method, maintaining an updated conversation flow.
 
 
 ```python
@@ -253,7 +252,7 @@ def chatbot(state: State):
 
 **4. Create a Graph and Add Nodes**
 
-- Create a  `StateGraph` instance to represent the workflow and add the `chatbot` node to it. 
+- Create a  ```StateGraph``` instance to represent the workflow and add the ```chatbot``` node to it. 
 
 ```python
 from langgraph.graph import StateGraph
@@ -278,8 +277,8 @@ Next, we need to create a function that will execute the tool whenever it is inv
 
 To achieve this, we will add a new node specifically designed for tool execution.
 
-We’ll implement a custom `BasicToolNode` that checks the most recent message. 
-If the message includes `tool_calls` , the node will execute the corresponding tool. 
+We’ll implement a custom ```BasicToolNode``` that checks the most recent message. 
+If the message includes ```tool_calls``` , the node will execute the corresponding tool. 
 
 While we are implementing this manually for now, it’s worth noting that later on, you can replace this with LangGraph's pre-built [ToolNode](https://langchain-ai.github.io/langgraph/reference/prebuilt/#langgraph.prebuilt.tool_node.ToolNode) for greater convenience.
 
@@ -338,22 +337,22 @@ graph_builder.add_node("tools", tool_node)
  **Explanation of the Code**
 
 1. **Purpose of the Code**
-   - This code defines a tool node ( `BasicToolNode` ) that dynamically executes tools based on instructions from the most recent message in a list of inputs.
+   - This code defines a tool node ( ```BasicToolNode``` ) that dynamically executes tools based on instructions from the most recent message in a list of inputs.
 
 2. **How It Works**
-   - **Initialization ( `__init__` )**: 
-     - A list of tools is passed to the `BasicToolNode` constructor. 
+   - **Initialization ( ```__init__``` )**: 
+     - A list of tools is passed to the ```BasicToolNode``` constructor. 
      - Each tool is stored in a dictionary for quick lookup by name.
-   - **Execution ( `__call__` )**:
-     - When the node is called, it looks at the most recent message in the provided input (`messages` key).
+   - **Execution ( ```__call__``` )**:
+     - When the node is called, it looks at the most recent message in the provided input (```messages``` key).
      - It extracts the tool calls from the message and invokes the appropriate tools using their names and arguments.
-     - The results are formatted as `ToolMessage` objects and returned.
+     - The results are formatted as ```ToolMessage``` objects and returned.
 
 3. **ToolMessage**
-   - A `ToolMessage` is a standardized way to store and return tool execution results, including the tool name, result content, and a unique ID for the tool call.
+   - A ```ToolMessage``` is a standardized way to store and return tool execution results, including the tool name, result content, and a unique ID for the tool call.
 
 4. **Adding to a Graph**
-   - The tool node ( `tool_node` ) is added to a graph using `graph_builder.add_node` . This integrates the node into a larger workflow or execution pipeline.
+   - The tool node ( ```tool_node``` ) is added to a graph using ```graph_builder.add_node``` . This integrates the node into a larger workflow or execution pipeline.
 
 5. **Usage**
    - This structure is typically part of a larger system where tools are invoked based on user input or system logic, and results are returned to the user or passed along to other nodes.
@@ -361,15 +360,15 @@ graph_builder.add_node("tools", tool_node)
 
 ## Conditional Edge
 
-Once the tool node is added, you can define `conditional_edges` to control the flow of execution in the graph.
+Once the tool node is added, you can define ```conditional_edges``` to control the flow of execution in the graph.
 - Edges: They route the control flow from one node to the next in a graph.
-- Conditional Edges: These are edges with "if" logic that determine the next node based on the current graph state. These functions take the current graph `state` as input and return the name of the next node (or a list of nodes).
+- Conditional Edges: These are edges with "if" logic that determine the next node based on the current graph state. These functions take the current graph ```state``` as input and return the name of the next node (or a list of nodes).
 
-In the example below, we define a router function `route_tools` that inspects the chatbot's output for `tool_calls`.
+In the example below, we define a router function ```route_tools``` that inspects the chatbot's output for ```tool_calls```.
 
-This function is passed to the graph using `add_conditional_edges` . Every time the `chatbot` node completes execution, the function determines where to go next:
-- If there is a tool call, it routes to the `tools` node.
-- If there is no tool call, it routes to the `END` node, terminating the flow.
+This function is passed to the graph using ```add_conditional_edges``` . Every time the ```chatbot``` node completes execution, the function determines where to go next:
+- If there is a tool call, it routes to the ```tools``` node.
+- If there is no tool call, it routes to the ```END``` node, terminating the flow.
 
 This can be replaced with the pre-built [tools_condition](https://langchain-ai.github.io/langgraph/reference/prebuilt/#tools_condition) available in LangGraph.
 
@@ -379,24 +378,24 @@ This can be replaced with the pre-built [tools_condition](https://langchain-ai.g
 <img src="./assets/03-langgraph-agent-conditional-edge.png" width="500" />
 
 
-The `add_conditional_edges` method adds conditional logic to the graph. Here's a breakdown of its parameters and functionality:
+The ```add_conditional_edges``` method adds conditional logic to the graph. Here's a breakdown of its parameters and functionality:
 
 **Parameters**
-- `source` ( `str` ): The starting node where the conditional edge originates.
-- `path` ( `Callable` ): A function or callable object that determines the next node(s). It takes the current state as input and returns one or more node names.
-- `path_map` ( `dict` or `list` ): Maps the output of `path` to specific nodes in the graph. If omitted, the output of `path` must directly correspond to node names.
-- `then` ( `Optional[str]` ): Specifies the node to execute after the node selected by path.
+- ```source``` ( ```str``` ): The starting node where the conditional edge originates.
+- ```path``` ( ```Callable``` ): A function or callable object that determines the next node(s). It takes the current state as input and returns one or more node names.
+- ```path_map``` ( ```dict``` or ```list``` ): Maps the output of ```path``` to specific nodes in the graph. If omitted, the output of ```path``` must directly correspond to node names.
+- ```then``` ( ```Optional[str]``` ): Specifies the node to execute after the node selected by path.
   
 **Return Value**
 - Returns the graph object itself for method chaining.
 
-**Key Features of `add_conditional_edges`**
+**Key Features of ```add_conditional_edges```**
 - Dynamic Flow Control: Allows you to define logic that dynamically alters the flow based on the state.
 
-- Path Mapping: Converts the output of the `path` function into specific graph nodes.
+- Path Mapping: Converts the output of the ```path``` function into specific graph nodes.
 
-- Error Handling: Raises `ValueError`  if:
-    - The `path` function lacks a type hint or `path_map` .
+- Error Handling: Raises ```ValueError```  if:
+    - The ```path``` function lacks a type hint or ```path_map``` .
     - A branch with the same name already exists.
 - Graph Visualization: Once the graph is defined, it can be visualized using the following method.
 
@@ -438,12 +437,12 @@ graph = graph_builder.compile()
 
 Conditional Edges must originate from a single node.
 
-In this example, whenever the `chatbot` node is executed, the graph logic checks for tool calls:
+In this example, whenever the ```chatbot``` node is executed, the graph logic checks for tool calls:
 
-- If tool calls are present, the flow transitions to the `tools` node for further processing.
+- If tool calls are present, the flow transitions to the ```tools``` node for further processing.
 - If no tool calls are present, the flow ends, effectively terminating the loop.
   
-Similar to the pre-built `tools_condition` , the custom function returns the string `END` when there are no tool calls. When the graph transitions to END, no further tasks are executed, and the process halts.
+Similar to the pre-built ```tools_condition``` , the custom function returns the string ```END``` when there are no tool calls. When the graph transitions to END, no further tasks are executed, and the process halts.
 
 ```python
 graph

@@ -64,6 +64,13 @@ pdf2image = "^1.17.0"
 beautifulsoup4 = "^4.12.3"
 mlx = {version = "^0.22.0", markers = "sys_platform == 'darwin'"}
 mlx-lm = {version = "^0.21.1", markers = "sys_platform == 'darwin'"}
+psycopg-binary = "^3.2.7"
+psycopg = "^3.2.7"
+pgvector = "^0.4.1"
+sqlalchemy = "^2.0.40"
+kagglehub = "^0.3.12"
+langchain-weaviate = "^0.0.4"
+weaviate-client = "^4.14.1"
 
 [build-system]
 requires = ["poetry-core"]

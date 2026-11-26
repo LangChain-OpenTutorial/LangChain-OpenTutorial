@@ -1,3 +1,17 @@
+# 2025-05-09
+psycopg-binary==3.2.7
+psycopg==3.2.7
+pgvector==0.4.1
+sqlalchemy==2.0.40
+kagglehub==0.3.12
+langchain-weaviate==0.0.4
+weaviate-client==4.14.1
+langchain-chroma==0.2.0
+chromadb==0.5.23
+langchain-qdrant>=0.2.0
+langchain-milvus==0.1.7
+
+
 # Vector Stores
 faiss-cpu==1.9.0.post1
 langchain-chroma==0.2.0

@@ -21,19 +21,19 @@ pre {
 
 - Author: [Joseph](https://github.com/XaviereKU)
 - Peer Review : [Teddy Lee](https://github.com/teddylee777), [BAEM1N](https://github.com/BAEM1N)
+- Proofread : [Two-Jay](https://github.com/Two-Jay)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/02-Cache.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/02-Cache.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/03-Cache.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/03-Cache.ipynb)
 ## Overview
 
-`LangChain` provides optional caching layer for LLMs.
+```LangChain``` provides optional caching layer for LLMs.
 
 This is useful for two reasons:
 - When requesting the same completions multiple times, it can **reduce the number of API calls** to the LLM provider and thus save costs.
 - By **reduing the number of API calls** to the LLM provider, it can **improve the running time of the application.**
 
-In this tutorial, we will use `gpt-4o-mini` OpenAI API and utilize two kinds of cache, `InMemoryCache` and `SQLiteCache`.  
+In this tutorial, we will use ```gpt-4o-mini``` OpenAI API and utilize two kinds of cache, ```InMemoryCache``` and ```SQLiteCache```.  
 At end of each section we will compare wall times between before and after caching.
 
 ### Table of Contents
@@ -53,8 +53,8 @@ At end of each section we will compare wall times between before and after cachi
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -141,7 +141,7 @@ print(response.content)
 </pre>
 
 ## ```InMemoryCache```
-First, cache the answer to the same question using `InMemoryCache`.
+First, cache the answer to the same question using ```InMemoryCache```.
 
 ```python
 from langchain_core.globals import set_llm_cache
@@ -177,7 +177,7 @@ print(response.content)
     Wall time: 3 ms
 </pre>
 
-Note that if we set `InMemoryCache` again, the cache will be lost and the wall time will increase.
+Note that if we set ```InMemoryCache``` again, the cache will be lost and the wall time will increase.
 
 ```python
 set_llm_cache(InMemoryCache())
@@ -237,7 +237,7 @@ print(response.content)
     Wall time: 375 ms
 </pre>
 
-Note that if we use `SQLiteCache`, setting caching again does not delete stored cache.
+Note that if we use ```SQLiteCache```, setting caching again does not delete stored cache.
 
 ```python
 set_llm_cache(SQLiteCache(database_path="cache/llm_cache.db"))

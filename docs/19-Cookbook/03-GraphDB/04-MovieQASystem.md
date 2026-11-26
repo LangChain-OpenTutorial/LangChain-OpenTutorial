@@ -20,17 +20,16 @@ pre {
 # Movie QA System with Graph Database
 
 - Author: [Heesun Moon](https://github.com/MoonHeesun)
-- Design: 
 - Peer Review: [Jongcheol Kim](https://github.com/greencode-99), [Taylor(Jihyun Kim)](https://github.com/Taylor0819)
+- Proofread  : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/03-GraphDB/04-MovieQASystem.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/03-GraphDB/04-MovieQASystem.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/03-GraphDB/04-MovieQASystem.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/03-GraphDB/04-MovieQASystem.ipynb)
 ## Overview
 
-This tutorial covers the implementation of **a movie QA system using a graph database** with `Neo4j` .
+This tutorial covers the implementation of **a movie QA system using a graph database** with ```Neo4j``` .
 
-It explains the process of storing data in a graph database and implementing a `text2Cypher` conversion feature using LLMs. This allows natural language queries to be converted into Cypher queries, and the answers retrieved from the database are returned in natural language as well.
+It explains the process of storing data in a graph database and implementing a ```text2Cypher``` conversion feature using LLMs. This allows natural language queries to be converted into Cypher queries, and the answers retrieved from the database are returned in natural language as well.
 
 ![basic-workflow](./img/04-movie-qa-system-basic-workflow.png)
 
@@ -58,8 +57,8 @@ It explains the process of storing data in a graph database and implementing a `
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -101,7 +100,7 @@ set_env(
 )
 ```
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -121,7 +120,7 @@ load_dotenv(override=True)
 
 ## Connect to Neo4j Graph Database
 
-First, install the Neo4j graph database. This tutorial is based on `Neo4j Desktop` .
+First, install the Neo4j graph database. This tutorial is based on ```Neo4j Desktop``` .
 
 - [installation](https://neo4j.com/docs/operations-manual/current/installation/)
 
@@ -131,25 +130,25 @@ After installing, open Neo4j Desktop. A default **Example Project** should be av
 
 ### Activate Database
 
-Click the `Start` to activate the `Movie DBMS` .
+Click the ```Start``` to activate the ```Movie DBMS``` .
 
 ![setup-01](./img/04-movie-qa-system-setup-01.png)
 
 ### Setup APOC Plugin
 
-- Open the `Movie DBMS` project.  
-- Go to the `Plugins` section.  
-- Select `APOC` and click `Install and Restart` .
+- Open the ```Movie DBMS``` project.  
+- Go to the ```Plugins``` section.  
+- Select ```APOC``` and click ```Install and Restart``` .
 
 ![setup-02](./img/04-movie-qa-system-setup-02.png)
 
-To allow external network connections, you need to update the `neo4j.conf` file.
+To allow external network connections, you need to update the ```neo4j.conf``` file.
 
-Open the terminal in `Neo4j Desktop` .
+Open the terminal in ```Neo4j Desktop``` .
 
 ![setup-03](./img/04-movie-qa-system-setup-03.png)
 
-Navigate to the configuration file directory and edit `neo4j.conf` .
+Navigate to the configuration file directory and edit ```neo4j.conf``` .
 
 ```python
 # Change Directory
@@ -160,20 +159,20 @@ notepad neo4j.conf
 nano neo4j.conf
 ```
 
-Add or modify the following line in the `neo4j.conf` file:  
+Add or modify the following line in the ```neo4j.conf``` file:  
 
-- `server.default_listen_address=0.0.0.0`
+- ```server.default_listen_address=0.0.0.0```
 
 ### Define Neo4j Credentials
 
-Next, you need to define your Neo4j credentials. If you haven't done this in the previous steps, you can define them using the `os` package.
+Next, you need to define your Neo4j credentials. If you haven't done this in the previous steps, you can define them using the ```os``` package.
 
 [Note] This is not necessary if you've already set the required Neo4j credentials in previous steps.
 
 >The default user account information:
 >
->- Default username: `neo4j`
->- Default password: `neo4j`
+>- Default username: ```neo4j```
+>- Default password: ```neo4j```
 >
 >You are required to change the password upon your first login.
 
@@ -254,14 +253,14 @@ print(graph.schema)
 
 Now, let's check the enhanced schema information. Enhanced Schema Information provides a detailed overview of the graph structure, including node labels, relationship types, and property details such as data types and value ranges. This is particularly useful for generating more complex queries and leveraging LLMs for advanced use cases.
 
-To enable Enhanced Schema, set the parameter `enhanced_schema=True` when initializing the graph object.
+To enable Enhanced Schema, set the parameter ```enhanced_schema=True``` when initializing the graph object.
 
 Key Features: 
 
-- `Property Types` : Shows the data type (e.g., STRING, INTEGER, FLOAT) of each property.
-- `Value Ranges` : Displays minimum and maximum values for numeric fields.
-- `Examples` : Provides sample values for quick reference.
-- `Relationships` : Lists connection types between nodes and their property details.
+- ```Property Types``` : Shows the data type (e.g., STRING, INTEGER, FLOAT) of each property.
+- ```Value Ranges``` : Displays minimum and maximum values for numeric fields.
+- ```Examples``` : Provides sample values for quick reference.
+- ```Relationships``` : Lists connection types between nodes and their property details.
 
 ```python
 enhanced_graph = Neo4jGraph(enhanced_schema=True)
@@ -291,15 +290,15 @@ print(enhanced_graph.schema)
 
 ## GraphQACypherChain
 
-The `GraphCypherQAChain` simplifies the process of querying graph databases using natural language by integrating LLMs and Neo4j. It enables users to interact with graph data through natural language queries by converting them into Cypher queries, which are executed against a Neo4j database.
+The ```GraphCypherQAChain``` simplifies the process of querying graph databases using natural language by integrating LLMs and Neo4j. It enables users to interact with graph data through natural language queries by converting them into Cypher queries, which are executed against a Neo4j database.
 
 Key Features:
 
-- `Text-to-Cypher Conversion` : Automatically translates natural language questions into Cypher queries.
-- `Query Execution` : Executes the generated queries against a Neo4j graph database.
-- `Natural Language Answers` : Processes and formats query results into human-readable answers.
-- `LLM Integration` : Leverages Large Language Models (LLMs), like OpenAI’s GPT, for query generation and result interpretation.
-- `Enhanced Schema Support` : Can work with enhanced schema information for more accurate query generation.
+- ```Text-to-Cypher Conversion``` : Automatically translates natural language questions into Cypher queries.
+- ```Query Execution``` : Executes the generated queries against a Neo4j graph database.
+- ```Natural Language Answers``` : Processes and formats query results into human-readable answers.
+- ```LLM Integration``` : Leverages Large Language Models (LLMs), like OpenAI’s GPT, for query generation and result interpretation.
+- ```Enhanced Schema Support``` : Can work with enhanced schema information for more accurate query generation.
 
 ![chain-flow](./img/04-movie-qa-system-chain-flow.png)
 
@@ -374,7 +373,7 @@ To begin, we'll set up a new local DBMS to import and use this external dataset.
 
 ### Create a New Local DBMS
 
-Refer to the images below to create a new Local DBMS named `Kaggle Movie DBMS` :
+Refer to the images below to create a new Local DBMS named ```Kaggle Movie DBMS``` :
 
 ![setup-05](./img/04-movie-qa-system-setup-04.png)
 
@@ -386,9 +385,9 @@ Next, connect to the Neo4j Graph Database as previously explained.
 
 ### Define Neo4j Credentials
 
-Next, you need to define your Neo4j credentials. If you haven't done this in the previous steps, you can define them using the `os` package.
+Next, you need to define your Neo4j credentials. If you haven't done this in the previous steps, you can define them using the ```os``` package.
 
-To import the dataset, you need to set the `import path` environment variable. In the image below, you can check the `import path` by clicking the `import` button. This path is where you will download and store the dataset.
+To import the dataset, you need to set the ```import path``` environment variable. In the image below, you can check the ```import path``` by clicking the ```import``` button. This path is where you will download and store the dataset.
 
 ![setup-07](./img/04-movie-qa-system-setup-06.png)
 
@@ -408,7 +407,7 @@ graph = Neo4jGraph()
 
 ### Download a New Dataset: Kaggle's The Movies Dataset
 
-Download the Kaggle dataset and move it to the `import path` .
+Download the Kaggle dataset and move it to the ```import path``` .
 
 ```python
 import kagglehub

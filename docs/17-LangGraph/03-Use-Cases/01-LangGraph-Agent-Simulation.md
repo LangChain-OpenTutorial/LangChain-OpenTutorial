@@ -20,17 +20,16 @@ pre {
 # LangGraph Agent Simulation
 
 - Author: [Youngjun Cho](https://github.com/choincnp)
-- Design: 
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/01-LangGraph-Agent-Simulation.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/01-LangGraph-Agent-Simulation.ipynb)
 ## Overview
 
 In this section, We'll simulate the user interactions with customer service scenario.
 
-Before simulate, we have to define `state`, `role`, and `simulation` with `LangGraph`.
+Before simulate, we have to define ```state```, ```role```, and ```simulation``` with ```LangGraph```.
 
 At last, we'll define graphs and visualize the structure we've made.
 
@@ -59,7 +58,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -85,9 +84,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -136,8 +135,8 @@ class State(TypedDict):
 Define the chatbot role acting as the agent in the simulation.
 
 [ **Note** ]  
-- The implementation inside `call_chatbot` is configurable, and the internal model used can be replaced with an Agent.
-- `call_chatbot` takes user messages as input and generates responses as a customer support agent.
+- The implementation inside ```call_chatbot``` is configurable, and the internal model used can be replaced with an Agent.
+- ```call_chatbot``` takes user messages as input and generates responses as a customer support agent.
 
 It can be used to generate conversational responses in customer support scenarios.
 
@@ -164,7 +163,7 @@ def call_chatbot(messages: List[BaseMessage]) -> dict:
     return chain.invoke({"messages": messages})
 ```
 
-`call_chatbot` processes user inputs and generates chatbot responses.
+```call_chatbot``` processes user inputs and generates chatbot responses.
 
 ```python
 call_chatbot([("user", "Hello?")])
@@ -255,7 +254,7 @@ model = ChatOpenAI(model="gpt-4o-mini", temperature=0.6)
 simulated_user = create_scenario(name, instructions) | model | StrOutputParser()
 ```
 
-Use the generated `simulated_user` to send messages to the simulated user.
+Use the generated ```simulated_user``` to send messages to the simulated user.
 
 ```python
 from langchain_core.messages import HumanMessage
@@ -274,7 +273,7 @@ simulated_user.invoke({"messages": messages})
 
 ## Define Agent Simulation
 
-Now let's write the code to create a `LangGraph` workflow to run the simulation.
+Now let's write the code to create a ```LangGraph``` workflow to run the simulation.
 
 Here are the main components:
 1. Two nodes for the simulated user and the chatbot.
@@ -289,7 +288,7 @@ The tricky part here is distinguishing which message is from which entity.
 
 Since both the chatbot and the simulated user are implemented with LLMs, both will respond with AI messages. Our state will be a list of alternating human and AI messages, which means it requires logic in one of the nodes to swap roles between AI and human.
 
-In this example, `HumanMessages` are assumed to come from the simulated user. This means the simulated user node needs logic to exchange AI and human messages.
+In this example, ```HumanMessages``` are assumed to come from the simulated user. This means the simulated user node needs logic to exchange AI and human messages.
 
 ```python
 from langchain_core.messages import AIMessage
@@ -364,14 +363,14 @@ def simulated_user_node(state: State):
 ### Define Edges
 Now we need to define the logic for edges. The primary logic happens after the simulated user has completed their task, leading to one of two outcomes:
 
-- Continue by calling the support bot ( `"continue"`).
-- End the conversation ( `"end"` ).
+- Continue by calling the support bot ( ```"continue"```).
+- End the conversation ( ```"end"``` ).
 
 When does the conversation end?
 
-It ends when the simulated user responds with `FINISHED` (as specified in the system prompt) or conversation exceeds six messages (an arbitrary limit to keep this example brief).
+It ends when the simulated user responds with ```FINISHED``` (as specified in the system prompt) or conversation exceeds six messages (an arbitrary limit to keep this example brief).
 
-The `should_continue` function takes a list of messages as argument and returns "end" if the list exceeds six messages or the last message content is `FINISHED` . Otherwise, it returns `"continue"` to proceed.
+The ```should_continue``` function takes a list of messages as argument and returns "end" if the list exceeds six messages or the last message content is ```FINISHED``` . Otherwise, it returns ```"continue"``` to proceed.
 
 ```python
 def should_continue(state: State):
@@ -389,7 +388,7 @@ def should_continue(state: State):
 ## Define graphs
 Now define the graph for setting up the simulation.
 
-The `MessageGraph` class is used to structure and simulate interactions between the chatbot and the simulated user.
+The ```MessageGraph``` class is used to structure and simulate interactions between the chatbot and the simulated user.
 
 ```python
 from langgraph.graph import END, StateGraph
@@ -437,7 +436,7 @@ visualize_graph(simulation)
 
 Now, we can evaluate our chatbot! You can call it with empty messages to simulate the chatbot initiating the conversation.
 
-We'll iterate over the data chunks streaming from the simulation, outputting all events except the final ending chunk (`END`).
+We'll iterate over the data chunks streaming from the simulation, outputting all events except the final ending chunk (```END```).
 
 ```python
 from langchain_core.runnables import RunnableConfig

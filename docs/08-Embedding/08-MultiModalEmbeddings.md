@@ -20,19 +20,18 @@ pre {
 # Multimodal Embeddings With Langchain
 
 - Author: [Gwangwon Jung](https://github.com/pupba)
-- Design: []()
 - Peer Review : [Teddy Lee](https://github.com/teddylee777), [DoWoung Kong](https://github.com/krkrong)
+- Proofread : [Youngjun cho](https://github.com/choincnp)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/08-MultiModalEmbeddings.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/08-MultiModalEmbeddings.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embedding/08-MultiModalEmbeddings.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embedding/08-MultiModalEmbeddings.ipynb)
 ## Overview
 
-This tutorial covers how to perform `Text Embedding` and `Image Embedding` using `Multimodal Embedding Model` with `Langchain`.
+This tutorial covers how to perform ```Text Embedding``` and ```Image Embedding``` using ```Multimodal Embedding Model``` with ```Langchain```.
 
-The `Multimodal Embedding Model` is a model that can vectorize **text** as well as **image**.
+The ```Multimodal Embedding Model``` is a model that can vectorize **text** as well as **image**.
 
-In this tutorial, we will create a simple **Image Similarity Searching** example using `Multimodal Embedding Model` and `Langchain`.
+In this tutorial, we will create a simple **Image Similarity Searching** example using ```Multimodal Embedding Model``` and ```Langchain```.
 
 ![example](./img/example-flow-image-search-with-mm-embedding.png)
 
@@ -59,8 +58,8 @@ In this tutorial, we will create a simple **Image Similarity Searching** example
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -97,13 +96,13 @@ Multimodal embedding is the process of creating a vector that represents an imag
 
 The process involves converting images or text into embedding vectors that capture their visual or semantic features.
 
-These vectors are then compared using similarity metrics, such as `Cosine Similarity` or `Euclidean Distance`, to find the most similar images in the database based on their vector representations.
+These vectors are then compared using similarity metrics, such as ```Cosine Similarity``` or ```Euclidean Distance```, to find the most similar images in the database based on their vector representations.
 
 ## Setting Image Data
 
-In this tutorial, example images are provided. These images are copyright-free and cover a variety of topics (e.g., dog, cat, female, male,...) created using `SDXL`.
+In this tutorial, example images are provided. These images are copyright-free and cover a variety of topics (e.g., dog, cat, female, male,...) created using ```SDXL```.
 
-The images are located at `./data/for_embed_images.zip`.
+The images are located at ```./data/for_embed_images.zip```.
 
 Create a list containing the image path.
 
@@ -154,13 +153,13 @@ image_path_db = [
 
 ## Model Load and Embedding Images
 
-In this tutorial, we use `OpenCLIP`, which implements OpenAI's `CLIP` as an open source.
+In this tutorial, we use ```OpenCLIP```, which implements OpenAI's ```CLIP``` as an open source.
 
 - [OpenCLIP Github](https://github.com/mlfoundations/open_clip)
 
-`OpenCLIP` can be used with `Langchain` to easily embed **Text** and **Image** .
+```OpenCLIP``` can be used with ```Langchain``` to easily embed **Text** and **Image** .
 
-You can load `OpenCLIP Embedding` model using the `Python` libraries `open_clip_torch` and `langchain-experimental`.
+You can load ```OpenCLIP Embedding``` model using the ```Python``` libraries ```open_clip_torch``` and ```langchain-experimental```.
 
 ```python
 # List of (Model,Checkpoint)
@@ -461,7 +460,7 @@ def combine_images_vertically(images: list) -> Image.Image:
 
 ## Image Similarity Search with Text
 
-`Image Similarity Search with Text` finds the image in the image dataset that most relates to a given `text query`.
+```Image Similarity Search with Text``` finds the image in the image dataset that most relates to a given ```text query```.
 
 We will use **cosine similarity** for calculation of similarity.
 
@@ -471,7 +470,7 @@ Because **cosine similarity** is commonly used in image similarity search.
 
 1. Text Query Embedding
 
-2. Calculate the similarity between the `Text Query Embedding Vector` and the `Image Embedding Vector`
+2. Calculate the similarity between the ```Text Query Embedding Vector``` and the ```Image Embedding Vector```
 
 3. Get similar images
 
@@ -639,7 +638,7 @@ comb_imgs
 
 ## Image Similarity Search with Image
 
-`Image Similarity Search with Image` finds the image in the image dataset that most relates to a given `image query`.
+```Image Similarity Search with Image``` finds the image in the image dataset that most relates to a given ```image query```.
 
 We will use **cosine similarity** for calculation of similarity.
 
@@ -649,7 +648,7 @@ Because **cosine Similarity** is commonly used in image similarity search.
 
 1. Image Query Embedding
 
-2. Calculate the similarity between the `Image Query Embedding Vector` and the `Image Embedding Vector`
+2. Calculate the similarity between the ```Image Query Embedding Vector``` and the ```Image Embedding Vector```
 
 3. Get similar images
 

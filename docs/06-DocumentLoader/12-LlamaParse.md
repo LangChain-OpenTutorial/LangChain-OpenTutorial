@@ -20,16 +20,15 @@ pre {
 # LlamaParse
 
 - Author: [syshin0116](https://github.com/syshin0116)
-- Design: 
 - Peer Review: [JoonHo Kim](https://github.com/jhboyo), [Jaemin Hong](https://github.com/geminii01), [leebeanbin](https://github.com/leebeanbin), [Taylor(Jihyun Kim)](https://github.com/Taylor0819), [Dooil Kwak](https://github.com/back2zion)
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/12-LlamaParse.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/12-LlamaParse.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/12-LlamaParse.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/12-LlamaParse.ipynb)
 
 ## Overview
 
-`LlamaParse` is a document parsing service developed by **LlamaIndex** , specifically designed for large language models (LLMs).
+```LlamaParse``` is a document parsing service developed by **LlamaIndex** , specifically designed for large language models (LLMs).
 
 Key Features:
 
@@ -39,9 +38,9 @@ Key Features:
 - Multilingual support
 - Multiple output format support
 
-`LlamaParse` is available as a standalone API and is also integrated into the LlamaCloud platform. This service aims to enhance the performance of LLM-based applications, such as RAG(Retrieval-Augmented Generation), by parsing and refining documents.
+```LlamaParse``` is available as a standalone API and is also integrated into the LlamaCloud platform. This service aims to enhance the performance of LLM-based applications, such as RAG(Retrieval-Augmented Generation), by parsing and refining documents.
 
-Users can process up to 1,000 pages per day for free, with additional capacity available through paid plans. `LlamaParse` is currently offered in public beta and is continuously expanding its features.
+Users can process up to 1,000 pages per day for free, with additional capacity available through paid plans. ```LlamaParse``` is currently offered in public beta and is continuously expanding its features.
 
 - Link: [https://cloud.llamaindex.ai](https://cloud.llamaindex.ai)
 
@@ -67,8 +66,8 @@ Users can process up to 1,000 pages per day for free, with additional capacity a
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -97,7 +96,7 @@ package.install(
 
 ### API Key Configuration
 
-To use `LlamaParse` , you need to [obtain a Llama Cloud API key](https://docs.cloud.llamaindex.ai/llamaparse/getting_started/get_an_api_key).
+To use ```LlamaParse``` , you need to [obtain a Llama Cloud API key](https://docs.cloud.llamaindex.ai/llamaparse/getting_started/get_an_api_key).
 
 ```python
 # Set environment variables
@@ -118,7 +117,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 **[Note]** This is not necessary if you've already set the required API keys in previous steps.
 
@@ -207,17 +206,17 @@ These are the core settings that most users will configure:
 
 | Parameter        | Description                                                                   | Default Value      |
 | ---------------- | ----------------------------------------------------------------------------- | ------------------ |
-| `api_key`        | A string representing the API key for authenticating with the **LlamaParse API** | Required           |
-| `base_url`       | The base URL for the **LlamaParse API**                                         | "DEFAULT_BASE_URL" |
-| `check_interval` | Specifies the time (in seconds) between checks for the parsing job status     | 1                  |
-| `ignore_errors`  | Boolean indicating whether to skip errors during parsing                      | True               |
-| `max_timeout`    | Maximum time (in seconds) to wait for the parsing job to finish               | 2000               |
-| `num_workers`    | Number of parallel workers for API requests (Range: 1-9)                      | 4                  |
-| `result_type`    | Format of the parsing result (e.g., "text", "markdown", "json", "structured") | "text"             |
-| `show_progress`  | Displays progress for multi-file parsing                                      | True               |
-| `split_by_page`  | Splits the output by pages                                                    | True               |
-| `language`       | Specifies the language of the document text                                   | "en"               |
-| `verbose`        | Enables verbose output to show detailed parsing progress                      | True               |
+| ```api_key```        | A string representing the API key for authenticating with the **LlamaParse API** | Required           |
+| ```base_url```       | The base URL for the **LlamaParse API**                                         | "DEFAULT_BASE_URL" |
+| ```check_interval``` | Specifies the time (in seconds) between checks for the parsing job status     | 1                  |
+| ```ignore_errors```  | Boolean indicating whether to skip errors during parsing                      | True               |
+| ```max_timeout```    | Maximum time (in seconds) to wait for the parsing job to finish               | 2000               |
+| ```num_workers```    | Number of parallel workers for API requests (Range: 1-9)                      | 4                  |
+| ```result_type```    | Format of the parsing result (e.g., "text", "markdown", "json", "structured") | "text"             |
+| ```show_progress```  | Displays progress for multi-file parsing                                      | True               |
+| ```split_by_page```  | Splits the output by pages                                                    | True               |
+| ```language```       | Specifies the language of the document text                                   | "en"               |
+| ```verbose```        | Enables verbose output to show detailed parsing progress                      | True               |
 
 
 ### Advanced Parameters
@@ -228,13 +227,13 @@ For specialized use cases, consider these options:
 
 |Parameter|Description|Default Value|
 |---|---|---|
-|`auto_mode`|Automatically selects the optimal parsing mode|False|
-|`auto_mode_trigger_on_image_in_page`|Upgrades pages with images to premium mode (if `auto_mode` is enabled)|False|
-|`auto_mode_trigger_on_table_in_page`|Upgrades pages with tables to premium mode (if `auto_mode` is enabled)|False|
-|`auto_mode_trigger_on_text_in_page`|Upgrades pages with specific text to premium mode (if `auto_mode` is enabled)|None|
-|`auto_mode_trigger_on_regexp_in_page`|Upgrades pages matching a regex to premium mode (if `auto_mode` is enabled)|None|
-|`premium_mode`|Uses the most advanced parsing capabilities|False|
-|`fast_mode`|Enables faster parsing by skipping OCR and table reconstruction|False|
+|```auto_mode```|Automatically selects the optimal parsing mode|False|
+|```auto_mode_trigger_on_image_in_page```|Upgrades pages with images to premium mode (if ```auto_mode``` is enabled)|False|
+|```auto_mode_trigger_on_table_in_page```|Upgrades pages with tables to premium mode (if ```auto_mode``` is enabled)|False|
+|```auto_mode_trigger_on_text_in_page```|Upgrades pages with specific text to premium mode (if ```auto_mode``` is enabled)|None|
+|```auto_mode_trigger_on_regexp_in_page```|Upgrades pages matching a regex to premium mode (if ```auto_mode``` is enabled)|None|
+|```premium_mode```|Uses the most advanced parsing capabilities|False|
+|```fast_mode```|Enables faster parsing by skipping OCR and table reconstruction|False|
 
 
 
@@ -242,13 +241,13 @@ For specialized use cases, consider these options:
 
 |Parameter|Description|Default Value|
 |---|---|---|
-|`disable_ocr`|Disables OCR, extracting only selectable text|False|
-|`disable_image_extraction`|Prevents image extraction to speed up the parsing process|False|
-|`extract_charts`|Extracts or tags charts in the document|False|
-|`extract_layout`|Includes layout information in the parsed output|False|
-|`annotate_links`|Annotates links in the document for URL extraction|False|
-|`continuous_mode`|Improves parsing quality for documents with multi-page tables|False|
-|`guess_xlsx_sheet_names`|Infers sheet names when parsing Excel files|False|
+|```disable_ocr```|Disables OCR, extracting only selectable text|False|
+|```disable_image_extraction```|Prevents image extraction to speed up the parsing process|False|
+|```extract_charts```|Extracts or tags charts in the document|False|
+|```extract_layout```|Includes layout information in the parsed output|False|
+|```annotate_links```|Annotates links in the document for URL extraction|False|
+|```continuous_mode```|Improves parsing quality for documents with multi-page tables|False|
+|```guess_xlsx_sheet_names```|Infers sheet names when parsing Excel files|False|
 
 
 
@@ -256,11 +255,11 @@ For specialized use cases, consider these options:
 
 | Parameter                            | Description                                        | Default Value |
 | ------------------------------------ | -------------------------------------------------- | ------------- |
-| `page_separator`                     | Specifies a custom string to separate parsed pages | None          |
-| `structured_output`                  | Outputs data in structured formats (e.g., JSON)    | False         |
-| `structured_output_json_schema`      | JSON schema for formatting structured output       | None          |
-| `structured_output_json_schema_name` | Predefined schema name for formatting output       | None          |
-| `parsing_instruction`                | Custom instructions for parsing behavior           | ""            |
+| ```page_separator```                     | Specifies a custom string to separate parsed pages | None          |
+| ```structured_output```                  | Outputs data in structured formats (e.g., JSON)    | False         |
+| ```structured_output_json_schema```      | JSON schema for formatting structured output       | None          |
+| ```structured_output_json_schema_name``` | Predefined schema name for formatting output       | None          |
+| ```parsing_instruction```                | Custom instructions for parsing behavior           | ""            |
 
 
 
@@ -268,10 +267,10 @@ For specialized use cases, consider these options:
 
 | Parameter                                            | Description                                                                                    | Default Value |
 | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------- |
-| `target_pages`                                       | Comma-separated list of page numbers to parse                                                  | None          |
-| `max_pages`                                          | Limits the number of pages to parse                                                            | None          |
-| `bbox_top`, `bbox_bottom`, `bbox_left`, `bbox_right` | Defines margins for bounding boxes (0–1 range) for extracting specific regions of the document | None          |
-| `skip_diagonal_text`                                 | Ignores text that appears diagonally (non-standard text rotations)                             | False         |
+| ```target_pages```                                       | Comma-separated list of page numbers to parse                                                  | None          |
+| ```max_pages```                                          | Limits the number of pages to parse                                                            | None          |
+| ```bbox_top```, ```bbox_bottom```, ```bbox_left```, ```bbox_right``` | Defines margins for bounding boxes (0–1 range) for extracting specific regions of the document | None          |
+| ```skip_diagonal_text```                                 | Ignores text that appears diagonally (non-standard text rotations)                             | False         |
 
 
 
@@ -279,16 +278,16 @@ For specialized use cases, consider these options:
 
 |Parameter|Description|Default Value|
 |---|---|---|
-|`webhook_url`|URL to be called upon completion of the parsing job|None|
-|`output_s3_path_prefix`|S3 path for uploading parsed output|None|
-|`custom_client`|Custom HTTPX client for sending requests|None|
-|`invalidate_cache`|Ignores cached documents, forcing re-parsing|False|
-|`do_not_cache`|Prevents caching of parsed documents|False|
+|```webhook_url```|URL to be called upon completion of the parsing job|None|
+|```output_s3_path_prefix```|S3 path for uploading parsed output|None|
+|```custom_client```|Custom HTTPX client for sending requests|None|
+|```invalidate_cache```|Ignores cached documents, forcing re-parsing|False|
+|```do_not_cache```|Prevents caching of parsed documents|False|
 
 
 ## Simple Parsing
 
-The default usage of `LlamaParse` demonstrates how to parse documents using its core functionality. This mode is optimized for simplicity and works well for standard document types.
+The default usage of ```LlamaParse``` demonstrates how to parse documents using its core functionality. This mode is optimized for simplicity and works well for standard document types.
 
 ```python
 from llama_parse import LlamaParse
@@ -342,7 +341,7 @@ documents[0]
 
 ### Conversion to LangChain Documents
 
-The parsed documents are converted to the `LangChain` document format for further processing.
+The parsed documents are converted to the ```LangChain``` document format for further processing.
 
 ```python
 # Convert LlamaIndex documents to LangChain document format
@@ -404,12 +403,12 @@ docs[0].metadata
 
 ## MultiModal Model Parsing
 
-**Multimodal parsing** in `LlamaParse` uses external AI models to process documents with complex content. Instead of extracting text directly, it processes screenshots of each page and generates a structured output based on visual interpretation. This method is particularly effective for non-standard layouts, scanned documents, or documents with embedded media.
+**Multimodal parsing** in ```LlamaParse``` uses external AI models to process documents with complex content. Instead of extracting text directly, it processes screenshots of each page and generates a structured output based on visual interpretation. This method is particularly effective for non-standard layouts, scanned documents, or documents with embedded media.
 
 ### Key Features:
 
 - Visual Processing: Operates on page screenshots, not raw text, to interpret document content.
-- Advanced Models: Integrates with AI models like `OpenAI` 's GPT-4o and others for enhanced document analysis.
+- Advanced Models: Integrates with AI models like ```OpenAI``` 's GPT-4o and others for enhanced document analysis.
 - Customizable: Supports various models and optional API key usage for flexibility.
 
 ### Procedure:
@@ -422,13 +421,13 @@ docs[0].metadata
 
 |Parameter|Description|Example Value|
 |---|---|---|
-|`use_vendor_multimodal_model`|Specifies whether to use an external vendor's multimodal model. Setting this to True enables multimodal parsing.|True|
-|`vendor_multimodal_model_name`|Specifies the name of the multimodal model to use. In this case, "openai-gpt4o" is selected.|"openai-gpt4o"|
-|`vendor_multimodal_api_key`|Sets the API key for the multimodal model. The **OpenAI API key** is retrieved from an environment variable.|"OPENAI_API_KEY"|
-|`result_type`|Specifies the format of the parsing result. Here, it is set to "markdown", so the results are returned in Markdown format.|"markdown"|
-|`language`|Specifies the language of the document to be parsed. |"en"|
-|`skip_diagonal_text`|Determines whether to skip diagonal text during parsing.|True|
-|`page_separator`|Specifies a custom page separator.|None|
+|```use_vendor_multimodal_model```|Specifies whether to use an external vendor's multimodal model. Setting this to True enables multimodal parsing.|True|
+|```vendor_multimodal_model_name```|Specifies the name of the multimodal model to use. In this case, "openai-gpt4o" is selected.|"openai-gpt4o"|
+|```vendor_multimodal_api_key```|Sets the API key for the multimodal model. The **OpenAI API key** is retrieved from an environment variable.|"OPENAI_API_KEY"|
+|```result_type```|Specifies the format of the parsing result. Here, it is set to "markdown", so the results are returned in Markdown format.|"markdown"|
+|```language```|Specifies the language of the document to be parsed. |"en"|
+|```skip_diagonal_text```|Determines whether to skip diagonal text during parsing.|True|
+|```page_separator```|Specifies a custom page separator.|None|
 
 ```python
 # Configure the LlamaParse instance to use the vendor multimodal model

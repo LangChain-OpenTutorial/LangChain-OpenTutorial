@@ -20,12 +20,11 @@ pre {
 # Code Debugging System
 
 - Author: [HeeWung Song(Dan)](https://github.com/kofsitho87)
-- Design: 
 - Peer Review: [Jongcheol Kim](https://github.com/greencode-99), [Heeah Kim](https://github.com/yellowGangneng)
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/18-CodeDebuggingSystem.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/18-CodeDebuggingSystem.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/18-CodeDebuggingSystem.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/18-CodeDebuggingSystem.ipynb)
 ## Overview
 
 In this tutorial, we'll build an AI-powered Python code debugging system using LangGraph. This system automates the debugging process by executing code, analyzing errors, suggesting fixes, and validating corrections.
@@ -52,8 +51,8 @@ In this tutorial, we'll build an AI-powered Python code debugging system using L
 Setting up your environment is the first step. See the [Environment Setup](https://wikidocs.net/257836) guide for more details.
 
 **[Note]**
-- The `langchain-opentutorial` is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-- Check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- The ```langchain-opentutorial``` is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
+- Check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -93,7 +92,7 @@ set_env(
 )
 ```
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 **[Note]** This is not necessary if you've already set the required API keys in previous steps.
 
@@ -118,7 +117,7 @@ Our debugging system is built upon three fundamental utility components that han
 
 - **Command Executor**: This component manages system-level operations, particularly package installations. It automatically detects the environment (UV/pip) and ensures proper command execution across different Python environments.
 
-- **Code Block Parser**: The `CodeBlockParser` is a custom LangChain output parser that processes AI model responses. By extending `BaseOutputParser`, it extracts and categorizes markdown code blocks into structured data, making it seamlessly integrable with LangChain's LCEL pipelines. This parser is crucial for handling AI-generated code corrections and test cases.
+- **Code Block Parser**: The ```CodeBlockParser``` is a custom LangChain output parser that processes AI model responses. By extending ```BaseOutputParser```, it extracts and categorizes markdown code blocks into structured data, making it seamlessly integrable with LangChain's LCEL pipelines. This parser is crucial for handling AI-generated code corrections and test cases.
 
 - **LLM Components**: Handles intelligent code analysis and correction through:
   - Chain configuration using ChatOpenAI and custom prompts
@@ -130,7 +129,7 @@ These components work together to provide the essential functionality needed by 
 
 First, **Code Executor** is the process of running Python code and capturing any errors that occur during execution.
 
-The `execute_code` function safely executes Python code in a temporary environment and captures comprehensive execution results including output and error messages. It returns a structured result object that serves as the foundation for our debugging workflow's analysis and correction steps.
+The ```execute_code``` function safely executes Python code in a temporary environment and captures comprehensive execution results including output and error messages. It returns a structured result object that serves as the foundation for our debugging workflow's analysis and correction steps.
 
 ```python
 import os
@@ -288,7 +287,7 @@ print(f"Output: {result['output']}")
 
 ### Command Executor
 
-The `CommandExecutor` provides a unified interface for executing system commands and installing packages across different Python environments. It automatically detects whether to use UV or pip package manager and adapts its behavior accordingly using the Strategy pattern. The system consists of a base executor class with specialized implementations for UV and pip environments, ensuring consistent command execution regardless of the environment setup.
+The ```CommandExecutor``` provides a unified interface for executing system commands and installing packages across different Python environments. It automatically detects whether to use UV or pip package manager and adapts its behavior accordingly using the Strategy pattern. The system consists of a base executor class with specialized implementations for UV and pip environments, ensuring consistent command execution regardless of the environment setup.
 
 ```python
 from typing import List, Union
@@ -466,7 +465,7 @@ class CommandExecutor:
         return True
 ```
 
-Let's test our CommandExecutor by installing required packages (`matplotlib` and `pytest`) using the appropriate package manager for our environment.
+Let's test our CommandExecutor by installing required packages (```matplotlib``` and ```pytest```) using the appropriate package manager for our environment.
 
 ```python
 # Test CommandExecutor
@@ -503,7 +502,7 @@ executor.execute_bash_commands(["pip install matplotlib", "pip install pytest"])
 
 ### Code Block Parser
 
-The `CodeBlockParser` is a custom LangChain output parser that processes AI model responses, extracting and categorizing markdown code blocks into structured data. By extending `BaseOutputParser`, it extracts code blocks with specific tags (**corrected** for fixed code, **tests** for test code) from the AI's response text. This parser enables seamless integration with LangChain's LCEL pipelines while providing a structured way to handle different types of code blocks in our debugging workflow.
+The ```CodeBlockParser``` is a custom LangChain output parser that processes AI model responses, extracting and categorizing markdown code blocks into structured data. By extending ```BaseOutputParser```, it extracts code blocks with specific tags (**corrected** for fixed code, **tests** for test code) from the AI's response text. This parser enables seamless integration with LangChain's LCEL pipelines while providing a structured way to handle different types of code blocks in our debugging workflow.
 
 ```python
 import re
@@ -739,7 +738,7 @@ Format your response with clear sections and tagged code blocks as shown above.
 chain = prompt | model | CodeBlockParser()
 ```
 
-Now, let's try to use the `CodeBlockParser` to parse the output of the LLM.
+Now, let's try to use the ```CodeBlockParser``` to parse the output of the LLM.
 
 ```python
 debug_result = execute_code(sample_code)
@@ -856,24 +855,24 @@ builder = StateGraph(AgentState)
 
 The workflow consists of five specialized nodes that form the debugging pipeline:
 
-1. **Execute Code Node** (`execute_code_node`):
+1. **Execute Code Node** (```execute_code_node```):
    - Runs the current code version
    - Captures execution results (success status, output/error)
    - Updates state with error message if failure occurs
 
-2. **Analyze Error Node** (`analyze_error_node`):
+2. **Analyze Error Node** (```analyze_error_node```):
    - Activates only when errors exist
    - Uses LLM to diagnose errors and generate:
      - Corrected code versions
      - Required dependencies
      - Validation test cases
 
-3. **Install Dependencies Node** (`install_deps_node`):
+3. **Install Dependencies Node** (```install_deps_node```):
    - Processes AI-identified package requirements
    - Executes system commands using environment-aware executor
    - Supports both pip and UV package managers
 
-4. **Decision Node** (`decide_next_step`):
+4. **Decision Node** (```decide_next_step```):
    - Evaluates workflow progress:
      - Ends on successful execution
      - Limits to 3 debug cycles
@@ -990,7 +989,7 @@ The edge configuration defines the workflow's logical flow and decision points:
 
 1. **Entry Point**:
    - Workflow starts with code execution (execute node)
-   - `builder.set_entry_point("execute")`
+   - ```builder.set_entry_point("execute")```
 
 2. **Sequential Flow**:
    - **Execute** → **Analyze**: Code execution results flow to error analysis
@@ -1002,7 +1001,7 @@ The edge configuration defines the workflow's logical flow and decision points:
      - **Success**: Terminate workflow (END)
      - **Failure**: Restart cycle if under 3 attempts (retry → execute)
      - **Max Attempts**: Terminate after 3 retries (max_attempts_reached → END)
-   - Implemented via `add_conditional_edges()`
+   - Implemented via ```add_conditional_edges()```
 
 This edge configuration creates a robust debugging loop that automatically handles retries while ensuring the process eventually terminates, either through successful debugging or reaching the attempt limit.
 

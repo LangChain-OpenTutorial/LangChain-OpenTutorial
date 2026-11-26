@@ -21,10 +21,10 @@ pre {
 
 - Author: [Mark](https://github.com/obov)
 - Peer Review : [Jaemin Hong](https://github.com/geminii01), [Dooil Kwak](https://github.com/back2zion)
+- Proofread : [Two-Jay](https://github.com/Two-Jay)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/03-ModelSerialization.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/03-ModelSerialization.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/04-ModelSerialization.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/04-ModelSerialization.ipynb)
 ## Overview
 
 Serialization is the process of converting an object into a format that can be easily stored, shared, or transmitted, and later reconstructed. In the LangChain framework, classes implement standard methods for serialization, providing several advantages:
@@ -33,19 +33,19 @@ Serialization is the process of converting an object into a format that can be e
 
 - **Version Compatibility**: Deserialization remains compatible across different package versions, ensuring that objects serialized with one version of LangChain can be properly deserialized with another.
 
-All LangChain objects inheriting from `Serializable` are JSON-serializable, including messages, document objects (e.g., those returned from retrievers), and most Runnables such as chat models, retrievers, and chains implemented with the LangChain Expression Language.
+All LangChain objects inheriting from ```Serializable``` are JSON-serializable, including messages, document objects (e.g., those returned from retrievers), and most Runnables such as chat models, retrievers, and chains implemented with the LangChain Expression Language.
 
 ### Saving and Loading LangChain Objects
 
 To effectively manage LangChain objects, you can serialize and deserialize them using the following functions:
 
-- **`dumpd`**: Returns a dictionary representation of an object, suitable for JSON serialization.
+- **```dumpd```**: Returns a dictionary representation of an object, suitable for JSON serialization.
 
-- **`dumps`**: Returns a JSON string representation of an object.
+- **```dumps```**: Returns a JSON string representation of an object.
 
-- **`load`**: Reconstructs an object from its dictionary representation.
+- **```load```**: Reconstructs an object from its dictionary representation.
 
-- **`loads`**: Reconstructs an object from its JSON string representation.
+- **```loads```**: Reconstructs an object from its JSON string representation.
 
 ### Table of Contents
 
@@ -74,8 +74,8 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 **[Note]**
 
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 
 ```python
@@ -148,10 +148,10 @@ prompt = PromptTemplate.from_template(
 chain = prompt | llm
 ```
 
-## `Dumps` and `Loads`
+## ```Dumps``` and ```Loads```
 
-- `dumps` : LangChain object into a JSON-formatted string
-- `loads` : JSON-formatted string into a LangChain object
+- ```dumps``` : LangChain object into a JSON-formatted string
+- ```loads``` : JSON-formatted string into a LangChain object
 
 
 ```python
@@ -247,10 +247,10 @@ print(deserialized_response_composed.content)
     South Korea, located on the Korean Peninsula, is a vibrant democracy known for its advanced technology, rich culture, and K-pop music. It's a global leader in innovation and economic development.
 </pre>
 
-## `Dumpd` and `Load`
+## ```Dumpd``` and ```Load```
 
-- `dumpd` : LangChain object into a dictionary
-- `load` : dictionary into a LangChain object
+- ```dumpd``` : LangChain object into a dictionary
+- ```load``` : dictionary into a LangChain object
 
 
 ```python
@@ -317,17 +317,17 @@ print(deserialized_response_composed.content)
     South Korea, located on the Korean Peninsula, is known for its vibrant culture, advanced technology, and economic strength. Major cities include Seoul and Busan. It has a rich history and a strong global presence.
 </pre>
 
-## Serialization with `pickle`
+## Serialization with ```pickle```
 
-The `pickle` module in Python is used for serializing and deserializing Python object structures, also known as _pickling_ and _unpickling_. Serialization involves converting a Python object hierarchy into a byte stream, while deserialization reconstructs the object hierarchy from the byte stream.
+The ```pickle``` module in Python is used for serializing and deserializing Python object structures, also known as _pickling_ and _unpickling_. Serialization involves converting a Python object hierarchy into a byte stream, while deserialization reconstructs the object hierarchy from the byte stream.
 
-[`pickle` - Python object serialization for more details](https://docs.python.org/3/library/pickle.html)
+[```pickle``` - Python object serialization for more details](https://docs.python.org/3/library/pickle.html)
 
 ### Key Functions
 
-- **`pickle.dump(obj, file)`**: Serializes `obj` and writes it to the open file object `file`.
+- **```pickle.dump(obj, file)```**: Serializes ```obj``` and writes it to the open file object ```file```.
 
-- **`pickle.load(file)`**: Reads a byte stream from the open file object `file` and deserializes it back into a Python object.
+- **```pickle.load(file)```**: Reads a byte stream from the open file object ```file``` and deserializes it back into a Python object.
 
 
 ```python
@@ -431,12 +431,12 @@ print(deserialized_response_composed.content)
 
 ## Is Every Runnable Serializable?
 
-LangChain's `dumps` and `dumpd` methods attempt to serialize objects as much as possible, but the resulting data may be incomplete.
+LangChain's ```dumps``` and ```dumpd``` methods attempt to serialize objects as much as possible, but the resulting data may be incomplete.
 
-1. Even if the `is_lc_serializable` method does not exist or returns `False`, a result is still generated.
-2. Even if the `is_lc_serializable` method returns `True` and serialization is successful, deserialization may fail.
+1. Even if the ```is_lc_serializable``` method does not exist or returns ```False```, a result is still generated.
+2. Even if the ```is_lc_serializable``` method returns ```True``` and serialization is successful, deserialization may fail.
 
-After serialization, it is essential to check if the JSON data contains `"type": "not_implemented"`. Only then can the `load` or `loads` functions be used safely.
+After serialization, it is essential to check if the JSON data contains ```"type": "not_implemented"```. Only then can the ```load``` or ```loads``` functions be used safely.
 
 
 ```python

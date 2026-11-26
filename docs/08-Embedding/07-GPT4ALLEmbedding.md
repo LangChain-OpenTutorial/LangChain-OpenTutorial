@@ -20,19 +20,18 @@ pre {
 # GPT4ALL
 
 - Author: [Do Woung Kong](https://github.com/krkrong)
-- Design: 
 - Peer Review : [Sun Hyoung Lee](https://github.com/LEE1026icarus), [Yongdam Kim](https://github.com/dancing-with-coffee)
+- Proofread : [Youngjun cho](https://github.com/choincnp)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/07-GPT4ALLEmbedding.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embeeding/07-GPT4ALLEmbedding.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embedding/07-GPT4ALLEmbedding.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/08-Embedding/07-GPT4ALLEmbedding.ipynb)
 ## Overview
 
-`GPT4All` is a local execution-based privacy chatbot that can be used for free.
+```GPT4All``` is a local execution-based privacy chatbot that can be used for free.
 
-No GPU or internet connection is required, and `GPT4All` offers popular models such as GPT4All Falcon, Wizard, and its own models.
+No GPU or internet connection is required, and ```GPT4All``` offers popular models such as GPT4All Falcon, Wizard, and its own models.
 
-This notebook explains how to use `GPT4Allembeddings` with `LangChain`.
+This notebook explains how to use ```GPT4Allembeddings``` with ```LangChain```.
 
 ### Table of Contents
 
@@ -52,8 +51,8 @@ This notebook explains how to use `GPT4Allembeddings` with `LangChain`.
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -73,11 +72,11 @@ package.install(
 
 ## Install Python Binding for GPT4All
 
-Before diving into the practical exercises, you need to install the Python bindings for `GPT4All`.
+Before diving into the practical exercises, you need to install the Python bindings for ```GPT4All```.
 
 Python bindings allow a Python program to interface with external libraries or tools, enabling seamless integration and usage of functionalities provided by those external resources.
 
-To install the Python bindings for `GPT4All`, run the following command:
+To install the Python bindings for ```GPT4All```, run the following command:
 
 ```python
 %pip install --upgrade --quiet  gpt4all > /dev/null
@@ -86,9 +85,9 @@ To install the Python bindings for `GPT4All`, run the following command:
 <pre class="custom">Note: you may need to restart the kernel to use updated packages.
 </pre>
 
-Import the `GPT4AllEmbeddings` class from the `langchain_community.embeddings` module.
+Import the ```GPT4AllEmbeddings``` class from the ```langchain_community.embeddings``` module.
 
-The `GPT4AllEmbeddings` class provides functionality to embed text data into vectors using the GPT4All model.
+The ```GPT4AllEmbeddings``` class provides functionality to embed text data into vectors using the GPT4All model.
 
 This class implements the embedding interface of the LangChain framework, allowing it to be used seamlessly with LangChain's various features.
 
@@ -98,20 +97,20 @@ from langchain_community.embeddings import GPT4AllEmbeddings
 
 GPT4All supports the generation of high-quality embeddings for text documents of arbitrary length using a contrastive learning sentence transformer optimized for CPUs. These embeddings offer a quality comparable to many tasks using OpenAI models.
 
-An instance of the `GPT4AllEmbeddings` class is created.
+An instance of the ```GPT4AllEmbeddings``` class is created.
 
-- The `GPT4AllEmbeddings` class is an embedding model that uses the GPT4All model to transform text data into vectors.  
+- The ```GPT4AllEmbeddings``` class is an embedding model that uses the GPT4All model to transform text data into vectors.  
 
-- In this code, the `gpt4all_embd` variable is assigned an instance of `GPT4AllEmbeddings`.  
+- In this code, the ```gpt4all_embd``` variable is assigned an instance of ```GPT4AllEmbeddings```.  
 
-- You can then use `gpt4all_embd` to convert text data into vectors.
+- You can then use ```gpt4all_embd``` to convert text data into vectors.
 
 ```python
 # Create a GPT4All embedding object
 gpt4all_embd = GPT4AllEmbeddings()
 ```
 
-Assign the string "This is a sample sentence for testing embeddings." to the `text` variable.
+Assign the string "This is a sample sentence for testing embeddings." to the ```text``` variable.
 
 ```python
 # Define a sample document text for testing
@@ -137,12 +136,12 @@ For example, they can serve as input data for tasks such as document classificat
 
 This process of text data embedding plays a crucial role in natural language processing, making it essential for efficiently processing and analyzing large amounts of text data.
 
-Use the `embed_query` method of the `gpt4all_embd` object to embed the given text (`text`).  
+Use the ```embed_query``` method of the ```gpt4all_embd``` object to embed the given text (```text```).  
 
-- The `text` variable stores the text to be embedded.  
-- The `gpt4all_embd` object uses the GPT4All model to perform text embedding.  
-- The `embed_query` method converts the given text into a vector format and returns it.  
-- The embedding result is stored in the `query_result` variable.
+- The ```text``` variable stores the text to be embedded.  
+- The ```gpt4all_embd``` object uses the GPT4All model to perform text embedding.  
+- The ```embed_query``` method converts the given text into a vector format and returns it.  
+- The embedding result is stored in the ```query_result``` variable.
 
 ```python
 # Generate query embeddings for the given text.
@@ -159,13 +158,13 @@ len(query_result)
 
 
 
-You can use the `embed_documents` function to embed multiple text fragments.
+You can use the ```embed_documents``` function to embed multiple text fragments.
 
-Use the `embed_documents` method of the `gpt4all_embd` object to embed the `text` document.
+Use the ```embed_documents``` method of the ```gpt4all_embd``` object to embed the ```text``` document.
 
-- Wrap the `text` document in a list and pass it as an argument to the `embed_documents` method.  
-- The `embed_documents` method calculates and returns the embedding vector of the document.  
-- The resulting embedding vector is stored in the `doc_result` variable.
+- Wrap the ```text``` document in a list and pass it as an argument to the ```embed_documents``` method.  
+- The ```embed_documents``` method calculates and returns the embedding vector of the document.  
+- The resulting embedding vector is stored in the ```doc_result``` variable.
 
 Additionally, these embeddings can be mapped with Nomic's Atlas (https://docs.nomic.ai/index.html) to visualize the data.
 

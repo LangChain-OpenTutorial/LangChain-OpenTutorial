@@ -20,17 +20,16 @@ pre {
 # Fallbacks
 
 - Author: [Haseom Shin](https://github.com/IHAGI-c)
-- Design: []()
 - Peer Review: []()
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/11-Fallbacks.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/11-Fallbacks.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/11-Fallbacks.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/11-Fallbacks.ipynb)
 ## Overview
 
 This tutorial covers how to implement fallback mechanisms in LangChain applications to gracefully handle various types of failures and errors.
 
-`Fallbacks` are crucial for building robust LLM applications that can handle API errors, rate limits, and other potential failures without disrupting the user experience.
+```Fallbacks``` are crucial for building robust LLM applications that can handle API errors, rate limits, and other potential failures without disrupting the user experience.
 
 In this tutorial, we will explore different fallback strategies and implement practical examples using multiple LLM providers.
 
@@ -91,8 +90,8 @@ In this tutorial, we will explore different fallback strategies and implement pr
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -139,9 +138,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -158,25 +157,25 @@ load_dotenv(override=True)
 
 ## What are Fallbacks?
 
-In LLM applications, various errors or failures can occur, such as LLM API issues, degradation in model output quality, and other integration-related problems. The `fallback` feature gracefully handle and isolate these issues.
+In LLM applications, various errors or failures can occur, such as LLM API issues, degradation in model output quality, and other integration-related problems. The ```fallback``` feature gracefully handle and isolate these issues.
 
 Note that they can be applied at both the LLM calls and the level of an entire executable chain.
 
 ## Handling LLM API Errors
 
-Handling LLM API errors is one of the most common use cases for `fallbacks`.
+Handling LLM API errors is one of the most common use cases for ```fallbacks```.
 
-API requests can fail due to various reasons. The API might be down, you might have reached usage rate limits, or other issues. By implementing `fallbacks`, you can protect your application against these types of problems.
+API requests can fail due to various reasons. The API might be down, you might have reached usage rate limits, or other issues. By implementing ```fallbacks```, you can protect your application against these types of problems.
 
-**Important**: By default, many LLM wrappers capture errors and retry. When using `fallbacks`, it is advisable to disable this default behavior; otherwise, the first wrapper will keep retrying and prevent the fallback from triggering.
+**Important**: By default, many LLM wrappers capture errors and retry. When using ```fallbacks```, it is advisable to disable this default behavior; otherwise, the first wrapper will keep retrying and prevent the fallback from triggering.
 
 ## Introduction to Rate Limit Testing
 
-First, let's perform a mock test for the `RateLimitError` that can occur with OpenAI. A `RateLimitError` is **an error that occurs when you exceed the OpenAI API usage limits** of the OpenAI API.
+First, let's perform a mock test for the ```RateLimitError``` that can occur with OpenAI. A ```RateLimitError``` is **an error that occurs when you exceed the OpenAI API usage limits** of the OpenAI API.
 
 ## Why Handle Rate Limit Errors?
 
-`RateLimitError` restricts API requests for a certain period, so applications need to handle them appropriately. Mock testing verifies application behaves and error-handling logic during `RateLimitError`s.
+```RateLimitError``` restricts API requests for a certain period, so applications need to handle them appropriately. Mock testing verifies application behaves and error-handling logic during ```RateLimitError```s.
 
 ## Benefits of Mock Testing
 
@@ -198,9 +197,9 @@ error = RateLimitError("rate limit", response=response, body="")
 
 ## Setting up LLM Fallback Configuration
 
-Create a `ChatOpenAI` object and assign it to `openai_llm`, setting `max_retries=0` to **prevent retry attempts** that might occur due to API call limits or restrictions.
+Create a ```ChatOpenAI``` object and assign it to ```openai_llm```, setting ```max_retries=0``` to **prevent retry attempts** that might occur due to API call limits or restrictions.
 
-Use `with_fallbacks` to configure `anthropic_llm` as the fallback LLM and assign this configuration to `llm`.
+Use ```with_fallbacks``` to configure ```anthropic_llm``` as the fallback LLM and assign this configuration to ```llm```.
 
 
 ```python
@@ -224,7 +223,7 @@ In this example, we'll simulate OpenAI API rate limits and test system behavior 
 
 When the OpenAI GPT model encounters an error, the Anthropic fallback model successfully takes over and performs the inference instead.
 
-When a fallback model, configured with `with_fallbacks()`, executes successfully, the `RateLimitError` is not raised, ensuring continuous operation of your application.
+When a fallback model, configured with ```with_fallbacks()```, executes successfully, the ```RateLimitError``` is not raised, ensuring continuous operation of your application.
 
 >💡 This demonstrates LangChain's fallback mechanism, which provides resilience against API limitations and ensures continued application function even when the primary model is unavailable.
 
@@ -253,7 +252,7 @@ with patch("openai.resources.chat.completions.Completions.create", side_effect=e
 <pre class="custom">content='The classic answer to the joke "Why did the chicken cross the road?" is:\n\n"To get to the other side."\n\nThis answer is an anti-joke, meaning that the answer is purposely obvious and straightforward, lacking the expected punch line or humor that a joke typically has. The humor, if any, comes from the fact that the answer is so simple and doesn\'t really provide any meaningful explanation for the chicken\'s actions.\n\nThere are, of course, many variations and alternative answers to this joke, but the one mentioned above remains the most well-known and traditional response.' additional_kwargs={} response_metadata={'id': 'msg_01EnWEZFHrLnPx8DeYWAwKcY', 'model': 'claude-3-opus-20240229', 'stop_reason': 'end_turn', 'stop_sequence': None, 'usage': {'cache_creation_input_tokens': 0, 'cache_read_input_tokens': 0, 'input_tokens': 15, 'output_tokens': 124}} id='run-c83ea304-76f5-4bc3-b33b-4ce1ecaa7220-0' usage_metadata={'input_tokens': 15, 'output_tokens': 124, 'total_tokens': 139, 'input_token_details': {'cache_read': 0, 'cache_creation': 0}}
 </pre>
 
-A model configured with `llm.with_fallbacks()` behaves like a regular Runnable model.
+A model configured with ```llm.with_fallbacks()``` behaves like a regular Runnable model.
 
 The code below also does not throw an **error** because the fallback model performed successfully.
 
@@ -285,11 +284,11 @@ with patch("openai.resources.chat.completions.Completions.create", side_effect=e
 
 ## Specifying Exceptions to Trigger Fallbacks
 
-You can precisely define when a `fallback` should trigger, allowing for more granular control over the fallback mechanism's behavior.
+You can precisely define when a ```fallback``` should trigger, allowing for more granular control over the fallback mechanism's behavior.
 
 For example, you can specify certain exception classes or error codes to trigger the fallback logic, **reducing unnecessary calls and improving efficiency in error handling.**
 
-The example below prints an \"error\" message because `exceptions_to_handle` is configured to trigger the fallback only for `KeyboardInterrupt`. The `fallback` will not trigger for other exceptions.
+The example below prints an \"error\" message because ```exceptions_to_handle``` is configured to trigger the fallback only for ```KeyboardInterrupt```. The ```fallback``` will not trigger for other exceptions.
 
 
 ```python

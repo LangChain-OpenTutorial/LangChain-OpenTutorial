@@ -20,16 +20,15 @@ pre {
 # Ensemble Retriever with Convex Combination (CC)
 
 - Author: [Harheem Kim](https://github.com/harheem)
-- Design:
 - Peer Review:
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/11-Convex-Combination-Ensemble-Retriever.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/11-Convex-Combination-Ensemble-Retriever.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/11-Convex-Combination-Ensemble-Retriever.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Retriever/11-Convex-Combination-Ensemble-Retriever.ipynb)
 ## Overview
 
-This tutorial focuses on implementing and comparing different ensemble retrieval methods in LangChain. While LangChain's built-in `EnsembleRetriever` uses the **Reciprocal Rank Fusion (`RRF`)** method, we'll explore an additional approach by implementing the **Convex Combination (`CC`)** method.<br>
-The tutorial guides you through creating custom implementations of both **`RRF` and `CC` methods** , allowing for a direct performance comparison between these ensemble techniques.
+This tutorial focuses on implementing and comparing different ensemble retrieval methods in LangChain. While LangChain's built-in ```EnsembleRetriever``` uses the **Reciprocal Rank Fusion (```RRF```)** method, we'll explore an additional approach by implementing the **Convex Combination (```CC```)** method.<br>
+The tutorial guides you through creating custom implementations of both **```RRF``` and ```CC``` methods** , allowing for a direct performance comparison between these ensemble techniques.
 
 ### Table of Contents
 
@@ -50,8 +49,8 @@ The tutorial guides you through creating custom implementations of both **`RRF` 
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -94,9 +93,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in **.env** file and load it.
+You can alternatively set ```OPENAI_API_KEY``` in **.env** file and load it.
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -116,7 +115,7 @@ load_dotenv(override=True)
 
 This section outlines the preparation process for processing PDF documents before storing them in a vector store. 
 
-We use `PDFPlumberLoader` to load the PDF file and leverage `RecursiveCharacterTextSplitter` to break down the document into smaller, manageable chunks. 
+We use ```PDFPlumberLoader``` to load the PDF file and leverage ```RecursiveCharacterTextSplitter``` to break down the document into smaller, manageable chunks. 
 
 The chunk size is set to 200 characters with no overlap, allowing for efficient processing while maintaining the document's semantic integrity.
 
@@ -133,9 +132,9 @@ split_documents = loader.load_and_split(text_splitter)
 
 ## Initialize Retrievers
 
-This section initializes retrievers to implement two different search approaches. We create embeddings using OpenAI's `text-embedding-3-small` model and set up `FAISS` vector search based on these embeddings. 
+This section initializes retrievers to implement two different search approaches. We create embeddings using OpenAI's ```text-embedding-3-small``` model and set up ```FAISS``` vector search based on these embeddings. 
 
-Additionally, we configure a `BM25` retriever for keyword-based search, with both retrievers set to return the top 5 most relevant results.
+Additionally, we configure a ```BM25``` retriever for keyword-based search, with both retrievers set to return the top 5 most relevant results.
 
 ```python
 from langchain_openai import OpenAIEmbeddings
@@ -157,11 +156,11 @@ bm25.k = 5
 
 ## Implement Ensemble Retrievers
 
-This section introduces a custom retriever implementing two ensemble search methods, designed to compare performance against LangChain's built-in `EnsembleRetriever` . 
+This section introduces a custom retriever implementing two ensemble search methods, designed to compare performance against LangChain's built-in ```EnsembleRetriever``` . 
 
-We implement both **Reciprocal Rank Fusion (`RRF`)** , which combines results based on document rankings, and **Convex Combination (`CC`)** , which utilizes normalized scores. 
+We implement both **Reciprocal Rank Fusion (```RRF```)** , which combines results based on document rankings, and **Convex Combination (```CC```)** , which utilizes normalized scores. 
 
-Both methods integrate results from `FAISS` and `BM25` retrievers to provide more accurate and diverse search results, allowing users to select the most suitable ensemble approach for their needs.
+Both methods integrate results from ```FAISS``` and ```BM25``` retrievers to provide more accurate and diverse search results, allowing users to select the most suitable ensemble approach for their needs.
 
 ```python
 from enum import Enum
@@ -284,7 +283,7 @@ cc_ensemble_retriever = EnsembleRetriever(
 
 This section presents a test function for comparing ensemble retrieval results. 
 
-While the **`RRF` method** , which follows LangChain's default implementation, produces identical results to **Original** , the **`CC` method** utilizing normalized scores and weights offers different search patterns. 
+While the **```RRF``` method** , which follows LangChain's default implementation, produces identical results to **Original** , the **```CC``` method** utilizing normalized scores and weights offers different search patterns. 
 
 By testing with real queries and comparing these approaches, we can identify which ensemble method better suits our project requirements.
 

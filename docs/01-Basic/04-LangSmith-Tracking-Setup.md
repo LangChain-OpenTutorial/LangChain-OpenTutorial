@@ -20,25 +20,24 @@ pre {
 # LangSmith Tracking Setup
 
 - Author: [JeongGi Park](https://github.com/jeongkpa)
-- Design: []()
-- Peer Review: 
+- Peer Review: [MinJi Kang](https://www.linkedin.com/in/minji-kang-995b32230/), [Wooseok Jeong](https://github.com/jeong-wooseok)
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/03-LangSmithTrackingSetup.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/03-LangSmithTrackingSetup.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/04-LangSmith-Tracking-Setup.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/01-Basic/04-LangSmith-Tracking-Setup.ipynb)
 ## Overview
 
-This tutorial covers how to set up and use `LangSmith`, a powerful platform for developing, monitoring, and testing LLM applications. 
-`LangSmith` provides comprehensive tracking capabilities that are essential for understanding and optimizing your LLM applications.
+This tutorial covers how to set up and use ```LangSmith```, a powerful platform for developing, monitoring, and testing LLM applications. 
+```LangSmith``` provides comprehensive tracking capabilities that are essential for understanding and optimizing your LLM applications.
 
-`LangSmith` tracking helps you monitor:
+```LangSmith``` tracking helps you monitor:
 
 - Token usage and associated costs
 - Execution time and performance metrics
 - Error rates and unexpected behaviors
 - Agent interactions and chain operations
 
-In this tutorial, we'll walk through the process of setting up `LangSmith` tracking and integrating it with your `LangChain` applications.
+In this tutorial, we'll walk through the process of setting up ```LangSmith``` tracking and integrating it with your ```LangChain``` applications.
 
 ### Table of Contents
 
@@ -56,8 +55,8 @@ In this tutorial, we'll walk through the process of setting up `LangSmith` track
 
 ## Setting up a LangSmith trace
 
-`LangSmith` is a platform for developing, monitoring, and testing LLM applications. 
-If you're starting a project or learning `LangChain`, `LangSmith` is a must-have to get set up and running.
+```LangSmith``` is a platform for developing, monitoring, and testing LLM applications. 
+If you're starting a project or learning ```LangChain```, ```LangSmith``` is a must-have to get set up and running.
 
 ### Project-Level Tracking
 At the project level, you can check execution counts, error rates, token usage, and billing information.
@@ -95,9 +94,9 @@ Using traces is very simple.
 
 
 
-Set environment variables is in the `.env` file.
+Set environment variables is in the ```.env``` file.
 
-Copy the contents of `.env_sample` and load it into your `.env` with the key you set.
+Copy the contents of ```.env_sample``` and load it into your ```.env``` with the key you set.
 
 
 ```python
@@ -112,7 +111,8 @@ load_dotenv(override=True)
 
 In Description, enter a description that makes sense to you and click the Create API Key button.
 
-![create-api-key](./img/03-langsmith-tracking-setup-05.png)
+![create-api-key](./assets/03-langsmith-tracking-setup-05.png
+)
 
 
 Copy the generated key and proceed to the next step.
@@ -123,15 +123,15 @@ Copy the generated key and proceed to the next step.
 
 
 
-### Setting the LangSmith key in `.env`
+### Setting the LangSmith key in ```.env```
 
 
 First, enter the key you received from LangSmith and your project information in the .env file.
 
-- `LANGCHAIN_TRACING_V2`: Set to "true" to start tracking.
-- `LANGCHAIN_ENDPOINT`: https://api.smith.langchain.com (Do not modify this value).
-- `LANGCHAIN_API_KEY`: Enter the key you received in the previous step.
-- `LANGCHAIN_PROJECT`: Specify a project name to group and trace all runs under that project group.
+- ```LANGCHAIN_TRACING_V2```: Set to "true" to start tracking.
+- ```LANGCHAIN_ENDPOINT```: https://api.smith.langchain.com (Do not modify this value).
+- ```LANGCHAIN_API_KEY```: Enter the key you received in the previous step.
+- ```LANGCHAIN_PROJECT```: Specify a project name to group and trace all runs under that project group.
 
 ![setting-api-key](./img/03-langsmith-tracking-setup-07.png)
 
@@ -141,7 +141,7 @@ First, enter the key you received from LangSmith and your project information in
 
 Enabling tracking is very simple. All you need to do is set an environment variable.
 
-Copy the contents of `.env_sample` and load it into your `.env` with the key you set
+Copy the contents of ```.env_sample``` and load it into your ```.env``` with the key you set
 
 ```python
 %%capture --no-stderr

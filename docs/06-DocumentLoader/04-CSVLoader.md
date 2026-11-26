@@ -20,20 +20,21 @@ pre {
 # CSV Loader
 
 - Author: [JoonHo Kim](https://github.com/jhboyo)
-- Design: []()
 - Peer Review : [syshin0116](https://github.com/syshin0116), [forwardyoung](https://github.com/forwardyoung)
+- Proofread : [Q0211](https://github.com/Q0211)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/04-CSV-Loader.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/04-CSV-Loader.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/04-CSVLoader.ipynb)
+[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/06-DocumentLoader/04-CSVLoader.ipynb)
 
 
 ## Overview
 
-This tutorial provides a comprehensive guide on how to use the `CSVLoader` utility in LangChain to seamlessly integrate data from CSV files into your applications. The `CSVLoader` is a powerful tool for processing structured data, enabling developers to extract, parse, and utilize information from CSV files within the LangChain framework.
+This tutorial provides a comprehensive guide on how to use the ```CSVLoader``` utility in LangChain to seamlessly integrate data from CSV files into your applications. The ```CSVLoader``` is a powerful tool for processing structured data, enabling developers to extract, parse, and utilize information from CSV files within the LangChain framework.
 
 [Comma-Separated Values (CSV)](https://en.wikipedia.org/wiki/Comma-separated_values) is one of the most common formats for storing and exchanging data.
 
-`CSVLoader` simplifies the process of loading, parsing, and extracting data from CSV files, allowing developers to seamlessly incorporate this information into LangChain workflows.
+```CSVLoader``` simplifies the process of loading, parsing, and extracting data from CSV files, allowing developers to seamlessly incorporate this information into LangChain workflows.
 
 
 ### Table of Contents
@@ -60,9 +61,9 @@ This tutorial provides a comprehensive guide on how to use the `CSVLoader` utili
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
-- `unstructured` package is a Python library for extracting text and metadata from various document formats like PDF and CSV
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```unstructured``` package is a Python library for extracting text and metadata from various document formats like PDF and CSV
 
 
 ```python
@@ -101,9 +102,9 @@ if not load_dotenv():
     )
 ```
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -120,7 +121,7 @@ load_dotenv()
 
 ## How to load CSVs
 
-A comma-separated values (CSV) file is a delimited text file that uses a comma to separate values. LangChain can help you load CSV files easily—just import `CSVLoader` to get started. 
+A comma-separated values (CSV) file is a delimited text file that uses a comma to separate values. LangChain can help you load CSV files easily—just import ```CSVLoader``` to get started. 
 
 Each line of the file is a data record, and each record consists of one or more fields, separated by commas. 
 
@@ -185,9 +186,9 @@ print(docs[1].page_content)
 
 ## Customizing the CSV parsing and loading
 
-`CSVLoader` accepts a `csv_args` keyword argument that supports customization of the parameters passed to Python's `csv.DictReader`. This allows you to handle various CSV formats, such as custom delimiters, quote characters, or specific newline handling. 
+```CSVLoader``` accepts a ```csv_args``` keyword argument that supports customization of the parameters passed to Python's ```csv.DictReader```. This allows you to handle various CSV formats, such as custom delimiters, quote characters, or specific newline handling. 
 
-See Python's [csv module](https://docs.python.org/3/library/csv.html) documentation for more information on supported `csv_args` and how to tailor the parsing to your specific needs.
+See Python's [csv module](https://docs.python.org/3/library/csv.html) documentation for more information on supported ```csv_args``` and how to tailor the parsing to your specific needs.
 
 ```python
 loader = CSVLoader(
@@ -233,7 +234,7 @@ print(docs[1].page_content)
 
 ## Specify a column to identify the document source
 
-You should use the `source_column` argument to specify the source of the documents generated from each row. Otherwise `file_path` will be used as the source for all documents created from the CSV file.
+You should use the ```source_column``` argument to specify the source of the documents generated from each row. Otherwise ```file_path``` will be used as the source for all documents created from the CSV file.
 
 This is particularly useful when using the documents loaded from a CSV file in a chain designed to answer questions based on their source.
 
@@ -266,7 +267,7 @@ print(docs[1].metadata)
 
 ## Generating XML document format
 
-This example shows how to generate XML Document format from `CSVLoader`. By processing data from a CSV file, you can convert its rows and columns into a structured XML representation.
+This example shows how to generate XML Document format from ```CSVLoader```. By processing data from a CSV file, you can convert its rows and columns into a structured XML representation.
 
 Convert a row in the document.
 
@@ -310,7 +311,7 @@ for doc in docs[1:6]:  # skip header
 
 ## UnstructuredCSVLoader 
 
-`UnstructuredCSVLoader` can be used in both `single` and `elements` mode. If you use the loader in “elements” mode, the CSV file will be a single Unstructured Table element. If you use the loader in elements” mode, an HTML representation of the table will be available in the `text_as_html` key in the document metadata.
+```UnstructuredCSVLoader``` can be used in both ```single``` and ```elements``` mode. If you use the loader in “elements” mode, the CSV file will be a single Unstructured Table element. If you use the loader in elements” mode, an HTML representation of the table will be available in the ```text_as_html``` key in the document metadata.
 
 ```python
 from langchain_community.document_loaders.csv_loader import UnstructuredCSVLoader
@@ -331,9 +332,9 @@ print(html_content[:810])
 
 ## DataFrameLoader
 
-`Pandas` is an open-source data analysis and manipulation tool for the Python programming language. This library is widely used in data science, machine learning, and various fields for working with data.
+```Pandas``` is an open-source data analysis and manipulation tool for the Python programming language. This library is widely used in data science, machine learning, and various fields for working with data.
 
-LangChain's `DataFrameLoader` is a powerful utility designed to seamlessly integrate `Pandas`  `DataFrames` into LangChain workflows.
+LangChain's ```DataFrameLoader``` is a powerful utility designed to seamlessly integrate ```Pandas```  ```DataFrames``` into LangChain workflows.
 
 ```python
 import pandas as pd
@@ -464,7 +465,7 @@ df.head(n=5)
 
 
 
-Parameters `page_content_column` (str) – Name of the column containing the page content. Defaults to “text”.
+Parameters ```page_content_column``` (str) – Name of the column containing the page content. Defaults to “text”.
 
 
 
@@ -483,7 +484,7 @@ print(docs[0].page_content)
 <pre class="custom">Braund, Mr. Owen Harris
 </pre>
 
-`Lazy Loading` for large tables. Avoid loading the entire table into memory
+```Lazy Loading``` for large tables. Avoid loading the entire table into memory
 
 ```python
 # Lazy load records from dataframe.

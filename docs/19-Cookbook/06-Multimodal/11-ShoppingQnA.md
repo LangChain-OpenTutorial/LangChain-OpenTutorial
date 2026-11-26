@@ -20,12 +20,11 @@ pre {
 # Shopping QnA
 
 - Author: [Mark](https://github.com/obov)
-- Design: []()
 - Peer Review:
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/06-MultiModal/11-ShoppingQnA.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/06-MultiModal/11-ShoppingQnA.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/06-Multimodal/11-ShoppingQnA.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/06-Multimodal/11-ShoppingQnA.ipynb)
 ## Overview
 
 This tutorial will guide you through the process of building a multimodal Retrieval-Augmented Generation (RAG) chatbot for a shopping mall. The chatbot will be able to answer user questions about products, including those accompanied by images, making it a powerful tool for enhancing the shopping experience.
@@ -38,14 +37,14 @@ By following this tutorial, you’ll gain insights into creating an advanced, fl
 
 1. Data Augmentation
    - Build a shopping mall product database based on the [Kream Product BLIP Captions](https://huggingface.co/datasets/hahminlew/kream-product-blip-captions) dataset.
-   - Use `gpt-4o` to enhance image and text data:
+   - Use ```gpt-4o``` to enhance image and text data:
 2. Embedding Storage in Vector DB
-   - `product_image_db`: Store image embeddings generated using the OpenCLIP model.
-   - `product_text_db`: Store text embeddings generated using the text-embedding-ada-002 model.
+   - ```product_image_db```: Store image embeddings generated using the OpenCLIP model.
+   - ```product_text_db```: Store text embeddings generated using the text-embedding-ada-002 model.
 3. Vector Search
-   - `multimodal_retriever`: Retrieve data from `product_image_db` for any type of query.
-   - `text_embedding_retriever`: Retrieve data from `product_text_db`. If query has image data, it will be described by LLM and then try to retrieve data from `product_text_db`.
-   - `hybrid_retriever`: If query has image data, use `multimodal_retriever` to retrieve image data. If query has text data, use `text_embedding_retriever` to retrieve text data.
+   - ```multimodal_retriever```: Retrieve data from ```product_image_db``` for any type of query.
+   - ```text_embedding_retriever```: Retrieve data from ```product_text_db```. If query has image data, it will be described by LLM and then try to retrieve data from ```product_text_db```.
+   - ```hybrid_retriever```: If query has image data, use ```multimodal_retriever``` to retrieve image data. If query has text data, use ```text_embedding_retriever``` to retrieve text data.
 4. Multimodal RAG Chatbot
    - Build a chatbot that can answer questions using the retriever we defined.
 
@@ -74,8 +73,8 @@ Set up the environment. You may refer to [Environment Setup](https://wikidocs.ne
 
 **[Note]**
 
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 
 ```python
@@ -535,8 +534,8 @@ pprint(
 
 We will store the augmented data in a vector database. Image and text data will be embedded separately. In other words, we will use two different vector databases.
 
-1. `product_image_db` : Image data will be embedded using OpenCLIP model.
-2. `product_text_db` : Text data will be embedded using text-embedding-ada-002 model.
+1. ```product_image_db``` : Image data will be embedded using OpenCLIP model.
+2. ```product_text_db``` : Text data will be embedded using text-embedding-ada-002 model.
 
 
 ```python
@@ -774,9 +773,9 @@ len(all_embedded_text_data["ids"])
 
 In this section, we will define three retrievers. And then we will query the vector database using each retriever.
 
-1. `multimodal_retriever` : Retrieve data from `product_image_db` for any type of query.
-2. `text_embedding_retriever` : Retrieve data from `product_text_db`. If query has image data, it will be described by LLM and then try to retrieve data from `product_text_db`.
-3. `hybrid_retriever` : If query has image data, use `multimodal_retriever` to retrieve image data. If query has text data, use `text_embedding_retriever` to retrieve text data.
+1. ```multimodal_retriever``` : Retrieve data from ```product_image_db``` for any type of query.
+2. ```text_embedding_retriever``` : Retrieve data from ```product_text_db```. If query has image data, it will be described by LLM and then try to retrieve data from ```product_text_db```.
+3. ```hybrid_retriever``` : If query has image data, use ```multimodal_retriever``` to retrieve image data. If query has text data, use ```text_embedding_retriever``` to retrieve text data.
 
 
 ```python
@@ -2178,10 +2177,10 @@ Finally, we would build a chatbot that can answer questions using the retriever 
 
 When invocation, these are the configs you can send.
 
-1. `retriever` : Choose what retriever you want to use : "`multimodal`", "`text`", "`hybrid`"
-2. `prompt` : Choose what prompt you want to use : "`question`", "`question_and_image`"
-3. `user_id` : Unique identifier for the user.
-4. `conversation_id` : Unique identifier for the conversation.
+1. ```retriever``` : Choose what retriever you want to use : "```multimodal```", "```text```", "```hybrid```"
+2. ```prompt``` : Choose what prompt you want to use : "```question```", "```question_and_image```"
+3. ```user_id``` : Unique identifier for the user.
+4. ```conversation_id``` : Unique identifier for the conversation.
 
 
 ```python

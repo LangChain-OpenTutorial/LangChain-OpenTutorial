@@ -21,15 +21,14 @@ pre {
 
 - Author: [Wonyoung Lee](https://github.com/BaBetterB)
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/BaBetterB/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/10-Binding.ipynb) 
-[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/07-TextSplitter/04-SemanticChunker.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/10-Binding.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/13-LangChain-Expression-Language/10-Binding.ipynb)
 
 ## Overview
 
-This tutorial covers a scenario where you need to pass constant arguments(not included in the output of the previous Runnable or user input) when calling a Runnable inside a Runnable sequence. In such cases, `Runnable.bind()` is a convenient way to pass these arguments
+This tutorial covers a scenario where you need to pass constant arguments(not included in the output of the previous Runnable or user input) when calling a Runnable inside a Runnable sequence. In such cases, ```Runnable.bind()``` is a convenient way to pass these arguments
 
 
 ### Table of Contents
@@ -55,8 +54,8 @@ This tutorial covers a scenario where you need to pass constant arguments(not in
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup tools, useful functions and utilities for tutorials. 
-- You can check out the [ `langchain-opentutorial` ](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup tools, useful functions and utilities for tutorials. 
+- You can check out the [ ```langchain-opentutorial``` ](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 Load sample text and output the content.
 
@@ -105,9 +104,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it.
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 # Configuration File for Managing API Keys as Environment Variables
@@ -126,13 +125,13 @@ load_dotenv(override=True)
 
 ## Runtime Arguments Binding
 
-This section explains how to use `Runnable.bind()` to pass constant arguments to a `Runnable` within a sequence, especially when those arguments aren't part of the previous Runnable's output or user input.
+This section explains how to use ```Runnable.bind()``` to pass constant arguments to a ```Runnable``` within a sequence, especially when those arguments aren't part of the previous Runnable's output or user input.
 
 **Passing variables to prompts:**
 
-1. Use `RunnablePassthrough` to pass the `{equation_statement}` variable to the prompt.
-2. Use `StrOutputParser` to parse the model's output into a string, creating a `runnable` object.
-3. Call the `runnable.invoke()` method to pass the equation statement (e.g., \"x raised to the third plus seven equals 12\") and get the result.
+1. Use ```RunnablePassthrough``` to pass the ```{equation_statement}``` variable to the prompt.
+2. Use ```StrOutputParser``` to parse the model's output into a string, creating a ```runnable``` object.
+3. Call the ```runnable.invoke()``` method to pass the equation statement (e.g., \"x raised to the third plus seven equals 12\") and get the result.
 
 ```python
 from langchain_core.output_parsers import StrOutputParser
@@ -184,7 +183,7 @@ print(result)
 
 **Using bind() method with stop words**
 
-For controlling the end of the model's output using a specific stop word, you can use `model.bind()` to instruct the model to halt its generation upon encountering the stop token such as `SOLUTION`.
+For controlling the end of the model's output using a specific stop word, you can use ```model.bind()``` to instruct the model to halt its generation upon encountering the stop token such as ```SOLUTION```.
 
 ```python
 runnable = (
@@ -207,9 +206,9 @@ print(runnable.invoke("x raised to the third plus seven equals 12"))
 
 ## Connecting OpenAI Functions
 
-`bind()` is particularly useful for connecting OpenAI Functions with compatible OpenAI models.
+```bind()``` is particularly useful for connecting OpenAI Functions with compatible OpenAI models.
 
-Let's define `openai_function` according to a schema.
+Let's define ```openai_function``` according to a schema.
 
 ```python
 openai_function = {
@@ -238,7 +237,7 @@ openai_function = {
 
 **Binding the solver function.**
 
-We can then use the `bind()` method to associate a function call (like `solver`) with the language model.
+We can then use the ```bind()``` method to associate a function call (like ```solver```) with the language model.
 
 ```python
 # Write the following equation using algebraic symbols and then solve it
@@ -278,8 +277,8 @@ runnable.invoke("x raised to the third plus seven equals 12")
 ## Connecting OpenAI Tools
 
 This section explains how to connect and use OpenAI tools within your LangChain applications.
-The `tools` object simplifies using various OpenAI features.
-For example, calling the `tool.run` method with a natural language query allows the model to utilize the specified tool to generate a response.
+The ```tools``` object simplifies using various OpenAI features.
+For example, calling the ```tool.run``` method with a natural language query allows the model to utilize the specified tool to generate a response.
 
 ```python
 tools = [
@@ -307,8 +306,8 @@ tools = [
 
 **Binding tools and invoking the model:**
 
-1. Use `bind()` to associate `tools` with the language model.
-2. Call the `invoke()` method on the bound model, by providing a natural language question as input.
+1. Use ```bind()``` to associate ```tools``` with the language model.
+2. Call the ```invoke()``` method on the bound model, by providing a natural language question as input.
 
 
 ```python

@@ -20,12 +20,11 @@ pre {
 # Hierarchical Multi-Agent Teams
 
 - Author: [Harheem Kim](https://github.com/harheem)
-- Design:
 - Peer Review:
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/08-Hierarchical-Multi-Agent-Teams.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/08-Hierarchical-Multi-Agent-Teams.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/08-LangGraph-Hierarchical-Multi-Agent-Teams.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/03-Use-Cases/08-LangGraph-Hierarchical-Multi-Agent-Teams.ipynb)
 ## Overview
 In this tutorial, we'll explore how to build a **Hierarchical Agent Team**.
 
@@ -33,7 +32,7 @@ We'll implement a hierarchical structure to break down complex tasks that are di
 
 This hierarchical approach helps efficiently solve complex tasks that would be overwhelming for a single worker or when there are too many workers to manage directly.
 
-This example implements ideas from the [AutoGen paper](https://arxiv.org/abs/2308.08155) using `LangGraph`, demonstrating how to organize two distinct teams for web research and document writing, managed through top and mid-level supervisors to oversee the entire process.
+This example implements ideas from the [AutoGen paper](https://arxiv.org/abs/2308.08155) using ```LangGraph```, demonstrating how to organize two distinct teams for web research and document writing, managed through top and mid-level supervisors to oversee the entire process.
 
 ### Why Choose a **Hierarchical Agent Team**?
 
@@ -64,8 +63,8 @@ In such scenarios, we can create a hierarchical structure where higher-level sup
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -90,11 +89,11 @@ package.install(
 )
 ```
 
-`LangChain` provides built-in tools that make it easy to use the `Tavily` search engine as a tool in your applications.
+```LangChain``` provides built-in tools that make it easy to use the ```Tavily``` search engine as a tool in your applications.
 
-To use `Tavily Search`, you'll need to obtain an API key.
+To use ```Tavily Search```, you'll need to obtain an API key.
 
-Click [here](https://app.tavily.com/sign-in) to sign up on the `Tavily` website and get your `Tavily Search` API key.
+Click [here](https://app.tavily.com/sign-in) to sign up on the ```Tavily``` website and get your ```Tavily Search``` API key.
 
 ```python
 # Set environment variables
@@ -115,7 +114,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys in a `.env` file and load it.
+You can alternatively set API keys in a ```.env``` file and load it.
 
 [Note] This is not necessary if you've already set API keys in previous steps.
 
@@ -262,7 +261,7 @@ def edit_document(
     return f"Document edited and saved to {file_name}"
 ```
 
-Finally, let's define the code execution tool, `PythonREPLTool`:
+Finally, let's define the code execution tool, ```PythonREPLTool```:
 
 ```python
 from langchain_experimental.tools import PythonREPLTool
@@ -274,10 +273,10 @@ python_repl_tool = PythonREPLTool()
 ## Implementing Utility Functions for Multiple Agents
 Here's how we create utility functions to streamline our tasks.
 
-We'll use the `functools.partial` function from our previous tutorial to create agent nodes, specifically for:
+We'll use the ```functools.partial``` function from our previous tutorial to create agent nodes, specifically for:
 
-1. Creating `worker agents`
-2. Creating `supervisors` for `sub-graphs`
+1. Creating ```worker agents```
+2. Creating ```supervisors``` for ```sub-graphs```
 
 ```python
 from langgraph.graph import START, END
@@ -311,7 +310,7 @@ llm = ChatOpenAI(model=MODEL_NAME, temperature=0)
 agent_factory = AgentFactory(MODEL_NAME)
 ```
 
-Here's an example of creating an agent node using the `AgentFactory`. Let's look at how to create a search agent:
+Here's an example of creating an agent node using the ```AgentFactory```. Let's look at how to create a search agent:
 
 ```python
 from langgraph.prebuilt import create_react_agent
@@ -366,7 +365,7 @@ Let's define the Research Team and Doc Writing Team.
 
 ### Research Team
 
-The research team has two worker nodes: a `search agent` and a `research_agent` responsible for `web scraping`. Let's create these and set up their team supervisor:
+The research team has two worker nodes: a ```search agent``` and a ```research_agent``` responsible for ```web scraping```. Let's create these and set up their team supervisor:
 
 ```python
 import operator
@@ -463,7 +462,7 @@ visualize_graph(web_research_app, xray=True)
     
 
 
-Let's run the `web_research_app`:
+Let's run the ```web_research_app```:
 
 ```python
 from langchain_core.runnables import RunnableConfig

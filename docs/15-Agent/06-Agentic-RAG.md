@@ -20,17 +20,16 @@ pre {
 # Agentic RAG
 
 - Author: [Harheem Kim](https://github.com/harheem)
-- Design:
 - Peer Review:
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/06-Agentic-RAG.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/10-Agent/06-Agentic-RAG.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/06-Agentic-RAG.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/06-Agentic-RAG.ipynb)
 ## Overview
 
-**Agentic RAG** extends traditional RAG (Retrieval-Augmented Generation) systems by incorporating an agent-based approach for more sophisticated information retrieval and response generation. This system goes beyond simple document retrieval and response generation by enabling agents to utilize various tools for more intelligent information processing. These tools include `Tavily Search` for accessing up-to-date information, `Python` code execution capabilities, and custom function implementations, all integrated within the `LangChain` framework to provide a comprehensive solution for information processing and generation tasks.
+**Agentic RAG** extends traditional RAG (Retrieval-Augmented Generation) systems by incorporating an agent-based approach for more sophisticated information retrieval and response generation. This system goes beyond simple document retrieval and response generation by enabling agents to utilize various tools for more intelligent information processing. These tools include ```Tavily Search``` for accessing up-to-date information, ```Python``` code execution capabilities, and custom function implementations, all integrated within the ```LangChain``` framework to provide a comprehensive solution for information processing and generation tasks.
 
-This tutorial demonstrates how to build a document retrieval system using `FAISS DB` for effective PDF document processing and searching. Using the AI Brief from the Software Policy Research Institute as an example document, we'll explore how to integrate web-based document loaders, text splitters, vector stores, and `OpenAI` embeddings to create a practical **Agentic RAG** system. The implementation showcases how the `Retriever` tool can be effectively combined with various `LangChain` components to create a robust document search and response generation pipeline.
+This tutorial demonstrates how to build a document retrieval system using ```FAISS DB``` for effective PDF document processing and searching. Using the AI Brief from the Software Policy Research Institute as an example document, we'll explore how to integrate web-based document loaders, text splitters, vector stores, and ```OpenAI``` embeddings to create a practical **Agentic RAG** system. The implementation showcases how the ```Retriever``` tool can be effectively combined with various ```LangChain``` components to create a robust document search and response generation pipeline.
 
 ### Table of Contents
 
@@ -54,8 +53,8 @@ This tutorial demonstrates how to build a document retrieval system using `FAISS
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
-- You can check out the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials.
+- You can check out the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -79,11 +78,11 @@ package.install(
 )
 ```
 
-`LangChain` provides built-in tools that make it easy to use the `Tavily` search engine as a tool in your applications.
+```LangChain``` provides built-in tools that make it easy to use the ```Tavily``` search engine as a tool in your applications.
 
-To use `Tavily Search`, you'll need to obtain an API key.
+To use ```Tavily Search```, you'll need to obtain an API key.
 
-Click [here](https://app.tavily.com/sign-in) to sign up on the `Tavily` website and get your `Tavily Search API` key.
+Click [here](https://app.tavily.com/sign-in) to sign up on the ```Tavily``` website and get your ```Tavily Search API``` key.
 
 ```python
 # Set environment variables
@@ -104,7 +103,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys in a `.env` file and load it.
+You can alternatively set API keys in a ```.env``` file and load it.
 
 [Note] This is not necessary if you've already set API keys in previous steps.
 
@@ -124,11 +123,11 @@ load_dotenv(override=True)
 
 ##  Configuring Tools
 
-The foundational stage of setting up tools for the agent to use. We implement a web search tool using the `Tavily Search API` and a PDF document retrieval tool. These tools enable the agent to effectively search and utilize information from various sources. By combining these tools, the agent can select and use the appropriate tool based on the context.
+The foundational stage of setting up tools for the agent to use. We implement a web search tool using the ```Tavily Search API``` and a PDF document retrieval tool. These tools enable the agent to effectively search and utilize information from various sources. By combining these tools, the agent can select and use the appropriate tool based on the context.
 
 ### Implementing Web Search
 
-The web search tool utilizes the `Tavily Search API` to retrieve real-time information from the web. It returns up to 6 results ranked by relevance, with each result containing a URL and content snippet.
+The web search tool utilizes the ```Tavily Search API``` to retrieve real-time information from the web. It returns up to 6 results ranked by relevance, with each result containing a URL and content snippet.
 
 ```python
 from langchain_community.tools.tavily_search import TavilySearchResults
@@ -148,7 +147,7 @@ print(result)
 
 ### Implementing PDF Search
 
-This tutorial demonstrates how to build a PDF search tool that leverages vector databases for efficient document retrieval. The system divides PDF documents into manageable chunks and utilizes `OpenAI` embeddings for text vectorization alongside `FAISS` for fast similarity searching.
+This tutorial demonstrates how to build a PDF search tool that leverages vector databases for efficient document retrieval. The system divides PDF documents into manageable chunks and utilizes ```OpenAI``` embeddings for text vectorization alongside ```FAISS``` for fast similarity searching.
 
 For this tutorial, we'll work with a sample document from the academic text "*An Introduction to Ethics in Robotics and AI*" (2021). This comprehensive book explores fundamental concepts including AI definitions, machine learning principles, robotics fundamentals, and the current limitations of AI technology.
 
@@ -215,7 +214,7 @@ tools = [search, retriever_tool]
 
 ## Building the Agent
 
-The core stage of building an agent. We initialize a Large Language Model (LLM) and set up prompt templates that enable the agent to effectively utilize tools. The agent is configured to combine PDF search and web search capabilities, allowing it to find answers from various information sources. Specifically, we use `create_tool_calling_agent` to create an agent with tool-using capabilities and explain how to set up the execution environment using `AgentExecutor`.
+The core stage of building an agent. We initialize a Large Language Model (LLM) and set up prompt templates that enable the agent to effectively utilize tools. The agent is configured to combine PDF search and web search capabilities, allowing it to find answers from various information sources. Specifically, we use ```create_tool_calling_agent``` to create an agent with tool-using capabilities and explain how to set up the execution environment using ```AgentExecutor```.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -247,12 +246,12 @@ agent = create_tool_calling_agent(llm, tools, prompt)
 agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
 ```
 
-> *Note*: We set `verbose=False` to suppress intermediate step outputs from the agent executor.
+> *Note*: We set ```verbose=False``` to suppress intermediate step outputs from the agent executor.
 
 
 ## Implementing Chat History
 
-The essential implementation stage for managing conversation history. We implement a session-based chat history store that allows the agent to remember and reference previous conversations. Using `ChatMessageHistory`, we maintain independent conversation histories for each session, and through `RunnableWithMessageHistory`, we enable the agent to understand conversation context and maintain natural dialogue flow. This allows users to ask follow-up questions naturally based on previous interactions.
+The essential implementation stage for managing conversation history. We implement a session-based chat history store that allows the agent to remember and reference previous conversations. Using ```ChatMessageHistory```, we maintain independent conversation histories for each session, and through ```RunnableWithMessageHistory```, we enable the agent to understand conversation context and maintain natural dialogue flow. This allows users to ask follow-up questions naturally based on previous interactions.
 
 ```python
 from langchain_community.chat_message_histories import ChatMessageHistory
@@ -279,7 +278,7 @@ agent_with_chat_history = RunnableWithMessageHistory(
 
 ## Running Examples
 
-Introduction to running the implemented agent and examining its results. Using streaming output, we can observe the agent's thought process and results in real-time. Through various examples, we showcase the agent's core functionalities including PDF document search, web search, independent session management across conversations, and response restructuring. The `process_response` function helps structure the agent's responses, clearly showing tool usage and results in an organized manner.
+Introduction to running the implemented agent and examining its results. Using streaming output, we can observe the agent's thought process and results in real-time. Through various examples, we showcase the agent's core functionalities including PDF document search, web search, independent session management across conversations, and response restructuring. The ```process_response``` function helps structure the agent's responses, clearly showing tool usage and results in an organized manner.
 
 ```python
 def process_response(response):

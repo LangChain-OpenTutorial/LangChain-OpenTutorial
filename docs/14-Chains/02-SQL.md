@@ -22,11 +22,10 @@ pre {
 - Author: [Jinu Cho](https://github.com/jinucho)
 - Design: [LeeYuChul](https://github.com/LeeYuChul)
 - Peer Review: [JeongHo Shin](https://github.com/ThePurpleCollar), [Erika Park](https://www.linkedin.com/in/yeonseo-park-094193198/)
-- Proofread:
+- Proofread : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/14-Chains/02-SQL.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/14-Chains/02-SQL.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/14-Chains/02-SQL.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/14-Chains/02-SQL.ipynb)
 ## Overview
 
 This tutorial covers how to use ```create_sql_query_chain``` to generate SQL queries, execute them, and derive answers. 
@@ -58,7 +57,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -369,7 +368,7 @@ print(f"template : {chain.get_prompts()[0].template}", "\n")
     
 </pre>
 
-You can specify variables, including `dialect`, when invoking `create_sql_query_chain`.
+You can specify variables, including ```dialect```, when invoking ```create_sql_query_chain```.
 
 ```python
 chain.invoke({"question": "List all customer names.", "dialect": "mysql"})
@@ -504,7 +503,7 @@ This functionality is particularly useful for scenarios requiring dynamic databa
 
 Using an agent, you can generate SQL queries and output the results as answers.
 
-Agents work well with models like **gpt-4o** and **gpt-4o-mini**, in contrast to the issues encountered with chains when changing the model.
+Agents work well with models like **gpt-4o** and **gpt-4o-mini** , in contrast to the issues encountered with chains when changing the model.
 
 ```python
 from langchain_openai import ChatOpenAI

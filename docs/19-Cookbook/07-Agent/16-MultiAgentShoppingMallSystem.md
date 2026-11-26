@@ -21,10 +21,10 @@ pre {
 
 - Author: [Heeah Kim](https://github.com/yellowGangneng)
 - Peer Review: [Jongcheol Kim](https://github.com/greencode-99), [HeeWung Song](https://github.com/kofsitho87)
+- Proofread : [JaeJun Shim](https://github.com/kkam-dragon)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/16-MultiAgentShoppingMallSystem.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/16-MultiAgentShoppingMallSystem.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/16-MultiAgentShoppingMallSystem.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/19-Cookbook/07-Agent/16-MultiAgentShoppingMallSystem.ipynb)
 ## Overview
 
 Hello, everyone!  
@@ -54,10 +54,8 @@ Each role will perform the following tasks:
 - Update Item Status: When a buyer places an order, we need to dispatch the item. Once safely delivered to the buyer, the shipment status should be updated. This function is for updating the item status.
 
 Once these three roles are implemented, we will have the following type of service.  
-
-![](./img/16-multi-agent-shopping-mall-system-01.png)
-
-<center style="color:gray">Our Fabulous Service!</center>
+<center><img src='./assets/16-multi-agent-shopping-mall-system-01.png' alt='service graph' style="width:50%; height:50%"></center>
+      <center style="color:gray">Our Fabulous Service!</center>
 
 Then, let's embark on building our shopping mall service!
 
@@ -88,7 +86,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -116,9 +114,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -140,7 +138,7 @@ if not load_dotenv():
 ## Data Preparation
 
 Let's prepare our shopping mall data.  
-First, we will use the `fashion-clothing-products-catalog` available on Kaggle.   
+First, we will use the ```fashion-clothing-products-catalog``` available on Kaggle.   
 This dataset contains the following information:
 
 - productId
@@ -165,16 +163,12 @@ We will use the second method.
 
 To download the dataset, first log in to [Kaggle](https://www.kaggle.com/),  
 then click on your profile picture in the top right corner and select 'Settings' from the menu that appears.
-
-![](./img/16-multi-agent-shopping-mall-system-02.png)
-
-
+<center><img src='./assets/16-multi-agent-shopping-mall-system-02.png' alt='service graph' style="width:50%; height:50%"></center>
       <center style="color:gray">Kaggle Menu</center>
       
 Below 'Settings,' there is an 'API' section where you need to click **Create New Token**.
 
-![](./img/16-multi-agent-shopping-mall-system-03.png)
-
+<center><img src='./assets/16-multi-agent-shopping-mall-system-03.png' alt='service graph' style="width:50%; height:50%"></center>
       <center style="color:gray">Kaggle Settings</center>
       
 Then, a file named **kaggle.json** will be created.  
@@ -245,11 +239,11 @@ df = df.drop(columns=['NumImages'])
 ```
 
 The data is ready, so we need a database to store it.  
-We will use `PostgreSQL`.  
-Refer to the code below to set up a `PostgreSQL` database using a Docker container.
+We will use ```PostgreSQL```.  
+Refer to the code below to set up a ```PostgreSQL``` database using a Docker container.
 
-However, instead of just `PostgreSQL`, we plan to use an image of `pgvector`,  
-which allows for **vector data types** in `PostgreSQL`.
+However, instead of just ```PostgreSQL```, we plan to use an image of ```pgvector```,  
+which allows for **vector data types** in ```PostgreSQL```.
 
 ```yaml
 services:
@@ -292,14 +286,13 @@ The database preparation is now complete!
 So, how should we insert the data into the database for our service?  
 In our tutorial, we plan to implement only very simple features, so we have also designed the ERD in a simple way, as shown below.
 
-![](./img/16-multi-agent-shopping-mall-system-04.png)
-
+<center><img src='./assets/16-multi-agent-shopping-mall-system-04.png' alt='ERD'></center>
       <center style="color:gray">Our shopping mall service ERD</center>
 
-Noteworthy in the data configuration is `description_ebd` of `inventory`.  
-This is the reason why we use `pgvector`. This data is used when recommending items.  
+Noteworthy in the data configuration is ```description_ebd``` of ```inventory```.  
+This is the reason why we use ```pgvector```. This data is used when recommending items.  
 When a user inputs what kind of item they want,  it compares the features of the item described by the user   
-with `description_ebd` using **COSINE distance** and recommends the item with the highest similarity.
+with ```description_ebd``` using **COSINE distance** and recommends the item with the highest similarity.
 
 In short, a Semantic Search is conducted.
 
@@ -509,7 +502,7 @@ except Exception as e:
 
 This concludes the preparation of buyer and seller data!
 
-Next, let's load information about the items that the seller will sell into a table called `inventory`!
+Next, let's load information about the items that the seller will sell into a table called ```inventory```!
 
 ```python
 query = "SELECT * FROM ServiceUser Where type='vendor';"
@@ -955,7 +948,7 @@ def update_item_status(inventory_id:Annotated[str, "Inventory product's id"],
     return
 ```
 
-The Sales Expert and Purchase Expert will define a common tool called `CompleteOrEscalate`.  
+The Sales Expert and Purchase Expert will define a common tool called ```CompleteOrEscalate```.  
 This tool will check whether the current user has completed their task, 
 wants to cancel their task,    
 or has changed their mind about the current task.  

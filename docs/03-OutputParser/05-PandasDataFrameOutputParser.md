@@ -20,30 +20,29 @@ pre {
 # PandasDataFrameOutputParser
 
 - Author: [Jiwon Kim](https://github.com/brian604)
-- Design: []()
-- Peer Review : [Junseong Kim](https://www.linkedin.com/in/%EC%A4%80%EC%84%B1-%EA%B9%80-591b351b2/)
+- Peer Review : [Junseong Kim](https://www.linkedin.com/in/%EC%A4%80%EC%84%B1-%EA%B9%80-591b351b2/), [Jaehun Choi](https://github.com/ash-hun)
+- Proofread : [Two-Jay](https://github.com/Two-Jay)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/05-PandasDataFrameOutputParser.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/05-PandasDataFrameOutputParser.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/05-PandasDataFrameOutputParser.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/05-PandasDataFrameOutputParser.ipynb)
 
 ## Overview
 
-This tutorial handles how LLM output could be controlled as `pd.DataFrame` format.   
+This tutorial handles how LLM output could be controlled as ```pd.DataFrame``` format.   
 
 Pandas is a package, useful in a format of table (i.e. tabular data), widely used by data scientist. It will help you explore, clean, and process the data.
 
-To learn more about `pd.DataFrame` and its capabilities, visit one of Pandas official tutorial, 
+To learn more about ```pd.DataFrame``` and its capabilities, visit one of Pandas official tutorial, 
 [10 minutes to pandas](https://pandas.pydata.org/docs/user_guide/10min.html).
 
-`PandasDataFrameOutputParser` parses an output using Pandas DataFrame format, according to the [official API doc](https://python.langchain.com/api_reference/langchain/output_parsers/langchain.output_parsers.pandas_dataframe.PandasDataFrameOutputParser.html)
+```PandasDataFrameOutputParser``` parses an output using Pandas DataFrame format, according to the [official API doc](https://python.langchain.com/api_reference/langchain/output_parsers/langchain.output_parsers.pandas_dataframe.PandasDataFrameOutputParser.html)
 - This can be utilized both as forming of structured output to LLM query in a string and as a forming of structured input for LLM query
     - As an output, you can further look at the usage of pydantic in [01-PydanticOutputParser](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/03-OutputParser/01-PydanticOutputParser.ipynb) and elsewhere in this learning guide.
-    - As an input, `pd.DataFrame` dataset can be utilized, to make LLM interact with the data    
+    - As an input, ```pd.DataFrame``` dataset can be utilized, to make LLM interact with the data    
 
 **Objective of this tutorial**
 
-- Know where `PandasDataFrameOutputParser` is used to interact with `pd.DataFrame`
+- Know where ```PandasDataFrameOutputParser``` is used to interact with ```pd.DataFrame```
 
 **Data Acqusition**
 - Access to [figshare.com](https://figshare.com) where you can discover the outputs of the academic research from csv to pdfs.
@@ -68,8 +67,8 @@ Internal Reference
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -131,7 +130,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 [Note] This is not necessary if you've already set the required API keys in previous steps.
 
@@ -174,8 +173,8 @@ model = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
 ```
 
 ## Without model use
-- The `format_parser_output` function is used to convert parser output to dictionary format and format the output.
-- When input is `pd.DataFrame` or file. 
+- The ```format_parser_output``` function is used to convert parser output to dictionary format and format the output.
+- When input is ```pd.DataFrame``` or file. 
 
 ```python
 # Purpose: Only to print. It is a helper function.
@@ -191,7 +190,7 @@ def format_parser_output(parser_output: Dict[str, Any]) -> None:
             return pprint.PrettyPrinter(width=4, compact=True).pprint(parser_output)
 ```
 
-- Since "typical" `titanic.csv` data that had been brought up multiple times in such tutorials, it is boring 
+- Since "typical" ```titanic.csv``` data that had been brought up multiple times in such tutorials, it is boring 
 - Let's get from [figshare.com](figshare.com)
     - Data Link
         - Permanent: [Air-Traffic-Passenger-Statistics-csv.csv](https://doi.org/10.6084/m9.figshare.24781905.v1)
@@ -517,7 +516,7 @@ print(output)
 <pre class="custom">{'mean': 13565.0}
 </pre>
 
-Next Example is using `value_counts()`
+Next Example is using ```value_counts()```
 
 ```python
 df.head()

@@ -20,15 +20,14 @@ pre {
 # Google Generative AI
 
 - Author: [HyeonJong Moon](https://github.com/hj0302)
-- Design: 
 - Peer Review : [effort-type](https://github.com/effort-type)
+- Proofread : [Two-Jay](https://github.com/Two-Jay)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/05-GoogleGenerativeAI.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/05-GoogleGenerativeAI.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/06-GoogleGenerativeAI.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/06-GoogleGenerativeAI.ipynb)
 ## Overview
 
-You can use the `ChatGoogleGenerativeAI` class from the [langchain-google-genai](https://pypi.org/project/langchain-google-genai/) integration package to access not only Google AI’s `gemini` and `gemini-vision` models, but also other generative models.
+You can use the ```ChatGoogleGenerativeAI``` class from the [langchain-google-genai](https://pypi.org/project/langchain-google-genai/) integration package to access not only Google AI’s ```gemini``` and ```gemini-vision``` models, but also other generative models.
 
 ### Table of Contents
 
@@ -50,8 +49,8 @@ You can use the `ChatGoogleGenerativeAI` class from the [langchain-google-genai]
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -93,11 +92,11 @@ set_env(
 ## Create API Key
 
 - Please create an API KEY from [link](https://aistudio.google.com/app/apikey?hl=en).
-- Set the user's Google API key as the environment variable `GOOGLE_API_KEY`.
+- Set the user's Google API key as the environment variable ```GOOGLE_API_KEY```.
 
-You can alternatively set `GOOGLE_API_KEY` in `.env` file and load it. 
+You can alternatively set ```GOOGLE_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `GOOGLE_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```GOOGLE_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -114,11 +113,11 @@ load_dotenv(override=True)
 
 ## ChatGoogleGenerativeAI
 
-Import the `ChatGoogleGenerativeAI` class from the `langchain_google_genai` package.
+Import the ```ChatGoogleGenerativeAI``` class from the ```langchain_google_genai``` package.
 
-The `ChatGoogleGenerativeAI` class is used to implement conversational AI systems using Google’s Generative AI models. Through this class, users can interact with Google’s conversational AI model. Conversations with the model take place in a chat format, and the model generates appropriate responses based on user input.
+The ```ChatGoogleGenerativeAI``` class is used to implement conversational AI systems using Google’s Generative AI models. Through this class, users can interact with Google’s conversational AI model. Conversations with the model take place in a chat format, and the model generates appropriate responses based on user input.
 
-Because the `ChatGoogleGenerativeAI` class is integrated with the LangChain framework, it can be used alongside other LangChain components. 
+Because the ```ChatGoogleGenerativeAI``` class is integrated with the LangChain framework, it can be used alongside other LangChain components. 
 
 For information about supported models, see: https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 
@@ -163,7 +162,7 @@ print(response.content)
 
 ## Safety Settings
 
-Gemini models have default safety settings that can be overridden. If you are receiving lots of "Safety Warnings" from your models, you can try tweaking the `safety_settings` attribute of the model. For example, to turn off safety blocking for dangerous content, you can construct your LLM as follows:
+Gemini models have default safety settings that can be overridden. If you are receiving lots of "Safety Warnings" from your models, you can try tweaking the ```safety_settings``` attribute of the model. For example, to turn off safety blocking for dangerous content, you can construct your LLM as follows:
 
 ```python
 from langchain_google_genai import (
@@ -234,7 +233,7 @@ print(response.content)
 
 ## Streaming and Batching
 
-`ChatGoogleGenerativeAI` natively supports streaming and batching. Below is an example.
+```ChatGoogleGenerativeAI``` natively supports streaming and batching. Below is an example.
 
 ```python
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -308,12 +307,12 @@ for res in results:
 
 ## Multimodeal Model
 
-To provide an image, pass a human message with contents of type `List[dict]`, where each dict contains either an image value (type of `image_url`) or a text (type of text) value. The value of `image_url` can be any of the following:
+To provide an image, pass a human message with contents of type ```List[dict]```, where each dict contains either an image value (type of ```image_url```) or a text (type of text) value. The value of ```image_url``` can be any of the following:
 
 - A public image URL
 - An accessible gcs file (e.g., "gcs://path/to/file.png")
 - A local file path
-- A base64 encoded image (e.g., `data:image/png;base64,abcd124`)
+- A base64 encoded image (e.g., ```data:image/png;base64,abcd124```)
 - A PIL image
 
 ```python

@@ -20,19 +20,18 @@ pre {
 # Check Token Usage
 
 - Author: [Haseom Shin](https://github.com/IHAGI-c)
-- Design: []()
 - Peer Review : [Teddy Lee](https://github.com/teddylee777), [Sooyoung](https://github.com/sooyoung-wind)
+- Proofread : [Two-Jay](https://github.com/Two-Jay)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/04-CheckTokenUsage.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/04-CheckTokenUsage.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/05-CheckTokenUsage.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/04-Model/05-CheckTokenUsage.ipynb)
 ## Overview
 
-This tutorial covers how to track and monitor token usage with `LangChain` and `OpenAI API`.
+This tutorial covers how to track and monitor token usage with ```LangChain``` and ```OpenAI API```.
 
-`Token usage tracking` is crucial for managing API costs and optimizing resource utilization.
+```Token usage tracking``` is crucial for managing API costs and optimizing resource utilization.
 
-In this tutorial, we will create a simple example to measure and monitor token consumption during OpenAI API calls using LangChain's `CallbackHandler`.
+In this tutorial, we will create a simple example to measure and monitor token consumption during OpenAI API calls using LangChain's ```CallbackHandler```.
 
 ![example](./img/04-CheckTokenUsage-example-flow-token-usage.png)
 
@@ -55,8 +54,8 @@ In this tutorial, we will create a simple example to measure and monitor token c
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -99,9 +98,9 @@ set_env(
 )
 ```
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it. 
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it. 
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 from dotenv import load_dotenv
@@ -116,7 +115,7 @@ load_dotenv()
 
 
 
-Let's setup `ChatOpenAI` with `gpt-4o` model.
+Let's setup ```ChatOpenAI``` with ```gpt-4o``` model.
 
 ```python
 from langchain_openai import ChatOpenAI
@@ -127,7 +126,7 @@ llm = ChatOpenAI(model_name="gpt-4o")
 
 ## Implementing Check Token Usage
 
-if you want to check token usage, you can use `get_openai_callback` function.
+if you want to check token usage, you can use ```get_openai_callback``` function.
 
 ```python
 # callback to track it
@@ -165,7 +164,7 @@ with get_openai_callback() as cb:
 
 ## Monitoring Token Usage
 
-Token usage monitoring is crucial for managing costs and resources when using the OpenAI API. LangChain provides an easy way to track this through `get_openai_callback()`.
+Token usage monitoring is crucial for managing costs and resources when using the OpenAI API. LangChain provides an easy way to track this through ```get_openai_callback()```.
 
 In this section, we'll explore token usage monitoring through three key scenarios:
 

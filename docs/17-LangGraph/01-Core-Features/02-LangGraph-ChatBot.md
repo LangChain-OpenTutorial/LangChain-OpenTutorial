@@ -20,11 +20,12 @@ pre {
 # Building a Basic Chatbot with LangGraph
 
 - Author: [r14minji](https://github.com/r14minji)
-- Design: 
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/02-LangGraph-ChatBot.ipynb)
+[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/02-LangGraph-ChatBot.ipynb)
 
 ## Overview
 
@@ -53,7 +54,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -93,9 +94,9 @@ if not load_dotenv():
     )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 # Load API keys from .env file
@@ -117,7 +118,7 @@ By following these steps, you will have a functional and clearly structured chat
 
 ### STEP 1. Defining the State
 
-- We start by defining the state of the chatbot using Python's `TypedDict` . The state keeps track of messages, which are updated as the conversation progresses.
+- We start by defining the state of the chatbot using Python's ```TypedDict``` . The state keeps track of messages, which are updated as the conversation progresses.
 
 ```python
 from typing import Annotated, TypedDict
@@ -152,8 +153,8 @@ def chatbot(state: State):
 
 ### STEP 3. Defining the Graph and Add Nodes
 - Create a graph and include the defined nodes.
-- The "chatbot" node function takes the current State as input and returns a dictionary (`TypedDict` ) containing the updated list of messages under the key "messages".
-- The `add_messages` function in the State appends the LLM's response to the existing messages in the state.
+- The "chatbot" node function takes the current State as input and returns a dictionary (```TypedDict``` ) containing the updated list of messages under the key "messages".
+- The ```add_messages``` function in the State appends the LLM's response to the existing messages in the state.
 
 ```python
 # Create the graph
@@ -200,8 +201,8 @@ graph_builder.add_edge("chatbot", END)
 
 
 ### STEP 5. Compiling the Graph
-- To execute the graph, call the `compile()` method using the graph builder.
-- This generates a `CompiledGraph` , which can be invoked during runtime to process states.
+- To execute the graph, call the ```compile()``` method using the graph builder.
+- This generates a ```CompiledGraph``` , which can be invoked during runtime to process states.
 
 ```python
 # Compile the graph

@@ -22,9 +22,11 @@ pre {
 - Author: [Heesun Moon](https://github.com/MoonHeesun)
 - Design: [LeeYuChul](https://github.com/LeeYuChul)
 - Peer Review:
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/06-Agentic-RAG.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/06-Agentic-RAG.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/06-LangGraph-Agentic-RAG.ipynb)
+[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/02-Structures/06-LangGraph-Agentic-RAG.ipynb)
 
 ## Overview
 
@@ -56,8 +58,8 @@ This can be integrated into [LangGraph](https://langchain-ai.github.io/langgraph
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -105,7 +107,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set API keys such as `OPENAI_API_KEY` in a `.env` file and load them.
+You can alternatively set API keys such as ```OPENAI_API_KEY``` in a ```.env``` file and load them.
 
 **[Note]** This is not necessary if you've already set the required API keys in previous steps.
 
@@ -147,20 +149,20 @@ pdf_retriever = pdf.retriever
 pdf_chain = pdf.chain
 ```
 
-Next, create the `retriever_tool` tool.
+Next, create the ```retriever_tool``` tool.
 
 **[Note]**
 
-The `document_prompt` is a prompt used to represent the retrieved document.
+The ```document_prompt``` is a prompt used to represent the retrieved document.
 
 **Available Keys**
 
-- `page_content`
-- Keys in `metadata`: (e.g.) `source`, `page`
+- ```page_content```
+- Keys in ```metadata```: (e.g.) ```source```, ```page```
 
 **Example Usage**
 
-`"<document><context>{page_content}</context><metadata><source>{source}</source><page>{page}</page></metadata></document>"`
+```"<document><context>{page_content}</context><metadata><source>{source}</source><page>{page}</page></metadata></document>"```
 
 ```python
 from langchain_core.tools.retriever import create_retriever_tool
@@ -180,11 +182,11 @@ retriever_tool = create_retriever_tool(
 tools = [retriever_tool]
 ```
 
-## Defining `AgentState`
+## Defining ```AgentState```
 
-We will define the `AgentState` .
+We will define the ```AgentState``` .
 
-Each node is passed a `state` object. The `state` consists of a list of `messages` .
+Each node is passed a ```state``` object. The ```state``` consists of a list of ```messages``` .
 
 Each node in the graph adds content to this list.
 
@@ -204,8 +206,8 @@ class AgentState(TypedDict):
 
 An agent-based RAG graph can be structured as follows:
 
-- `state` is a collection of messages.  
-- Each **node** updates (adds to) the `state` .  
+- ```state``` is a collection of messages.  
+- Each **node** updates (adds to) the ```state``` .  
 - **Conditional edges** determine the next node to visit.
 
 Now, let's create a simple **Grader**.
@@ -337,10 +339,10 @@ def generate(state):
 
 ## Graph
 
-- Start with the `call_model` agent.  
+- Start with the ```call_model``` agent.  
 - The agent decides whether to call a function.  
-- If a function call is decided, an `action` is executed to invoke the tool (retriever).  
-- The tool's output is added to the messages ( `state` ), and the agent is called again.  
+- If a function call is decided, an ```action``` is executed to invoke the tool (retriever).  
+- The tool's output is added to the messages ( ```state``` ), and the agent is called again.  
 
 ```python
 from langgraph.graph import END, StateGraph, START
@@ -530,7 +532,7 @@ stream_graph(graph, inputs, config, ["agent", "rewrite", "generate"])
 
 Below are some examples of questions where document retrieval is not possible.
 
-As a result, a `GraphRecursionError` occurred during the continuous document retrieval process.
+As a result, a ```GraphRecursionError``` occurred during the continuous document retrieval process.
 
 ```python
 from langgraph.errors import GraphRecursionError

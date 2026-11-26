@@ -22,10 +22,10 @@ pre {
 - Author: [Sunyoung Park (architectyou)](https://github.com/architectyou)
 - Design: 
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/99-TEMPLATE/00-BASE-TEMPLATE-EXAMPLE.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/13-LangGraph-Subgraph.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/13-LangGraph-Subgraph.ipynb)
 ## Overview
 
 Using **SubGraphs** allows you to build complex systems containing multiple components, where these components themselves can become graphs. A common use case for **SubGraphs** is building multi-agent systems.
@@ -33,10 +33,10 @@ Using **SubGraphs** allows you to build complex systems containing multiple comp
 The main consideration when adding **SubGraphs** is how the parent graph and SubGraph communicate, specifically how they pass state to each other during graph execution.
 
 - There are two scenarios:
-1. When the parent graph and `subgraph` **share schema keys**. In this case, you can add nodes with the compiled `subgraph`.
-2. When the parent graph and `subgraph` have **different schemas**. In this case, you need to add a **node function** that calls the `subgraph`.
+1. When the parent graph and ```subgraph``` **share schema keys**. In this case, you can add nodes with the compiled ```subgraph```.
+2. When the parent graph and ```subgraph``` have **different schemas**. In this case, you need to add a **node function** that calls the ```subgraph```.
 
-This is useful when the parent graph and `subgraph` have different state schemas and the state needs to be transformed before and after calling the `subgraph`.
+This is useful when the parent graph and ```subgraph``` have different state schemas and the state needs to be transformed before and after calling the ```subgraph```.
 
 I'll show you how to add subgraphs for each scenario below.
 
@@ -63,7 +63,7 @@ Setting up your environment is the first step. See the [Environment Setup](https
 **[Note]**
 
 The langchain-opentutorial is a package of easy-to-use environment setup guidance, useful functions and utilities for tutorials.
-Check out the  [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+Check out the  [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -84,9 +84,9 @@ package.install(
 )
 ```
 
-You can set API keys in a `.env` file or set them manually.
+You can set API keys in a ```.env``` file or set them manually.
 
-[Note] If you’re not using the `.env` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
+[Note] If you’re not using the ```.env``` file, no worries! Just enter the keys directly in the cell below, and you’re good to go.
 
 ```python
 from dotenv import load_dotenv
@@ -110,11 +110,11 @@ if not load_dotenv():
 ### Adding Nodes with Compiled SubGraphs
 
 It's a common case where the parent graph and subgraph communicate through shared state keys.
-For example, in multi-agent systems, agents typically communicate through a shared '`messages`' key.
+For example, in multi-agent systems, agents typically communicate through a shared '```messages```' key.
 When a **subgraph shares state keys with the parent graph**, you can add it to the graph following these steps:
 
-1. Define and compile the `subgraph` workflow (`subgraph_builder` in the example below)
-2. Pass the compiled `subgraph` to the `.add_node` method when defining the parent graph workflow
+1. Define and compile the ```subgraph``` workflow (```subgraph_builder``` in the example below)
+2. Pass the compiled ```subgraph``` to the ```.add_node``` method when defining the parent graph workflow
 
 ```python
 from langgraph.graph import START, END, StateGraph
@@ -206,7 +206,7 @@ for chunk in graph.stream({"name": "Teddy"}):
 
 The final output of the parent graph includes the results of the subgraph calls.
 
-To check the output of the subgraph, you can specify `subgraphs=True` when streaming.
+To check the output of the subgraph, you can specify ```subgraphs=True``` when streaming.
 
 ```python
 # Stream and output subgraph data chunks sequentially
@@ -227,11 +227,11 @@ for chunk in graph.stream({"name": "Teddy"}, subgraphs=True):
 
 In more complex systems, you might need to **define subgraphs with completely different schemas from the parent graph** (cases where there are no shared state keys).
 
-In such cases, you need to define a node function that calls the `subgraph`.
+In such cases, you need to define a node function that calls the ```subgraph```.
 
-This function must transform the parent state into child state before calling the `subgraph`, and transform the results back into parent state before returning state updates from the node.
+This function must transform the parent state into child state before calling the ```subgraph```, and transform the results back into parent state before returning state updates from the node.
 
-Below, we'll show how to modify the original example to call the `subgraph` within a node.
+Below, we'll show how to modify the original example to call the ```subgraph``` within a node.
 
 
 [**Note**]

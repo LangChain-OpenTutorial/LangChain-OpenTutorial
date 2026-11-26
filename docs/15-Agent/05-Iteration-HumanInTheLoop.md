@@ -21,11 +21,10 @@ pre {
 
 - Author: [Wonyoung Lee](https://github.com/BaBetterB)
 - Peer Review: 
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/BaBetterB/LangChain-OpenTutorial/blob/main/15-Agent/05-Iteration-HumanInTheLoop.ipynb)
-[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/07-TextSplitter/04-SemanticChunker.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/05-Iteration-HumanInTheLoop.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/15-Agent/05-Iteration-HumanInTheLoop.ipynb)
 
 ## Overview
 
@@ -33,7 +32,7 @@ This tutorial expands on methods for controlling agent execution, including how 
 
 A process, known as "human-in-the-loop", enables you to repeat agent steps or prompt the user for input whether to continue during the agent's execution process or not.
 
-The `iter()` method creates an iterator that allows you this step-by-step control during the agent's execution process.
+The ```iter()``` method creates an iterator that allows you this step-by-step control during the agent's execution process.
 
 
 ### Table of Contents
@@ -59,8 +58,8 @@ The `iter()` method creates an iterator that allows you this step-by-step contro
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [ `langchain-opentutorial` ](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [ ```langchain-opentutorial``` ](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 Load sample text and output the content.
 
@@ -110,9 +109,9 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-You can alternatively set `OPENAI_API_KEY` in `.env` file and load it.
+You can alternatively set ```OPENAI_API_KEY``` in ```.env``` file and load it.
 
-[Note] This is not necessary if you've already set `OPENAI_API_KEY` in previous steps.
+[Note] This is not necessary if you've already set ```OPENAI_API_KEY``` in previous steps.
 
 ```python
 # Configuration File for Managing API Keys as Environment Variables
@@ -150,7 +149,7 @@ def add_function(a: float, b: float) -> float:
     return a + b
 ```
 
-Next, define an agent that uses `add_function` for additional calculations.
+Next, define an agent that uses ```add_function``` for additional calculations.
 
 ```python
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -191,7 +190,7 @@ agent_executor = AgentExecutor(
 
 ## AgentExecutor
 
-The `iter()` method creates an iterator (`AgentExecutorIterator`) object.
+The ```iter()``` method creates an iterator (```AgentExecutorIterator```) object.
 
 **Function Description**
 - It allows you to step through the agent's execution process.
@@ -203,13 +202,13 @@ The `iter()` method creates an iterator (`AgentExecutorIterator`) object.
 
 **Flow Overview**
 
-Let's consider the addition calculation `\"114.5 + 121.2 + 34.2 + 110.1\"` as an example. The steps in this calculation would be executed as follows:
+Let's consider the addition calculation ```\"114.5 + 121.2 + 34.2 + 110.1\"``` as an example. The steps in this calculation would be executed as follows:
 
 1. 114.5 + 121.2 = 235.7
 2. 235.7 + 34.2 = 269.9
 3. 269.9 + 110.1 = 380.0
 
-Using the `iter()` method, you can observe each step in these calculation steps individually.
+Using the ```iter()``` method, you can observe each step in these calculation steps individually.
 
 During this execution, the system can be configured to display intermediate calculation results to the user and prompt them to confirm whether they want to continue the process. (**Human-in-the-loop**)
 
@@ -219,7 +218,7 @@ In practice, some calculations might be performed in parallel. For example, whil
 
 Then, the final result (235.7 + 144.3 = 380.0) would then be calculated in a subsequent step.
 
-This process can be observed by setting `verbose=True` when creating the `AgentExecutor`.
+This process can be observed by setting ```verbose=True``` when creating the ```AgentExecutor```.
 
 
 

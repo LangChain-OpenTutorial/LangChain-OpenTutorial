@@ -21,15 +21,15 @@ pre {
 
 - Author: [Heeah Kim](https://github.com/yellowGangneng)
 - Peer Review : [Sungchul Kim](https://github.com/rlatjcj), [Jongwon Seo](https://github.com/3dkids)
+- Proofread : [Juni Lee](https://www.linkedin.com/in/ee-juni)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/08-LCEL-add-memory.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/08-LCEL-add-memory.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/08-LCEL-add-memory.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/05-Memory/08-LCEL-add-memory.ipynb)
 ## Overview
 
-This tutorial demonstrates how to add memory to arbitrary chains using `LCEL`.
+This tutorial demonstrates how to add memory to arbitrary chains using ```LCEL```.
 
-The `LangChain Expression Language (LCEL)` takes a declarative approach to building new `Runnables` from existing `Runnables`. For more details about LCEL, please refer to the References below.
+The ```LangChain Expression Language (LCEL)``` takes a declarative approach to building new ```Runnables``` from existing ```Runnables```. For more details about LCEL, please refer to the References below.
 
 ### Table of Contents
 
@@ -51,8 +51,8 @@ The `LangChain Expression Language (LCEL)` takes a declarative approach to build
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -92,7 +92,7 @@ set_env(
 <pre class="custom">Environment variables have been set successfully.
 </pre>
 
-Alternatively, environment variables can also be set using a `.env` file.
+Alternatively, environment variables can also be set using a ```.env``` file.
 
 **[Note]**
 
@@ -138,10 +138,10 @@ prompt = ChatPromptTemplate.from_messages(
 
 ## Creating Memory
 
-Create a `ConversationBufferMemory` to store conversation history.
+Create a ```ConversationBufferMemory``` to store conversation history.
 
-- `return_messages` : When set to **True**, it returns `HumanMessage` and `AIMessage` objects.
-- `memory_key`: The key that will be substituted into the Chain's **prompt** later. This can be modified as needed.
+- ```return_messages``` : When set to **True**, it returns ```HumanMessage``` and ```AIMessage``` objects.
+- ```memory_key```: The key that will be substituted into the Chain's **prompt** later. This can be modified as needed.
 
 ```python
 # Create a ConversationBufferMemory and enable the message return feature.
@@ -163,17 +163,17 @@ memory.load_memory_variables({})
 
 
 
-Use `RunnablePassthrough.assign` to assign the result of the `memory.load_memory_variables` function to the `chat_history` variable, and extract the value corresponding to the `chat_history` key from this result.
+Use ```RunnablePassthrough.assign``` to assign the result of the ```memory.load_memory_variables``` function to the ```chat_history``` variable, and extract the value corresponding to the ```chat_history``` key from this result.
 
 Hold on a second! What is...
 
-### `RunnablePassthrough`? `RunnableLambda`?
+### ```RunnablePassthrough```? ```RunnableLambda```?
 
-To put it simply, `RunnablePassthrough` provides the functionality to pass through data as is, <br>
-while `RunnableLambda` provides the functionality to execute user-defined functions.
+To put it simply, ```RunnablePassthrough``` provides the functionality to pass through data as is, <br>
+while ```RunnableLambda``` provides the functionality to execute user-defined functions.
 
-When you call `RunnablePassthrough` alone, it simply passes the input as received. <br>
-However, when you use `RunnablePassthrough.assign`, it delivers the input combined with additional arguments provided to the function.
+When you call ```RunnablePassthrough``` alone, it simply passes the input as received. <br>
+However, when you use ```RunnablePassthrough.assign```, it delivers the input combined with additional arguments provided to the function.
 
 Let's look at the code for more details.
 
@@ -194,9 +194,9 @@ runnable.invoke({"input": "hi"})
 
 
 
-Since `RunnablePassthrough.assign` is used, the returned value is a combination of the input and the additional arguments provided to the function.
+Since ```RunnablePassthrough.assign``` is used, the returned value is a combination of the input and the additional arguments provided to the function.
 
-In this case, the key of the additional argument is `chat_history`. The value corresponds to the part of the result of `memory.load_memory_variables` executed through `RunnableLambda` that is extracted by `itemgetter` using the `chat_history` key.
+In this case, the key of the additional argument is ```chat_history```. The value corresponds to the part of the result of ```memory.load_memory_variables``` executed through ```RunnableLambda``` that is extracted by ```itemgetter``` using the ```chat_history``` key.
 
 ## Adding Memory to Chain
 
@@ -217,7 +217,7 @@ print(response.content)  # The generated response will be printed.
 <pre class="custom">Nice to meet you, Heeah! How can I assist you today?
 </pre>
 
-Using the `memory.save_context` function, the user's query (`input`) and the AI's response content (`response.content`) are saved to memory. 
+Using the ```memory.save_context``` function, the user's query (```input```) and the AI's response content (```response.content```) are saved to memory. 
 
 This stored memory can be used to record the current state during the model learning process or to track user requests and system responses.
 
@@ -252,9 +252,9 @@ print(response.content)
 
 Remembering well! This means that the memory connected using LCEL is working correctly!
 
-## Example Implementation of a Custom `ConversationChain`
+## Example Implementation of a Custom ```ConversationChain```
 
-Let's create our own custom `ConversationChain`!
+Let's create our own custom ```ConversationChain```!
 
 ```python
 from operator import itemgetter
@@ -314,7 +314,7 @@ class MyConversationChain(Runnable):
 conversation_chain = MyConversationChain(llm, prompt, memory)
 ```
 
-Let's do something interesting using our custom `ConversationChain`!
+Let's do something interesting using our custom ```ConversationChain```!
 
 ```python
 conversation_chain.invoke(
@@ -389,6 +389,6 @@ conversation_chain.memory.load_memory_variables({})["chat_history"]
 
 
 
-Now, create your own journey using the custom `ConversationChain` with LCEL! 
+Now, create your own journey using the custom ```ConversationChain``` with LCEL! 
 
 Thank you for your hard work!🎉🎉🎉

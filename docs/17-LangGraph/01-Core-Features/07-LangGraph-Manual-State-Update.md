@@ -21,10 +21,10 @@ pre {
 
 - Author: [YooKyung Jeon](https://github.com/sirena1)
 - Peer Review:
+- Proofread : [Chaeyoon Kim](https://github.com/chaeyoonyunakim)
 - This is a part of [LangChain Open Tutorial](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial)
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/07-LangGraph-Manual-State-Update.ipynb) [![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/07-LangGraph-Manual-State-Update.ipynb)
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/07-LangGraph-Manual-State-Update.ipynb)[![Open in GitHub](https://img.shields.io/badge/Open%20in%20GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/LangChain-OpenTutorial/LangChain-OpenTutorial/blob/main/17-LangGraph/01-Core-Features/07-LangGraph-Manual-State-Update.ipynb)
 ## Overview
 
 LangGraph provides a way to **manually update the intermediate state**.
@@ -54,8 +54,8 @@ This feature is especially useful for **correcting the agent's mistakes**, **exp
 Set up the environment. You may refer to [Environment Setup](https://wikidocs.net/257836) for more details.
 
 **[Note]**
-- `langchain-opentutorial` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
-- You can checkout the [`langchain-opentutorial`](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
+- ```langchain-opentutorial``` is a package that provides a set of easy-to-use environment setup, useful functions and utilities for tutorials. 
+- You can checkout the [```langchain-opentutorial```](https://github.com/LangChain-OpenTutorial/langchain-opentutorial-pypi) for more details.
 
 ```python
 %%capture --no-stderr
@@ -263,11 +263,11 @@ for event in events:
         query: LangGraph
 </pre>
 
-The current step is interrupted by `ToolNode`.
+The current step is interrupted by ```ToolNode```.
 
-Check the most recent message to see that `ToolNode` contains the `query` before performing the search.
+Check the most recent message to see that ```ToolNode``` contains the ```query``` before performing the search.
 
-Here, the `query` contains only the word `LangGraph`. (The original question was `"Please research and tell me what LangGraph is!"`)
+Here, the ```query``` contains only the word ```LangGraph```. (The original question was ```"Please research and tell me what LangGraph is!"```)
 
 Of course, the web search result may not be what we want.
 
@@ -292,13 +292,13 @@ last_message.pretty_print()
 
 ## Human in the loop
 
-- Modify the **search result** from `TavilySearch` tool
+- Modify the **search result** from ```TavilySearch``` tool
 
-We often find that the result of `ToolMessage` is not satisfactory.
+We often find that the result of ```ToolMessage``` is not satisfactory.
 
 In particular, the answer obtained from web search may contain incorrect information, which can also affect the chatbot's answer.
 
-If you want to modify the `ToolMessage` from the `Tavily Tool` and pass it to the LLM, how can you do it?
+If you want to modify the ```ToolMessage``` from the ```Tavily Tool``` and pass it to the LLM, how can you do it?
 
 ![](./img/07-langgraph-manual-state-update.png)
 
@@ -321,11 +321,11 @@ print(modified_search_result)
     For detailed tutorials, refer to [LangGraph Tutorial](https://langchain-ai.github.io/langgraph/tutorials/).
 </pre>
 
-Next, inject the modified search result into the `ToolMessage`. 
+Next, inject the modified search result into the ```ToolMessage```. 
 
 **Important**
 
-- To modify the message, you need to specify the `tool_call_id` that matches the message you want to modify.
+- To modify the message, you need to specify the ```tool_call_id``` that matches the message you want to modify.
 
 ```python
 # Extract the `tool_call_id` of the `ToolMessage` you want to modify
@@ -361,15 +361,15 @@ new_messages[-1].pretty_print()
     For detailed tutorials, refer to [LangGraph Tutorial](https://langchain-ai.github.io/langgraph/tutorials/).
 </pre>
 
-### StateGraph's `update_state` Method
+### StateGraph's ```update_state``` Method
 
-The `update_state` method updates the state of the graph with the given values. This method operates as if the values originated from `as_node`.
+The ```update_state``` method updates the state of the graph with the given values. This method operates as if the values originated from ```as_node```.
 
 **Parameters** 
 
-- `config` (RunnableConfig): Execution configuration
-- `values` (Optional[Union[dict[str, Any], Any]]): Values to update
-- `as_node` (Optional[str]): The node name to consider as the source of the values. The default value is None
+- ```config``` (RunnableConfig): Execution configuration
+- ```values``` (Optional[Union[dict[str, Any], Any]]): Values to update
+- ```as_node``` (Optional[str]): The node name to consider as the source of the values. The default value is None
 
 **Return** 
 
@@ -379,15 +379,15 @@ The `update_state` method updates the state of the graph with the given values. 
 
 1. Load the previous state through the checkpoint and save the new state.
 2. Process the state update for the subgraph.
-3. If `as_node` is not specified, find the node that last updated the state.
+3. If ```as_node``` is not specified, find the node that last updated the state.
 4. Update the state using the writers of the specified node.
 5. Save the updated state to the checkpoint.
 
 **Main Logic**
 
 1. Check the checkpoint and raise a ValueError if it is not found.
-2. If the update is for the subgraph, call the `update_state` method of the subgraph. 
-3. Load the previous checkpoint and determine `as_node` if necessary.
+2. If the update is for the subgraph, call the ```update_state``` method of the subgraph. 
+3. Load the previous checkpoint and determine ```as_node``` if necessary.
 4. Update the state using the writers of the specified node. 
 5. Save the updated state to the new checkpoint.
 
@@ -395,7 +395,7 @@ The `update_state` method updates the state of the graph with the given values. 
 
 - This method is used when manually updating the state of the graph. 
 - Use the checkpoint to ensure version management and persistence of the state.
-- `as_node` is automatically determined, but if it is ambiguous, an error may occur.
+- ```as_node``` is automatically determined, but if it is ambiguous, an error may occur.
 - Writing to SharedValues is not allowed during state update.
 
 ```python
@@ -420,13 +420,13 @@ Now, the graph is complete.
 
 Since the final response message was provided! 
 
-State update simulates the graph step, so it also creates the corresponding `traces`.
+State update simulates the graph step, so it also creates the corresponding ```traces```.
 
-`messages` were processed with the predefined `add_messages` function. (This ensures that the existing list is not overwritten directly in the graph and always adds values.)
+```messages``` were processed with the predefined ```add_messages``` function. (This ensures that the existing list is not overwritten directly in the graph and always adds values.)
 
-The same logic is applied here, so the message passed to `update_state` is added in the same way. 
+The same logic is applied here, so the message passed to ```update_state``` is added in the same way. 
 
-The `update_state` function operates as if it were one of the nodes in the graph! By default, the update process uses the last executed node, but it can be manually specified as shown below. Let's add an update and instruct the graph to treat it as coming from "chatbot."
+The ```update_state``` function operates as if it were one of the nodes in the graph! By default, the update process uses the last executed node, but it can be manually specified as shown below. Let's add an update and instruct the graph to treat it as coming from "chatbot."
 
 
 
@@ -531,7 +531,7 @@ for message in snapshot.values["messages"]:
     For more detailed information, you can refer to the [LangGraph Tutorial](https://langchain-ai.github.io/langgraph/tutorials/).
 </pre>
 
-Check if there is a next node to proceed. `()` is empty, indicating that the entire process has been completed normally.
+Check if there is a next node to proceed. ```()``` is empty, indicating that the entire process has been completed normally.
 
 ```python
 # Print the next state
@@ -543,13 +543,13 @@ print(snapshot.next)
 
 ## Update the message state after an interrupt – continue the process.
 
-- Modify the **search query** in the `TavilySearch` tool
+- Modify the **search query** in the ```TavilySearch``` tool
 
 This time, interrupt before proceeding to the next node and update the state, then continue the process.
 
-First, create a new `thread_id`.
+First, create a new ```thread_id```.
 
-Here, we use the `generate_random_hash` function to generate a random hash value.
+Here, we use the ```generate_random_hash``` function to generate a random hash value.
 
 ```python
 from langchain_opentutorial.graphs import generate_random_hash
@@ -590,7 +590,7 @@ for event in events:
 
 Next, let's update the tool call for the agent. 
 
-First, get the `Message ID`. 
+First, get the ```Message ID```. 
 
 ```python
 # Copy config
@@ -613,14 +613,14 @@ print("Message ID", existing_message.id)
 <pre class="custom">Message ID run-21c9fdd0-14ca-4d90-9c3b-273822d7db84-0
 </pre>
 
-The last message is a message related to the `tavily_web_search` tool call.
+The last message is a message related to the ```tavily_web_search``` tool call.
 
 The main properties are as follows.
 
-- `name`: The name of the tool
-- `args`: The search query
-- `id`: The tool call ID
-- `type`: The tool call type (tool_call)
+- ```name```: The name of the tool
+- ```args```: The search query
+- ```id```: The tool call ID
+- ```type```: The tool call type (tool_call)
 
 ```python
 # Print the first tool call
@@ -630,17 +630,17 @@ print(existing_message.tool_calls[0])
 <pre class="custom">{'name': 'tavily_search_results_json', 'args': {'query': 'LangGraph learning materials'}, 'id': 'call_6GdSSJua0PzlGTQ5jCXve1LD', 'type': 'tool_call'}
 </pre>
 
-Let's update the `query` in `args`. 
+Let's update the ```query``` in ```args```. 
 
-Copy the `existing_message` and create a new tool call `new_tool_call`.
+Copy the ```existing_message``` and create a new tool call ```new_tool_call```.
 
-Since we used the `copy()` method, all property values are copied.
+Since we used the ```copy()``` method, all property values are copied.
 
-Then, input the desired **search query** to the `query` parameter.
+Then, input the desired **search query** to the ```query``` parameter.
 
 **Important**
 
-- The `id` uses the same `id` as the existing message. (If the `id` changes, the message reducer will not update the message but instead add it.)
+- The ```id``` uses the same ```id``` as the existing message. (If the ```id``` changes, the message reducer will not update the message but instead add it.)
 
 
 ```python
@@ -713,9 +713,9 @@ graph.update_state(config, {"messages": [new_message]})
 
 
 
-Check the `tool_calls` of the updated last message.
+Check the ```tool_calls``` of the updated last message.
 
-- The `query` in `args` has been updated.
+- The ```query``` in ```args``` has been updated.
 
 ```python
 # Get the tool call of the last message
@@ -734,7 +734,7 @@ graph.get_state(config).values["messages"][-1].tool_calls
 
 You can see that the search query has been changed from the original **"LangGraph"** to the updated query **"LangGraph site:github.com/LangChain-OpenTutorial/LangChain-GitBook"**.
 
-Continue streaming the graph using the previous settings and a `None` input.
+Continue streaming the graph using the previous settings and a ```None``` input.
 
 
 ```python
@@ -833,7 +833,7 @@ for event in events:
     This summary encapsulates the core concepts you've learned about LangGraph and its functionalities. If you have any more questions or need further information, feel free to ask!
 </pre>
 
-Check the last message in `messages` of the final state. (This is the final response message.)
+Check the last message in ```messages``` of the final state. (This is the final response message.)
 
 ```python
 graph.get_state(config).values["messages"][-1].pretty_print()
@@ -1034,9 +1034,9 @@ graph.get_state(to_replay_state.config).values["messages"][-1].tool_calls
 
 
 
-Use the `update_state` method in `graph` to update the state. 
+Use the ```update_state``` method in ```graph``` to update the state. 
 
-Save the updated state to `updated_state`.
+Save the updated state to ```updated_state```.
 
 ```python
 # Update the state
@@ -1056,7 +1056,7 @@ updated_state
 
 
 
-Now, stream the updated state. Here, the input is `None` to replay.
+Now, stream the updated state. Here, the input is ```None``` to replay.
 
 ```python
 # Pass the `updated_state` to the config. This involves passing an arbitrarily updated state.
@@ -1108,7 +1108,7 @@ for event in graph.stream(None, updated_state, stream_mode="values"):
 
 Output the final result.
 
-The `config` used here is not to retrieve the final state but serves as the initial `config` to obtain the final state.
+The ```config``` used here is not to retrieve the final state but serves as the initial ```config``` to obtain the final state.
 
 ```python
 # Output the final result
